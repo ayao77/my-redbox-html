@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG 怎么落地 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;letter-spacing:0.02em}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+
+.page{max-width:760px;margin:0 auto;padding:36px 24px 80px;position:relative}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:28px;
+  padding-bottom:14px;
+  border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  letter-spacing:-0.04em;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;
+  border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:32px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:40px;line-height:1.3;color:#2B2B2B;font-weight:400;
+}
+.hero-title .red-em{
+  color:#E63946;position:relative;display:inline-block;
+}
+.hero-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;border-radius:3px;z-index:-1;opacity:0.35;transform:skew(-2deg);
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ 大分区标题 ============ */
+.part-divider{
+  margin:48px 0 28px;display:flex;align-items:center;gap:16px;
+}
+.part-num{
+  font-family:"Archivo Black",sans-serif;font-size:48px;color:#E63946;line-height:1;letter-spacing:-0.04em;
+  background:#FFFFFF;border:3px solid #2B2B2B;padding:8px 18px;border-radius:8px;
+  box-shadow:4px 4px 0 #2B2B2B;transform:rotate(-2deg);
+}
+.part-text{flex:1}
+.part-label{
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#888;letter-spacing:0.15em;margin-bottom:4px;
+}
+.part-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:30px;color:#2B2B2B;line-height:1.3;
+}
+.part-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 第一部分：讲解卡片 ============ */
+.explain-block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px 26px;margin-bottom:18px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.explain-block.what{background:#FFE9CB}
+.explain-block.why{background:#D0E8FF}
+.explain-block::before{
+  position:absolute;top:-18px;left:24px;font-size:26px;background:#FEFCF5;
+  border:3px solid #2B2B2B;border-radius:50%;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+}
+.explain-block.what::before{content:"💡"}
+.explain-block.why::before{content:"❓"}
+.explain-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#9B5E10;
+  margin-top:10px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.explain-block.why .explain-label{color:#1B5599}
+.explain-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:12px;
+}
+.explain-title .red-em{color:#E63946;position:relative;display:inline-block}
+.explain-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-3px;
+  height:5px;background:#E63946;opacity:0.35;transform:skew(-2deg);
+}
+.explain-body{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;line-height:1.85;color:#3D3D3D;
+}
+.explain-body .red-em{color:#E63946;font-weight:bold}
+
+/* 一句话本质卡 */
+.essence{
+  margin:18px 0;background:#2B2B2B;border-radius:14px;padding:22px 24px;
+  position:relative;box-shadow:5px 5px 0 #FFE16B;
+}
+.essence::before{
+  content:"";position:absolute;top:14px;left:14px;font-size:36px;color:#FFE16B;
+  font-family:serif;line-height:0.5;
+}
+.essence-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;
+  letter-spacing:0.2em;margin-bottom:8px;
+}
+.essence-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;
+}
+.essence-text .yellow{color:#FFE16B}
+
+/* ============ 第二部分：6 步左右交错 ============ */
+.step{
+  margin:28px 0;display:grid;gap:0;position:relative;
+}
+.step.left-icon{grid-template-columns:130px 1fr}
+.step.right-icon{grid-template-columns:1fr 130px}
+
+/* 步骤图标侧 */
+.step-icon-side{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px 0;position:relative;z-index:2;
+}
+.step-circle{
+  width:100px;height:100px;background:#FFE16B;border:3.5px solid #2B2B2B;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:48px;color:#2B2B2B;
+  box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.step-circle::before{
+  content:"";position:absolute;inset:-6px;border:2px dashed rgba(0,0,0,0.35);
+  border-radius:50%;
+}
+.step.s2 .step-circle{background:#A8E6CF}
+.step.s3 .step-circle{background:#FFB5A7}
+.step.s4 .step-circle{background:#D0E8FF}
+.step.s5 .step-circle{background:#E5D4F1}
+.step.s6 .step-circle{background:#FFD8B5}
+
+.step-step-label{
+  font-family:"Archivo Black",sans-serif;font-size:12px;color:#2B2B2B;
+  letter-spacing:0.15em;margin-top:12px;background:#FFFFFF;
+  border:2px solid #2B2B2B;padding:3px 10px;border-radius:50px;
+}
+
+/* 步骤内容卡片 */
+.step-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px 26px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.step.left-icon .step-card{margin-left:-10px}
+.step.right-icon .step-card{margin-right:-10px}
+
+.step-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.35;color:#2B2B2B;margin-bottom:6px;
+}
+.step-title .red-em{color:#E63946;position:relative;display:inline-block}
+.step-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-3px;
+  height:5px;background:#E63946;opacity:0.35;transform:skew(-2deg);
+}
+.step-en{
+  font-family:"Kalam",cursive;font-size:14px;color:#888;margin-bottom:14px;
+  padding-bottom:12px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+
+.field{margin:12px 0;display:flex;align-items:flex-start;gap:10px}
+.field-label{
+  flex-shrink:0;background:#FFE16B;border:2px solid #2B2B2B;border-radius:6px;
+  padding:3px 10px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+  min-width:74px;text-align:center;
+}
+.field.q .field-label{background:#FFD9DC}
+.field.do .field-label{background:#A8E6CF}
+.field.tool .field-label{background:#D0E8FF}
+.field.tip .field-label{background:#FFE16B}
+.field-text{
+  flex:1;font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.7;color:#2B2B2B;
+}
+.field-text .red-em{color:#E63946;font-weight:bold}
+.field-text .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 3px;
+}
+.field-text code{
+  font-family:"JetBrains Mono",monospace;font-size:13px;background:#2B2B2B;color:#FFE16B;
+  padding:2px 8px;border-radius:4px;
+}
+
+/* 参数提示框 */
+.params{
+  margin:14px 0;background:#FFFEF0;border:2px dashed #2B2B2B;border-radius:10px;padding:14px 16px;
+}
+.params-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#9B5E10;margin-bottom:8px;letter-spacing:0.08em;
+}
+.params-line{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:3px 0;display:flex;gap:8px;
+}
+.params-line::before{content:"→";color:#E63946;font-weight:bold;flex-shrink:0}
+.params-line .num{
+  font-family:"Archivo Black",sans-serif;color:#E63946;background:#FFE16B;
+  padding:1px 6px;border-radius:3px;border:1.5px solid #2B2B2B;
+}
+
+/* 工具推荐 */
+.tool-pick{
+  margin:14px 0;background:#E8F4F8;border:2px solid #2B2B2B;border-radius:10px;padding:14px 16px;
+}
+.tool-pick-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#1B5599;margin-bottom:8px;letter-spacing:0.08em;
+}
+.tool-pick-row{
+  display:flex;align-items:center;gap:10px;padding:5px 0;font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;
+}
+.tool-pick-row .badge{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;padding:2px 8px;
+  font-family:"Kalam",cursive;font-size:11px;font-weight:700;flex-shrink:0;
+}
+.tool-pick-row .badge.best{background:#A8E6CF;color:#1B6B43}
+.tool-pick-row .badge.no{background:#FFD9DC;color:#9B1B27}
+.tool-pick-row .badge.ok{background:#FFE16B}
+
+/* 工程师备忘 */
+.dev-note{
+  margin:14px 0;background:#2B2B2B;border-radius:10px;padding:14px 16px;
+}
+.dev-note-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.15em;margin-bottom:6px;
+}
+.dev-note-text{
+  font-family:"JetBrains Mono",monospace;font-size:13.5px;color:#FFFFFF;line-height:1.6;
+}
+.dev-note-text .h{color:#FFE16B}
+
+/* ============ 流程总览图 ============ */
+.overview{
+  margin:48px 0;padding:24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:18px;box-shadow:6px 6px 0 #2B2B2B;
+}
+.overview-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;margin-bottom:18px;
+  text-align:center;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.flow-section{margin-bottom:20px}
+.flow-section:last-child{margin-bottom:0}
+.flow-section-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#9B5E10;
+  background:#FFE16B;border:2px solid #2B2B2B;border-radius:50px;padding:3px 12px;
+  display:inline-block;margin-bottom:10px;
+}
+.flow-section.b .flow-section-label{background:#A8E6CF;color:#1B6B43}
+.flow-section.c .flow-section-label{background:#FFD9DC;color:#9B1B27}
+.flow-arrow-chain{
+  display:flex;flex-direction:column;gap:6px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;line-height:1.5;
+}
+.flow-step{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#FFFEF0;border-radius:6px}
+.flow-step::before{
+  content:"";width:8px;height:8px;background:#2B2B2B;border-radius:50%;flex-shrink:0;
+}
+
+/* ============ 收尾 ============ */
+.closing{
+  margin:48px 0 28px;padding:32px 26px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"🎯";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-size:30px;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50%;
+  width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+}
+.closing-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+  margin-top:14px;margin-bottom:14px;letter-spacing:0.1em;
+}
+.closing-h{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:26px;line-height:1.5;color:#2B2B2B;margin-bottom:14px;
+}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+/* ============ CTA ============ */
+.cta{
+  margin-top:28px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"👉";position:absolute;top:-18px;right:24px;font-size:26px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50%;
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  transform:rotate(8deg);
+}
+.cta-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;
+  margin-top:8px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.cta-h{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#2B2B2B;margin-bottom:16px;
+}
+.cta-h .red-em{color:#E63946}
+.cta-lines{
+  background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px;
+}
+.cta-line{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#2B2B2B;
+  padding:5px 0;display:flex;align-items:center;gap:10px;
+}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 16px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:28px}
+  .part-num{font-size:36px;padding:6px 14px}
+  .part-title{font-size:22px}
+  .step.left-icon,.step.right-icon{grid-template-columns:1fr}
+  .step-icon-side{padding:14px 0 4px}
+  .step-circle{width:72px;height:72px;font-size:34px}
+  .step.left-icon .step-card,.step.right-icon .step-card{margin:0}
+  .step-title{font-size:20px}
+  .explain-title{font-size:20px}
+  .explain-body{font-size:15.5px}
+  .essence-text{font-size:18px}
+  .field-text{font-size:14.5px}
+  .field-label{min-width:62px;font-size:12px}
+  .params-line,.tool-pick-row{font-size:13.5px}
+  .closing-h{font-size:21px}
+  .cta-h{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.03</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 03 讲｜AI 落地</span>
+    <h1 class="hero-title">
+      <span class="red-em">RAG</span> 怎么落地<br>
+      <span class="yellow-hi">从 0 到上线 6 步</span>讲透
+    </h1>
+    <div class="hero-meta">By NOVA · 不堆术语 · 每一步是具体动作</div>
+  </div>
+
+  <!-- ========== Part 01：先讲解 ========== -->
+  <div class="part-divider">
+    <div class="part-num">01</div>
+    <div class="part-text">
+      <div class="part-label">PART · ONE</div>
+      <div class="part-title">先讲清<span class="yellow-hi">什么是 RAG</span></div>
+    </div>
+  </div>
+
+  <div class="explain-block what">
+    <div class="explain-label">WHAT · 一句话讲清</div>
+    <div class="explain-title">
+      RAG = 让大模型<span class="red-em">看着资料答题</span>
+    </div>
+    <div class="explain-body">
+      全称：<span class="red-em">检索增强生成（Retrieval-Augmented Generation）</span><br>
+      翻译成人话——大模型从"闭卷考"变成"开卷考"。
+    </div>
+  </div>
+
+  <div class="explain-block why">
+    <div class="explain-label">WHY · 为什么要做</div>
+    <div class="explain-title">
+      没有 RAG，大模型只会<span class="red-em">瞎编</span>
+    </div>
+    <div class="explain-body">
+      你问 AI 一个公司内部的专业问题（比如退货政策）——它脑子里没这数据，但它<span class="red-em">不会说"不知道"</span>，会按"通用电商常识"<span class="red-em">编一个看起来对的答案</span>。<br><br>
+      这就是大家说的"<span class="red-em">幻觉</span>"。RAG 就是治幻觉的核心方案。
+    </div>
+  </div>
+
+  <div class="essence">
+    <div class="essence-label">CORE · 一句话本质</div>
+    <div class="essence-text">
+      <span class="yellow">90%</span> 企业 AI 落地<br>
+      第一步都是搭 <span class="yellow">RAG</span>
+    </div>
+  </div>
+
+  <!-- ========== Part 02：6 步过程 ========== -->
+  <div class="part-divider">
+    <div class="part-num">02</div>
+    <div class="part-text">
+      <div class="part-label">PART · TWO</div>
+      <div class="part-title">从 0 到上线 <span class="yellow-hi">6 步</span></div>
+    </div>
+  </div>
+
+  <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:16px;color:#666;text-align:center;margin-bottom:24px;padding:14px 18px;background:#FFFEF0;border-radius:10px;border:2px dashed rgba(0,0,0,0.15)">
+    场景设定：你是<span style="color:#E63946;font-weight:bold">电商公司 AI PM</span>，老板让你做 AI 客服。
+  </p>
+
+  <!-- Step 1：图标在左 -->
+  <div class="step s1 left-icon">
+    <div class="step-icon-side">
+      <div class="step-circle">📂</div>
+      <div class="step-step-label">STEP 01</div>
+    </div>
+    <div class="step-card">
+      <div class="step-title">先把<span class="red-em">公司文档</span>收齐</div>
+      <div class="step-en">Collect Documents · 数据准备</div>
+      <div class="field do">
+        <span class="field-label">干啥</span>
+        <span class="field-text">把退货政策 PDF、物流时效表、产品手册、客服 QA 全部找出来。</span>
+      </div>
+      <div class="field q">
+        <span class="field-label">真实情况</span>
+        <span class="field-text">公司文档<span class="yellow-hi">散落在 10 个地方</span>——飞书、企微、SharePoint、销售个人电脑。<span class="red-em">要花 1-2 周</span>整理出 300-500 份。</span>
+      </div>
+      <div class="field tip">
+        <span class="field-label">老板会问</span>
+        <span class="field-text">"为啥要这么久？"<br>→ 答："<span class="red-em">文档质量决定 RAG 上限，垃圾进垃圾出</span>。"</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2：图标在右 -->
+  <div class="step s2 right-icon">
+    <div class="step-card">
+      <div class="step-title">把长文档<span class="red-em">切成小段</span></div>
+      <div class="step-en">Chunking · 分块</div>
+      <div class="field do">
+        <span class="field-label">干啥</span>
+        <span class="field-text">一份 10 页 PDF → 切成 30-40 段。<br>每段 300-500 字，<span class="red-em">相邻两段重叠 50 字</span>。</span>
+      </div>
+      <div class="field q">
+        <span class="field-label">为啥切</span>
+        <span class="field-text">整篇丢给大模型——<span class="yellow-hi">它看不完，也找不到重点</span>。切小段后，每次只挑最相关的几段喂它。</span>
+      </div>
+      <div class="params">
+        <div class="params-label">📐 黄金参数（背下来）</div>
+        <div class="params-line"><span>每段 <span class="num">300-500</span> 字</span></div>
+        <div class="params-line"><span>重叠 <span class="num">50</span> 字（防止上下文断裂）</span></div>
+      </div>
+      <div class="dev-note">
+        <div class="dev-note-label">// 跟工程师怎么说</div>
+        <div class="dev-note-text"><span class="h">用 LangChain</span> 默认文本切分器<br><span class="h">chunk_size=500</span>, <span class="h">overlap=50</span></div>
+      </div>
+    </div>
+    <div class="step-icon-side">
+      <div class="step-circle">✂️</div>
+      <div class="step-step-label">STEP 02</div>
+    </div>
+  </div>
+
+  <!-- Step 3：图标在左 -->
+  <div class="step s3 left-icon">
+    <div class="step-icon-side">
+      <div class="step-circle">🔢</div>
+      <div class="step-step-label">STEP 03</div>
+    </div>
+    <div class="step-card">
+      <div class="step-title">文字变<span class="red-em">数字向量</span> 存数据库</div>
+      <div class="step-en">Embedding + 向量库</div>
+      <div class="field do">
+        <span class="field-label">干啥</span>
+        <span class="field-text">每一小段文字 → 翻译成一串数字（向量）→ 存进向量数据库。</span>
+      </div>
+      <div class="field q">
+        <span class="field-label">为啥</span>
+        <span class="field-text">电脑不懂文字，但能<span class="yellow-hi">按"意思"对比数字</span>。这样用户问"退款"，能找到"退货"的内容——因为<span class="red-em">意思相近，数字也相近</span>。</span>
+      </div>
+      <div class="tool-pick">
+        <div class="tool-pick-label">🛠️ Embedding 模型怎么选</div>
+        <div class="tool-pick-row"><span class="badge best">推荐</span><span><strong>bge-large-zh</strong> · 智源开源 · 90% 国内企业在用</span></div>
+        <div class="tool-pick-row"><span class="badge ok">备选</span><span><strong>m3e-base</strong> · 中文效果好</span></div>
+        <div class="tool-pick-row"><span class="badge no">别用</span><span>OpenAI text-embedding · <span style="color:#E63946">中文差 15-20%</span></span></div>
+      </div>
+      <div class="tool-pick">
+        <div class="tool-pick-label">🗄️ 向量数据库怎么选</div>
+        <div class="tool-pick-row"><span class="badge best">有团队</span><span><strong>Milvus</strong> · 开源免费 · 主流首选</span></div>
+        <div class="tool-pick-row"><span class="badge ok">没团队</span><span><strong>Pinecone</strong> · 云服务 · 按量付费</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4：图标在右 -->
+  <div class="step s4 right-icon">
+    <div class="step-card">
+      <div class="step-title">用户提问 → <span class="red-em">捞出 5 段</span>相关内容</div>
+      <div class="step-en">Retrieval · 检索召回</div>
+      <div class="field do">
+        <span class="field-label">干啥</span>
+        <span class="field-text">用户问"7 天能退吗"——系统把这个问题<span class="yellow-hi">也变成数字向量</span>，然后去向量库找最相近的 N 段，捞出来。</span>
+      </div>
+      <div class="params">
+        <div class="params-label">📐 Top K 怎么定</div>
+        <div class="params-line"><span>K = <span class="num">3</span>：太少，可能漏关键信息</span></div>
+        <div class="params-line"><span>K = <span class="num">10</span>：太多，烧 token 还干扰模型</span></div>
+        <div class="params-line"><span>K = <span class="num">5</span>：<span style="color:#E63946;font-weight:bold">行业经验值 ✓</span></span></div>
+      </div>
+      <div class="field tip">
+        <span class="field-label">进阶</span>
+        <span class="field-text"><span class="red-em">两阶段召回</span>：先粗捞 20 段，再用 <code>Rerank</code> 精排成 5 段。<br>效果比直接捞 5 段<span class="yellow-hi">高 30%</span>。</span>
+      </div>
+      <div class="dev-note">
+        <div class="dev-note-label">// Rerank 用什么</div>
+        <div class="dev-note-text"><span class="h">bge-reranker-large</span><br>智源开源 · 跟 bge embedding 配套</div>
+      </div>
+    </div>
+    <div class="step-icon-side">
+      <div class="step-circle">🔍</div>
+      <div class="step-step-label">STEP 04</div>
+    </div>
+  </div>
+
+  <!-- Step 5：图标在左 -->
+  <div class="step s5 left-icon">
+    <div class="step-icon-side">
+      <div class="step-circle">💬</div>
+      <div class="step-step-label">STEP 05</div>
+    </div>
+    <div class="step-card">
+      <div class="step-title">问题 + 5 段资料 → <span class="red-em">扔给大模型答</span></div>
+      <div class="step-en">Generation · 生成</div>
+      <div class="field do">
+        <span class="field-label">干啥</span>
+        <span class="field-text">把"用户问题 + 捞到的 5 段"拼成 Prompt，发给大模型，让它<span class="yellow-hi">基于资料</span>作答。</span>
+      </div>
+      <div class="dev-note">
+        <div class="dev-note-label">// 治幻觉核心咒语</div>
+        <div class="dev-note-text">你是电商客服，<span class="h">基于下面"参考资料"作答</span>。<br>如果资料里没有 → <span class="h">说"我需要转人工"</span>，<br><span style="color:#FF6FCB">不要编造</span>。</div>
+      </div>
+      <div class="tool-pick">
+        <div class="tool-pick-label">🤖 大模型怎么选</div>
+        <div class="tool-pick-row"><span class="badge best">国内</span><span><strong>DeepSeek / 通义 / Kimi</strong> · 便宜 + 中文好</span></div>
+        <div class="tool-pick-row"><span class="badge ok">海外</span><span><strong>Claude / GPT-4</strong></span></div>
+        <div class="tool-pick-row"><span class="badge no">别用</span><span>7B 以下开源小模型 · <span style="color:#E63946">效果不够 · 易幻觉</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 6：图标在右 -->
+  <div class="step s6 right-icon">
+    <div class="step-card">
+      <div class="step-title">上线前 <span class="red-em">必测 2 个指标</span></div>
+      <div class="step-en">Evaluation · 评估</div>
+      <div class="field q">
+        <span class="field-label">为啥</span>
+        <span class="field-text">这步是 <span class="red-em">AI PM 和工程师的分水岭</span>——工程师觉得"能跑就行"，你要拍板"能不能上线"。</span>
+      </div>
+      <div class="params">
+        <div class="params-label">📊 指标 1：召回准确率</div>
+        <div class="params-line"><span>捞回来的 5 段，<span class="yellow-hi">真包含答案吗？</span></span></div>
+        <div class="params-line"><span>≥ <span class="num">80%</span> → 可上线</span></div>
+        <div class="params-line"><span>&lt; <span class="num">60%</span> → 优化 chunking 或 embedding</span></div>
+      </div>
+      <div class="params">
+        <div class="params-label">📊 指标 2：生成忠实度</div>
+        <div class="params-line"><span>大模型答的，<span class="yellow-hi">真来自那 5 段，还是自己编？</span></span></div>
+        <div class="params-line"><span>≥ <span class="num">90%</span> → 可上线</span></div>
+        <div class="params-line"><span>&lt; <span class="num">80%</span> → 改 Prompt 加严约束</span></div>
+      </div>
+      <div class="field tip">
+        <span class="field-label">关键</span>
+        <span class="field-text"><span class="red-em">两个指标必须分开测</span>——混着测，出问题不知道是检索还是生成的锅。</span>
+      </div>
+    </div>
+    <div class="step-icon-side">
+      <div class="step-circle">📊</div>
+      <div class="step-step-label">STEP 06</div>
+    </div>
+  </div>
+
+  <!-- 流程总览 -->
+  <div class="overview">
+    <div class="overview-title">🗺️ 6 步全流程 · 一图记住</div>
+    <div class="flow-section">
+      <div class="flow-section-label">A · 建库（做一次）</div>
+      <div class="flow-arrow-chain">
+        <div class="flow-step">收集公司文档</div>
+        <div class="flow-step">切 500 字小段（Chunking）</div>
+        <div class="flow-step">变数字向量（bge-large-zh）</div>
+        <div class="flow-step">存进 Milvus / Pinecone</div>
+      </div>
+    </div>
+    <div class="flow-section b">
+      <div class="flow-section-label">B · 每次提问</div>
+      <div class="flow-arrow-chain">
+        <div class="flow-step">用户问题 → 变向量</div>
+        <div class="flow-step">捞 20 段 → Rerank → Top 5</div>
+        <div class="flow-step">拼 Prompt 喂 DeepSeek</div>
+        <div class="flow-step">大模型基于资料生成答案</div>
+      </div>
+    </div>
+    <div class="flow-section c">
+      <div class="flow-section-label">C · 上线前</div>
+      <div class="flow-arrow-chain">
+        <div class="flow-step">召回准确率 ≥ 80%</div>
+        <div class="flow-step">生成忠实度 ≥ 90%</div>
+        <div class="flow-step">→ GA 上线 ✅</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="closing">
+    <div class="closing-label">核心结论 · TAKEAWAY</div>
+    <div class="closing-h">
+      RAG 不是"搜索 + 大模型"<br>
+      是 <span class="red-em">6 步工程化流程</span>
+    </div>
+  </div>
+
+  <div class="cta">
+    <div class="cta-label">下一篇预告 · NEXT</div>
+    <div class="cta-h">
+      下一条讲<br>
+      <span class="red-em">什么场景不该上 RAG</span>
+    </div>
+    <div class="cta-lines">
+      <div class="cta-line">3 种场景硬上 = 浪费成本</div>
+      <div class="cta-line">关注 + 收藏不迷路</div>
+    </div>
+    <div class="cta-tags">
+      <span>#AI产品经理</span>
+      <span>#RAG</span>
+      <span>#大模型落地</span>
+      <span>#AI产品</span>
+    </div>
+  </div>
+
+  <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+</article>
+
+</body>
+</html>

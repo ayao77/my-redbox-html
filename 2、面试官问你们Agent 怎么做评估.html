@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面试官问 Agent 怎么评估 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:
+    radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;letter-spacing:0.02em}
+.casual{font-family:"Kalam","Noto Sans SC",sans-serif}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+
+.page{
+  max-width:720px;
+  margin:0 auto;
+  padding:36px 28px 80px;
+  position:relative;
+}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:24px;
+  padding-bottom:14px;
+  border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.brand-mark{
+  width:38px;
+  height:38px;
+  background:#2B2B2B;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#FFE16B;
+  font-family:"Archivo Black",sans-serif;
+  font-size:16px;
+  letter-spacing:-0.04em;
+  position:relative;
+}
+.brand-mark::after{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border:2px solid #2B2B2B;
+  border-radius:50%;
+  border-style:dashed;
+  opacity:0.4;
+}
+.brand-name{
+  font-family:"Archivo Black",sans-serif;
+  font-size:22px;
+  color:#2B2B2B;
+  letter-spacing:-0.02em;
+}
+.brand-tag{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:13px;
+  color:#888;
+  letter-spacing:0.05em;
+}
+
+/* ============ 标题区 ============ */
+.title-block{
+  position:relative;
+  margin-bottom:32px;
+  padding:8px 6px 22px;
+}
+.title-tag{
+  display:inline-block;
+  background:#FFE16B;
+  border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;
+  padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;
+  color:#2B2B2B;
+  margin-bottom:14px;
+  transform:rotate(-1.5deg);
+  box-shadow:3px 3px 0 #2B2B2B;
+}
+.title-main{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:38px;
+  line-height:1.35;
+  color:#2B2B2B;
+  font-weight:400;
+  position:relative;
+}
+.title-main .quote-mark{color:#E63946;font-size:42px}
+.title-main .underline-red{
+  position:relative;
+  display:inline-block;
+}
+.title-main .underline-red::after{
+  content:"";
+  position:absolute;
+  left:-2px;right:-2px;
+  bottom:-4px;
+  height:6px;
+  background:#E63946;
+  border-radius:3px;
+  z-index:-1;
+  opacity:0.35;
+  transform:skew(-2deg);
+}
+.title-main .highlight-yellow{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);
+  padding:0 4px;
+}
+.title-sub{
+  margin-top:18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:16px;
+  color:#5C5C5C;
+}
+.title-sub .arrow-icon{
+  display:inline-block;
+  width:28px;
+  height:14px;
+  position:relative;
+}
+.title-sub .arrow-icon::before{
+  content:"";
+  position:absolute;
+  top:6px;left:0;
+  width:24px;
+  height:2px;
+  background:#2B2B2B;
+}
+.title-sub .arrow-icon::after{
+  content:"";
+  position:absolute;
+  top:1px;right:0;
+  width:10px;
+  height:10px;
+  border-top:2px solid #2B2B2B;
+  border-right:2px solid #2B2B2B;
+  transform:rotate(45deg);
+}
+.title-meta{
+  margin-top:12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:14px;
+  color:#888;
+  padding-top:14px;
+  border-top:2px dashed rgba(0,0,0,0.15);
+}
+
+/* ============ 核心判断卡片 ============ */
+.insight-card{
+  margin:32px 0;
+  background:#FFE9CB;
+  border:3px solid #2B2B2B;
+  border-radius:18px;
+  padding:24px 24px 22px;
+  position:relative;
+  box-shadow:5px 5px 0 #2B2B2B;
+  transform:rotate(-0.5deg);
+}
+.insight-card::before{
+  content:"💡";
+  position:absolute;
+  top:-18px;
+  left:20px;
+  font-size:28px;
+  background:#FEFCF5;
+  border:3px solid #2B2B2B;
+  border-radius:50%;
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.insight-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:14px;
+  color:#9B5E10;
+  margin-bottom:8px;
+  letter-spacing:0.1em;
+  margin-top:8px;
+}
+.insight-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:22px;
+  line-height:1.6;
+  color:#2B2B2B;
+  margin-bottom:12px;
+}
+.insight-title .red-em{
+  color:#E63946;
+  position:relative;
+}
+.insight-title .red-em::after{
+  content:"";
+  position:absolute;
+  left:-2px;right:-2px;
+  bottom:-3px;
+  height:5px;
+  background:#E63946;
+  opacity:0.35;
+  transform:skew(-2deg);
+}
+.insight-desc{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:17px;
+  line-height:1.75;
+  color:#3D3D3D;
+}
+.insight-desc .red-em{color:#E63946;font-weight:bold}
+
+/* ============ 水泥块章节 ============ */
+.concrete-section{
+  margin:56px 0 28px;
+  position:relative;
+}
+.concrete-block{
+  position:relative;
+  background:
+    /* 颗粒噪点 */
+    radial-gradient(circle at 20% 30%,rgba(0,0,0,0.06) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 70% 60%,rgba(0,0,0,0.05) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 40% 80%,rgba(0,0,0,0.04) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 85% 20%,rgba(255,255,255,0.4) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 15% 75%,rgba(255,255,255,0.3) 0.5px,transparent 1.5px),
+    /* 主体渐变 */
+    linear-gradient(135deg,#A5A29B 0%,#8E8B83 50%,#736F67 100%);
+  background-size:30px 30px,40px 40px,25px 25px,35px 35px,28px 28px,100% 100%;
+  border:3px solid #2B2B2B;
+  border-radius:6px;
+  padding:24px 26px;
+  box-shadow:
+    6px 6px 0 #2B2B2B,
+    inset 0 2px 0 rgba(255,255,255,0.25),
+    inset 0 -3px 0 rgba(0,0,0,0.15);
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.concrete-block.c2{
+  background:
+    radial-gradient(circle at 25% 35%,rgba(0,0,0,0.06) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 75% 65%,rgba(0,0,0,0.05) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 45% 85%,rgba(0,0,0,0.04) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 80% 25%,rgba(255,255,255,0.4) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 10% 70%,rgba(255,255,255,0.3) 0.5px,transparent 1.5px),
+    linear-gradient(135deg,#8A8782 0%,#6E6B65 50%,#56534E 100%);
+  background-size:30px 30px,40px 40px,25px 25px,35px 35px,28px 28px,100% 100%;
+}
+.concrete-block.c3{
+  background:
+    radial-gradient(circle at 30% 40%,rgba(0,0,0,0.06) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 65% 70%,rgba(0,0,0,0.05) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 50% 90%,rgba(0,0,0,0.04) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 75% 30%,rgba(255,255,255,0.4) 0.5px,transparent 1.5px),
+    radial-gradient(circle at 20% 65%,rgba(255,255,255,0.3) 0.5px,transparent 1.5px),
+    linear-gradient(135deg,#706D67 0%,#54514C 50%,#3D3A36 100%);
+  background-size:30px 30px,40px 40px,25px 25px,35px 35px,28px 28px,100% 100%;
+}
+/* 水泥块裂纹装饰 */
+.concrete-block::before{
+  content:"";
+  position:absolute;
+  top:30%;
+  left:14%;
+  width:35%;
+  height:1px;
+  background:rgba(0,0,0,0.18);
+  transform:rotate(8deg);
+  pointer-events:none;
+}
+.concrete-block::after{
+  content:"";
+  position:absolute;
+  bottom:25%;
+  right:18%;
+  width:25%;
+  height:1px;
+  background:rgba(0,0,0,0.15);
+  transform:rotate(-5deg);
+  pointer-events:none;
+}
+/* 钢筋编号 */
+.concrete-num{
+  width:68px;
+  height:68px;
+  background:#FFE16B;
+  border:3px solid #2B2B2B;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:32px;
+  color:#2B2B2B;
+  flex-shrink:0;
+  box-shadow:
+    3px 3px 0 rgba(0,0,0,0.3),
+    inset 0 -3px 0 rgba(0,0,0,0.15);
+  position:relative;
+  transform:rotate(-3deg);
+  z-index:2;
+}
+.concrete-num::before{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border:1.5px dashed rgba(0,0,0,0.4);
+  border-radius:4px;
+}
+.concrete-text{flex:1;position:relative;z-index:2}
+.concrete-label{
+  font-family:"Archivo Black",sans-serif;
+  font-size:11px;
+  color:rgba(255,255,255,0.85);
+  margin-bottom:4px;
+  letter-spacing:0.15em;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.3);
+}
+.concrete-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:28px;
+  color:#FFFFFF;
+  line-height:1.25;
+  text-shadow:2px 2px 0 rgba(0,0,0,0.25);
+}
+.concrete-title .red-em{
+  color:#FFE16B;
+  position:relative;
+  display:inline-block;
+  padding:0 4px;
+}
+.concrete-title .red-em::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  bottom:-4px;
+  height:5px;
+  background:#E63946;
+  opacity:0.7;
+  transform:skew(-2deg);
+  z-index:-1;
+}
+/* 层级标签 */
+.concrete-level{
+  position:absolute;
+  top:-12px;
+  right:24px;
+  background:#2B2B2B;
+  color:#FFE16B;
+  font-family:"Archivo Black",sans-serif;
+  font-size:11px;
+  padding:4px 12px;
+  border-radius:50px;
+  letter-spacing:0.12em;
+  z-index:3;
+  transform:rotate(2deg);
+  border:2px solid #FFE16B;
+}
+
+/* ============ 章节正文 ============ */
+.body-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:18px;
+  line-height:1.95;
+  color:#2B2B2B;
+  margin:0 4px 20px;
+  padding:0 2px;
+}
+.body-text .red-em{
+  color:#E63946;
+  font-weight:bold;
+  position:relative;
+}
+.body-text .red-em::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  bottom:-2px;
+  height:2.5px;
+  background:#E63946;
+  border-radius:2px;
+}
+.body-text .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);
+  padding:0 4px;
+  font-weight:500;
+}
+
+/* ============ 指标卡片（轻量化） ============ */
+.metric-board{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin:20px 0 28px;
+  padding-left:18px;
+  border-left:2.5px dashed rgba(0,0,0,0.18);
+}
+.metric-card{
+  background:transparent;
+  padding:10px 14px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  position:relative;
+  border-radius:8px;
+  transition:background 0.2s;
+}
+.metric-card::before{
+  content:"";
+  position:absolute;
+  left:-21px;
+  top:50%;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#2B2B2B;
+  transform:translateY(-50%);
+}
+.metric-card .color-dot{
+  width:14px;
+  height:14px;
+  border-radius:4px;
+  flex-shrink:0;
+}
+.metric-card.green .color-dot{background:#7DCB94}
+.metric-card.blue .color-dot{background:#6FB3F0}
+.metric-card.pink .color-dot{background:#F09BA3}
+.metric-card.yellow .color-dot{background:#F0D060}
+.metric-card.orange .color-dot{background:#F0A878}
+.metric-card.purple .color-dot{background:#B898D6}
+
+.metric-body{flex:1;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.metric-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:17px;
+  color:#2B2B2B;
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.metric-name .en{
+  font-family:"Kalam",cursive;
+  font-size:12.5px;
+  color:#999;
+  font-weight:400;
+}
+.metric-desc{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:14px;
+  color:#666;
+  line-height:1.55;
+  flex-basis:100%;
+  margin-top:2px;
+}
+.metric-tag{
+  font-family:"Kalam",cursive;
+  font-size:11px;
+  color:#999;
+  font-weight:500;
+  padding:1px 8px;
+  background:rgba(0,0,0,0.05);
+  border-radius:50px;
+  flex-shrink:0;
+}
+
+/* ============ Callout 加分点 ============ */
+.callout{
+  margin:28px 0;
+  background:#FFE16B;
+  border:3px solid #2B2B2B;
+  border-radius:18px;
+  padding:22px 24px;
+  position:relative;
+  box-shadow:5px 5px 0 #2B2B2B;
+  transform:rotate(0.6deg);
+}
+.callout::before{
+  content:"✨";
+  position:absolute;
+  top:-16px;
+  right:24px;
+  font-size:26px;
+  background:#FEFCF5;
+  border:3px solid #2B2B2B;
+  border-radius:50%;
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transform:rotate(-8deg);
+}
+.callout-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:14px;
+  color:#9B5E10;
+  letter-spacing:0.1em;
+  margin-bottom:6px;
+}
+.callout-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:20px;
+  line-height:1.65;
+  color:#2B2B2B;
+}
+.callout-text .red-em{
+  color:#E63946;
+  position:relative;
+  display:inline-block;
+}
+.callout-text .red-em::after{
+  content:"";
+  position:absolute;
+  left:-2px;right:-2px;
+  bottom:-3px;
+  height:5px;
+  background:#E63946;
+  opacity:0.4;
+  transform:skew(-2deg);
+}
+
+/* ============ 对话卡片 ============ */
+.dialogue{
+  margin:32px 0;
+  background:#FFFFFF;
+  border:3px solid #2B2B2B;
+  border-radius:18px;
+  padding:24px;
+  box-shadow:5px 5px 0 #2B2B2B;
+  position:relative;
+}
+.dialogue::before{
+  content:"💬";
+  position:absolute;
+  top:-18px;
+  left:24px;
+  font-size:26px;
+  background:#FEFCF5;
+  border:3px solid #2B2B2B;
+  border-radius:50%;
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.dialogue-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:16px;
+  color:#888;
+  margin-top:8px;
+  margin-bottom:18px;
+  letter-spacing:0.08em;
+}
+.dialogue-q{
+  background:#D0E8FF;
+  border:2.5px solid #2B2B2B;
+  border-radius:14px 14px 14px 4px;
+  padding:14px 18px;
+  margin-bottom:14px;
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:17px;
+  line-height:1.6;
+  color:#2B2B2B;
+  position:relative;
+}
+.dialogue-q-label{
+  display:block;
+  font-size:12px;
+  color:#1B5599;
+  margin-bottom:4px;
+  letter-spacing:0.08em;
+}
+.dialogue-a{
+  background:#FFE9CB;
+  border:2.5px solid #2B2B2B;
+  border-radius:14px 14px 4px 14px;
+  padding:14px 18px;
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:17px;
+  line-height:1.6;
+  color:#2B2B2B;
+  margin-left:24px;
+}
+.dialogue-a-label{
+  display:block;
+  font-size:12px;
+  color:#9B5E10;
+  margin-bottom:4px;
+  letter-spacing:0.08em;
+}
+.dialogue-a .red-em{
+  color:#E63946;
+  position:relative;
+  display:inline-block;
+  font-weight:bold;
+}
+.dialogue-a .red-em::after{
+  content:"";
+  position:absolute;
+  left:-1px;right:-1px;
+  bottom:-2px;
+  height:3px;
+  background:#E63946;
+  border-radius:2px;
+}
+.dialogue-result{
+  margin-top:14px;
+  text-align:center;
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:20px;
+  color:#E63946;
+  padding-top:14px;
+  border-top:2px dashed rgba(0,0,0,0.2);
+}
+
+/* ============ 收尾 ============ */
+.closing{
+  margin:48px 0 36px;
+  padding:32px 24px;
+  background:#FFFFFF;
+  border:3px solid #2B2B2B;
+  border-radius:20px;
+  box-shadow:6px 6px 0 #2B2B2B;
+  text-align:center;
+  position:relative;
+}
+.closing::before{
+  content:"🎯";
+  position:absolute;
+  top:-20px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:30px;
+  background:#FEFCF5;
+  border:3px solid #2B2B2B;
+  border-radius:50%;
+  width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.closing-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:14px;
+  color:#888;
+  margin-top:14px;
+  margin-bottom:14px;
+  letter-spacing:0.1em;
+}
+.closing-h{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:28px;
+  line-height:1.5;
+  color:#2B2B2B;
+  margin-bottom:14px;
+}
+.closing-h .strike{
+  color:#999;
+  text-decoration:line-through;
+  text-decoration-color:#E63946;
+  text-decoration-thickness:3px;
+}
+.closing-h .red-em{
+  color:#E63946;
+  position:relative;
+  display:inline-block;
+}
+.closing-h .red-em::after{
+  content:"";
+  position:absolute;
+  left:-2px;right:-2px;
+  bottom:-4px;
+  height:6px;
+  background:#E63946;
+  opacity:0.35;
+  transform:skew(-2deg);
+  z-index:-1;
+}
+.closing-tail{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:17px;
+  line-height:1.8;
+  color:#5C5C5C;
+  padding-top:14px;
+  border-top:2px dashed rgba(0,0,0,0.15);
+}
+
+/* ============ CTA ============ */
+.cta{
+  margin-top:36px;
+  background:#A8E6CF;
+  border:3px solid #2B2B2B;
+  border-radius:18px;
+  padding:24px;
+  box-shadow:5px 5px 0 #2B2B2B;
+  position:relative;
+  transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"👉";
+  position:absolute;
+  top:-18px;
+  right:24px;
+  font-size:26px;
+  background:#FEFCF5;
+  border:3px solid #2B2B2B;
+  border-radius:50%;
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transform:rotate(8deg);
+}
+.cta-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:14px;
+  color:#1B6B43;
+  margin-top:8px;
+  margin-bottom:10px;
+  letter-spacing:0.1em;
+}
+.cta-h{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:22px;
+  line-height:1.5;
+  color:#2B2B2B;
+  margin-bottom:16px;
+}
+.cta-h .red-em{
+  color:#E63946;
+  position:relative;
+  display:inline-block;
+}
+.cta-h .red-em::after{
+  content:"";
+  position:absolute;
+  left:-2px;right:-2px;
+  bottom:-3px;
+  height:5px;
+  background:#E63946;
+  opacity:0.4;
+  transform:skew(-2deg);
+  z-index:-1;
+}
+.cta-lines{
+  background:#FFFFFF;
+  border:2.5px solid #2B2B2B;
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:14px;
+}
+.cta-line{
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:16px;
+  color:#2B2B2B;
+  padding:5px 0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.cta-line::before{
+  content:"→";
+  color:#E63946;
+  font-weight:bold;
+  font-size:18px;
+}
+.cta-tags{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.cta-tags span{
+  background:#FFFFFF;
+  border:2px solid #2B2B2B;
+  border-radius:20px;
+  padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:14px;
+  color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;
+  text-align:center;
+  font-family:"Archivo Black",sans-serif;
+  font-size:13px;
+  color:#888;
+  letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 18px 60px}
+  .brand-name{font-size:18px}
+  .brand-mark{width:32px;height:32px;font-size:13px}
+  .title-main{font-size:30px}
+  .insight-title{font-size:19px}
+  .insight-desc{font-size:16px}
+  .concrete-num{width:56px;height:56px;font-size:26px}
+  .concrete-title{font-size:22px}
+  .concrete-block{padding:18px 18px;gap:14px}
+  .body-text{font-size:16.5px}
+  .metric-name{font-size:15.5px}
+  .metric-desc{font-size:13.5px}
+  .callout-text{font-size:18px}
+  .dialogue-q,.dialogue-a{font-size:15.5px}
+  .closing-h{font-size:22px}
+  .closing-tail{font-size:15.5px}
+  .cta-h{font-size:19px}
+  .cta-line{font-size:14.5px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.02</div>
+  </header>
+
+  <div class="title-block">
+    <span class="title-tag">第 02 讲｜AI PM 面试</span>
+    <h1 class="title-main">
+      面试官问<br>
+      <span class="quote-mark">"</span><span class="underline-red">你们 Agent 怎么<br><span class="highlight-yellow">做评估</span>？</span><span class="quote-mark">"</span>
+    </h1>
+    <div class="title-sub">
+      <span class="arrow-icon"></span>
+      <span>我学员是这么答的</span>
+    </div>
+    <div class="title-meta">By NOVA · 真实带教案例 · 字节面试通过</div>
+  </div>
+
+  <div class="insight-card">
+    <div class="insight-label">核心判断</div>
+    <div class="insight-title">
+      AI 产品评估的差别<br>
+      不在<span class="red-em">指标多不多</span>，在<span class="red-em">颗粒度</span>
+    </div>
+    <div class="insight-desc">
+      传统盯转化、留存、ARPU。<br>
+      AI 产品必须<span class="red-em">拆到 3 层</span>——只答指标名字 = 普通候选人。
+    </div>
+  </div>
+
+  <div class="concrete-section">
+    <div class="concrete-block c1">
+      <span class="concrete-level">LAYER 01</span>
+      <div class="concrete-num">壹</div>
+      <div class="concrete-text">
+        <div class="concrete-label">FOUNDATION · 第 01 层</div>
+        <div class="concrete-title"><span class="red-em">任务级</span>评估</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="body-text">
+    最基础的一层——单次任务能不能完成。比如客服 Agent，看任务完成率、首次解决率、转人工率。<span class="yellow-hi">很多人答到这就停了</span>，但这只是评估的入口。
+  </p>
+
+  <div class="metric-board">
+    <div class="metric-card green">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">任务完成率 <span class="en">completion_rate</span></div>
+        <div class="metric-desc">单次任务是否被 Agent 顺利完成</div>
+      </div>
+      <span class="metric-tag">核心</span>
+    </div>
+    <div class="metric-card blue">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">首次解决率 <span class="en">first_resolve</span></div>
+        <div class="metric-desc">用户第一次就拿到满意结果的比例</div>
+      </div>
+      <span class="metric-tag">核心</span>
+    </div>
+    <div class="metric-card pink">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">转人工率 <span class="en">handoff_rate</span></div>
+        <div class="metric-desc">Agent 能力边界的真实信号</div>
+      </div>
+      <span class="metric-tag">信号</span>
+    </div>
+  </div>
+
+  <div class="concrete-section">
+    <div class="concrete-block c2">
+      <span class="concrete-level">LAYER 02</span>
+      <div class="concrete-num">贰</div>
+      <div class="concrete-text">
+        <div class="concrete-label">MIDDLE · 第 02 层</div>
+        <div class="concrete-title"><span class="red-em">对话级</span>评估</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="body-text">
+    多轮对话里 Agent 表现怎么样——上下文有没有丢、有没有<span class="red-em">幻觉</span>、回答有没有相关性。这一层必须做<span class="yellow-hi">人工标注 + 自动化打分双路并行</span>。
+  </p>
+
+  <div class="metric-board">
+    <div class="metric-card yellow">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">上下文保持 <span class="en">context_retention</span></div>
+        <div class="metric-desc">多轮中信息没有丢失或被覆盖</div>
+      </div>
+      <span class="metric-tag">核心</span>
+    </div>
+    <div class="metric-card orange">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">幻觉率 <span class="en">hallucination</span></div>
+        <div class="metric-desc">回答是否包含编造、错误信息</div>
+      </div>
+      <span class="metric-tag">风险</span>
+    </div>
+    <div class="metric-card purple">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">相关性打分 <span class="en">relevance</span></div>
+        <div class="metric-desc">回答是否切题、是否回应用户真实意图</div>
+      </div>
+      <span class="metric-tag">质量</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">加分点 · BONUS</div>
+    <div class="callout-text">
+      学员特意提了 <span class="red-em">LLM-as-a-Judge</span> 这个方法<br>
+      面试官当场点头！
+    </div>
+  </div>
+
+  <div class="concrete-section">
+    <div class="concrete-block c3">
+      <span class="concrete-level">LAYER 03</span>
+      <div class="concrete-num">叁</div>
+      <div class="concrete-text">
+        <div class="concrete-label">TOP · 第 03 层</div>
+        <div class="concrete-title"><span class="red-em">业务级</span>评估</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="body-text">
+    Agent 上线后，对核心业务指标有没有真实影响。这一层<span class="red-em">最容易被忽略</span>，但恰恰是判断你有没有产品 sense 的关键。
+  </p>
+
+  <div class="metric-board">
+    <div class="metric-card pink">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">整体满意度 <span class="en">CSAT</span></div>
+        <div class="metric-desc">上线前后用户满意度变化</div>
+      </div>
+      <span class="metric-tag">业务</span>
+    </div>
+    <div class="metric-card green">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">平均处理时长 <span class="en">AHT</span></div>
+        <div class="metric-desc">单次会话耗时是否下降</div>
+      </div>
+      <span class="metric-tag">业务</span>
+    </div>
+    <div class="metric-card blue">
+      <div class="color-dot"></div>
+      <div class="metric-body">
+        <div class="metric-name">人力成本 <span class="en">cost_saved</span></div>
+        <div class="metric-desc">节省的客服坐席与 ROI</div>
+      </div>
+      <span class="metric-tag">ROI</span>
+    </div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-title">真实面试现场 · CASE</div>
+    <div class="dialogue-q">
+      <span class="dialogue-q-label">— 面试官追问 —</span>
+      "评估体系是一次性设计完的吗？"
+    </div>
+    <div class="dialogue-a">
+      <span class="dialogue-a-label">→ 学员答</span>
+      "<span class="red-em">不是。要随着产品迭代不断调指标</span>"<br>
+      接着他答了三个迭代节点的真实例子。
+    </div>
+    <div class="dialogue-result">那一面 → 直接过了！🎉</div>
+  </div>
+
+  <div class="closing">
+    <div class="closing-label">核心结论 · TAKEAWAY</div>
+    <div class="closing-h">
+      别只答<span class="strike">指标名字</span><br>
+      要答 <span class="red-em">为什么、怎么测、怎么调</span>
+    </div>
+    <div class="closing-tail">
+      这才是 AI PM 的颗粒度<br>
+      也是面试官判断"真懂还是假懂"的分水岭
+    </div>
+  </div>
+
+  <div class="cta">
+    <div class="cta-label">下一篇预告 · NEXT</div>
+    <div class="cta-h">
+      想看完整的<br>
+      <span class="red-em">AI Agent 评估清单</span>吗？
+    </div>
+    <div class="cta-lines">
+      <div class="cta-line">下一条视频拆给你</div>
+      <div class="cta-line">关注 + 收藏不迷路</div>
+    </div>
+    <div class="cta-tags">
+      <span>#AI产品经理</span>
+      <span>#面试</span>
+      <span>#Agent</span>
+      <span>#大模型</span>
+    </div>
+  </div>
+
+  <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+</article>
+
+</body>
+</html>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>这 3 种场景千万别上 RAG · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+
+.page{max-width:760px;margin:0 auto;padding:36px 24px 80px;position:relative}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  letter-spacing:-0.04em;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:28px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:40px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red-em{color:#E63946;position:relative;display:inline-block}
+.hero-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;border-radius:3px;z-index:-1;opacity:0.35;transform:skew(-2deg);
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 24px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;
+  border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;letter-spacing:-0.04em;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin-bottom:18px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.scene{background:#FFD9DC}
+.block.example{background:#FFE9CB}
+.block.solution{background:#A8E6CF}
+.block.cost{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-size:22px;background:#FEFCF5;
+  border:3px solid #2B2B2B;border-radius:50%;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo Black",sans-serif;letter-spacing:0;
+}
+.block.scene::before{content:"什么";font-size:13px}
+.block.example::before{content:"举例";font-size:13px}
+.block.solution::before{content:"替代";font-size:13px}
+.block.cost::before{content:"代价";font-size:13px;background:#2B2B2B;color:#FFE16B}
+
+.block-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;
+  margin-top:10px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.block.scene .block-label{color:#9B1B27}
+.block.example .block-label{color:#9B5E10}
+.block.solution .block-label{color:#1B6B43}
+.block.cost .block-label{color:#FFE16B}
+
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.cost .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.cost .block-title .red-em{color:#FFE16B}
+
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;line-height:1.85;color:#2B2B2B;
+}
+.block.cost p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.cost p strong{color:#FFE16B}
+
+.block-list{margin-top:10px}
+.block-item{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.75;color:#2B2B2B;
+  padding:7px 0;display:flex;align-items:flex-start;gap:10px;
+}
+.block.cost .block-item{color:rgba(255,255,255,0.92)}
+.block-item::before{
+  content:"·";color:#2B2B2B;font-weight:bold;font-size:24px;line-height:1;flex-shrink:0;margin-top:-2px;
+}
+.block.cost .block-item::before{color:#FFE16B}
+
+.example-row{
+  display:flex;align-items:flex-start;gap:12px;margin:10px 0;padding:12px 14px;
+  background:rgba(255,255,255,0.5);border:2px solid #2B2B2B;border-radius:10px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;line-height:1.7;color:#2B2B2B;
+}
+.example-row .q-tag{
+  flex-shrink:0;background:#FFE16B;border:2px solid #2B2B2B;border-radius:6px;
+  padding:2px 10px;font-size:13px;min-width:54px;text-align:center;
+}
+.example-row .red-em{color:#E63946;font-weight:bold}
+
+.solution-row{
+  display:flex;align-items:flex-start;gap:12px;margin:8px 0;padding:10px 14px;
+  background:rgba(255,255,255,0.6);border-radius:8px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;line-height:1.65;color:#2B2B2B;
+}
+.solution-row .arrow{color:#1B6B43;font-weight:bold;flex-shrink:0;font-size:18px;line-height:1.4}
+.solution-row strong{color:#1B6B43}
+
+/* ============ 选型决策表 ============ */
+.decision-table{
+  margin:24px 0;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.decision-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#888;text-align:center;
+  margin-bottom:16px;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.decision-row{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;
+  margin:10px 0;padding:14px 16px;border-radius:10px;
+}
+.decision-row.good{background:#E8F7EE}
+.decision-row.bad{background:#FFE6E8}
+.decision-scene{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;color:#2B2B2B;
+}
+.decision-arrow{
+  font-family:"Archivo Black",sans-serif;font-size:14px;color:#2B2B2B;
+  padding:4px 10px;background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;
+}
+.decision-action{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;color:#2B2B2B;font-weight:500;
+}
+.decision-action.green{color:#1B6B43}
+.decision-action.red{color:#9B1B27}
+
+/* ============ 面试金句黑色卡 ============ */
+.truth-block{
+  margin:24px 0;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px;
+}
+.truth-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px;
+}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{
+  content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0;
+}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 + CTA ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;display:flex;align-items:center;justify-content:center;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red-em{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:26px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .block-title{font-size:17px}
+  .block-item{font-size:14.5px}
+  .example-row{font-size:14px}
+  .example-row .q-tag{min-width:48px;font-size:12px}
+  .solution-row{font-size:14px}
+  .decision-row{grid-template-columns:1fr;gap:8px;text-align:center}
+  .decision-arrow{justify-self:center}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.06</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 06 讲｜AI 落地避坑</span>
+    <h1 class="hero-title">
+      这 <span class="red-em">3 种场景</span><br>
+      千万<span class="yellow-hi">别上 RAG</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 硬上 = 浪费成本 + 体验更差</div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">强时效场景</span>
+      <span class="tab-en">REAL-TIME</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">强推理场景</span>
+      <span class="tab-en">REASONING</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">短文档场景</span>
+      <span class="tab-en">SHORT DOC</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：强时效场景 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">SCENE · ONE</div>
+        <div class="tab-header-title"><span class="yellow-hi">强时效</span>场景</div>
+      </div>
+    </div>
+
+    <div class="block scene">
+      <div class="block-label">这种场景长啥样</div>
+      <div class="block-title">
+        数据<span class="red-em">每天甚至每秒在变</span>
+      </div>
+      <p>用户要的是"<strong>此时此刻最新的答案</strong>"。RAG 检索的是<strong>静态文档</strong>，根本追不上数据变化的速度。</p>
+    </div>
+
+    <div class="block example">
+      <div class="block-label">真实例子</div>
+      <div class="example-row">
+        <span class="q-tag">用户问</span>
+        <span>"今天苹果股价多少？"</span>
+      </div>
+      <div class="example-row">
+        <span class="q-tag">用户问</span>
+        <span>"北京现在天气怎么样？"</span>
+      </div>
+      <div class="example-row">
+        <span class="q-tag">用户问</span>
+        <span>"我最近一笔订单到哪了？"</span>
+      </div>
+      <p style="margin-top:12px">这些问题<strong>每分钟答案都不一样</strong>。你提前灌进 RAG 的数据，<strong>从存进去那一刻就已经过期</strong>。</p>
+    </div>
+
+    <div class="block solution">
+      <div class="block-label">正确做法</div>
+      <div class="block-title">用 <span style="color:#1B6B43;font-weight:bold">Function Calling</span> 直接调实时 API</div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>股价 → 调 <strong>金融行情 API</strong>，实时拉数据</span>
+      </div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>天气 → 调 <strong>和风天气 / 高德 API</strong></span>
+      </div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>订单 → 调 <strong>公司内部订单系统 API</strong></span>
+      </div>
+    </div>
+
+    <div class="block cost">
+      <div class="block-label">硬上 RAG 的代价</div>
+      <div class="block-title">
+        <span class="red-em">用户体验崩</span> + <span class="red-em">维护成本爆炸</span>
+      </div>
+      <div class="block-list">
+        <div class="block-item"><span>答案<strong>永远是旧数据</strong>，用户骂"你这 AI 是不是傻"</span></div>
+        <div class="block-item"><span>为了减少"过期"，要<strong>不停更新向量库</strong>，运维成本飙升</span></div>
+        <div class="block-item"><span>同样一个问题，<strong>明明一次 API 调用就解决</strong>，硬走 5 步流程</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：强推理场景 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">SCENE · TWO</div>
+        <div class="tab-header-title"><span class="yellow-hi">强推理</span>场景</div>
+      </div>
+    </div>
+
+    <div class="block scene">
+      <div class="block-label">这种场景长啥样</div>
+      <div class="block-title">
+        要的不是<span class="red-em">查资料</span>，是<span class="red-em">思考</span>
+      </div>
+      <p>RAG 的本质是"<strong>找资料 + 复述</strong>"。但有些问题，<strong>资料就在那儿摆着</strong>，关键是要分析、对比、推导。</p>
+    </div>
+
+    <div class="block example">
+      <div class="block-label">真实例子</div>
+      <div class="example-row">
+        <span class="q-tag">用户问</span>
+        <span>"帮我分析这份财报的 3 个潜在风险"</span>
+      </div>
+      <div class="example-row">
+        <span class="q-tag">用户问</span>
+        <span>"对比这 2 个方案，哪个 ROI 更高"</span>
+      </div>
+      <div class="example-row">
+        <span class="q-tag">用户问</span>
+        <span>"根据用户画像，推荐合适的策略"</span>
+      </div>
+      <p style="margin-top:12px">这些问题<strong>不需要外部资料</strong>。模型已经具备所有信息，<strong>需要的是推理能力</strong>，不是检索能力。</p>
+    </div>
+
+    <div class="block solution">
+      <div class="block-label">正确做法</div>
+      <div class="block-title">用 <span style="color:#1B6B43;font-weight:bold">推理型大模型 + CoT</span></div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>模型选 <strong>DeepSeek-R1 / GPT-o3</strong>（推理能力强）</span>
+      </div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>Prompt 加 <strong>"一步一步思考"</strong>（CoT 思维链）</span>
+      </div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>必要时上 <strong>Multi-Agent</strong>，让多个 Agent 各自分析再汇总</span>
+      </div>
+    </div>
+
+    <div class="block cost">
+      <div class="block-label">硬上 RAG 的代价</div>
+      <div class="block-title">
+        <span class="red-em">答案浅</span> + <span class="red-em">绕弯路</span>
+      </div>
+      <div class="block-list">
+        <div class="block-item"><span>RAG 只会把财报某些段落<strong>原样搬出来</strong>，没有真正的"分析"</span></div>
+        <div class="block-item"><span>本来一次推理就能解决，<strong>硬走"切段-向量化-检索-拼 Prompt"</strong>4 步</span></div>
+        <div class="block-item"><span>反而<strong>限制了模型的推理空间</strong>——它被检索结果"框住"了</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：短文档场景 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">SCENE · THREE</div>
+        <div class="tab-header-title"><span class="yellow-hi">短文档</span>场景</div>
+      </div>
+    </div>
+
+    <div class="block scene">
+      <div class="block-label">这种场景长啥样</div>
+      <div class="block-title">
+        文档总量<span class="red-em">少于 10 万字</span>
+      </div>
+      <p>现在主流模型的上下文窗口都很大（Claude / Gemini 都<strong>支持 100 万 token</strong>）。文档少的话，<strong>直接全塞进 Prompt 就行</strong>。</p>
+    </div>
+
+    <div class="block example">
+      <div class="block-label">真实例子</div>
+      <div class="example-row">
+        <span class="q-tag">场景</span>
+        <span>公司退货政策一共 <strong>3000 字</strong></span>
+      </div>
+      <div class="example-row">
+        <span class="q-tag">场景</span>
+        <span>产品说明书 <strong>5 页</strong></span>
+      </div>
+      <div class="example-row">
+        <span class="q-tag">场景</span>
+        <span>员工手册 <strong>20 页</strong></span>
+      </div>
+      <p style="margin-top:12px">这种场景搭 RAG，<strong>属于过度设计</strong>。你在用大炮打蚊子。</p>
+    </div>
+
+    <div class="block solution">
+      <div class="block-label">正确做法</div>
+      <div class="block-title">直接 <span style="color:#1B6B43;font-weight:bold">塞 Prompt</span> 或用<span style="color:#1B6B43;font-weight:bold">长上下文模型</span></div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>系统 Prompt 里<strong>直接贴全文</strong>，每次提问都带上</span>
+      </div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>用 <strong>Claude / Gemini 长上下文模型</strong>，一次性放 50 万字也没问题</span>
+      </div>
+      <div class="solution-row">
+        <span class="arrow">→</span>
+        <span>配合 <strong>Prompt Caching</strong>（提示词缓存），<strong>token 成本降 90%</strong></span>
+      </div>
+    </div>
+
+    <div class="block cost">
+      <div class="block-label">硬上 RAG 的代价</div>
+      <div class="block-title">
+        <span class="red-em">工程量翻 10 倍</span> + <span class="red-em">效果反而更差</span>
+      </div>
+      <div class="block-list">
+        <div class="block-item"><span>本来 1 天能上线，<strong>硬搭 RAG 要花 2 周</strong>建库 / 调优</span></div>
+        <div class="block-item"><span>检索环节<strong>引入额外误差</strong>——召回不准，反而漏信息</span></div>
+        <div class="block-item"><span>维护一套向量数据库的<strong>运维成本完全没必要</strong></span></div>
+      </div>
+    </div>
+
+    <!-- 选型决策表 -->
+    <div class="decision-table">
+      <div class="decision-title">RAG 选型决策表 · 一图记住</div>
+
+      <div class="decision-row bad">
+        <div class="decision-scene">数据每秒在变</div>
+        <div class="decision-arrow">不用</div>
+        <div class="decision-action red">→ Function Calling</div>
+      </div>
+
+      <div class="decision-row bad">
+        <div class="decision-scene">要分析 / 推理</div>
+        <div class="decision-arrow">不用</div>
+        <div class="decision-action red">→ 推理模型 + CoT</div>
+      </div>
+
+      <div class="decision-row bad">
+        <div class="decision-scene">文档 &lt; 10 万字</div>
+        <div class="decision-arrow">不用</div>
+        <div class="decision-action red">→ 直接塞 Prompt</div>
+      </div>
+
+      <div class="decision-row good">
+        <div class="decision-scene">大量内部文档</div>
+        <div class="decision-arrow">该用</div>
+        <div class="decision-action green">→ 上 RAG ✓</div>
+      </div>
+
+      <div class="decision-row good">
+        <div class="decision-scene">客服 / 法务知识库</div>
+        <div class="decision-arrow">该用</div>
+        <div class="decision-action green">→ 上 RAG ✓</div>
+      </div>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">这个场景该不该上 RAG</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule">第 1 步问 <span class="h">数据时效性高不高</span></div>
+        <div class="truth-rule">第 2 步问 <span class="h">是检索还是推理任务</span></div>
+        <div class="truth-rule">第 3 步问 <span class="h">文档量有多大</span></div>
+        <div class="truth-rule">三个都不踩雷，才上 RAG</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        能答出"<span style="color:#FFE16B;font-weight:bold">分场景选型</span>"四个字 → 面试官知道你真踩过坑
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        RAG 不是<span class="red-em">银弹</span><br>
+        是<span class="red-em">特定场景</span>的工具
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red-em">Function Calling 怎么设计</span>
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">AI 怎么自己调 API、查数据</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#RAG</span>
+        <span>#AI落地</span>
+        <span>#大模型应用</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

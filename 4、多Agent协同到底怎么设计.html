@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多 Agent 协同怎么设计 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+
+.page{max-width:760px;margin:0 auto;padding:36px 24px 80px;position:relative}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  letter-spacing:-0.04em;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;
+  border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:28px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:40px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red-em{color:#E63946;position:relative;display:inline-block}
+.hero-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;border-radius:3px;z-index:-1;opacity:0.35;transform:skew(-2deg);
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 24px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;
+  border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;letter-spacing:-0.04em;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 通用块 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin-bottom:18px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.wrong{background:#FFD9DC}
+.block.right{background:#A8E6CF}
+.block.note{background:#FFE9CB}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-size:26px;background:#FEFCF5;
+  border:3px solid #2B2B2B;border-radius:50%;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+}
+.block.wrong::before{content:"❌"}
+.block.right::before{content:"✅"}
+.block.note::before{content:"💡"}
+
+.block-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;
+  margin-top:10px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.block.wrong .block-label{color:#9B1B27}
+.block.right .block-label{color:#1B6B43}
+.block.note .block-label{color:#9B5E10}
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block-list{margin-top:10px}
+.block-item{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;line-height:1.7;color:#2B2B2B;
+  padding:8px 0;display:flex;align-items:flex-start;gap:10px;
+}
+.block-item::before{
+  content:"·";color:#2B2B2B;font-weight:bold;font-size:24px;line-height:1;flex-shrink:0;margin-top:-2px;
+}
+.block.wrong .block-item .tag{
+  background:#FFFFFF;border:2px solid #2B2B2B;padding:1px 8px;border-radius:50px;
+  font-size:13px;margin-right:6px;
+}
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;line-height:1.8;color:#2B2B2B;
+}
+.block p strong{color:#E63946}
+
+/* ============ 架构图 Supervisor 模式 ============ */
+.arch-diagram{
+  margin:24px 0;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:28px 24px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.arch-diagram::before{
+  content:"🏗️";position:absolute;top:-18px;left:24px;font-size:26px;background:#FEFCF5;
+  border:3px solid #2B2B2B;border-radius:50%;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+}
+.arch-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#888;
+  margin-top:10px;margin-bottom:20px;text-align:center;letter-spacing:0.05em;
+}
+.arch-supervisor{
+  width:200px;margin:0 auto 0;background:#FFE16B;border:3px solid #2B2B2B;
+  border-radius:14px;padding:14px 16px;text-align:center;box-shadow:4px 4px 0 #2B2B2B;
+  position:relative;z-index:2;
+}
+.arch-supervisor-role{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#9B5E10;letter-spacing:0.15em;margin-bottom:4px;
+}
+.arch-supervisor-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#2B2B2B;margin-bottom:4px;
+}
+.arch-supervisor-job{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#666;
+}
+.arch-lines{
+  width:100%;height:42px;position:relative;margin:0;
+}
+.arch-lines svg{width:100%;height:100%;display:block}
+.arch-workers{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+}
+.arch-worker{
+  background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;
+  padding:12px 10px;text-align:center;box-shadow:3px 3px 0 #2B2B2B;
+}
+.arch-worker.w1{background:#A8E6CF}
+.arch-worker.w2{background:#D0E8FF}
+.arch-worker.w3{background:#FFD9DC}
+.arch-worker-icon{font-size:24px;margin-bottom:6px}
+.arch-worker-name{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#2B2B2B;margin-bottom:2px}
+.arch-worker-job{font-family:"ZCOOL KuaiLe",sans-serif;font-size:11px;color:#666;line-height:1.4}
+
+.role-compare{margin:18px 0;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.role-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:16px;
+  box-shadow:4px 4px 0 #2B2B2B;
+}
+.role-card.boss{background:#FFE16B}
+.role-card.worker{background:#A8E6CF}
+.role-card-emoji{font-size:32px;text-align:center;margin-bottom:6px}
+.role-card-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#2B2B2B;text-align:center;
+  padding-bottom:10px;border-bottom:2px dashed rgba(0,0,0,0.2);margin-bottom:10px;
+}
+.role-card-title .role{display:block;font-size:14px;color:#666;margin-top:2px}
+.role-card-list{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13.5px;line-height:1.7;color:#2B2B2B}
+.role-card-list div{padding:3px 0;display:flex;gap:6px}
+.role-card-list div::before{content:"·";flex-shrink:0;font-weight:bold}
+
+/* ============ 三模式横排 ============ */
+.modes{margin:24px 0;display:flex;flex-direction:column;gap:14px}
+.mode-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  padding:18px 20px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.mode-card.m1{background:#FFE9CB}
+.mode-card.m2{background:#A8E6CF}
+.mode-card.m3{background:#D0E8FF}
+.mode-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:10px;
+  padding-bottom:10px;border-bottom:2px dashed rgba(0,0,0,0.2);
+}
+.mode-num{
+  width:36px;height:36px;background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo Black",sans-serif;font-size:14px;color:#2B2B2B;flex-shrink:0;
+}
+.mode-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#2B2B2B;flex:1;
+}
+.mode-title .en{font-family:"Kalam",cursive;font-size:13px;color:#666;margin-left:6px}
+.mode-tag{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;
+  padding:2px 10px;font-family:"Kalam",cursive;font-size:11px;color:#2B2B2B;font-weight:700;
+}
+.mode-tag.best{background:#2B2B2B;color:#FFE16B}
+.mode-row{
+  display:flex;align-items:flex-start;gap:10px;margin:8px 0;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;line-height:1.65;color:#2B2B2B;
+}
+.mode-row .key{
+  flex-shrink:0;background:#FFFFFF;border:2px solid #2B2B2B;border-radius:6px;padding:2px 8px;
+  font-size:12px;min-width:60px;text-align:center;
+}
+.mode-row .key.pro{background:#A8E6CF;color:#1B6B43}
+.mode-row .key.con{background:#FFD9DC;color:#9B1B27}
+.mode-row .key.use{background:#FFE16B}
+.mode-row .red-em{color:#E63946;font-weight:bold}
+.mode-row .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 3px;
+}
+
+/* ============ 真假判断黑色卡 ============ */
+.truth-block{
+  margin:24px 0;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px;
+}
+.truth-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px;
+}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{
+  content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0;
+}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 + CTA ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"🎯";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-size:30px;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50%;
+  width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"👉";position:absolute;top:-18px;right:24px;font-size:26px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50%;
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;transform:rotate(8deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red-em{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:26px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .block-title{font-size:17px}
+  .block-item{font-size:14.5px}
+  .arch-supervisor{width:160px;padding:12px 14px}
+  .arch-supervisor-name{font-size:16px}
+  .arch-worker{padding:10px 8px}
+  .arch-worker-icon{font-size:20px}
+  .arch-worker-name{font-size:13px}
+  .arch-worker-job{font-size:10px}
+  .role-compare{grid-template-columns:1fr}
+  .mode-title{font-size:16px}
+  .mode-row{font-size:13.5px}
+  .mode-row .key{min-width:52px;font-size:11px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.05</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 05 讲｜AI 架构设计</span>
+    <h1 class="hero-title">
+      <span class="red-em">多 Agent 协同</span><br>
+      到底<span class="yellow-hi">怎么设计</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 面试最容易翻车的 AI 架构题</div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">主子分工</span>
+      <span class="tab-en">SUPERVISOR</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">消息怎么传</span>
+      <span class="tab-en">MESSAGING</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">冲突怎么解</span>
+      <span class="tab-en">CONFLICT</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：主子分工 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">主 Agent 和子 Agent <span class="yellow-hi">怎么分工</span></div>
+      </div>
+    </div>
+
+    <div class="block wrong">
+      <div class="block-label">❌ 先讲为什么需要多 Agent</div>
+      <div class="block-title">单 Agent 有 <span class="red-em">3 个死穴</span></div>
+      <div class="block-list">
+        <div class="block-item"><span><span class="tag">死穴 1</span>专业度上限低（一个人管法务 + 财务 + 客服，都做不精）</span></div>
+        <div class="block-item"><span><span class="tag">死穴 2</span>上下文容易爆（所有 prompt 塞一起，烧 token）</span></div>
+        <div class="block-item"><span><span class="tag">死穴 3</span>错误难定位（黑盒里出错，不知道是哪个环节）</span></div>
+      </div>
+    </div>
+
+    <div class="block right">
+      <div class="block-label">✅ 解法：把全能选手拆成专科团队</div>
+      <div class="block-title">
+        行业标准方案 = <span style="color:#1B6B43;font-weight:bold">Supervisor 模式</span>
+      </div>
+      <p>主 Agent 负责<strong>调度</strong>，子 Agent 负责<strong>干活</strong>。</p>
+    </div>
+
+    <!-- 架构图 -->
+    <div class="arch-diagram">
+      <div class="arch-title">Supervisor 模式 · 经典架构</div>
+
+      <div class="arch-supervisor">
+        <div class="arch-supervisor-role">SUPERVISOR · 主 Agent</div>
+        <div class="arch-supervisor-name">👔 项目经理</div>
+        <div class="arch-supervisor-job">不干活 · 只调度</div>
+      </div>
+
+      <div class="arch-lines">
+        <svg viewBox="0 0 300 42" preserveAspectRatio="none">
+          <line x1="150" y1="0" x2="150" y2="14" stroke="#2B2B2B" stroke-width="2.5"/>
+          <line x1="50" y1="14" x2="250" y2="14" stroke="#2B2B2B" stroke-width="2.5"/>
+          <line x1="50" y1="14" x2="50" y2="38" stroke="#2B2B2B" stroke-width="2.5"/>
+          <line x1="150" y1="14" x2="150" y2="38" stroke="#2B2B2B" stroke-width="2.5"/>
+          <line x1="250" y1="14" x2="250" y2="38" stroke="#2B2B2B" stroke-width="2.5"/>
+          <polygon points="50,42 46,36 54,36" fill="#2B2B2B"/>
+          <polygon points="150,42 146,36 154,36" fill="#2B2B2B"/>
+          <polygon points="250,42 246,36 254,36" fill="#2B2B2B"/>
+        </svg>
+      </div>
+
+      <div class="arch-workers">
+        <div class="arch-worker w1">
+          <div class="arch-worker-icon">⚖️</div>
+          <div class="arch-worker-name">法务 Agent</div>
+          <div class="arch-worker-job">合同审查<br>只管法律</div>
+        </div>
+        <div class="arch-worker w2">
+          <div class="arch-worker-icon">💰</div>
+          <div class="arch-worker-name">财务 Agent</div>
+          <div class="arch-worker-job">报表生成<br>只管数字</div>
+        </div>
+        <div class="arch-worker w3">
+          <div class="arch-worker-icon">📞</div>
+          <div class="arch-worker-name">客服 Agent</div>
+          <div class="arch-worker-job">用户答疑<br>只管服务</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主子职责对照 -->
+    <div class="role-compare">
+      <div class="role-card boss">
+        <div class="role-card-emoji">👔</div>
+        <div class="role-card-title">主 Agent<span class="role">Supervisor / 项目经理</span></div>
+        <div class="role-card-list">
+          <div>看需求 → 派任务</div>
+          <div>收结果 → 判断完成度</div>
+          <div>没完成 → 再派</div>
+          <div><strong>自己不干活</strong></div>
+        </div>
+      </div>
+      <div class="role-card worker">
+        <div class="role-card-emoji">🛠️</div>
+        <div class="role-card-title">子 Agent<span class="role">Worker / 专科员工</span></div>
+        <div class="role-card-list">
+          <div>只懂一件事</div>
+          <div>有专属知识库</div>
+          <div>有专属工具集</div>
+          <div><strong>做完即返</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block note">
+      <div class="block-label">💡 真实案例</div>
+      <div class="block-title">教育公司 4-Agent 协同</div>
+      <p>主 Agent <strong>路由助手</strong> · 子 Agent 分别是 <strong>答疑 / 批改 / 推荐</strong> · 月活百万级。</p>
+      <p style="margin-top:8px">这是大厂 AI PM 简历里<strong>含金量最高的项目类型</strong>。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：消息怎么传 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">消息<span class="yellow-hi">怎么传</span></div>
+      </div>
+    </div>
+
+    <div class="block note">
+      <div class="block-label">💡 核心问题</div>
+      <div class="block-title">
+        多个 Agent 之间，<span class="red-em">怎么传递信息</span>？
+      </div>
+      <p>3 种主流模式，<strong>各有适用场景</strong>。</p>
+    </div>
+
+    <div class="modes">
+
+      <div class="mode-card m1">
+        <div class="mode-head">
+          <div class="mode-num">01</div>
+          <div class="mode-title">共享内存<span class="en">Shared Memory</span></div>
+          <div class="mode-tag">最简单</div>
+        </div>
+        <div class="mode-row">
+          <span class="key">原理</span>
+          <span>所有 Agent <span class="yellow-hi">读写同一个工作空间</span>，像一块共享黑板。</span>
+        </div>
+        <div class="mode-row">
+          <span class="key pro">好处</span>
+          <span>实现快，没有通信开销</span>
+        </div>
+        <div class="mode-row">
+          <span class="key con">坏处</span>
+          <span><span class="red-em">容易乱</span>——大家同时改一个东西，数据冲突</span>
+        </div>
+        <div class="mode-row">
+          <span class="key use">用在</span>
+          <span>小规模 demo · Agent 数量 ≤ 3</span>
+        </div>
+      </div>
+
+      <div class="mode-card m2">
+        <div class="mode-head">
+          <div class="mode-num">02</div>
+          <div class="mode-title">消息总线<span class="en">Message Bus</span></div>
+          <div class="mode-tag best">最主流 ⭐</div>
+        </div>
+        <div class="mode-row">
+          <span class="key">原理</span>
+          <span>Agent 之间<span class="yellow-hi">发结构化消息</span>，主 Agent 转发，像微信群有群主在管。</span>
+        </div>
+        <div class="mode-row">
+          <span class="key pro">好处</span>
+          <span>清晰可追溯 · 每条消息可日志化</span>
+        </div>
+        <div class="mode-row">
+          <span class="key con">坏处</span>
+          <span>需要定义消息协议（JSON Schema）</span>
+        </div>
+        <div class="mode-row">
+          <span class="key use">用在</span>
+          <span><span class="red-em">生产环境首选</span> · LangGraph / CrewAI 都用这个</span>
+        </div>
+      </div>
+
+      <div class="mode-card m3">
+        <div class="mode-head">
+          <div class="mode-num">03</div>
+          <div class="mode-title">状态机<span class="en">State Machine</span></div>
+          <div class="mode-tag">最稳定</div>
+        </div>
+        <div class="mode-row">
+          <span class="key">原理</span>
+          <span>固定流程 A → B → C，<span class="yellow-hi">按顺序执行</span>，像工厂流水线。</span>
+        </div>
+        <div class="mode-row">
+          <span class="key pro">好处</span>
+          <span>极其稳定 · 出错可定位到具体节点</span>
+        </div>
+        <div class="mode-row">
+          <span class="key con">坏处</span>
+          <span><span class="red-em">不灵活</span>——不能处理复杂分支</span>
+        </div>
+        <div class="mode-row">
+          <span class="key use">用在</span>
+          <span>合规要求高的场景 · 金融、医疗</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="block note">
+      <div class="block-label">💡 选型口诀</div>
+      <p>
+        小 demo → <strong>共享内存</strong><br>
+        生产环境 → <strong>消息总线（默认选这个）</strong><br>
+        合规高压 → <strong>状态机</strong>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：冲突怎么解 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">冲突<span class="yellow-hi">怎么解</span></div>
+      </div>
+    </div>
+
+    <div class="block note">
+      <div class="block-label">💡 真实场景</div>
+      <div class="block-title">
+        子 Agent 给出<span class="red-em">矛盾的答案</span>怎么办？
+      </div>
+      <p>
+        用户问"这笔合同能签吗"——<br>
+        法务 Agent 说"能签"，财务 Agent 说"不能签"。<br>
+        <strong>谁说了算？</strong>
+      </p>
+    </div>
+
+    <div class="modes">
+
+      <div class="mode-card m1">
+        <div class="mode-head">
+          <div class="mode-num">01</div>
+          <div class="mode-title">主 Agent 仲裁<span class="en">Supervisor Arbitration</span></div>
+          <div class="mode-tag best">最主流 ⭐</div>
+        </div>
+        <div class="mode-row">
+          <span class="key">原理</span>
+          <span>子 Agent 意见冲突 → <span class="yellow-hi">主 Agent 看综合情况拍板</span>，像老板做最终决策。</span>
+        </div>
+        <div class="mode-row">
+          <span class="key pro">好处</span>
+          <span>简单 · 责任清晰</span>
+        </div>
+        <div class="mode-row">
+          <span class="key con">坏处</span>
+          <span>主 Agent 也可能判错</span>
+        </div>
+        <div class="mode-row">
+          <span class="key use">用在</span>
+          <span>大部分业务场景</span>
+        </div>
+      </div>
+
+      <div class="mode-card m2">
+        <div class="mode-head">
+          <div class="mode-num">02</div>
+          <div class="mode-title">投票机制<span class="en">Voting</span></div>
+          <div class="mode-tag">适合多视角</div>
+        </div>
+        <div class="mode-row">
+          <span class="key">原理</span>
+          <span>多个子 Agent 投票，<span class="yellow-hi">少数服从多数</span>。比如 3 个 Agent 评估代码，2 个说 OK 就过。</span>
+        </div>
+        <div class="mode-row">
+          <span class="key pro">好处</span>
+          <span>减少单点偏见</span>
+        </div>
+        <div class="mode-row">
+          <span class="key con">坏处</span>
+          <span>慢 · 烧 token · 不适合实时</span>
+        </div>
+        <div class="mode-row">
+          <span class="key use">用在</span>
+          <span>代码评审 · 内容审核</span>
+        </div>
+      </div>
+
+      <div class="mode-card m3">
+        <div class="mode-head">
+          <div class="mode-num">03</div>
+          <div class="mode-title">优先级规则<span class="en">Priority Rules</span></div>
+          <div class="mode-tag">合规必备</div>
+        </div>
+        <div class="mode-row">
+          <span class="key">原理</span>
+          <span>预设规则——比如<span class="yellow-hi">"安全 Agent 否决一切"</span>。法务说不能签 → 直接停，<span class="red-em">不用商量</span>。</span>
+        </div>
+        <div class="mode-row">
+          <span class="key pro">好处</span>
+          <span>可控 · 可解释</span>
+        </div>
+        <div class="mode-row">
+          <span class="key con">坏处</span>
+          <span>需要预先设计规则</span>
+        </div>
+        <div class="mode-row">
+          <span class="key use">用在</span>
+          <span>金融、医疗、法律 · 合规优先场景</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">📏 面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">多 Agent 冲突怎么处理</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule">默认上 <span class="h">Supervisor 仲裁</span></div>
+        <div class="truth-rule">多视角评估上 <span class="h">投票机制</span></div>
+        <div class="truth-rule">合规场景上 <span class="h">优先级规则</span></div>
+        <div class="truth-rule">关键是 <span class="h">"分场景选模式"</span> 这句话</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        能答出 3 种模式 + 适用场景 → <span style="color:#FFE16B;font-weight:bold">面试官立刻刮目相看</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        多 Agent 不是<span class="red-em">堆数量</span><br>
+        是<span class="red-em">分工 + 通信 + 仲裁</span>三件事
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red-em">RAG 不该上的 3 种场景</span>
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">硬上 = 浪费成本</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#多Agent</span>
+        <span>#AI架构</span>
+        <span>#大模型</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
