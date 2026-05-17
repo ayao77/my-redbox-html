@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幻觉是什么 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+.page{max-width:760px;margin:0 auto;padding:36px 24px 80px;position:relative}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  letter-spacing:-0.04em;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:28px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:40px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red-em{color:#E63946;position:relative;display:inline-block}
+.hero-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;border-radius:3px;z-index:-1;opacity:0.35;transform:skew(-2deg);
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 24px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;
+  border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;letter-spacing:-0.04em;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin-bottom:18px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.story{background:#FFD9DC}
+.block.why{background:#FFE9CB}
+.block.what{background:#D0E8FF}
+.block.do{background:#A8E6CF}
+.block.dont{background:#FFD9DC}
+.block.dark{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-family:"Archivo Black",sans-serif;font-size:13px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;
+  letter-spacing:0.1em;color:#2B2B2B;
+}
+.block.story::before{content:"案例"}
+.block.why::before{content:"为啥"}
+.block.what::before{content:"是啥"}
+.block.do::before{content:"该做"}
+.block.dont::before{content:"别做"}
+.block.dark::before{content:"本质";background:#2B2B2B;color:#FFE16B}
+
+.block-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;
+  margin-top:10px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.block.story .block-label{color:#9B1B27}
+.block.why .block-label{color:#9B5E10}
+.block.what .block-label{color:#1B5599}
+.block.do .block-label{color:#1B6B43}
+.block.dont .block-label{color:#9B1B27}
+.block.dark .block-label{color:#FFE16B}
+
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.dark .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.dark .block-title .red-em{color:#FFE16B}
+
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;line-height:1.85;color:#2B2B2B;
+}
+.block.dark p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.dark p strong{color:#FFE16B}
+
+.block-list{margin-top:10px}
+.block-item{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.75;color:#2B2B2B;
+  padding:7px 0;display:flex;align-items:flex-start;gap:10px;
+}
+.block.dark .block-item{color:rgba(255,255,255,0.92)}
+.block-item::before{
+  content:"·";color:#2B2B2B;font-weight:bold;font-size:24px;line-height:1;flex-shrink:0;margin-top:-2px;
+}
+.block.dark .block-item::before{color:#FFE16B}
+
+/* ============ 律师案例特殊样式 ============ */
+.case-news{
+  margin:14px 0;padding:14px 16px;background:rgba(255,255,255,0.6);
+  border-left:4px solid #9B1B27;border-radius:0 8px 8px 0;
+}
+.case-news-label{
+  font-family:"Archivo Black",sans-serif;font-size:10px;color:#9B1B27;
+  letter-spacing:0.2em;margin-bottom:6px;
+}
+.case-news-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.7;color:#2B2B2B;
+}
+.case-news-text strong{color:#9B1B27}
+
+/* ============ 3 种幻觉类型 ============ */
+.type-cards{margin:18px 0;display:flex;flex-direction:column;gap:12px}
+.type-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:16px 18px;
+  box-shadow:4px 4px 0 #2B2B2B;display:flex;align-items:flex-start;gap:14px;
+}
+.type-card.t1{background:#FFE9CB}
+.type-card.t2{background:#D0E8FF}
+.type-card.t3{background:#FFD9DC}
+.type-num{
+  width:34px;height:34px;background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;flex-shrink:0;margin-top:2px;
+}
+.type-body{flex:1}
+.type-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;margin-bottom:4px;
+}
+.type-name .en{font-family:"Kalam",cursive;font-size:13px;color:#666;margin-left:6px}
+.type-example{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#3D3D3D;line-height:1.65;
+  padding-top:6px;margin-top:6px;border-top:1.5px dashed rgba(0,0,0,0.15);
+}
+.type-example strong{color:#E63946}
+
+/* ============ 接龙图示 ============ */
+.chain-game{
+  margin:14px 0;background:#1A1A1A;border-radius:12px;padding:18px;
+}
+.chain-step{
+  display:flex;align-items:center;gap:10px;padding:8px 0;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#E8E2D4;line-height:1.5;
+}
+.chain-input{
+  background:rgba(255,225,107,0.15);border:1px solid rgba(255,225,107,0.4);
+  border-radius:8px;padding:4px 10px;color:#FFE16B;font-size:13px;
+}
+.chain-arrow{color:#FFE16B;font-weight:bold;font-size:18px}
+.chain-output{
+  background:rgba(127,212,232,0.15);border:1px solid rgba(127,212,232,0.4);
+  border-radius:8px;padding:4px 10px;color:#7FD4E8;font-size:13px;
+}
+.chain-note{
+  margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,225,107,0.3);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:rgba(255,255,255,0.7);text-align:center;
+}
+
+/* ============ 4 个治幻觉策略 ============ */
+.strategies{margin:18px 0;display:flex;flex-direction:column;gap:12px}
+.strategy{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 18px;
+  box-shadow:4px 4px 0 #2B2B2B;display:flex;align-items:flex-start;gap:14px;
+}
+.strategy.s1{background:#FFE9CB}
+.strategy.s2{background:#A8E6CF}
+.strategy.s3{background:#D0E8FF}
+.strategy.s4{background:#FFD9DC}
+.strategy-num{
+  width:34px;height:34px;background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;flex-shrink:0;margin-top:2px;
+}
+.strategy-body{flex:1}
+.strategy-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;margin-bottom:4px;
+}
+.strategy-name .en{font-family:"Kalam",cursive;font-size:13px;color:#666;margin-left:6px}
+.strategy-desc{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#3D3D3D;line-height:1.65;
+}
+.strategy-desc strong{color:#E63946}
+
+/* ============ 面试金句黑色卡 ============ */
+.truth-block{
+  margin:24px 0;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px;
+}
+.truth-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px;
+}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{
+  content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0;
+}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 + CTA ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red-em{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:26px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .block-title{font-size:17px}
+  .block-item{font-size:14.5px}
+  .case-news-text{font-size:14px}
+  .type-name{font-size:15px}
+  .type-example{font-size:13px}
+  .chain-step{font-size:13px;flex-wrap:wrap}
+  .chain-input,.chain-output{font-size:12px}
+  .strategy-name{font-size:15px}
+  .strategy-desc{font-size:13.5px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.08</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 08 讲｜AI 核心概念</span>
+    <h1 class="hero-title">
+      <span class="red-em">幻觉</span>是什么<br>
+      AI 为啥<span class="yellow-hi">一本正经胡说</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 不是 bug，是大模型的天性</div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">是什么</span>
+      <span class="tab-en">WHAT</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">为啥会编</span>
+      <span class="tab-en">WHY</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">怎么治</span>
+      <span class="tab-en">FIX</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：幻觉是什么 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">幻觉<span class="yellow-hi">是什么</span></div>
+      </div>
+    </div>
+
+    <div class="block story">
+      <div class="block-label">先讲一个真实案例</div>
+      <div class="block-title">
+        美国律师用 AI 写诉状<br>
+        <span class="red-em">当场社死</span>
+      </div>
+      <div class="case-news">
+        <div class="case-news-label">NEWS · 2023</div>
+        <div class="case-news-text">
+          纽约律师 Steven A. Schwartz 用 ChatGPT 写法律辩护文件。AI 给他<strong>引用了 6 个判例</strong>，案件名、法官名、判决年份、卷宗编号一应俱全。
+        </div>
+      </div>
+      <div class="case-news">
+        <div class="case-news-label">RESULT · 结局</div>
+        <div class="case-news-text">
+          律师交上法庭。结果——<strong>6 个判例全是 AI 编的</strong>。一个真的都没有。律师被法院公开批评、罚款 5000 美元，<strong>这条新闻让全世界第一次看清楚幻觉的威力</strong>。
+        </div>
+      </div>
+    </div>
+
+    <div class="block what">
+      <div class="block-label">幻觉的标准定义</div>
+      <div class="block-title">
+        AI <span class="red-em">一本正经地胡说八道</span>
+      </div>
+      <p>专业术语叫 <strong>Hallucination</strong>。指大模型生成<strong>看似合理、实际错误</strong>的内容——错误的事实、虚构的来源、编造的数字、不存在的人或事。</p>
+      <p style="margin-top:8px">最可怕的不是错，是<strong>错得理直气壮</strong>。</p>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">这条视频最核心的认知</div>
+      <div class="block-title">
+        幻觉<span class="red-em">不是 bug</span><br>
+        是大模型的<span class="red-em">天性</span>
+      </div>
+      <p>大部分人以为，幻觉是个"<strong>等修复就好</strong>"的小问题。错。</p>
+      <p style="margin-top:8px">幻觉是大模型<strong>工作原理决定的</strong>。只要还是这一代模型架构，<strong>幻觉就永远存在</strong>。</p>
+      <p style="margin-top:8px">作为 AI PM，<strong>你的任务不是消灭幻觉，是把它降到可接受范围</strong>。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：为什么会编 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">为什么 AI <span class="yellow-hi">会胡编</span></div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">本质机制</div>
+      <div class="block-title">
+        大模型不是<span class="red-em">知识库</span><br>
+        是<span class="red-em">接龙游戏</span>
+      </div>
+      <p>它的工作机制只有一件事——<strong>根据前面的话，预测下一个字最可能是什么</strong>。</p>
+      <p style="margin-top:8px">它<strong>不在乎对不对</strong>，它只在乎<strong>"接下来这个字看起来通不通顺"</strong>。</p>
+    </div>
+
+    <div class="chain-game">
+      <div class="chain-step">
+        <span class="chain-input">中国法律第</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-output">X 条</span>
+      </div>
+      <div class="chain-step">
+        <span class="chain-input">第 X 条 关于</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-output">某某行为</span>
+      </div>
+      <div class="chain-step">
+        <span class="chain-input">关于某某行为 规定</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-output">处 X 年有期徒刑</span>
+      </div>
+      <div class="chain-note">每一步只看"接龙是否合理" · 不看"事实是否正确"</div>
+    </div>
+
+    <div class="block why">
+      <div class="block-label">所以会发生什么</div>
+      <div class="block-title">"模式正确，事实错误"</div>
+      <p>问 AI"中国法律第 X 条是什么"——它脑子里<strong>没有真实条文</strong>，但它知道"中国法律 + 第 X 条 + 关于 + 某某行为"这种<strong>句式应该长什么样</strong>。</p>
+      <p style="margin-top:8px">于是它<strong>按"看起来像"的方式编一个出来</strong>。语法对、格式对、就是事实是错的。</p>
+    </div>
+
+    <div class="block what">
+      <div class="block-label">3 种最常见的幻觉类型</div>
+      <p>知道这 3 种类型，<strong>在面试时讲出来 = 加分</strong>：</p>
+    </div>
+
+    <div class="type-cards">
+      <div class="type-card t1">
+        <div class="type-num">1</div>
+        <div class="type-body">
+          <div class="type-name">事实性幻觉<span class="en">Factual</span></div>
+          <div class="type-example">编造数据、虚构事实<br>例：<strong>"爱因斯坦 1955 年获得诺贝尔物理学奖"</strong>（实际是 1921 年）</div>
+        </div>
+      </div>
+      <div class="type-card t2">
+        <div class="type-num">2</div>
+        <div class="type-body">
+          <div class="type-name">来源性幻觉<span class="en">Source</span></div>
+          <div class="type-example">编造引用、虚构出处<br>例：<strong>"根据《Nature》2023 年研究"</strong>（实际并不存在这篇论文）</div>
+        </div>
+      </div>
+      <div class="type-card t3">
+        <div class="type-num">3</div>
+        <div class="type-body">
+          <div class="type-name">逻辑性幻觉<span class="en">Logical</span></div>
+          <div class="type-example">前后矛盾、自相否定<br>例：<strong>前文说"A 不能 B"，后文又给"A 怎么 B"的方案</strong></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：AI PM 怎么治幻觉 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">AI PM <span class="yellow-hi">怎么治幻觉</span></div>
+      </div>
+    </div>
+
+    <div class="block why">
+      <div class="block-label">为啥这是 AI PM 的基本功</div>
+      <div class="block-title">
+        <span class="red-em">80% AI 产品事故</span>都死在幻觉
+      </div>
+      <p>给用户错信息、引导错操作、涉及法律风险——<strong>每一起都和幻觉有关</strong>。</p>
+      <p style="margin-top:8px">老板第一份产品周报问的就是——<strong>"幻觉率多少？怎么控的？"</strong> 答不上来，这个产品就别想 GA 上线。</p>
+    </div>
+
+    <!-- 4 个治幻觉策略 -->
+    <div class="strategies">
+      <div class="strategy s1">
+        <div class="strategy-num">1</div>
+        <div class="strategy-body">
+          <div class="strategy-name">上 RAG<span class="en">Retrieval</span></div>
+          <div class="strategy-desc">让 AI <strong>开卷考试</strong>——基于真实文档作答，不许编。这是治幻觉的<strong>第一道闸</strong>。</div>
+        </div>
+      </div>
+      <div class="strategy s2">
+        <div class="strategy-num">2</div>
+        <div class="strategy-body">
+          <div class="strategy-name">加引用<span class="en">Citation</span></div>
+          <div class="strategy-desc">让 AI <strong>必须给出来源</strong>。没来源就拒答。<strong>有引用 = 可溯源 = 可验证</strong>，幻觉立刻暴露。</div>
+        </div>
+      </div>
+      <div class="strategy s3">
+        <div class="strategy-num">3</div>
+        <div class="strategy-body">
+          <div class="strategy-name">做评估<span class="en">Evaluation</span></div>
+          <div class="strategy-desc">用<strong>幻觉率指标</strong>专门测——比如让 LLM-as-a-Judge 对比答案和资料，<strong>超标就不发版</strong>。</div>
+        </div>
+      </div>
+      <div class="strategy s4">
+        <div class="strategy-num">4</div>
+        <div class="strategy-body">
+          <div class="strategy-name">加兜底<span class="en">Human-in-loop</span></div>
+          <div class="strategy-desc">关键场景做<strong>"AI 答完，人再审"</strong>的兜底流程。医疗、金融、法律<strong>必须有人工复核</strong>。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block do">
+      <div class="block-label">Prompt 层的治幻觉技巧</div>
+      <div class="block-title">3 句"治幻觉咒语"</div>
+      <div class="block-list">
+        <div class="block-item"><span><strong>"基于参考资料作答，资料里没有的直接说不知道"</strong></span></div>
+        <div class="block-item"><span><strong>"每条结论必须标注来源出处"</strong></span></div>
+        <div class="block-item"><span><strong>"不确定的内容用'可能/大约'，不要用确定句式"</strong></span></div>
+      </div>
+      <p style="margin-top:8px">这 3 句话写进 system prompt，<strong>幻觉率立刻降一半</strong>。</p>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">幻觉怎么治</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule">第 1 句：<span class="h">幻觉不是 bug，是大模型天性</span>，只能控制不能消灭</div>
+        <div class="truth-rule">第 2 句：工程层 <span class="h">4 策略</span>——RAG / 引用 / 评估 / 人工兜底</div>
+        <div class="truth-rule">第 3 句：Prompt 层 <span class="h">3 句咒语</span>——基于资料 / 标来源 / 用不确定句式</div>
+        <div class="truth-rule">第 4 句：上线标准 <span class="h">幻觉率 ≤ 5%</span>（业务场景越敏感越严）</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官立刻知道你是踩过坑的</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        所有说"我们 AI <span class="red-em">不会胡说</span>"的<br>
+        都是在<span class="red-em">胡说</span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red-em">Token 到底是什么</span>
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">你和 AI 聊一句话到底要花多少钱</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#幻觉</span>
+        <span>#大模型</span>
+        <span>#AI落地</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
