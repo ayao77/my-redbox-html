@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt 调优能让效果差多少 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+.page{max-width:760px;margin:0 auto;padding:36px 24px 80px;position:relative}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  letter-spacing:-0.04em;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:28px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:40px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red-em{color:#E63946;position:relative;display:inline-block}
+.hero-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;border-radius:3px;z-index:-1;opacity:0.35;transform:skew(-2deg);
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 24px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;
+  border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;letter-spacing:-0.04em;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin-bottom:36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.what{background:#FFE9CB}
+.block.why{background:#D0E8FF}
+.block.warn{background:#FFD9DC}
+.block.do{background:#A8E6CF}
+.block.dark{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-family:"Archivo Black",sans-serif;font-size:13px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;
+  letter-spacing:0.1em;color:#2B2B2B;
+}
+.block.what::before{content:"案例"}
+.block.why::before{content:"为啥"}
+.block.warn::before{content:"翻车"}
+.block.do::before{content:"心法"}
+.block.dark::before{content:"金句";background:#2B2B2B;color:#FFE16B}
+
+.block-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;
+  margin-top:10px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.block.what .block-label{color:#9B5E10}
+.block.why .block-label{color:#1B5599}
+.block.warn .block-label{color:#9B1B27}
+.block.do .block-label{color:#1B6B43}
+.block.dark .block-label{color:#FFE16B}
+
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.dark .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.dark .block-title .red-em{color:#FFE16B}
+
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;line-height:1.85;color:#2B2B2B;
+}
+.block.dark p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.dark p strong{color:#FFE16B}
+
+.block-list{margin-top:10px}
+.block-item{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.75;color:#2B2B2B;
+  padding:7px 0;display:flex;align-items:flex-start;gap:10px;
+}
+.block.dark .block-item{color:rgba(255,255,255,0.92)}
+.block-item::before{
+  content:"·";color:#2B2B2B;font-weight:bold;font-size:24px;line-height:1;flex-shrink:0;margin-top:-2px;
+}
+.block.dark .block-item::before{color:#FFE16B}
+
+/* ============ Prompt 对比案例卡 ============ */
+.case-card{
+  margin:18px 0 38px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.case-header{
+  background:#FFE16B;padding:14px 20px;border-bottom:3px solid #2B2B2B;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.case-tag{
+  background:#2B2B2B;color:#FFE16B;font-family:"Archivo Black",sans-serif;
+  font-size:11px;padding:3px 10px;border-radius:50px;letter-spacing:0.1em;
+}
+.case-scene{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+}
+.case-body{display:grid;grid-template-columns:1fr 1fr}
+.case-side{padding:18px 20px;font-family:"JetBrains Mono",monospace;}
+.case-side.before{
+  background:#FFD9DC;border-right:2px dashed rgba(0,0,0,0.2);
+}
+.case-side.after{background:#A8E6CF}
+.case-side-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#9B1B27;
+  letter-spacing:0.15em;margin-bottom:8px;
+}
+.case-side.after .case-side-label{color:#1B6B43}
+.case-prompt{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;line-height:1.7;color:#2B2B2B;
+  background:rgba(255,255,255,0.6);padding:12px 14px;border-radius:8px;margin-bottom:12px;
+}
+.case-prompt strong{color:#E63946;font-weight:bold;background:#FFE16B;padding:0 4px;border-radius:3px}
+.case-side.after .case-prompt strong{color:#1B6B43;background:#FFFFFF}
+.case-metric{
+  display:flex;align-items:center;gap:8px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#2B2B2B;
+}
+.case-metric .num{
+  font-family:"Archivo Black",sans-serif;font-size:22px;letter-spacing:-0.02em;
+  color:#9B1B27;background:#FFFFFF;padding:2px 10px;border:2px solid #2B2B2B;border-radius:6px;
+}
+.case-side.after .case-metric .num{color:#1B6B43}
+.case-result{
+  background:#2B2B2B;color:#FFFFFF;padding:12px 20px;text-align:center;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;
+}
+.case-result .lift{
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:18px;
+  margin:0 6px;
+}
+
+/* ============ 5 个 prompt 技巧 ============ */
+.tricks{margin:18px 0;display:flex;flex-direction:column;gap:12px}
+.trick{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 18px;
+  box-shadow:4px 4px 0 #2B2B2B;
+}
+.trick.t1{background:#FFE9CB}
+.trick.t2{background:#A8E6CF}
+.trick.t3{background:#D0E8FF}
+.trick.t4{background:#E5D4F1}
+.trick.t5{background:#FFD9DC}
+.trick-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:8px;
+  padding-bottom:8px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.trick-num{
+  width:30px;height:30px;background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo Black",sans-serif;font-size:12px;color:#2B2B2B;flex-shrink:0;
+}
+.trick-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;flex:1;
+}
+.trick-name .en{font-family:"JetBrains Mono",monospace;font-size:12px;color:#666;margin-left:6px}
+.trick-tag{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;padding:2px 10px;
+  font-family:"Kalam",cursive;font-size:11px;font-weight:700;
+}
+.trick-desc{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#3D3D3D;line-height:1.65;
+  margin-bottom:8px;
+}
+.trick-desc strong{color:#E63946}
+.trick-example{
+  font-family:"JetBrains Mono",monospace;font-size:12.5px;color:#1A1A1A;
+  background:rgba(255,255,255,0.6);padding:10px 12px;border-radius:6px;
+  border-left:3px solid #2B2B2B;line-height:1.6;
+}
+.trick-example .label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:12px;color:#666;display:block;margin-bottom:4px;
+}
+.trick-example .ex{font-family:"ZCOOL KuaiLe",sans-serif}
+
+/* ============ 工作流时间轴 ============ */
+.workflow{
+  margin:18px 0 38px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  padding:22px 24px;box-shadow:5px 5px 0 #2B2B2B;
+}
+.workflow-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#666;
+  text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.workflow-step{
+  display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:flex-start;
+  padding:10px 0;position:relative;
+}
+.workflow-step:not(:last-child)::after{
+  content:"";position:absolute;left:38px;top:34px;bottom:-10px;
+  width:2.5px;background:#2B2B2B;
+}
+.workflow-day{
+  background:#FFE16B;border:2.5px solid #2B2B2B;border-radius:50px;
+  padding:4px 12px;font-family:"Archivo Black",sans-serif;font-size:12px;color:#2B2B2B;
+  text-align:center;letter-spacing:0.05em;
+  position:relative;z-index:2;
+}
+.workflow-step.s2 .workflow-day{background:#A8E6CF}
+.workflow-step.s3 .workflow-day{background:#D0E8FF}
+.workflow-step.s4 .workflow-day{background:#FFD9DC}
+.workflow-step.s5 .workflow-day{background:#E5D4F1}
+.workflow-content h4{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#2B2B2B;margin-bottom:4px;
+}
+.workflow-content p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#3D3D3D;line-height:1.6;
+}
+.workflow-content p strong{color:#E63946}
+
+/* ============ 面试金句黑色卡 ============ */
+.truth-block{
+  margin:24px 0;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px;
+}
+.truth-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px;
+}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{
+  content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0;
+}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 + CTA ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red-em{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:26px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .block-title{font-size:17px}
+  .block-item{font-size:14.5px}
+  .case-body{grid-template-columns:1fr}
+  .case-side.before{border-right:none;border-bottom:2px dashed rgba(0,0,0,0.2)}
+  .case-prompt{font-size:13px}
+  .case-metric .num{font-size:18px}
+  .trick-name{font-size:15px}
+  .trick-desc{font-size:13.5px}
+  .trick-example{font-size:11.5px}
+  .workflow-content h4{font-size:14px}
+  .workflow-content p{font-size:13px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.12</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 12 讲｜AI 工程化</span>
+    <h1 class="hero-title">
+      <span class="red-em">Prompt 调优</span><br>
+      能让效果<span class="yellow-hi">差多少</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 真实学员数据 · 准确率 67% → 89%</div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">真实案例</span>
+      <span class="tab-en">CASE</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">5 个技巧</span>
+      <span class="tab-en">TRICKS</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">工作流</span>
+      <span class="tab-en">WORKFLOW</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：真实案例 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">改一句话<span class="yellow-hi">能差多少</span></div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">先讲一个真相</div>
+      <div class="block-title">
+        老板说"<span class="red-em">让 AI 答得准一点</span>"<br>
+        99% 的 PM 都不知道怎么下手
+      </div>
+      <p>大部分人以为要换模型、加数据。其实——<strong>改 prompt 一句话，准确率能跳 20 个点</strong>。</p>
+      <p style="margin-top:8px">下面 3 个真实案例，我学员一周内做完，省了换模型的预算。</p>
+    </div>
+
+    <!-- 案例 1 -->
+    <div class="case-card">
+      <div class="case-header">
+        <span class="case-tag">CASE 01</span>
+        <span class="case-scene">客服 Agent · 退货政策问答</span>
+      </div>
+      <div class="case-body">
+        <div class="case-side before">
+          <div class="case-side-label">改之前 · BEFORE</div>
+          <div class="case-prompt"><strong>你是客服</strong>，请回答用户问题。</div>
+          <div class="case-metric">
+            <span>准确率</span>
+            <span class="num">67%</span>
+          </div>
+        </div>
+        <div class="case-side after">
+          <div class="case-side-label">改之后 · AFTER</div>
+          <div class="case-prompt"><strong>你是退货政策专家</strong>，仅基于参考资料回答用户问题，资料里没有的<strong>直接说"我需要转人工"</strong>。</div>
+          <div class="case-metric">
+            <span>准确率</span>
+            <span class="num">89%</span>
+          </div>
+        </div>
+      </div>
+      <div class="case-result">
+        改了 <strong>角色 + 约束</strong> · 准确率提升<span class="lift">+22pp</span>
+      </div>
+    </div>
+
+    <!-- 案例 2 -->
+    <div class="case-card">
+      <div class="case-header">
+        <span class="case-tag">CASE 02</span>
+        <span class="case-scene">数据分析助手 · 输出报告</span>
+      </div>
+      <div class="case-body">
+        <div class="case-side before">
+          <div class="case-side-label">改之前 · BEFORE</div>
+          <div class="case-prompt">分析这份销售数据，<strong>给我一份报告</strong>。</div>
+          <div class="case-metric">
+            <span>可用率</span>
+            <span class="num">42%</span>
+          </div>
+        </div>
+        <div class="case-side after">
+          <div class="case-side-label">改之后 · AFTER</div>
+          <div class="case-prompt">分析这份销售数据，按 <strong>"核心结论 · 3 个发现 · 1 个建议"</strong> 结构输出，每条 <strong>20 字以内</strong>。</div>
+          <div class="case-metric">
+            <span>可用率</span>
+            <span class="num">86%</span>
+          </div>
+        </div>
+      </div>
+      <div class="case-result">
+        改了 <strong>输出结构 + 长度</strong> · 可用率提升<span class="lift">+44pp</span>
+      </div>
+    </div>
+
+    <!-- 案例 3 -->
+    <div class="case-card">
+      <div class="case-header">
+        <span class="case-tag">CASE 03</span>
+        <span class="case-scene">代码 Agent · 修 bug 任务</span>
+      </div>
+      <div class="case-body">
+        <div class="case-side before">
+          <div class="case-side-label">改之前 · BEFORE</div>
+          <div class="case-prompt">帮我修这个 bug。</div>
+          <div class="case-metric">
+            <span>一次修复率</span>
+            <span class="num">38%</span>
+          </div>
+        </div>
+        <div class="case-side after">
+          <div class="case-side-label">改之后 · AFTER</div>
+          <div class="case-prompt"><strong>一步一步思考</strong>，先定位 bug 原因，再给出修复方案，<strong>修复后说明影响范围</strong>。</div>
+          <div class="case-metric">
+            <span>一次修复率</span>
+            <span class="num">71%</span>
+          </div>
+        </div>
+      </div>
+      <div class="case-result">
+        加了 <strong>CoT 思维链</strong> · 修复率提升<span class="lift">+33pp</span>
+      </div>
+    </div>
+
+    <div class="block why">
+      <div class="block-label">从这 3 个案例看到</div>
+      <p>三个不同场景，三种不同改法，<strong>提升幅度都是 20-40 个百分点</strong>。</p>
+      <p style="margin-top:8px">这才是 AI PM 真正的杠杆——<strong>不写代码也能让产品效果翻倍</strong>。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：5 个技巧 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">5 个万能 <span class="yellow-hi">prompt 技巧</span></div>
+      </div>
+    </div>
+
+    <div class="block do">
+      <div class="block-label">这 5 招覆盖 80% 场景</div>
+      <p>不是所有"技巧"都通用，但<strong>下面 5 招能覆盖你 80% 的 prompt 优化需求</strong>。背下来。</p>
+    </div>
+
+    <div class="tricks">
+
+      <div class="trick t1">
+        <div class="trick-head">
+          <div class="trick-num">1</div>
+          <div class="trick-name">角色锚定<span class="en">Role Prompting</span></div>
+          <span class="trick-tag">最基础</span>
+        </div>
+        <div class="trick-desc">给 AI 一个<strong>具体身份</strong>。别只说"你是助理"——要说"你是<strong>X 领域的专家</strong>"。</div>
+        <div class="trick-example">
+          <span class="label">差 →</span><span class="ex">"你帮我写一段产品介绍"</span><br>
+          <span class="label">好 →</span><span class="ex">"<strong>你是 10 年经验的 SaaS PMM</strong>，请写一段面向 CTO 的产品介绍"</span>
+        </div>
+      </div>
+
+      <div class="trick t2">
+        <div class="trick-head">
+          <div class="trick-num">2</div>
+          <div class="trick-name">思维链<span class="en">Chain-of-Thought · CoT</span></div>
+          <span class="trick-tag">最有效</span>
+        </div>
+        <div class="trick-desc">让 AI <strong>"一步一步思考"</strong>。在复杂推理任务上，准确率能<strong>提升 30-50%</strong>。</div>
+        <div class="trick-example">
+          <span class="label">咒语 →</span><span class="ex">"<strong>请一步一步思考</strong>，先列出关键变量，再分析逻辑，最后给结论。"</span>
+        </div>
+      </div>
+
+      <div class="trick t3">
+        <div class="trick-head">
+          <div class="trick-num">3</div>
+          <div class="trick-name">少样本示例<span class="en">Few-shot</span></div>
+          <span class="trick-tag">最稳定</span>
+        </div>
+        <div class="trick-desc">给 AI <strong>2-3 个示例</strong>，比讲规则强 10 倍。AI 看了示例就知道你要啥格式。</div>
+        <div class="trick-example">
+          <span class="label">模板 →</span><span class="ex">"按这种格式输出。<br>示例 1：输入 X → 输出 Y<br>示例 2：输入 A → 输出 B<br>现在请处理：输入 Z → ?"</span>
+        </div>
+      </div>
+
+      <div class="trick t4">
+        <div class="trick-head">
+          <div class="trick-num">4</div>
+          <div class="trick-name">结构化输出<span class="en">Structured Output</span></div>
+          <span class="trick-tag">最实用</span>
+        </div>
+        <div class="trick-desc">指定<strong>具体输出格式</strong>——JSON、Markdown 表格、列表。让下游能直接消费。</div>
+        <div class="trick-example">
+          <span class="label">咒语 →</span><span class="ex">"按 <strong>JSON 格式</strong>输出，字段包含：title (string)、score (0-100)、tags (array)。<strong>不要任何其他文字</strong>。"</span>
+        </div>
+      </div>
+
+      <div class="trick t5">
+        <div class="trick-head">
+          <div class="trick-num">5</div>
+          <div class="trick-name">约束反向<span class="en">Negative Constraint</span></div>
+          <span class="trick-tag">最容易忽略</span>
+        </div>
+        <div class="trick-desc">明确告诉 AI <strong>"不要做什么"</strong>。比正向描述更有效。</div>
+        <div class="trick-example">
+          <span class="label">咒语 →</span><span class="ex">"<strong>不要编造</strong>资料里没有的内容；<strong>不要使用</strong>口语化表达；<strong>不要超过</strong> 200 字。"</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">高手的真正秘密</div>
+      <div class="block-title">
+        这 5 招<span class="red-em">不是孤立用</span><br>
+        要<span class="yellow">组合使用</span>
+      </div>
+      <p>真正强的 prompt 长这样：<strong>角色锚定 + CoT + Few-shot + 结构化输出 + 约束反向</strong>，五招齐发。</p>
+      <p style="margin-top:8px">这种 prompt 的稳定性，<strong>比单招高 3-5 倍</strong>。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：PM 工作流 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">PM 的 <span class="yellow-hi">prompt 调优工作流</span></div>
+      </div>
+    </div>
+
+    <div class="block warn">
+      <div class="block-label">90% 的 PM 做错的事</div>
+      <div class="block-title">
+        <span class="red-em">凭感觉</span>改 prompt
+      </div>
+      <p>改一句 → 跑一下 → 觉得"好像好点了" → 上线。<strong>这是新手做法</strong>。</p>
+      <p style="margin-top:8px">真正的 AI PM 有<strong>一套工作流</strong>，每一步都可量化、可复现。</p>
+    </div>
+
+    <!-- 工作流 5 天节奏 -->
+    <div class="workflow">
+      <div class="workflow-title">📋 真实 prompt 调优 · 5 天节奏</div>
+
+      <div class="workflow-step s1">
+        <div class="workflow-day">DAY 1</div>
+        <div class="workflow-content">
+          <h4>建评估集</h4>
+          <p>从历史数据里抽 <strong>100 个真实问题</strong>，人工标注每题的"理想答案"。这是后面所有 A/B 的 ground truth。</p>
+        </div>
+      </div>
+
+      <div class="workflow-step s2">
+        <div class="workflow-day">DAY 2</div>
+        <div class="workflow-content">
+          <h4>跑基线</h4>
+          <p>用现有 prompt 跑一遍评估集，记录基线准确率。<strong>没有基线，就没有改进可言</strong>。</p>
+        </div>
+      </div>
+
+      <div class="workflow-step s3">
+        <div class="workflow-day">DAY 3</div>
+        <div class="workflow-content">
+          <h4>A/B 实验</h4>
+          <p>每次只改 <strong>一个变量</strong>——比如加 CoT、改角色、加约束。<strong>同时改 3 个</strong>就分不清哪个起作用了。</p>
+        </div>
+      </div>
+
+      <div class="workflow-step s4">
+        <div class="workflow-day">DAY 4</div>
+        <div class="workflow-content">
+          <h4>版本管理</h4>
+          <p>每个 prompt 版本都<strong>有编号 + 改动记录 + 准确率</strong>。比如 v1.2 准确率 67%、v1.3 加 CoT 后 78%。</p>
+        </div>
+      </div>
+
+      <div class="workflow-step s5">
+        <div class="workflow-day">DAY 5</div>
+        <div class="workflow-content">
+          <h4>灰度上线</h4>
+          <p>新 prompt 先给 <strong>10% 流量</strong>，跑 3 天看真实数据。OK 再全量。<strong>禁止一上来就 100% 切换</strong>。</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="block do">
+      <div class="block-label">这套工作流的核心价值</div>
+      <p>它让你能跟老板说——<strong>"我做了 8 个版本，最终 v2.3 比基线提升 22 个百分点，灰度 3 天没回退，建议全量。"</strong></p>
+      <p style="margin-top:8px">这种汇报，比"我觉得变好了"<strong>专业 100 倍</strong>。</p>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">你们怎么调 prompt</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule">第 1 句：先建 <span class="h">100 题评估集</span>，跑基线</div>
+        <div class="truth-rule">第 2 句：每次只改 <span class="h">一个变量</span>，A/B 对比</div>
+        <div class="truth-rule">第 3 句：用 <span class="h">5 招组合</span>——角色、CoT、Few-shot、结构化、约束</div>
+        <div class="truth-rule">第 4 句:上线前 <span class="h">灰度 10%</span>，跑 3 天再全量</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官立刻知道你不是新手</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        Prompt 调优<span class="red-em">不是玄学</span><br>
+        是有<span class="red-em">数据 + 流程</span>的工程
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red-em">Embedding 是什么</span>
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">AI 怎么"理解"文字</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#Prompt工程</span>
+        <span>#大模型</span>
+        <span>#AI落地</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
