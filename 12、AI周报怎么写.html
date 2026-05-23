@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 周报怎么写给老板看 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+.page{max-width:760px;margin:0 auto;padding:36px 24px 80px;position:relative}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  letter-spacing:-0.04em;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:28px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:40px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red-em{color:#E63946;position:relative;display:inline-block}
+.hero-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;border-radius:3px;z-index:-1;opacity:0.35;transform:skew(-2deg);
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 24px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;
+  border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;letter-spacing:-0.04em;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.what{background:#FFE9CB}
+.block.why{background:#D0E8FF}
+.block.warn{background:#FFD9DC}
+.block.do{background:#A8E6CF}
+.block.dark{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-family:"Archivo Black",sans-serif;font-size:13px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;
+  letter-spacing:0.1em;color:#2B2B2B;
+}
+.block.what::before{content:"是啥"}
+.block.why::before{content:"为啥"}
+.block.warn::before{content:"翻车"}
+.block.do::before{content:"心法"}
+.block.dark::before{content:"金句";background:#2B2B2B;color:#FFE16B}
+
+.block-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;
+  margin-top:10px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.block.what .block-label{color:#9B5E10}
+.block.why .block-label{color:#1B5599}
+.block.warn .block-label{color:#9B1B27}
+.block.do .block-label{color:#1B6B43}
+.block.dark .block-label{color:#FFE16B}
+
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.dark .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.dark .block-title .red-em{color:#FFE16B}
+
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;line-height:1.85;color:#2B2B2B;
+}
+.block.dark p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.dark p strong{color:#FFE16B}
+
+.block-list{margin-top:10px}
+.block-item{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.75;color:#2B2B2B;
+  padding:7px 0;display:flex;align-items:flex-start;gap:10px;
+}
+.block.dark .block-item{color:rgba(255,255,255,0.92)}
+.block-item::before{
+  content:"·";color:#2B2B2B;font-weight:bold;font-size:24px;line-height:1;flex-shrink:0;margin-top:-2px;
+}
+.block.dark .block-item::before{color:#FFE16B}
+
+/* ============ 周报对比卡 ============ */
+.compare-block{
+  margin:32px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.compare-head{
+  display:grid;grid-template-columns:1fr 1fr;background:#FFFEF0;
+  border-bottom:3px solid #2B2B2B;
+}
+.compare-head-col{
+  padding:14px 20px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;
+  display:flex;align-items:center;gap:10px;
+}
+.compare-head-col.bad{color:#9B1B27;border-right:2.5px dashed rgba(0,0,0,0.2)}
+.compare-head-col.good{color:#1B6B43}
+.compare-head-tag{
+  background:#9B1B27;color:#FFFFFF;font-family:"Archivo Black",sans-serif;
+  font-size:10px;padding:3px 8px;border-radius:50px;letter-spacing:0.1em;
+}
+.compare-head-col.good .compare-head-tag{background:#1B6B43}
+
+.compare-body{display:grid;grid-template-columns:1fr 1fr}
+.compare-col{
+  padding:18px 20px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;line-height:1.7;
+}
+.compare-col.bad{background:#FFD9DC;border-right:2.5px dashed rgba(0,0,0,0.2)}
+.compare-col.good{background:#A8E6CF}
+.compare-col p{margin-bottom:8px}
+.compare-col p:last-child{margin-bottom:0}
+.compare-col strong{color:#E63946;font-weight:bold}
+.compare-col.good strong{color:#1B6B43}
+.compare-col .quote{
+  background:rgba(255,255,255,0.6);border-radius:8px;padding:8px 12px;margin-bottom:10px;
+  font-style:italic;color:#3D3D3D;border-left:3px solid #9B1B27;font-size:13.5px;
+}
+.compare-col.good .quote{border-left-color:#1B6B43}
+
+/* ============ 倒金字塔 ============ */
+.pyramid{
+  margin:24px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:28px 24px;box-shadow:5px 5px 0 #2B2B2B;
+}
+.pyramid-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#666;
+  text-align:center;margin-bottom:22px;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.pyramid-layer{
+  margin:0 auto 8px;padding:14px 20px;border:3px solid #2B2B2B;border-radius:12px;
+  text-align:left;box-shadow:4px 4px 0 #2B2B2B;position:relative;
+  display:grid;grid-template-columns:50px 1fr auto;gap:14px;align-items:center;
+}
+.pyramid-layer.l1{background:#FFE16B;width:100%}
+.pyramid-layer.l2{background:#A8E6CF;width:80%}
+.pyramid-layer.l3{background:#D0E8FF;width:60%}
+.pyramid-num{
+  background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:50%;
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+}
+.pyramid-content{flex:1}
+.pyramid-layer-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#2B2B2B;
+}
+.pyramid-layer-name .en{font-family:"JetBrains Mono",monospace;font-size:11px;color:#666;margin-left:6px;letter-spacing:0.05em}
+.pyramid-layer-desc{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13.5px;color:#3D3D3D;line-height:1.5;margin-top:2px;
+}
+.pyramid-tag{
+  background:#2B2B2B;color:#FFFFFF;
+  font-family:"Archivo Black",sans-serif;font-size:10px;padding:3px 10px;
+  border-radius:50px;letter-spacing:0.1em;white-space:nowrap;
+}
+.pyramid-layer.l2 .pyramid-tag{background:#1B6B43}
+.pyramid-layer.l3 .pyramid-tag{background:#1B5599}
+
+.pyramid-arrow{
+  text-align:center;font-family:"Archivo Black",sans-serif;font-size:18px;color:#E63946;
+  margin:6px 0;line-height:1;
+}
+
+.pyramid-explain{
+  margin-top:20px;padding-top:16px;border-top:2px dashed rgba(0,0,0,0.15);
+  background:rgba(255,225,107,0.2);border-radius:10px;padding:14px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#2B2B2B;line-height:1.65;
+}
+.pyramid-explain strong{color:#E63946}
+
+/* ============ 周报模板（终端风） ============ */
+.template{
+  margin:24px 0 36px;background:#1A1A1A;border-radius:14px;overflow:hidden;
+  box-shadow:5px 5px 0 #2B2B2B;
+}
+.template-head{
+  background:#0D0D0D;padding:12px 18px;display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.template-dot{width:11px;height:11px;border-radius:50%}
+.template-dot.r{background:#FF5F56}
+.template-dot.y{background:#FFBD2E}
+.template-dot.g{background:#27C93F}
+.template-head-name{
+  margin-left:8px;font-family:"JetBrains Mono",monospace;font-size:12px;
+  color:rgba(255,255,255,0.6);
+}
+.template-body{
+  padding:22px 24px;font-family:"JetBrains Mono",monospace;font-size:13.5px;line-height:1.85;
+}
+.template-section{margin-bottom:18px}
+.template-section:last-child{margin-bottom:0}
+.template-label{
+  color:#FFD580;font-weight:600;margin-bottom:4px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.template-label .order{
+  background:#FFD580;color:#1A1A1A;
+  font-family:"Archivo Black",sans-serif;font-size:10px;
+  padding:2px 6px;border-radius:4px;
+}
+.template-content{color:#E8E2D4;padding-left:16px}
+.template-content .placeholder{color:#7AB7FF;font-weight:600}
+.template-content .number{color:#7AE6B5;font-weight:700}
+.template-content .danger{color:#FF8C70;font-weight:700}
+.template-divider{
+  border-top:1px dashed rgba(255,255,255,0.15);margin:14px 0;
+}
+
+/* ============ 案例对比 ============ */
+.case-card{
+  margin:24px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.case-header{
+  background:#FFE16B;padding:14px 20px;border-bottom:3px solid #2B2B2B;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.case-tag{
+  background:#2B2B2B;color:#FFE16B;font-family:"Archivo Black",sans-serif;
+  font-size:11px;padding:3px 10px;border-radius:50px;letter-spacing:0.1em;
+}
+.case-scene{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+}
+.case-body{display:grid;grid-template-columns:1fr 1fr}
+.case-side{padding:16px 20px;}
+.case-side.before{background:#FFD9DC;border-right:2px dashed rgba(0,0,0,0.2)}
+.case-side.after{background:#A8E6CF}
+.case-side-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#9B1B27;
+  letter-spacing:0.15em;margin-bottom:8px;
+}
+.case-side.after .case-side-label{color:#1B6B43}
+.case-quote{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13.5px;line-height:1.65;color:#2B2B2B;
+  background:rgba(255,255,255,0.6);padding:11px 14px;border-radius:8px;
+}
+.case-quote strong{color:#9B1B27}
+.case-side.after .case-quote strong{color:#1B6B43}
+
+/* ============ 面试金句黑色卡 ============ */
+.truth-block{
+  margin:32px 0 36px;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px;
+}
+.truth-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px;
+}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{
+  content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0;
+}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 + CTA ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red-em{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:26px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .block-title{font-size:17px}
+  .block-item{font-size:14.5px}
+  .compare-head,.compare-body{grid-template-columns:1fr}
+  .compare-head-col.bad,.compare-col.bad{border-right:none;border-bottom:2.5px dashed rgba(0,0,0,0.2)}
+  .pyramid-layer{grid-template-columns:36px 1fr;gap:10px}
+  .pyramid-tag{grid-column:1/-1;justify-self:start;margin-top:6px}
+  .pyramid-layer-name{font-size:15px}
+  .pyramid-layer-desc{font-size:12.5px}
+  .template-body{font-size:12px;padding:16px 18px}
+  .case-body{grid-template-columns:1fr}
+  .case-side.before{border-right:none;border-bottom:2px dashed rgba(0,0,0,0.2)}
+  .case-quote{font-size:12.5px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.14</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 14 讲｜AI PM 实战</span>
+    <h1 class="hero-title">
+      AI <span class="red-em">周报</span>怎么写<br>
+      老板才<span class="yellow-hi">看得下去</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 高级 PM 转 AI PM 第一周就要交</div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">为啥失效</span>
+      <span class="tab-en">WHY</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">倒金字塔</span>
+      <span class="tab-en">STRUCTURE</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">填空模板</span>
+      <span class="tab-en">TEMPLATE</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：为啥传统周报失效 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">传统周报<span class="yellow-hi">为啥失效</span></div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">先讲一个真实场景</div>
+      <div class="block-title">
+        转岗第一周交了份周报<br>
+        老板说："<span class="red-em">看不懂你在干啥</span>"
+      </div>
+      <p>高级 PM 转 AI PM 最大的认知错位——<strong>以为传统周报那套可以直接复用</strong>。</p>
+      <p style="margin-top:8px">"做了什么、要做什么、需要支持"——AI 项目用这个结构，老板看完只会问一句话："<strong>所以呢？效果到底怎么样？</strong>"</p>
+    </div>
+
+    <!-- 周报对比 -->
+    <div class="compare-block">
+      <div class="compare-head">
+        <div class="compare-head-col bad">
+          <span class="compare-head-tag">传统 PM</span>
+          <span>会这么写</span>
+        </div>
+        <div class="compare-head-col good">
+          <span class="compare-head-tag">AI PM</span>
+          <span>应该这么写</span>
+        </div>
+      </div>
+      <div class="compare-body">
+        <div class="compare-col bad">
+          <div class="quote">本周完成 5 个 prompt 优化、2 次评估测试、3 次跨部门会议。</div>
+          <p><strong>问题</strong>：堆砌动作，没结果。</p>
+          <p>老板想的：<strong>你忙了一周，公司多赚了什么？</strong></p>
+        </div>
+        <div class="compare-col good">
+          <div class="quote">本周 AI 客服解决率 67%→82%，预计月省人力 12 万。新版 prompt 已灰度 30%，下周全量。</div>
+          <p><strong>差别</strong>：先讲结果，再讲过程。</p>
+          <p>老板想的：<strong>这个 PM 知道自己在创造什么价值。</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="block warn">
+      <div class="block-label">老板看周报的真实习惯</div>
+      <div class="block-title">
+        <span class="red-em">只看前 3 行</span>
+      </div>
+      <p>老板一天看几十份周报，<strong>每份看不超过 30 秒</strong>。</p>
+      <p style="margin-top:8px">如果前 3 行不能让他看到——<strong>数字、结果、影响</strong>——剩下的内容他根本不会读。</p>
+    </div>
+
+    <div class="block why">
+      <div class="block-label">AI 项目的特殊性</div>
+      <p>AI 产品和传统软件最大的差别——<strong>效果是不确定的</strong>。</p>
+      <p style="margin-top:8px">所以 AI PM 的周报核心要回答 3 件事——</p>
+      <div class="block-list">
+        <div class="block-item"><span>这周<strong>数据指标</strong>变了多少？</span></div>
+        <div class="block-item"><span>下周<strong>预期收益</strong>是多少？</span></div>
+        <div class="block-item"><span>当前<strong>主要风险</strong>是什么？</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：倒金字塔 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title"><span class="yellow-hi">倒金字塔</span>结构</div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">核心原则一句话</div>
+      <div class="block-title">
+        老板看周报<br>
+        从<span class="red-em">业务</span>看到<span class="red-em">技术</span><br>
+        不是反过来
+      </div>
+      <p>这就叫倒金字塔——<strong>最重要的信息放最前面</strong>。</p>
+      <p style="margin-top:8px">3 层结构：业务层 → 体验层 → 模型层。<strong>顺序不能错</strong>。</p>
+    </div>
+
+    <!-- 倒金字塔 -->
+    <div class="pyramid">
+      <div class="pyramid-title">📐 AI PM 周报 · 倒金字塔结构</div>
+
+      <div class="pyramid-layer l1">
+        <div class="pyramid-num">1</div>
+        <div class="pyramid-content">
+          <div class="pyramid-layer-name">业务层<span class="en">BUSINESS</span></div>
+          <div class="pyramid-layer-desc">省了多少钱、提了多少效率、带了多少营收</div>
+        </div>
+        <div class="pyramid-tag">老板必看</div>
+      </div>
+
+      <div class="pyramid-arrow">↓</div>
+
+      <div class="pyramid-layer l2">
+        <div class="pyramid-num">2</div>
+        <div class="pyramid-content">
+          <div class="pyramid-layer-name">体验层<span class="en">EXPERIENCE</span></div>
+          <div class="pyramid-layer-desc">采纳率、重试率、放弃率、CSAT 满意度</div>
+        </div>
+        <div class="pyramid-tag">leader 关心</div>
+      </div>
+
+      <div class="pyramid-arrow">↓</div>
+
+      <div class="pyramid-layer l3">
+        <div class="pyramid-num">3</div>
+        <div class="pyramid-content">
+          <div class="pyramid-layer-name">模型层<span class="en">MODEL</span></div>
+          <div class="pyramid-layer-desc">准确率、幻觉率、一致性、延迟</div>
+        </div>
+        <div class="pyramid-tag">技术细节</div>
+      </div>
+
+      <div class="pyramid-explain">
+        <strong>为什么是这个顺序？</strong>老板是花钱的人，他只在乎 ROI；leader 是落地的人，关心用户感受；技术细节最后写——能体现你的专业度，但<strong>不是核心</strong>。
+      </div>
+    </div>
+
+    <div class="block warn">
+      <div class="block-label">90% 转岗 PM 的真实翻车</div>
+      <div class="block-title">把顺序写反了</div>
+      <p>很多人觉得"先讲技术显得专业"——<strong>大错特错</strong>。</p>
+      <p style="margin-top:8px">老板看到第一行是"本周模型准确率提升 5%"，他的反应是——<strong>"所以呢？多挣钱了吗？"</strong></p>
+      <p style="margin-top:8px">而第一行如果是"<strong>本周新版 AI 客服月省 12 万人力</strong>"，老板会主动看完整篇。</p>
+    </div>
+
+    <div class="block do">
+      <div class="block-label">每一层怎么写</div>
+      <div class="block-list">
+        <div class="block-item"><span><strong>业务层</strong>：1-2 句，必须带数字 + 钱</span></div>
+        <div class="block-item"><span><strong>体验层</strong>：3-5 个核心指标变化，前后对比</span></div>
+        <div class="block-item"><span><strong>模型层</strong>:技术动作 + 实验结果，简洁列出</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：填空模板 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title"><span class="yellow-hi">填空式</span>周报模板</div>
+      </div>
+    </div>
+
+    <div class="block do">
+      <div class="block-label">直接复制 · 当周可用</div>
+      <p>下面这个模板，<strong>把蓝色占位符替换成你自己的数据</strong>，5 分钟搞定一份合格的 AI PM 周报。</p>
+    </div>
+
+    <!-- 周报模板 -->
+    <div class="template">
+      <div class="template-head">
+        <span class="template-dot r"></span>
+        <span class="template-dot y"></span>
+        <span class="template-dot g"></span>
+        <span class="template-head-name">AI_PM_周报_模板.md</span>
+      </div>
+      <div class="template-body">
+
+        <div class="template-section">
+          <div class="template-label">
+            <span class="order">L1</span>
+            <span>业务层 · 老板必看</span>
+          </div>
+          <div class="template-content">
+            本周 <span class="placeholder">[产品名]</span> 帮公司<br>
+            · 节省人力成本 <span class="number">[X 万]</span><br>
+            · 服务用户数 <span class="number">[Y 万]</span><br>
+            · 业务转化提升 <span class="number">[Z%]</span>
+          </div>
+        </div>
+
+        <div class="template-divider"></div>
+
+        <div class="template-section">
+          <div class="template-label">
+            <span class="order">L2</span>
+            <span>体验层 · leader 关心</span>
+          </div>
+          <div class="template-content">
+            · AI 采纳率：<span class="number">[X% → Y%]</span><br>
+            · 用户重试率：<span class="danger">[X%]</span> ↓ <span class="number">3pp</span><br>
+            · CSAT 满意度：<span class="number">[X 分]</span><br>
+            · 中途放弃率：<span class="danger">[X%]</span>（监控中）
+          </div>
+        </div>
+
+        <div class="template-divider"></div>
+
+        <div class="template-section">
+          <div class="template-label">
+            <span class="order">L3</span>
+            <span>模型层 · 技术细节</span>
+          </div>
+          <div class="template-content">
+            · 完成 prompt v<span class="placeholder">[X]</span> 迭代<br>
+            · 评估集准确率 <span class="number">[X% → Y%]</span><br>
+            · 幻觉率：<span class="number">[X%]</span>（达标线 5%）<br>
+            · 新版本已灰度 <span class="number">[X%]</span> 流量
+          </div>
+        </div>
+
+        <div class="template-divider"></div>
+
+        <div class="template-section">
+          <div class="template-label">
+            <span class="order">L4</span>
+            <span>下周计划 · 风险预警</span>
+          </div>
+          <div class="template-content">
+            下周聚焦：<span class="placeholder">[1-2 件最重要的事]</span><br>
+            预期产出：<span class="placeholder">[具体数字指标]</span><br>
+            <span class="danger">⚠</span> 风险：<span class="placeholder">[阻塞 / 资源缺口]</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 真实学员案例 -->
+    <div class="case-card">
+      <div class="case-header">
+        <span class="case-tag">学员实战</span>
+        <span class="case-scene">同一个 PM · 改前 vs 改后</span>
+      </div>
+      <div class="case-body">
+        <div class="case-side before">
+          <div class="case-side-label">改之前 · 老板已读不回</div>
+          <div class="case-quote">本周完成 prompt 优化、参加 3 次评审、配合算法做了 2 轮测试。下周计划继续优化客服 Agent。<strong>遇到的问题</strong>：算法那边资源紧张...</div>
+        </div>
+        <div class="case-side after">
+          <div class="case-side-label">改之后 · 老板秒回"很好"</div>
+          <div class="case-quote">本周新版客服 Agent 月省 <strong>12 万</strong>，解决率 <strong>67%→82%</strong>。已灰度 30%，下周全量上线，预期再省 8 万。<strong>风险</strong>：算法资源缺口...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">真正的认知差</div>
+      <div class="block-title">
+        AI PM 不是<span class="red-em">技术执行者</span><br>
+        是<span class="yellow">价值翻译官</span>
+      </div>
+      <p>你的工作是把<strong>技术动作翻译成业务语言</strong>——让老板、leader、跨部门都能听懂。</p>
+      <p style="margin-top:8px">这个能力，比 prompt 调优本身<strong>值钱 10 倍</strong>。</p>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">你怎么向老板汇报 AI 项目</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule">第 1 句：用<span class="h">倒金字塔</span>结构——业务、体验、模型</div>
+        <div class="truth-rule">第 2 句：第一句必带<span class="h">数字 + 钱</span></div>
+        <div class="truth-rule">第 3 句：每个指标都给<span class="h">前后对比</span></div>
+        <div class="truth-rule">第 4 句：结尾必带<span class="h">下周预期 + 风险</span></div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官立刻知道你能直接对接老板</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        AI PM 的护城河<br>
+        不只是<span class="red-em">技术能力</span>，更是<span class="red-em">翻译能力</span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red-em">某 SaaS 大厂 AI 客服</span>落地全流程
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">技术架构 + 商业闭环 · 真实拆解</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#周报模板</span>
+        <span>#AIPM求职</span>
+        <span>#职场汇报</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

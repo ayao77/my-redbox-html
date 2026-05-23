@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 客服落地全流程 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+.page{max-width:760px;margin:0 auto;padding:36px 24px 80px;position:relative}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  letter-spacing:-0.04em;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:24px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:38px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red-em{color:#E63946;position:relative;display:inline-block}
+.hero-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;border-radius:3px;z-index:-1;opacity:0.35;transform:skew(-2deg);
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ 项目概览卡 ============ */
+.overview{
+  margin:24px 0 32px;background:#2B2B2B;color:#FFFFFF;border-radius:16px;
+  padding:22px 24px;box-shadow:6px 6px 0 #FFE16B;
+}
+.overview-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;
+  letter-spacing:0.2em;margin-bottom:12px;
+}
+.overview-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;color:#FFFFFF;margin-bottom:16px;line-height:1.4;
+}
+.overview-title .yellow{color:#FFE16B}
+.overview-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-top:14px;
+}
+.overview-item{
+  background:rgba(255,225,107,0.1);border:1px solid rgba(255,225,107,0.3);
+  border-radius:10px;padding:12px 14px;
+}
+.overview-item-label{
+  font-family:"Archivo Black",sans-serif;font-size:9px;color:rgba(255,225,107,0.7);
+  letter-spacing:0.1em;margin-bottom:4px;
+}
+.overview-item-value{
+  font-family:"JetBrains Mono",monospace;font-size:18px;color:#FFE16B;
+  font-weight:700;letter-spacing:-0.02em;
+}
+.overview-item-sub{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;
+}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 24px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;
+  border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;letter-spacing:-0.04em;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.what{background:#FFE9CB}
+.block.why{background:#D0E8FF}
+.block.warn{background:#FFD9DC}
+.block.do{background:#A8E6CF}
+.block.dark{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-family:"Archivo Black",sans-serif;font-size:13px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;
+  letter-spacing:0.1em;color:#2B2B2B;
+}
+.block.what::before{content:"判断"}
+.block.why::before{content:"为啥"}
+.block.warn::before{content:"事故"}
+.block.do::before{content:"心法"}
+.block.dark::before{content:"金句";background:#2B2B2B;color:#FFE16B}
+
+.block-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;
+  margin-top:10px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.block.what .block-label{color:#9B5E10}
+.block.why .block-label{color:#1B5599}
+.block.warn .block-label{color:#9B1B27}
+.block.do .block-label{color:#1B6B43}
+.block.dark .block-label{color:#FFE16B}
+
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.dark .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.dark .block-title .red-em{color:#FFE16B}
+
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;line-height:1.85;color:#2B2B2B;
+}
+.block.dark p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.dark p strong{color:#FFE16B}
+
+.block-list{margin-top:10px}
+.block-item{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.75;color:#2B2B2B;
+  padding:7px 0;display:flex;align-items:flex-start;gap:10px;
+}
+.block.dark .block-item{color:rgba(255,255,255,0.92)}
+.block-item::before{
+  content:"·";color:#2B2B2B;font-weight:bold;font-size:24px;line-height:1;flex-shrink:0;margin-top:-2px;
+}
+.block.dark .block-item::before{color:#FFE16B}
+
+/* ============ Tab 01：立项判断评分 ============ */
+.scorer{
+  margin:24px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  padding:20px 24px;box-shadow:5px 5px 0 #2B2B2B;
+}
+.scorer-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#666;
+  text-align:center;margin-bottom:16px;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.scorer-dim{
+  display:grid;grid-template-columns:160px 1fr auto;gap:14px;align-items:center;
+  padding:10px 0;border-bottom:1.5px dashed rgba(0,0,0,0.1);
+}
+.scorer-dim:last-of-type{border-bottom:none}
+.scorer-dim-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B}
+.scorer-dim-sub{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:#666;margin-top:2px;
+}
+.scorer-bar{
+  height:14px;background:#F0EBD8;border:2px solid #2B2B2B;border-radius:50px;
+  overflow:hidden;
+}
+.scorer-fill{
+  height:100%;border-radius:50px;
+  background:linear-gradient(90deg,#FFE16B 0%,#A8E6CF 100%);
+}
+.scorer-val{
+  font-family:"Archivo Black",sans-serif;font-size:18px;color:#1B6B43;
+  text-align:right;min-width:60px;
+}
+.scorer-result{
+  margin-top:16px;padding:14px 18px;background:#A8E6CF;
+  border:2.5px solid #2B2B2B;border-radius:12px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.scorer-result-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43}
+.scorer-result-value{
+  font-family:"Archivo Black",sans-serif;font-size:22px;color:#1B6B43;
+}
+
+/* ============ Tab 02：90 天 4 阶段时间轴 ============ */
+.roadmap{
+  margin:24px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  padding:24px;box-shadow:5px 5px 0 #2B2B2B;
+}
+.roadmap-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#666;
+  text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.phase{
+  display:grid;grid-template-columns:90px 1fr;gap:16px;align-items:flex-start;
+  padding:12px 0;position:relative;
+}
+.phase:not(:last-of-type)::after{
+  content:"";position:absolute;left:39px;top:34px;bottom:-10px;
+  width:2.5px;background:#2B2B2B;
+}
+.phase-day{
+  background:#FFE16B;border:2.5px solid #2B2B2B;border-radius:50px;
+  padding:6px 12px;text-align:center;
+  font-family:"Archivo Black",sans-serif;font-size:12px;color:#2B2B2B;
+  letter-spacing:0.05em;position:relative;z-index:2;line-height:1.3;
+}
+.phase.p2 .phase-day{background:#A8E6CF}
+.phase.p3 .phase-day{background:#D0E8FF}
+.phase.p4 .phase-day{background:#FFD9DC}
+.phase-content{flex:1}
+.phase-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#2B2B2B;margin-bottom:6px;
+}
+.phase-name .en{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:#666;
+  margin-left:6px;background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;
+}
+.phase-goal{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13.5px;color:#1B5599;
+  background:#D0E8FF;padding:4px 10px;border-radius:6px;display:inline-block;margin-bottom:8px;
+}
+.phase-tech{
+  display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;
+}
+.phase-tech-tag{
+  background:#FFFFFF;border:1.5px solid #2B2B2B;border-radius:50px;
+  padding:3px 10px;font-family:"JetBrains Mono",monospace;font-size:11px;color:#2B2B2B;
+}
+.phase-tech-tag.hi{background:#FFE16B;font-weight:600}
+.phase-actions{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13.5px;color:#3D3D3D;line-height:1.65;
+  margin-top:6px;
+}
+.phase-actions strong{color:#E63946}
+.phase-metric{
+  margin-top:8px;padding:6px 10px;background:rgba(0,0,0,0.05);border-radius:6px;
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:#1B6B43;
+}
+
+/* ============ Tab 03：商业账 + 事故 ============ */
+.money-table{
+  margin:24px 0 36px;background:#1A1A1A;border-radius:14px;padding:20px;
+}
+.money-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#FFE16B;
+  text-align:center;margin-bottom:16px;letter-spacing:0.05em;
+  padding-bottom:12px;border-bottom:1px dashed rgba(255,225,107,0.3);
+}
+.money-row{
+  display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;
+  padding:10px 14px;background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);border-radius:8px;
+  margin-bottom:8px;
+}
+.money-row.cost{background:rgba(255,140,112,0.08);border-color:rgba(255,140,112,0.2)}
+.money-row.save{background:rgba(122,230,181,0.08);border-color:rgba(122,230,181,0.2)}
+.money-row.highlight{
+  background:rgba(255,225,107,0.12);border:2px solid rgba(255,225,107,0.4);margin-top:14px;
+}
+.money-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:rgba(255,255,255,0.85);
+}
+.money-label .small{color:rgba(255,255,255,0.55);font-size:12px;margin-left:6px}
+.money-value{
+  font-family:"JetBrains Mono",monospace;font-size:17px;font-weight:700;color:#FFE16B;
+}
+.money-row.cost .money-value{color:#FF8C70}
+.money-row.save .money-value{color:#7AE6B5}
+.money-row.highlight .money-value{font-size:22px}
+
+/* 事故卡 */
+.incident{
+  margin:18px 0 32px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  box-shadow:4px 4px 0 #2B2B2B;overflow:hidden;
+}
+.incident-head{
+  background:#FFD9DC;padding:12px 18px;border-bottom:3px solid #2B2B2B;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.incident-tag{
+  background:#9B1B27;color:#FFFFFF;font-family:"Archivo Black",sans-serif;
+  font-size:10px;padding:3px 10px;border-radius:50px;letter-spacing:0.1em;
+}
+.incident-name{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#9B1B27}
+.incident-body{padding:16px 20px}
+.incident-section{margin-bottom:10px}
+.incident-section:last-child{margin-bottom:0}
+.incident-section-label{
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.1em;
+  color:#666;margin-bottom:4px;
+}
+.incident-section.problem .incident-section-label{color:#9B1B27}
+.incident-section.solution .incident-section-label{color:#1B6B43}
+.incident-section-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#2B2B2B;line-height:1.6;
+}
+.incident-section-text strong{color:#E63946}
+.incident-section.solution .incident-section-text strong{color:#1B6B43}
+
+/* ============ 面试金句黑色卡 ============ */
+.truth-block{
+  margin:32px 0 36px;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px;
+}
+.truth-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px;
+}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{
+  content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0;
+}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 + CTA ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red-em{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:24px}
+  .overview-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .overview-item-value{font-size:15px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .block-title{font-size:17px}
+  .block-item{font-size:14.5px}
+  .scorer-dim{grid-template-columns:1fr;gap:6px}
+  .scorer-val{text-align:left;font-size:16px}
+  .phase{grid-template-columns:70px 1fr;gap:10px}
+  .phase-day{padding:5px 8px;font-size:11px}
+  .phase:not(:last-of-type)::after{left:33px}
+  .phase-name{font-size:15px}
+  .phase-actions{font-size:12.5px}
+  .money-row{grid-template-columns:1fr;gap:4px;text-align:center}
+  .money-value{justify-self:center}
+  .incident-body{padding:14px 16px}
+  .incident-section-text{font-size:13px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.15</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 15 讲｜真实项目拆解</span>
+    <h1 class="hero-title">
+      某 SaaS 大厂<br>
+      <span class="red-em">AI 客服</span>怎么<span class="yellow-hi">从 0 到 1</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 学员真实参与项目 · 已脱敏</div>
+  </div>
+
+  <!-- 项目概览 -->
+  <div class="overview">
+    <div class="overview-label">PROJECT OVERVIEW · 项目概览</div>
+    <div class="overview-title">
+      <span class="yellow">90 天</span>从立项到全量上线<br>
+      投入 80 万，6 个月回本
+    </div>
+    <div class="overview-grid">
+      <div class="overview-item">
+        <div class="overview-item-label">INVEST</div>
+        <div class="overview-item-value">¥80 万</div>
+        <div class="overview-item-sub">总投入</div>
+      </div>
+      <div class="overview-item">
+        <div class="overview-item-label">MONTHLY SAVE</div>
+        <div class="overview-item-value">¥35 万</div>
+        <div class="overview-item-sub">月省人力</div>
+      </div>
+      <div class="overview-item">
+        <div class="overview-item-label">RESOLVE</div>
+        <div class="overview-item-value">82%</div>
+        <div class="overview-item-sub">AI 解决率</div>
+      </div>
+      <div class="overview-item">
+        <div class="overview-item-label">PAYBACK</div>
+        <div class="overview-item-value">6 个月</div>
+        <div class="overview-item-sub">投资回本</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">立项判断</span>
+      <span class="tab-en">DECIDE</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">90 天落地</span>
+      <span class="tab-en">BUILD</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">商业账+事故</span>
+      <span class="tab-en">RESULT</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：立项判断 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">第一步：<span class="yellow-hi">该不该做</span></div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">老板的原话</div>
+      <div class="block-title">
+        "客服人力成本太高<br>
+        给我搞一个<span class="red-em">AI 客服</span>"
+      </div>
+      <p>这是高级 PM 转 AI PM 最常遇到的场景。<strong>不能拍脑袋就上</strong>——95% AI 项目失败的死因，就是立项时没做评估。</p>
+      <p style="margin-top:8px">我学员做了一份 <strong>5 维评分</strong> 给老板，整个项目从这里开始。</p>
+    </div>
+
+    <!-- 5 维评分 -->
+    <div class="scorer">
+      <div class="scorer-title">📊 立项 5 维评分 · 客服场景实际打分</div>
+
+      <div class="scorer-dim">
+        <div>
+          <div class="scorer-dim-label">规则明确度</div>
+          <div class="scorer-dim-sub">业务规则是否清晰</div>
+        </div>
+        <div class="scorer-bar"><div class="scorer-fill" style="width:88%"></div></div>
+        <div class="scorer-val">88</div>
+      </div>
+
+      <div class="scorer-dim">
+        <div>
+          <div class="scorer-dim-label">数据充足度</div>
+          <div class="scorer-dim-sub">有历史工单 + 产品文档</div>
+        </div>
+        <div class="scorer-bar"><div class="scorer-fill" style="width:92%"></div></div>
+        <div class="scorer-val">92</div>
+      </div>
+
+      <div class="scorer-dim">
+        <div>
+          <div class="scorer-dim-label">ROI 可衡量</div>
+          <div class="scorer-dim-sub">能算清省了多少客服人力</div>
+        </div>
+        <div class="scorer-bar"><div class="scorer-fill" style="width:95%"></div></div>
+        <div class="scorer-val">95</div>
+      </div>
+
+      <div class="scorer-dim">
+        <div>
+          <div class="scorer-dim-label">闭环可建立</div>
+          <div class="scorer-dim-sub">用户评分+转人工率反哺</div>
+        </div>
+        <div class="scorer-bar"><div class="scorer-fill" style="width:85%"></div></div>
+        <div class="scorer-val">85</div>
+      </div>
+
+      <div class="scorer-dim">
+        <div>
+          <div class="scorer-dim-label">风险可控</div>
+          <div class="scorer-dim-sub">关键场景人工兜底</div>
+        </div>
+        <div class="scorer-bar"><div class="scorer-fill" style="width:80%"></div></div>
+        <div class="scorer-val">80</div>
+      </div>
+
+      <div class="scorer-result">
+        <div class="scorer-result-label">综合得分 · 强烈推荐做</div>
+        <div class="scorer-result-value">88 / 100</div>
+      </div>
+    </div>
+
+    <div class="block what">
+      <div class="block-label">为啥客服场景是 5% 成功项目的画像</div>
+      <div class="block-list">
+        <div class="block-item"><span><strong>有大量历史工单</strong>——天然评估集，第一天就能跑基线</span></div>
+        <div class="block-item"><span><strong>规则相对明确</strong>——退货政策、定价、产品功能都有标准答案</span></div>
+        <div class="block-item"><span><strong>ROI 一算就清楚</strong>——客服人力成本是显性数字</span></div>
+        <div class="block-item"><span><strong>错了可挽回</strong>——AI 答错可以转人工，不像金融医疗有合规风险</span></div>
+      </div>
+    </div>
+
+    <div class="block warn">
+      <div class="block-label">没做评分就上 = 高概率翻车</div>
+      <p>之前有学员的公司直接拍脑袋上"AI 文案生成器"——半年烧了 50 万，<strong>规则不明确、ROI 算不清、闭环建不起来</strong>，最后项目被砍。</p>
+      <p style="margin-top:8px">5 维评分不是形式主义——<strong>是给老板一个"为啥这个项目能成"的理由</strong>，也是给自己一份"出问题不背锅"的依据。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：90 天落地 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">90 天<span class="yellow-hi">4 阶段</span>落地</div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">高级 PM 必懂的节奏</div>
+      <div class="block-title">
+        AI 项目<span class="red-em">不能瀑布开发</span><br>
+        必须<span class="yellow">小步快跑</span>
+      </div>
+      <p>4 个阶段——POC 验证可行、MVP 验证价值、灰度验证稳定、全量验证规模。<strong>每个阶段都有明确的"过 vs 不过"标准</strong>。</p>
+    </div>
+
+    <!-- 90 天路线图 -->
+    <div class="roadmap">
+      <div class="roadmap-title">🗓 90 天 4 阶段路线图 · 每阶段用了什么技术</div>
+
+      <div class="phase p1">
+        <div class="phase-day">DAY<br>1-14</div>
+        <div class="phase-content">
+          <div class="phase-name">POC 验证<span class="en">PROOF OF CONCEPT</span></div>
+          <div class="phase-goal">目标：证明"AI 能不能搞客服"</div>
+          <div class="phase-tech">
+            <span class="phase-tech-tag hi">RAG 检索</span>
+            <span class="phase-tech-tag">基础 Prompt</span>
+            <span class="phase-tech-tag">100 题评估集</span>
+          </div>
+          <div class="phase-actions">
+            把<strong>历史工单 + 产品文档</strong>切段进向量库，写最简单的 prompt 跑通流程。<strong>不追求效果，只验证可行性</strong>。
+          </div>
+          <div class="phase-metric">✓ 通过标准：准确率 ≥ 60%（实际 67%）</div>
+        </div>
+      </div>
+
+      <div class="phase p2">
+        <div class="phase-day">DAY<br>15-45</div>
+        <div class="phase-content">
+          <div class="phase-name">MVP 搭建<span class="en">MINIMUM VIABLE</span></div>
+          <div class="phase-goal">目标：核心场景能解决 80% 问题</div>
+          <div class="phase-tech">
+            <span class="phase-tech-tag hi">Function Calling</span>
+            <span class="phase-tech-tag">Prompt Caching</span>
+            <span class="phase-tech-tag">5 招组合 Prompt</span>
+            <span class="phase-tech-tag">幻觉检测</span>
+          </div>
+          <div class="phase-actions">
+            接<strong>工单系统 + 订单查询 API</strong>（Function Calling 真正落地）；用 <strong>Prompt Caching 把 system prompt 省 90% 成本</strong>；用 5 招组合优化 prompt（67%→82%）。
+          </div>
+          <div class="phase-metric">✓ 通过标准：准确率 ≥ 80% & 幻觉率 ≤ 5%</div>
+        </div>
+      </div>
+
+      <div class="phase p3">
+        <div class="phase-day">DAY<br>46-75</div>
+        <div class="phase-content">
+          <div class="phase-name">灰度上线<span class="en">CANARY</span></div>
+          <div class="phase-goal">目标：真实流量下不出大事</div>
+          <div class="phase-tech">
+            <span class="phase-tech-tag hi">A/B 实验</span>
+            <span class="phase-tech-tag">实时监控</span>
+            <span class="phase-tech-tag">人工审核兜底</span>
+          </div>
+          <div class="phase-actions">
+            先给 <strong>10% 流量</strong>，跑 3 天看真实数据；OK 再扩到 30%、50%；<strong>关键场景（退款、投诉）强制走人工兜底</strong>，不让 AI 自己拍板。
+          </div>
+          <div class="phase-metric">✓ 通过标准：用户满意度 ≥ 4.0 分</div>
+        </div>
+      </div>
+
+      <div class="phase p4">
+        <div class="phase-day">DAY<br>76-90</div>
+        <div class="phase-content">
+          <div class="phase-name">全量 + 闭环<span class="en">SCALE</span></div>
+          <div class="phase-goal">目标：100% 流量 + 数据飞轮跑起来</div>
+          <div class="phase-tech">
+            <span class="phase-tech-tag hi">数据飞轮</span>
+            <span class="phase-tech-tag">4 类反馈采集</span>
+            <span class="phase-tech-tag">每周 prompt 迭代</span>
+          </div>
+          <div class="phase-actions">
+            <strong>4 类反馈</strong>（显性 + 隐性 + 转化 + 主动）都接上；差评流向 prompt 迭代，知识盲区流向 RAG 更新，高质量对话流向 fine-tune 数据集。<strong>每周一个新版本</strong>。
+          </div>
+          <div class="phase-metric">✓ 上线后 3 个月：准确率持续提升到 89%</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="block do">
+      <div class="block-label">这个节奏的真正价值</div>
+      <p>每 30 天有明确的"过不过"标准。<strong>不过就停 / 调整 / 砍预算</strong>——不会出现"做了一年才发现做不出来"的悲剧。</p>
+      <p style="margin-top:8px">这也是 MIT 报告里中型企业能 90 天落地的核心心法——<strong>小步快跑、快速验证、敢于止损</strong>。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：商业账 + 事故 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">商业账 + <span class="yellow-hi">3 个事故</span>复盘</div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">老板最关心的</div>
+      <div class="block-title">
+        花了多少？省了多少？<br>
+        <span class="red-em">几个月回本？</span>
+      </div>
+      <p>这一层是<strong>区分"高级 PM"和"AI PM 助理"</strong>的核心——能不能给老板讲清商业账。</p>
+    </div>
+
+    <!-- 商业账 -->
+    <div class="money-table">
+      <div class="money-title">💰 投入产出表 · 真实脱敏数据</div>
+
+      <div class="money-row cost">
+        <div class="money-label">人力成本<span class="small">2 PM + 3 算法 × 3 月</span></div>
+        <div class="money-value">¥45 万</div>
+      </div>
+      <div class="money-row cost">
+        <div class="money-label">大模型 API<span class="small">3 个月跑通 + 灰度</span></div>
+        <div class="money-value">¥12 万</div>
+      </div>
+      <div class="money-row cost">
+        <div class="money-label">向量数据库 + 基础设施</div>
+        <div class="money-value">¥8 万</div>
+      </div>
+      <div class="money-row cost">
+        <div class="money-label">数据标注 + 评估集</div>
+        <div class="money-value">¥15 万</div>
+      </div>
+      <div class="money-row cost" style="border-top:1.5px dashed rgba(255,140,112,0.4);background:rgba(255,140,112,0.15)">
+        <div class="money-label"><strong style="color:#FF8C70">总投入</strong></div>
+        <div class="money-value">¥80 万</div>
+      </div>
+
+      <div class="money-row save" style="margin-top:14px">
+        <div class="money-label">省下客服人力<span class="small">原 12 人 → 现 4 人</span></div>
+        <div class="money-value">¥32 万/月</div>
+      </div>
+      <div class="money-row save">
+        <div class="money-label">服务效率提升<span class="small">平均响应 5min→10s</span></div>
+        <div class="money-value">¥3 万/月</div>
+      </div>
+
+      <div class="money-row highlight">
+        <div class="money-label"><strong style="color:#FFE16B">回本周期</strong></div>
+        <div class="money-value">2.3 个月</div>
+      </div>
+    </div>
+
+    <div class="block warn">
+      <div class="block-label">真实事故 · 上线后 3 个月踩过的坑</div>
+      <p>商业账好看的背后——<strong>3 个真实事故差点把项目搞砸</strong>。每个事故的处理方式，是高级 PM 真正的考验。</p>
+    </div>
+
+    <!-- 事故 1 -->
+    <div class="incident">
+      <div class="incident-head">
+        <span class="incident-tag">事故 01</span>
+        <span class="incident-name">幻觉率突然飙升到 12%</span>
+      </div>
+      <div class="incident-body">
+        <div class="incident-section problem">
+          <div class="incident-section-label">问题</div>
+          <div class="incident-section-text">上线第 6 周，幻觉率从 3% 涨到 <strong>12%</strong>，用户投诉激增。老板要砍预算。</div>
+        </div>
+        <div class="incident-section">
+          <div class="incident-section-label">根因</div>
+          <div class="incident-section-text">运营同学把<strong>新版产品文档</strong>直接塞进 RAG，没切段、没排序。<strong>Lost in the Middle 中间遗忘</strong>——关键信息全丢。</div>
+        </div>
+        <div class="incident-section solution">
+          <div class="incident-section-label">解决</div>
+          <div class="incident-section-text"><strong>重新切段</strong>（每段 ≤ 500 token）+ <strong>按相关度排序</strong> + <strong>关键信息放头尾</strong>。3 天后幻觉率回落到 2.8%。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 事故 2 -->
+    <div class="incident">
+      <div class="incident-head">
+        <span class="incident-tag">事故 02</span>
+        <span class="incident-name">月成本一周翻了 3 倍</span>
+      </div>
+      <div class="incident-body">
+        <div class="incident-section problem">
+          <div class="incident-section-label">问题</div>
+          <div class="incident-section-text">本来月成本 4 万，<strong>突然飙到 12 万</strong>。CFO 周会上直接点名问。</div>
+        </div>
+        <div class="incident-section">
+          <div class="incident-section-label">根因</div>
+          <div class="incident-section-text">新员工接手时<strong>关掉了 Prompt Caching</strong>——每次调用都重复计费 system prompt 的 2000 token。</div>
+        </div>
+        <div class="incident-section solution">
+          <div class="incident-section-label">解决</div>
+          <div class="incident-section-text"><strong>开回 Caching</strong> + 在 CI/CD 加监控告警，配置变更必须 review。当月成本立刻回到 4 万。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 事故 3 -->
+    <div class="incident">
+      <div class="incident-head">
+        <span class="incident-tag">事故 03</span>
+        <span class="incident-name">AI 把退款给错人</span>
+      </div>
+      <div class="incident-body">
+        <div class="incident-section problem">
+          <div class="incident-section-label">问题</div>
+          <div class="incident-section-text">用户 A 想退订单 X，AI 帮他<strong>退了订单 Y</strong>（A 名下另一个订单）。客诉上升级到 leader。</div>
+        </div>
+        <div class="incident-section">
+          <div class="incident-section-label">根因</div>
+          <div class="incident-section-text">Function Calling 传参时<strong>没强校验订单归属</strong>——AI 拿到所有订单列表后挑了错的那个。</div>
+        </div>
+        <div class="incident-section solution">
+          <div class="incident-section-label">解决</div>
+          <div class="incident-section-text"><strong>所有"修改 / 退款 / 取消"动作强制走人工二次确认</strong>——AI 给出建议，人最终拍板。这就是"人工兜底"的真正用法。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">讲一个你做过的 AI 项目</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule">第 1 句：<span class="h">立项</span>——5 维评分给老板，证明该做</div>
+        <div class="truth-rule">第 2 句：<span class="h">落地</span>——90 天 4 阶段，每段有过/不过标准</div>
+        <div class="truth-rule">第 3 句:<span class="h">商业</span>——投入 80 万，月省 35 万，2.3 个月回本</div>
+        <div class="truth-rule">第 4 句：<span class="h">踩坑</span>——讲 1 个事故 + 怎么解决的</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官不会再问下一个项目</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        真正的 AI PM<br>
+        不只会讲<span class="red-em">技术</span>，还要会算<span class="red-em">账</span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red-em">某电商 AI 选品助手</span>怎么搭
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">Embedding + 多 Agent 协同 + 数据飞轮</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#真实案例</span>
+        <span>#AI客服</span>
+        <span>#AIPM求职</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

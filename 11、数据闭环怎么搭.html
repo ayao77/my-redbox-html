@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 数据闭环怎么搭 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif}
+.brand-font{font-family:"Archivo Black","Noto Sans SC",sans-serif;letter-spacing:-0.02em}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+.page{max-width:760px;margin:0 auto;padding:36px 24px 80px;position:relative}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  letter-spacing:-0.04em;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:28px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:40px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red-em{color:#E63946;position:relative;display:inline-block}
+.hero-title .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;border-radius:3px;z-index:-1;opacity:0.35;transform:skew(-2deg);
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 24px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;
+  border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;letter-spacing:-0.04em;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.what{background:#FFE9CB}
+.block.why{background:#D0E8FF}
+.block.warn{background:#FFD9DC}
+.block.do{background:#A8E6CF}
+.block.dark{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-family:"Archivo Black",sans-serif;font-size:13px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;
+  letter-spacing:0.1em;color:#2B2B2B;
+}
+.block.what::before{content:"是啥"}
+.block.why::before{content:"为啥"}
+.block.warn::before{content:"翻车"}
+.block.do::before{content:"心法"}
+.block.dark::before{content:"金句";background:#2B2B2B;color:#FFE16B}
+
+.block-label{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;
+  margin-top:10px;margin-bottom:10px;letter-spacing:0.1em;
+}
+.block.what .block-label{color:#9B5E10}
+.block.why .block-label{color:#1B5599}
+.block.warn .block-label{color:#9B1B27}
+.block.do .block-label{color:#1B6B43}
+.block.dark .block-label{color:#FFE16B}
+
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.dark .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.dark .block-title .red-em{color:#FFE16B}
+
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;line-height:1.85;color:#2B2B2B;
+}
+.block.dark p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.dark p strong{color:#FFE16B}
+
+.block-list{margin-top:10px}
+.block-item{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.75;color:#2B2B2B;
+  padding:7px 0;display:flex;align-items:flex-start;gap:10px;
+}
+.block.dark .block-item{color:rgba(255,255,255,0.92)}
+.block-item::before{
+  content:"·";color:#2B2B2B;font-weight:bold;font-size:24px;line-height:1;flex-shrink:0;margin-top:-2px;
+}
+.block.dark .block-item::before{color:#FFE16B}
+
+/* ============ 飞轮可视化 ============ */
+.flywheel{
+  margin:24px 0 38px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:32px 24px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.flywheel-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#666;
+  text-align:center;margin-bottom:24px;
+}
+.flywheel-ring{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:580px;margin:0 auto;
+  position:relative;
+}
+.flywheel-node{
+  border:3px solid #2B2B2B;border-radius:14px;padding:16px 18px;
+  box-shadow:4px 4px 0 #2B2B2B;position:relative;
+}
+.flywheel-node.n1{background:#FFE16B;transform:rotate(-1.5deg)}
+.flywheel-node.n2{background:#A8E6CF;transform:rotate(1.5deg)}
+.flywheel-node.n3{background:#D0E8FF;transform:rotate(1.5deg)}
+.flywheel-node.n4{background:#FFD9DC;transform:rotate(-1.5deg)}
+.flywheel-node-step{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#666;letter-spacing:0.15em;margin-bottom:4px;
+}
+.flywheel-node-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;margin-bottom:4px;
+}
+.flywheel-node-desc{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#3D3D3D;line-height:1.55;
+}
+.flywheel-arrow{
+  position:absolute;font-family:"Archivo Black",sans-serif;font-size:24px;
+  color:#E63946;z-index:2;
+}
+.flywheel-arrow.a1{top:50%;left:50%;transform:translate(-50%,-100%) rotate(0deg)}
+.flywheel-arrow.a2{top:50%;left:100%;transform:translate(-50%,-50%) rotate(90deg)}
+.flywheel-arrow.a3{top:100%;left:50%;transform:translate(-50%,-50%) rotate(180deg)}
+.flywheel-arrow.a4{top:50%;left:0;transform:translate(-50%,-50%) rotate(-90deg)}
+.flywheel-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:#2B2B2B;color:#FFE16B;border-radius:50%;
+  width:64px;height:64px;display:flex;align-items:center;justify-content:center;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;text-align:center;line-height:1.2;
+  border:3px solid #FFE16B;z-index:3;
+}
+
+.flywheel-explain{
+  margin-top:24px;padding-top:18px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#3D3D3D;line-height:1.7;
+}
+.flywheel-explain strong{color:#E63946}
+
+/* ============ 4 类反馈卡 ============ */
+.feedback-cards{margin:18px 0 38px;display:flex;flex-direction:column;gap:14px}
+.feedback{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:16px 18px;
+  box-shadow:4px 4px 0 #2B2B2B;
+}
+.feedback.f1{background:#FFE9CB}
+.feedback.f2{background:#A8E6CF}
+.feedback.f3{background:#D0E8FF}
+.feedback.f4{background:#FFD9DC}
+.feedback-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:8px;
+  padding-bottom:8px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.feedback-num{
+  width:30px;height:30px;background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo Black",sans-serif;font-size:12px;color:#2B2B2B;flex-shrink:0;
+}
+.feedback-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;flex:1;
+}
+.feedback-name .en{font-family:"JetBrains Mono",monospace;font-size:12px;color:#666;margin-left:6px}
+.feedback-tag{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;padding:2px 10px;
+  font-family:"Kalam",cursive;font-size:11px;font-weight:700;
+}
+.feedback-desc{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#3D3D3D;line-height:1.65;
+  margin-bottom:8px;
+}
+.feedback-desc strong{color:#E63946}
+.feedback-example{
+  background:rgba(255,255,255,0.6);border-left:3px solid #2B2B2B;
+  padding:8px 12px;border-radius:0 6px 6px 0;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#3D3D3D;line-height:1.5;
+}
+.feedback-example .label{
+  font-family:"Archivo Black",sans-serif;font-size:10px;color:#666;letter-spacing:0.1em;
+  display:block;margin-bottom:4px;
+}
+
+/* ============ 反馈流向去哪 ============ */
+.flow-table{
+  margin:18px 0 38px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  padding:18px;box-shadow:5px 5px 0 #2B2B2B;
+}
+.flow-row{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;
+  padding:14px;border-radius:10px;margin-bottom:8px;
+}
+.flow-row:last-child{margin-bottom:0}
+.flow-row.r1{background:#FFE9CB}
+.flow-row.r2{background:#A8E6CF}
+.flow-row.r3{background:#D0E8FF}
+.flow-row.r4{background:#E5D4F1}
+.flow-from{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;
+}
+.flow-from strong{color:#9B1B27;display:block;font-size:13px;margin-top:2px}
+.flow-arrow{
+  font-family:"Archivo Black",sans-serif;font-size:16px;color:#2B2B2B;
+  padding:4px 10px;background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;
+}
+.flow-to{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;text-align:right;
+}
+.flow-to strong{color:#1B6B43;display:block;font-size:13px;margin-top:2px}
+
+/* ============ 面试金句黑色卡 ============ */
+.truth-block{
+  margin:32px 0 36px;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px;
+}
+.truth-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px;
+}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{
+  content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0;
+}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 + CTA ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red-em{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:26px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .block-title{font-size:17px}
+  .block-item{font-size:14.5px}
+  .flywheel-ring{grid-template-columns:1fr;gap:10px}
+  .flywheel-center{display:none}
+  .flywheel-arrow{display:none}
+  .flywheel-node-title{font-size:15px}
+  .feedback-name{font-size:15px}
+  .feedback-desc{font-size:13.5px}
+  .feedback-example{font-size:12px}
+  .flow-row{grid-template-columns:1fr;gap:8px;text-align:center}
+  .flow-arrow{justify-self:center}
+  .flow-to{text-align:center}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.13</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 13 讲｜AI 产品策略</span>
+    <h1 class="hero-title">
+      <span class="red-em">数据闭环</span>怎么搭<br>
+      让 AI <span class="yellow-hi">越用越聪明</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 5% 成功 AI 项目的核心护城河</div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">数据飞轮</span>
+      <span class="tab-en">FLYWHEEL</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">4 类反馈</span>
+      <span class="tab-en">FEEDBACK</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">数据流向</span>
+      <span class="tab-en">FLOW</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：数据飞轮 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">什么是 <span class="yellow-hi">数据飞轮</span></div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-label">先讲一个反直觉真相</div>
+      <div class="block-title">
+        AI 产品上线 <span class="red-em">≠</span> 完成<br>
+        上线 <span class="yellow">才是开始</span>
+      </div>
+      <p>传统软件的逻辑——做完→上线→维护。</p>
+      <p style="margin-top:8px">AI 产品的逻辑——上线→采集数据→反哺模型→效果变好→更多用户→更多数据……<strong>这就是"数据飞轮"</strong>。</p>
+    </div>
+
+    <!-- 飞轮可视化 -->
+    <div class="flywheel">
+      <div class="flywheel-title">🔄 AI 产品数据飞轮 · 闭环结构</div>
+      <div class="flywheel-ring">
+
+        <div class="flywheel-node n1">
+          <div class="flywheel-node-step">STEP 01</div>
+          <div class="flywheel-node-title">用户使用</div>
+          <div class="flywheel-node-desc">产品提供 AI 能力<br>用户开始用</div>
+        </div>
+
+        <div class="flywheel-node n2">
+          <div class="flywheel-node-step">STEP 02</div>
+          <div class="flywheel-node-title">采集反馈</div>
+          <div class="flywheel-node-desc">点赞、转人工<br>重试、放弃</div>
+        </div>
+
+        <div class="flywheel-node n4">
+          <div class="flywheel-node-step">STEP 04</div>
+          <div class="flywheel-node-title">体验提升</div>
+          <div class="flywheel-node-desc">用户满意度高<br>更多人来用</div>
+        </div>
+
+        <div class="flywheel-node n3">
+          <div class="flywheel-node-step">STEP 03</div>
+          <div class="flywheel-node-title">模型迭代</div>
+          <div class="flywheel-node-desc">优化 prompt<br>更新知识库</div>
+        </div>
+
+      </div>
+
+      <div class="flywheel-explain">
+        飞轮转得越快 → 模型越强 → 用户越多 → 数据越多 → 飞轮转得更快。<br>
+        <strong>这是 OpenAI、字节抖音算法、Tesla 自动驾驶</strong>的共同护城河——别人想抄都抄不走。
+      </div>
+    </div>
+
+    <div class="block warn">
+      <div class="block-label">95% 失败项目的真正死因</div>
+      <div class="block-title">
+        飞轮<span class="red-em">转不起来</span>
+      </div>
+      <p>MIT 报告原话——"许多 AI 系统<strong>缺乏记忆和适应能力</strong>，使用一段时间后很少能够改善"。</p>
+      <p style="margin-top:8px">说白了——<strong>上线那天什么样，半年后还什么样</strong>。用户一开始觉得新鲜，慢慢就不用了。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：4 类反馈 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">用户反馈 <span class="yellow-hi">4 大类</span></div>
+      </div>
+    </div>
+
+    <div class="block what">
+      <div class="block-label">90% 的 PM 只采集了 1 类</div>
+      <div class="block-title">
+        反馈不止"<span class="red-em">👍👎</span>"
+      </div>
+      <p>大部分 PM 一说"采集用户反馈"——脑子里就一个画面：加个赞 / 踩按钮。</p>
+      <p style="margin-top:8px">这是<strong>显性反馈</strong>，只是其中一类。还有三类<strong>更值钱的反馈</strong>，90% 的 PM 漏掉了。</p>
+    </div>
+
+    <!-- 4 类反馈 -->
+    <div class="feedback-cards">
+
+      <div class="feedback f1">
+        <div class="feedback-head">
+          <div class="feedback-num">1</div>
+          <div class="feedback-name">显性反馈<span class="en">Explicit</span></div>
+          <span class="feedback-tag">最直接</span>
+        </div>
+        <div class="feedback-desc">用户<strong>主动表态</strong>——点赞、点踩、评分、写评论。</div>
+        <div class="feedback-example">
+          <span class="label">例子</span>
+          AI 回答下面的 👍👎、5 星评分、"对这个答案满意吗"弹窗
+        </div>
+      </div>
+
+      <div class="feedback f2">
+        <div class="feedback-head">
+          <div class="feedback-num">2</div>
+          <div class="feedback-name">隐性反馈<span class="en">Implicit</span></div>
+          <span class="feedback-tag">最值钱 ⭐</span>
+        </div>
+        <div class="feedback-desc">用户的<strong>行为本身就是反馈</strong>。点重试、关掉对话、转人工、复制答案。</div>
+        <div class="feedback-example">
+          <span class="label">例子</span>
+          重试率 30% = 答案质量差；中途放弃率高 = 体验有问题；复制率高 = 答案有价值
+        </div>
+      </div>
+
+      <div class="feedback f3">
+        <div class="feedback-head">
+          <div class="feedback-num">3</div>
+          <div class="feedback-name">转化反馈<span class="en">Conversion</span></div>
+          <span class="feedback-tag">和业务挂钩</span>
+        </div>
+        <div class="feedback-desc">AI 回答之后用户<strong>做了什么动作</strong>——下单、注册、咨询、放弃。</div>
+        <div class="feedback-example">
+          <span class="label">例子</span>
+          AI 推荐商品后用户点击率、AI 客服解决后转人工率、AI 写文案后审核通过率
+        </div>
+      </div>
+
+      <div class="feedback f4">
+        <div class="feedback-head">
+          <div class="feedback-num">4</div>
+          <div class="feedback-name">主动反馈<span class="en">Active</span></div>
+          <span class="feedback-tag">最易忽略</span>
+        </div>
+        <div class="feedback-desc">用户<strong>主动找你抱怨</strong>——投诉、客服工单、社群吐槽、应用评论。</div>
+        <div class="feedback-example">
+          <span class="label">例子</span>
+          App Store 1 星差评、小红书吐槽笔记、客服系统里"AI 答错了"的工单
+        </div>
+      </div>
+
+    </div>
+
+    <div class="block do">
+      <div class="block-label">采集策略</div>
+      <div class="block-title">
+        4 类反馈 <span class="red-em">同时采</span>，但用法不同
+      </div>
+      <div class="block-list">
+        <div class="block-item"><span><strong>显性</strong>：量小但精准，做评估集 ground truth</span></div>
+        <div class="block-item"><span><strong>隐性</strong>：量大且免费，做实时质量监控</span></div>
+        <div class="block-item"><span><strong>转化</strong>：和业务挂钩，向老板汇报必备</span></div>
+        <div class="block-item"><span><strong>主动</strong>:暴露关键 case，反推 prompt 迭代</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：数据流向 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">反馈<span class="yellow-hi">怎么真的让模型变好</span></div>
+      </div>
+    </div>
+
+    <div class="block warn">
+      <div class="block-label">最大的误区</div>
+      <div class="block-title">
+        采集了反馈 <span class="red-em">≠</span> 闭环转起来了
+      </div>
+      <p>很多 PM 做完反馈采集就以为大功告成——<strong>数据躺在数据库里发霉</strong>。</p>
+      <p style="margin-top:8px">真正的闭环——<strong>反馈必须流向具体的优化动作</strong>。每一类反馈都有它的"去处"。</p>
+    </div>
+
+    <!-- 数据流向表 -->
+    <div class="flow-table">
+      <div class="flow-row r1">
+        <div class="flow-from">差评 + 重试<br><strong>典型质量问题</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-to">Prompt 迭代<br><strong>改 system prompt</strong></div>
+      </div>
+      <div class="flow-row r2">
+        <div class="flow-from">"我没找到答案"<br><strong>知识盲区</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-to">RAG 知识库更新<br><strong>补充文档 / 切段</strong></div>
+      </div>
+      <div class="flow-row r3">
+        <div class="flow-from">高质量对话<br><strong>用户点赞的</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-to">Fine-tune 数据集<br><strong>训练专用小模型</strong></div>
+      </div>
+      <div class="flow-row r4">
+        <div class="flow-from">客诉 + 1 星<br><strong>边缘 case</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-to">评估集扩充<br><strong>下次发版必测</strong></div>
+      </div>
+    </div>
+
+    <div class="block do">
+      <div class="block-label">闭环节奏</div>
+      <div class="block-title">
+        日采集 → 周分析 → 月迭代
+      </div>
+      <div class="block-list">
+        <div class="block-item"><span><strong>每天</strong>：自动采集所有反馈，进数据库</span></div>
+        <div class="block-item"><span><strong>每周</strong>：PM 看一次报表，定位 Top 3 问题</span></div>
+        <div class="block-item"><span><strong>每月</strong>:发一个新版本，量化对比上月数据</span></div>
+      </div>
+      <p style="margin-top:8px">这种节奏的 AI 产品——<strong>每月可见的体验提升</strong>。这就是飞轮在转的标志。</p>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">你们 AI 产品怎么持续迭代</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule">第 1 句：搭<span class="h">数据飞轮</span>，用户使用→反馈→迭代→体验更好</div>
+        <div class="truth-rule">第 2 句：采<span class="h">4 类反馈</span>——显性 / 隐性 / 转化 / 主动</div>
+        <div class="truth-rule">第 3 句:每类反馈都有<span class="h">明确去处</span>——prompt / RAG / 训练集 / 评估集</div>
+        <div class="truth-rule">第 4 句：节奏是<span class="h">日采集 / 周分析 / 月迭代</span></div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官立刻知道你做过完整产品周期</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        AI 产品的护城河<br>
+        不在上线那天，在<span class="red-em">飞轮转起来之后</span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red-em">AI 周报怎么写给老板看</span>
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">3 段式模板 · 倒金字塔汇报</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#数据闭环</span>
+        <span>#AI落地</span>
+        <span>#产品策略</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

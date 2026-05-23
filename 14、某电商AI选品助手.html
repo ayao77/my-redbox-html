@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 选品助手架构 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+
+.handwrite{font-family:"ZCOOL KuaiLe","Noto Sans SC",sans-serif}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;
+  position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:28px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:38px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red{color:#E63946;position:relative;display:inline-block}
+.hero-title .red::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ KPI 数字条 ============ */
+.kpi-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0 32px;
+}
+.kpi-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  padding:14px;box-shadow:4px 4px 0 #2B2B2B;text-align:center;
+}
+.kpi-card.k1{background:#FFE16B;transform:rotate(-1deg)}
+.kpi-card.k2{background:#A8E6CF;transform:rotate(1deg)}
+.kpi-card.k3{background:#D0E8FF;transform:rotate(-1deg)}
+.kpi-card.k4{background:#FFD9DC;transform:rotate(1deg)}
+.kpi-label{
+  font-family:"Archivo Black",sans-serif;font-size:10px;color:#666;letter-spacing:0.1em;
+  margin-bottom:4px;
+}
+.kpi-value{
+  font-family:"Archivo Black",sans-serif;font-size:26px;color:#2B2B2B;line-height:1;letter-spacing:-0.02em;
+}
+.kpi-sub{font-family:"ZCOOL KuaiLe",sans-serif;font-size:12px;color:#666;margin-top:4px}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 20px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;
+  border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 黑板风架构图容器 ============ */
+.blackboard{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px 20px;margin:24px 0 32px;box-shadow:5px 5px 0 #2B2B2B;
+  position:relative;
+}
+.blackboard-tag{
+  position:absolute;top:-16px;left:24px;
+  background:#FFE16B;border:2.5px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+  transform:rotate(-1.5deg);box-shadow:2px 2px 0 #2B2B2B;
+}
+.arch-svg{width:100%;height:auto;display:block}
+
+/* ============ 图例 ============ */
+.legend{
+  margin-top:20px;padding-top:16px;border-top:2px dashed rgba(0,0,0,0.15);
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;
+}
+.legend-item{display:flex;align-items:flex-start;gap:8px}
+.legend-dot{
+  width:18px;height:18px;border-radius:6px;flex-shrink:0;margin-top:2px;
+  border:2.5px solid #2B2B2B;
+}
+.legend-dot.d1{background:#D0E8FF}
+.legend-dot.d2{background:#FFE16B}
+.legend-dot.d3{background:#A8E6CF}
+.legend-dot.d4{background:#FFD9DC}
+.legend-text{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#3D3D3D;line-height:1.5}
+.legend-text strong{display:block;color:#2B2B2B;font-size:14px;margin-bottom:1px}
+
+/* ============ 数据流 6 步 ============ */
+.flow-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#2B2B2B;margin:24px 0 14px;
+}
+.flow-title .red{color:#E63946}
+
+.flow-steps{display:flex;flex-direction:column;gap:0;margin:0 0 24px}
+.flow-step{
+  display:grid;grid-template-columns:60px 1fr;gap:14px;
+  padding:14px 0;position:relative;
+}
+.flow-step:not(:last-child)::after{
+  content:"";position:absolute;left:29px;top:48px;bottom:-14px;width:2.5px;background:#2B2B2B;
+}
+.flow-num-box{
+  background:#FFE16B;border:2.5px solid #2B2B2B;border-radius:10px;
+  padding:8px 6px;text-align:center;align-self:flex-start;
+  box-shadow:2px 2px 0 #2B2B2B;position:relative;z-index:2;
+}
+.flow-step.s2 .flow-num-box{background:#A8E6CF}
+.flow-step.s3 .flow-num-box{background:#D0E8FF}
+.flow-step.s4 .flow-num-box{background:#FFD9DC}
+.flow-step.s5 .flow-num-box{background:#E5D4F1}
+.flow-step.s6 .flow-num-box{background:#FFE9CB}
+.flow-num-label{
+  font-family:"Archivo Black",sans-serif;font-size:9px;color:#666;letter-spacing:0.1em;
+}
+.flow-num-val{
+  font-family:"Archivo Black",sans-serif;font-size:16px;color:#2B2B2B;letter-spacing:-0.02em;line-height:1;margin-top:2px;
+}
+.flow-content h4{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;margin-bottom:4px;
+}
+.flow-content p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#3D3D3D;line-height:1.65;
+}
+.flow-content p code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:#FFE16B;border:1.5px solid #2B2B2B;padding:1px 7px;border-radius:4px;color:#2B2B2B;font-weight:600;
+}
+
+/* ============ Agent 角色卡 ============ */
+.agent-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  margin:24px 0 32px;box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;position:relative;
+}
+.agent-card.a1{transform:rotate(-0.4deg)}
+.agent-card.a2{transform:rotate(0.4deg)}
+.agent-card.a3{transform:rotate(-0.4deg)}
+.agent-head{
+  padding:16px 22px;border-bottom:3px solid #2B2B2B;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+}
+.agent-card.a1 .agent-head{background:#D0E8FF}
+.agent-card.a2 .agent-head{background:#FFE9CB}
+.agent-card.a3 .agent-head{background:#A8E6CF}
+.agent-title{display:flex;align-items:center;gap:10px}
+.agent-id{
+  background:#2B2B2B;color:#FFE16B;font-family:"Archivo Black",sans-serif;
+  font-size:11px;padding:3px 10px;border-radius:50px;letter-spacing:0.1em;
+}
+.agent-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#2B2B2B;
+}
+.agent-name .en{font-family:"Kalam",cursive;font-size:13px;color:#666;margin-left:6px}
+.agent-tech{display:flex;gap:6px;flex-wrap:wrap}
+.agent-tech-tag{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;
+  padding:2px 10px;font-family:"JetBrains Mono",monospace;font-size:11px;color:#2B2B2B;font-weight:600;
+}
+.agent-body{padding:18px 22px}
+.agent-row{
+  display:grid;grid-template-columns:80px 1fr;gap:14px;padding:8px 0;
+  border-bottom:1.5px dashed rgba(0,0,0,0.1);
+}
+.agent-row:last-child{border-bottom:none}
+.agent-key{
+  font-family:"Archivo Black",sans-serif;font-size:10px;color:#888;letter-spacing:0.1em;padding-top:3px;
+}
+.agent-val{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;line-height:1.6;
+}
+.agent-val strong{color:#E63946}
+.agent-val code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;color:#1A1A1A;
+}
+.agent-val .weight{
+  display:inline-block;background:#FFE16B;border:2px solid #2B2B2B;
+  font-family:"Archivo Black",sans-serif;font-size:14px;color:#2B2B2B;
+  padding:3px 10px;border-radius:6px;margin-right:8px;
+}
+
+/* ============ 心法卡片 ============ */
+.insight{
+  margin:24px 0 32px;background:#2B2B2B;color:#FFFFFF;border-radius:18px;
+  padding:24px 26px;box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.insight::before{
+  content:"心法";position:absolute;top:-18px;left:26px;
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#FFE16B;
+  background:#2B2B2B;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.insight-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#FFFFFF;line-height:1.5;margin-bottom:12px;
+}
+.insight-title .yellow{color:#FFE16B}
+.insight p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:rgba(255,255,255,0.92);line-height:1.8;
+}
+.insight p strong{color:#FFE16B}
+
+/* ============ 演进版本卡 ============ */
+.version-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  margin:24px 0 32px;box-shadow:5px 5px 0 #2B2B2B;padding:0;overflow:hidden;position:relative;
+}
+.version-head{
+  padding:16px 22px;border-bottom:3px solid #2B2B2B;
+  display:flex;align-items:center;gap:14px;
+}
+.version-card.v1 .version-head{background:#F0EBD8}
+.version-card.v2 .version-head{background:#D0E8FF}
+.version-card.v3 .version-head{background:#A8E6CF}
+.version-tag{
+  background:#2B2B2B;color:#FFE16B;font-family:"Archivo Black",sans-serif;
+  font-size:14px;padding:4px 12px;border-radius:8px;letter-spacing:-0.02em;
+}
+.version-card.v2 .version-tag{background:#1B5599;color:#FFFFFF}
+.version-card.v3 .version-tag{background:#1B6B43;color:#FFE16B}
+.version-info{flex:1}
+.version-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.version-date{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:#666;
+  background:rgba(0,0,0,0.06);padding:2px 8px;border-radius:4px;
+}
+.version-body{padding:18px 22px}
+.version-arch{
+  background:rgba(0,0,0,0.04);border-left:3px solid #2B2B2B;
+  padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#3D3D3D;line-height:1.55;
+}
+.version-arch strong{color:#E63946;font-weight:bold}
+.version-metrics{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.metric{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;
+  padding:4px 12px;display:inline-flex;align-items:center;gap:6px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+.metric .val{
+  font-family:"Archivo Black",sans-serif;font-size:14px;letter-spacing:-0.02em;
+}
+.metric.up .val{color:#1B6B43}
+.metric.down .val{color:#9B1B27}
+.metric.flat .val{color:#666}
+
+.version-issue{
+  background:#FFD9DC;border:2.5px solid #9B1B27;border-radius:10px;
+  padding:12px 14px;margin-top:8px;
+}
+.version-issue-label{
+  font-family:"Archivo Black",sans-serif;font-size:10px;color:#9B1B27;
+  letter-spacing:0.15em;margin-bottom:4px;
+}
+.version-issue-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#2B2B2B;line-height:1.6;
+}
+.version-issue-text strong{color:#9B1B27}
+
+/* ============ 面试金句黑色卡 ============ */
+.truth-block{
+  margin:32px 0 36px;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px;
+}
+.truth-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px;
+}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{
+  content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0;
+}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ CTA ============ */
+.cta{
+  margin:32px 0 24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{
+  margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#888;letter-spacing:0.1em;
+}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .hero-title{font-size:26px}
+  .kpi-bar{grid-template-columns:1fr 1fr;gap:8px}
+  .kpi-value{font-size:20px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .flow-content h4{font-size:15px}
+  .flow-content p{font-size:13px}
+  .agent-name{font-size:15px}
+  .agent-row{grid-template-columns:1fr;gap:4px}
+  .agent-key{padding-top:0}
+  .agent-val{font-size:13.5px}
+  .insight-title{font-size:18px}
+  .insight p{font-size:13.5px}
+  .version-name{font-size:14.5px}
+  .version-arch{font-size:13px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <!-- 品牌头 -->
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.16</div>
+  </header>
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="hero-tag">第 16 讲｜真实架构拆解</span>
+    <h1 class="hero-title">
+      某电商 <span class="red">AI 选品助手</span><br>
+      <span class="yellow-hi">多 Agent 架构</span>怎么搭
+    </h1>
+    <div class="hero-meta">By NOVA · 学员真实参与项目 · 已脱敏</div>
+  </div>
+
+  <!-- KPI 4 张卡 -->
+  <div class="kpi-bar">
+    <div class="kpi-card k1">
+      <div class="kpi-label">SELECTION ACC</div>
+      <div class="kpi-value">67%</div>
+      <div class="kpi-sub">从 38% 提升</div>
+    </div>
+    <div class="kpi-card k2">
+      <div class="kpi-label">GMV LIFT</div>
+      <div class="kpi-value">+12%</div>
+      <div class="kpi-sub">vs 人工选品</div>
+    </div>
+    <div class="kpi-card k3">
+      <div class="kpi-label">AGENTS</div>
+      <div class="kpi-value">3</div>
+      <div class="kpi-sub">数据 / 趋势 / 库存</div>
+    </div>
+    <div class="kpi-card k4">
+      <div class="kpi-label">LATENCY</div>
+      <div class="kpi-value">2.4s</div>
+      <div class="kpi-sub">P95 响应</div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">整体架构</span>
+      <span class="tab-en">ARCH</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">3 Agent 拆解</span>
+      <span class="tab-en">AGENT</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">3 次演进</span>
+      <span class="tab-en">EVOLVE</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：整体架构 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">完整<span class="yellow-hi">数据流</span>架构</div>
+      </div>
+    </div>
+
+    <!-- 架构图黑板 -->
+    <div class="blackboard">
+      <div class="blackboard-tag">架构图 · v3 稳定版</div>
+      <svg class="arch-svg" viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#2B2B2B"/>
+          </marker>
+          <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#E63946"/>
+          </marker>
+          <marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#8B5CF6"/>
+          </marker>
+        </defs>
+
+        <!-- 输入层 商品库 -->
+        <g>
+          <rect x="20" y="40" width="140" height="70" rx="12" fill="#D0E8FF" stroke="#2B2B2B" stroke-width="3"/>
+          <rect x="24" y="44" width="140" height="70" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="90" y="65" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#1B5599" letter-spacing="1">INPUT 01</text>
+          <text x="90" y="86" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="15" fill="#2B2B2B" font-weight="700">商品库</text>
+          <text x="90" y="102" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#666">10万+ SKU</text>
+        </g>
+
+        <!-- 输入层 用户行为 -->
+        <g>
+          <rect x="20" y="135" width="140" height="70" rx="12" fill="#D0E8FF" stroke="#2B2B2B" stroke-width="3"/>
+          <rect x="24" y="139" width="140" height="70" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="90" y="160" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#1B5599" letter-spacing="1">INPUT 02</text>
+          <text x="90" y="181" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="15" fill="#2B2B2B" font-weight="700">用户行为</text>
+          <text x="90" y="197" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#666">点击/购买/收藏</text>
+        </g>
+
+        <!-- 输入层 平台数据 -->
+        <g>
+          <rect x="20" y="230" width="140" height="70" rx="12" fill="#D0E8FF" stroke="#2B2B2B" stroke-width="3"/>
+          <rect x="24" y="234" width="140" height="70" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="90" y="255" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#1B5599" letter-spacing="1">INPUT 03</text>
+          <text x="90" y="276" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="15" fill="#2B2B2B" font-weight="700">平台数据</text>
+          <text x="90" y="292" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#666">热搜/竞品/榜单</text>
+        </g>
+
+        <!-- Embedding 检索 -->
+        <g>
+          <rect x="200" y="135" width="150" height="70" rx="12" fill="#FFE16B" stroke="#2B2B2B" stroke-width="3"/>
+          <rect x="204" y="139" width="150" height="70" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="275" y="160" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#9B5E10" letter-spacing="1">VECTOR DB</text>
+          <text x="275" y="181" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="15" fill="#2B2B2B" font-weight="700">Embedding 检索</text>
+          <text x="275" y="197" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#666">语义召回 Top 100</text>
+        </g>
+
+        <!-- Agent 01 数据 -->
+        <g>
+          <rect x="395" y="30" width="160" height="85" rx="12" fill="#FFE9CB" stroke="#2B2B2B" stroke-width="3"/>
+          <rect x="399" y="34" width="160" height="85" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="475" y="52" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#9B5E10" letter-spacing="1">AGENT 01</text>
+          <text x="475" y="74" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="16" fill="#2B2B2B" font-weight="700">数据 Agent</text>
+          <text x="475" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#666">销量/转化/利润</text>
+          <text x="475" y="106" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="11" fill="#E63946" font-weight="700">权重 40%</text>
+        </g>
+
+        <!-- Agent 02 趋势 -->
+        <g>
+          <rect x="395" y="135" width="160" height="85" rx="12" fill="#FFE9CB" stroke="#2B2B2B" stroke-width="3"/>
+          <rect x="399" y="139" width="160" height="85" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="475" y="157" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#9B5E10" letter-spacing="1">AGENT 02</text>
+          <text x="475" y="179" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="16" fill="#2B2B2B" font-weight="700">趋势 Agent</text>
+          <text x="475" y="197" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#666">季节/热搜/竞品</text>
+          <text x="475" y="211" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="11" fill="#E63946" font-weight="700">权重 35%</text>
+        </g>
+
+        <!-- Agent 03 库存 -->
+        <g>
+          <rect x="395" y="240" width="160" height="85" rx="12" fill="#FFE9CB" stroke="#2B2B2B" stroke-width="3"/>
+          <rect x="399" y="244" width="160" height="85" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="475" y="262" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#9B5E10" letter-spacing="1">AGENT 03</text>
+          <text x="475" y="284" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="16" fill="#2B2B2B" font-weight="700">库存 Agent</text>
+          <text x="475" y="302" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#666">备货/供应/物流</text>
+          <text x="475" y="316" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="11" fill="#E63946" font-weight="700">权重 25% · 否决权</text>
+        </g>
+
+        <!-- Supervisor -->
+        <g>
+          <rect x="600" y="135" width="160" height="85" rx="12" fill="#2B2B2B" stroke="#FFE16B" stroke-width="3"/>
+          <rect x="604" y="139" width="160" height="85" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="680" y="157" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#FFE16B" letter-spacing="1">SUPERVISOR</text>
+          <text x="680" y="179" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="16" fill="#FFFFFF" font-weight="700">聚合决策</text>
+          <text x="680" y="197" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="rgba(255,225,107,0.7)">加权 + 仲裁</text>
+          <text x="680" y="212" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="11" fill="#FFE16B" font-weight="700">输出 Top 20</text>
+        </g>
+
+        <!-- 输出 -->
+        <g>
+          <rect x="620" y="260" width="120" height="60" rx="12" fill="#A8E6CF" stroke="#2B2B2B" stroke-width="3"/>
+          <rect x="624" y="264" width="120" height="60" rx="12" fill="none" stroke="#2B2B2B" stroke-width="3" opacity="0.3"/>
+          <text x="680" y="282" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#1B6B43" letter-spacing="1">OUTPUT</text>
+          <text x="680" y="304" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="14" fill="#2B2B2B" font-weight="700">选品清单</text>
+        </g>
+
+        <!-- 数据飞轮 -->
+        <g>
+          <rect x="260" y="370" width="280" height="65" rx="12" fill="#FFD9DC" stroke="#8B5CF6" stroke-width="3" stroke-dasharray="8 4"/>
+          <text x="400" y="390" text-anchor="middle" font-family="Archivo Black" font-size="10" fill="#8B5CF6" letter-spacing="1">FEEDBACK LOOP · 数据飞轮</text>
+          <text x="400" y="412" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="14" fill="#2B2B2B" font-weight="700">用户实际购买 → 反哺 Agent 权重</text>
+          <text x="400" y="427" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#8B5CF6">每周自动调权</text>
+        </g>
+
+        <!-- 连线 输入 → Embedding -->
+        <line x1="160" y1="75" x2="200" y2="160" stroke="#2B2B2B" stroke-width="2" marker-end="url(#arrow1)"/>
+        <line x1="160" y1="170" x2="200" y2="170" stroke="#2B2B2B" stroke-width="2" marker-end="url(#arrow1)"/>
+        <line x1="160" y1="265" x2="200" y2="185" stroke="#2B2B2B" stroke-width="2" marker-end="url(#arrow1)"/>
+
+        <!-- Embedding → 3 Agent -->
+        <line x1="350" y1="160" x2="395" y2="70" stroke="#E63946" stroke-width="2.5" marker-end="url(#arrow2)"/>
+        <line x1="350" y1="170" x2="395" y2="175" stroke="#E63946" stroke-width="2.5" marker-end="url(#arrow2)"/>
+        <line x1="350" y1="180" x2="395" y2="282" stroke="#E63946" stroke-width="2.5" marker-end="url(#arrow2)"/>
+
+        <!-- 3 Agent → Supervisor -->
+        <line x1="555" y1="70" x2="600" y2="160" stroke="#E63946" stroke-width="2.5" marker-end="url(#arrow2)"/>
+        <line x1="555" y1="178" x2="600" y2="178" stroke="#E63946" stroke-width="2.5" marker-end="url(#arrow2)"/>
+        <line x1="555" y1="282" x2="600" y2="195" stroke="#E63946" stroke-width="2.5" marker-end="url(#arrow2)"/>
+
+        <!-- Supervisor → Output -->
+        <line x1="680" y1="220" x2="680" y2="258" stroke="#1B6B43" stroke-width="2.5" marker-end="url(#arrow1)"/>
+
+        <!-- 飞轮反馈 -->
+        <path d="M 620 320 Q 560 360 520 380" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow3)"/>
+        <path d="M 260 400 Q 180 390 380 200" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow3)"/>
+      </svg>
+
+      <!-- 图例 -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot d1"></div>
+          <div class="legend-text"><strong>蓝 · INPUT</strong>3 路输入数据源</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot d2"></div>
+          <div class="legend-text"><strong>黄 · CORE</strong>向量检索 / 智能体核心</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot d3"></div>
+          <div class="legend-text"><strong>绿 · OUTPUT</strong>最终输出</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot d4"></div>
+          <div class="legend-text"><strong>粉紫 · LOOP</strong>反馈飞轮回路</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数据流 6 步 -->
+    <div class="flow-title">完整数据流 · <span class="red">6 步走完</span>一次请求</div>
+
+    <div class="flow-steps">
+      <div class="flow-step s1">
+        <div class="flow-num-box">
+          <div class="flow-num-label">STEP</div>
+          <div class="flow-num-val">01</div>
+        </div>
+        <div class="flow-content">
+          <h4>语义检索召回</h4>
+          <p>用户需求"我想选爆款冬装" → Embedding 向量化 → 在向量库召回 <code>Top 100</code> 相关商品。</p>
+        </div>
+      </div>
+      <div class="flow-step s2">
+        <div class="flow-num-box">
+          <div class="flow-num-label">STEP</div>
+          <div class="flow-num-val">02</div>
+        </div>
+        <div class="flow-content">
+          <h4>3 Agent 并行调用</h4>
+          <p>100 个候选商品<strong>同时进 3 个 Agent</strong>。数据 Agent 算销量利润 / 趋势 Agent 算流量势能 / 库存 Agent 算供应链可行性。</p>
+        </div>
+      </div>
+      <div class="flow-step s3">
+        <div class="flow-num-box">
+          <div class="flow-num-label">STEP</div>
+          <div class="flow-num-val">03</div>
+        </div>
+        <div class="flow-content">
+          <h4>各 Agent 输出评分</h4>
+          <p>每个 Agent 给出自己视角的评分 + 推理理由，统一用 <code>JSON</code> 结构化输出，方便聚合。</p>
+        </div>
+      </div>
+      <div class="flow-step s4">
+        <div class="flow-num-box">
+          <div class="flow-num-label">STEP</div>
+          <div class="flow-num-val">04</div>
+        </div>
+        <div class="flow-content">
+          <h4>Supervisor 聚合仲裁</h4>
+          <p>主控按权重 <code>数据 40% / 趋势 35% / 库存 25%</code> 加权。3 个意见冲突时<strong>优先库存</strong>（保供应链）。</p>
+        </div>
+      </div>
+      <div class="flow-step s5">
+        <div class="flow-num-box">
+          <div class="flow-num-label">STEP</div>
+          <div class="flow-num-val">05</div>
+        </div>
+        <div class="flow-content">
+          <h4>Top 20 输出</h4>
+          <p>按综合分排序，输出最终 <code>Top 20 选品清单</code>——含商品 ID、推荐理由、预期销量、风险点。</p>
+        </div>
+      </div>
+      <div class="flow-step s6">
+        <div class="flow-num-box">
+          <div class="flow-num-label">STEP</div>
+          <div class="flow-num-val">06</div>
+        </div>
+        <div class="flow-content">
+          <h4>反馈飞轮回路</h4>
+          <p>真实购买数据 → 反哺 3 个 Agent 的权重。<strong>每周自动调权</strong>——这就是越用越准的秘密。</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：3 Agent 拆解 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">3 个 Agent <span class="yellow-hi">各自做啥</span></div>
+      </div>
+    </div>
+
+    <!-- Agent 01 -->
+    <div class="agent-card a1">
+      <div class="agent-head">
+        <div class="agent-title">
+          <span class="agent-id">AGENT 01</span>
+          <span class="agent-name">数据 Agent<span class="en">Data Analyst</span></span>
+        </div>
+        <div class="agent-tech">
+          <span class="agent-tech-tag">GPT-4o</span>
+          <span class="agent-tech-tag">Function Calling</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-row">
+          <span class="agent-key">ROLE</span>
+          <span class="agent-val">销量、转化率、利润率、退款率 的<strong>定量分析师</strong>。给每个候选商品打"数据维度分"。</span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">TOOLS</span>
+          <span class="agent-val"><code>query_sales</code> 近 30 天销量 / <code>get_margin</code> 利润率 / <code>refund_rate</code> 退款率</span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">OUTPUT</span>
+          <span class="agent-val"><code>{ score: 0-100, reasons, risks }</code></span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">WEIGHT</span>
+          <span class="agent-val"><span class="weight">40%</span>占比最大——<strong>"钱"最实在</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 02 -->
+    <div class="agent-card a2">
+      <div class="agent-head">
+        <div class="agent-title">
+          <span class="agent-id">AGENT 02</span>
+          <span class="agent-name">趋势 Agent<span class="en">Trend Watcher</span></span>
+        </div>
+        <div class="agent-tech">
+          <span class="agent-tech-tag">Claude 3.5</span>
+          <span class="agent-tech-tag">Web Search</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-row">
+          <span class="agent-key">ROLE</span>
+          <span class="agent-val">季节、热搜、竞品 的<strong>嗅觉型判断者</strong>。给候选商品打"势能分"——能不能成爆款。</span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">TOOLS</span>
+          <span class="agent-val"><code>get_hot_keywords</code> 平台热搜 / <code>competitor_scan</code> 竞品 / <code>seasonal_curve</code> 季节系数</span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">OUTPUT</span>
+          <span class="agent-val"><code>{ score, trend: "rising/stable/declining", reasons }</code></span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">WEIGHT</span>
+          <span class="agent-val"><span class="weight">35%</span>捕捉"未来值"——<strong>提前 3 个月预判</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 03 -->
+    <div class="agent-card a3">
+      <div class="agent-head">
+        <div class="agent-title">
+          <span class="agent-id">AGENT 03</span>
+          <span class="agent-name">库存 Agent<span class="en">Supply Auditor</span></span>
+        </div>
+        <div class="agent-tech">
+          <span class="agent-tech-tag">GPT-4o-mini</span>
+          <span class="agent-tech-tag">SQL Tool</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-row">
+          <span class="agent-key">ROLE</span>
+          <span class="agent-val">备货、供应、物流可行性 的<strong>风控守门员</strong>。一票否决高风险商品。</span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">TOOLS</span>
+          <span class="agent-val"><code>check_stock</code> 现货 / <code>lead_time</code> 补货周期 / <code>logistic</code> 仓配能力</span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">OUTPUT</span>
+          <span class="agent-val"><code>{ score, blocker: true/false, reasons }</code></span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-key">WEIGHT</span>
+          <span class="agent-val"><span class="weight">25%</span>+ <strong>一票否决权</strong>——库存出事项目就挂</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 心法 -->
+    <div class="insight">
+      <div class="insight-title">
+        为啥不用<span class="yellow">1 个超大 prompt</span>？<br>
+        因为 <span class="yellow">"专业分工 + 单点可优化"</span>
+      </div>
+      <p>如果只用 1 个 Agent——发现"趋势判断不准"，<strong>你不知道改哪句 prompt</strong>。</p>
+      <p style="margin-top:8px">但用 3 个 Agent——趋势出问题，只优化 <strong>Agent 02 的 prompt + tools</strong>，其他不动。</p>
+      <p style="margin-top:8px"><strong>单点优化 + 单点回归</strong>——这就是 AI 产品工程化的核心。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：3 次演进 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">从 <span class="yellow-hi">38% → 67%</span> 的 3 次迭代</div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:16px;color:#3D3D3D;line-height:1.75;margin-bottom:20px">
+      这套架构<strong style="color:#E63946">不是一上来就这样</strong>。从 v1 单 Agent 翻车，到 v3 多 Agent 上线，<strong style="color:#E63946">每次迭代都源自一次"事故 + 复盘"</strong>。
+    </p>
+
+    <!-- v1 -->
+    <div class="version-card v1">
+      <div class="version-head">
+        <span class="version-tag">v1.0</span>
+        <div class="version-info">
+          <div class="version-name">
+            单 Agent 暴力解法
+            <span class="version-date">2024 Q1</span>
+          </div>
+        </div>
+      </div>
+      <div class="version-body">
+        <div class="version-arch">
+          架构：商品 + 用户行为 → <strong>1 个超大 prompt</strong> → 选品列表
+        </div>
+        <div class="version-metrics">
+          <div class="metric down"><span>准确率</span><span class="val">38%</span></div>
+          <div class="metric down"><span>GMV</span><span class="val">-5%</span></div>
+          <div class="metric down"><span>运营接受度</span><span class="val">12%</span></div>
+        </div>
+        <div class="version-issue">
+          <div class="version-issue-label">FAILURE · 翻车点</div>
+          <div class="version-issue-text">一个 prompt 同时考虑<strong>数据 + 趋势 + 库存</strong>，模型注意力分散——经常"漏掉库存信息"导致选了缺货爆款。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v2 -->
+    <div class="version-card v2">
+      <div class="version-head">
+        <span class="version-tag">v2.0</span>
+        <div class="version-info">
+          <div class="version-name">
+            引入 Embedding + 拆 2 Agent
+            <span class="version-date">2024 Q2</span>
+          </div>
+        </div>
+      </div>
+      <div class="version-body">
+        <div class="version-arch">
+          架构：商品库 → <strong>Embedding 向量检索</strong> → <strong>2 Agent</strong>（数据 + 趋势）→ 简单加权
+        </div>
+        <div class="version-metrics">
+          <div class="metric up"><span>准确率</span><span class="val">54%</span></div>
+          <div class="metric up"><span>GMV</span><span class="val">+6%</span></div>
+          <div class="metric up"><span>运营接受度</span><span class="val">45%</span></div>
+        </div>
+        <div class="version-issue">
+          <div class="version-issue-label">NEW ISSUE · 新问题</div>
+          <div class="version-issue-text">数据 + 趋势都对了，但<strong>库存这一层没人管</strong>——上线 1 个月推荐了 30+ 缺货商品，仓储部门来吵。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v3 -->
+    <div class="version-card v3">
+      <div class="version-head">
+        <span class="version-tag">v3.0</span>
+        <div class="version-info">
+          <div class="version-name">
+            3 Agent + Supervisor + 数据飞轮
+            <span class="version-date">2024 Q4</span>
+          </div>
+        </div>
+      </div>
+      <div class="version-body">
+        <div class="version-arch">
+          架构：<strong>3 路输入</strong> → Embedding → <strong>3 Agent 并行</strong>（数据/趋势/库存）→ Supervisor 加权聚合 → 反馈飞轮
+        </div>
+        <div class="version-metrics">
+          <div class="metric up"><span>准确率</span><span class="val">67%</span></div>
+          <div class="metric up"><span>GMV</span><span class="val">+12%</span></div>
+          <div class="metric up"><span>运营接受度</span><span class="val">78%</span></div>
+          <div class="metric flat"><span>延迟</span><span class="val">2.4s</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">为啥用多 Agent 不用单 Agent</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule"><span class="h">专业分工</span>——每 Agent 角色单一，prompt 更精准</div>
+        <div class="truth-rule"><span class="h">单点可优化</span>——某 Agent 出问题只改它，迭代快 5 倍</div>
+        <div class="truth-rule"><span class="h">并行计算</span>——3 Agent 同时跑，延迟降 60%</div>
+        <div class="truth-rule"><span class="h">风控隔离</span>——库存 Agent 一票否决，避免单点失误带崩</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官立刻知道你做过真实多 Agent 系统</span>
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red">某金融机构 AI 合规审查</span>
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">长文档 RAG · 人工兜底机制</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#多Agent</span>
+        <span>#架构拆解</span>
+        <span>#AI落地</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
