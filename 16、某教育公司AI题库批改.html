@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 题库批改 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:24px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:38px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red{color:#E63946;position:relative;display:inline-block}
+.hero-title .red::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ 钩子卡（开场反认知）============ */
+.hook-card{
+  margin:24px 0 32px;background:#2B2B2B;color:#FFFFFF;border-radius:18px;
+  padding:24px 28px;box-shadow:6px 6px 0 #E63946;position:relative;
+}
+.hook-label{
+  display:inline-block;background:#E63946;color:#FFFFFF;
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.15em;
+  padding:3px 10px;border-radius:6px;margin-bottom:14px;
+}
+.hook-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;
+}
+.hook-title .yellow{color:#FFE16B}
+.hook-title .red{color:#FF8C70}
+.hook-sub{
+  margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,0.2);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:rgba(255,255,255,0.75);line-height:1.6;
+}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 20px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ Tab 01 · 教育独有的 3 个陷阱 ============ */
+.trap-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:0;margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;
+  overflow:hidden;position:relative;
+}
+.trap-card.t1{transform:rotate(-0.3deg)}
+.trap-card.t2{transform:rotate(0.3deg)}
+.trap-card.t3{transform:rotate(-0.3deg)}
+.trap-head{
+  padding:18px 22px;display:flex;align-items:center;gap:14px;
+  border-bottom:3px solid #2B2B2B;
+}
+.trap-card.t1 .trap-head{background:#FFD9DC}
+.trap-card.t2 .trap-head{background:#FFE9CB}
+.trap-card.t3 .trap-head{background:#D0E8FF}
+.trap-num-box{
+  background:#2B2B2B;color:#FFE16B;border-radius:12px;
+  padding:8px 14px;text-align:center;flex-shrink:0;
+}
+.trap-num-label{font-family:"Archivo Black",sans-serif;font-size:9px;letter-spacing:0.1em;color:rgba(255,225,107,0.7)}
+.trap-num-val{font-family:"Archivo Black",sans-serif;font-size:22px;line-height:1;letter-spacing:-0.02em;margin-top:2px}
+.trap-title{
+  flex:1;font-family:"ZCOOL KuaiLe",sans-serif;font-size:19px;color:#2B2B2B;line-height:1.4;
+}
+.trap-title .red{color:#E63946;font-weight:bold}
+.trap-body{padding:18px 22px}
+.trap-section{margin-bottom:14px}
+.trap-section:last-child{margin-bottom:0}
+.trap-section-label{
+  display:inline-block;
+  font-family:"Archivo Black",sans-serif;font-size:9px;letter-spacing:0.1em;
+  padding:2px 8px;border-radius:4px;margin-bottom:6px;
+}
+.trap-section.what .trap-section-label{background:#FFD9DC;color:#9B1B27}
+.trap-section.case .trap-section-label{background:#D0E8FF;color:#1B5599}
+.trap-section.fix .trap-section-label{background:#A8E6CF;color:#1B6B43}
+.trap-section-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;line-height:1.7;
+}
+.trap-section-text strong{color:#E63946}
+.trap-section-text code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;color:#1A1A1A;
+}
+
+/* ============ Tab 02 · 完整链路时间轴 ============ */
+.pipeline{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px;margin:24px 0 32px;box-shadow:5px 5px 0 #2B2B2B;
+}
+.pipeline-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#666;
+  text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.pipe-step{
+  display:grid;grid-template-columns:60px 1fr;gap:14px;align-items:flex-start;
+  padding:14px 0;position:relative;
+}
+.pipe-step:not(:last-child)::after{
+  content:"";position:absolute;left:29px;top:55px;bottom:-14px;width:2.5px;background:#2B2B2B;
+}
+.pipe-icon-box{
+  background:#FFE16B;border:2.5px solid #2B2B2B;border-radius:12px;
+  padding:8px 0;text-align:center;
+  box-shadow:2px 2px 0 #2B2B2B;position:relative;z-index:2;
+}
+.pipe-step.s2 .pipe-icon-box{background:#A8E6CF}
+.pipe-step.s3 .pipe-icon-box{background:#D0E8FF}
+.pipe-step.s4 .pipe-icon-box{background:#FFD9DC}
+.pipe-step.s5 .pipe-icon-box{background:#E5D4F1}
+.pipe-step.s6 .pipe-icon-box{background:#FFE9CB}
+.pipe-step.s7 .pipe-icon-box{background:#A8E6CF}
+.pipe-icon{font-size:22px;line-height:1;display:block}
+.pipe-icon-label{
+  font-family:"Archivo Black",sans-serif;font-size:8px;letter-spacing:0.1em;color:#2B2B2B;display:block;margin-top:2px;
+}
+.pipe-content{flex:1}
+.pipe-actor{
+  display:flex;align-items:center;gap:8px;margin-bottom:4px;
+}
+.pipe-actor-tag{
+  background:#2B2B2B;color:#FFE16B;border-radius:4px;
+  padding:1px 7px;font-family:"Archivo Black",sans-serif;font-size:9px;letter-spacing:0.1em;
+}
+.pipe-actor-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+}
+.pipe-detail{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13.5px;color:#3D3D3D;line-height:1.6;
+}
+.pipe-detail strong{color:#E63946}
+.pipe-detail code{
+  font-family:"JetBrains Mono",monospace;font-size:11.5px;
+  background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;
+}
+.pipe-time{
+  margin-top:4px;display:inline-block;
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:#9B1B27;
+  background:#FFFEF0;padding:1px 8px;border-radius:4px;border:1.5px solid #FFE16B;
+}
+
+/* ============ 链路关键洞察 ============ */
+.insight-block{
+  margin:24px 0 36px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.insight-block::before{
+  content:"洞察";position:absolute;top:-18px;left:24px;
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#1B6B43;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;letter-spacing:0.1em;
+}
+.insight-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:10px;margin-bottom:10px}
+.insight-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.insight-title .red{color:#E63946;font-weight:bold}
+.insight-block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;line-height:1.8;color:#2B2B2B;
+}
+.insight-block p strong{color:#9B1B27}
+
+/* ============ Tab 03 · 真实踩坑卡 ============ */
+.pit-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  margin:42px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.pit-tag-top{
+  position:absolute;top:-16px;left:24px;z-index:5;
+  background:#9B1B27;color:#FFFFFF;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.1em;
+  box-shadow:2px 2px 0 #2B2B2B;
+}
+.pit-head{
+  padding:24px 22px 16px;background:#FFD9DC;border-bottom:3px solid #2B2B2B;
+  border-radius:13px 13px 0 0;
+}
+.pit-quote{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;line-height:1.5;
+  margin-bottom:8px;
+}
+.pit-quote::before{content:"\201C";color:#9B1B27;font-size:24px;font-weight:bold;margin-right:4px}
+.pit-quote::after{content:"\201D";color:#9B1B27;font-size:24px;font-weight:bold;margin-left:4px}
+.pit-from{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#9B1B27;
+}
+.pit-body{padding:18px 22px}
+.pit-row{
+  display:grid;grid-template-columns:90px 1fr;gap:14px;padding:10px 0;
+  border-bottom:1.5px dashed rgba(0,0,0,0.1);
+}
+.pit-row:last-child{border-bottom:none}
+.pit-key{
+  display:flex;align-items:flex-start;
+}
+.pit-key-tag{
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.1em;
+  padding:3px 8px;border-radius:4px;
+}
+.pit-key-tag.miss{background:#FFD9DC;color:#9B1B27}
+.pit-key-tag.fix{background:#A8E6CF;color:#1B6B43}
+.pit-key-tag.cost{background:#FFE16B;color:#9B5E10}
+.pit-val{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;line-height:1.65;
+}
+.pit-val strong{color:#E63946}
+.pit-val.fix strong{color:#1B6B43}
+.pit-val code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;
+}
+
+/* ============ 面试金句 ============ */
+.truth-block{
+  margin:32px 0 36px;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px}
+.truth-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;font-size:13px;color:#888;letter-spacing:0.1em}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:24px}
+  .hook-title{font-size:18px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .trap-title{font-size:16px}
+  .trap-section-text{font-size:13.5px}
+  .pipe-step{grid-template-columns:50px 1fr;gap:10px}
+  .pipe-step:not(:last-child)::after{left:24px}
+  .pipe-actor-name{font-size:14px}
+  .pipe-detail{font-size:12.5px}
+  .insight-title{font-size:17px}
+  .insight-block p{font-size:13.5px}
+  .pit-quote{font-size:15px}
+  .pit-row{grid-template-columns:1fr;gap:4px}
+  .pit-val{font-size:13.5px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.17</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 17 讲｜教育 AI 真痛点</span>
+    <h1 class="hero-title">
+      做 <span class="red">AI 题库批改</span><br>
+      不只是<span class="yellow-hi">三 Agent 那么简单</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 学员真实参与教育 AI 项目</div>
+  </div>
+
+  <!-- 反认知钩子 -->
+  <div class="hook-card">
+    <span class="hook-label">90% PM 不知道的真相</span>
+    <div class="hook-title">
+      教育 AI 真正的难点<br>
+      不是<span class="red">模型不准</span><br>
+      是<span class="yellow">家长 / 学校 / 老师</span><br>
+      三方关系搞不定
+    </div>
+    <div class="hook-sub">
+      做电商 AI——搞定算法就行。做教育 AI——还要搞定家长群、配合老师上课方法、跟着学期节奏改版本。
+    </div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">3 个陷阱</span>
+      <span class="tab-en">TRAPS</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">完整链路</span>
+      <span class="tab-en">PIPELINE</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">第一年踩坑</span>
+      <span class="tab-en">PITS</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：3 个隐藏陷阱 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">3 个<span class="yellow-hi">教育独有</span>的隐藏陷阱</div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      转岗教育 AI PM 之前，<strong style="color:#E63946">这 3 个陷阱必须先知道</strong>——它们不在任何技术教程里，但每个都能让项目第一年挂掉。
+    </p>
+
+    <!-- 陷阱 1 · OCR -->
+    <div class="trap-card t1">
+      <div class="trap-head">
+        <div class="trap-num-box">
+          <span class="trap-num-label">TRAP</span>
+          <span class="trap-num-val">01</span>
+        </div>
+        <div class="trap-title">学生作业是<span class="red">手写拍照</span><br>OCR 才是真正的天花板</div>
+      </div>
+      <div class="trap-body">
+        <div class="trap-section what">
+          <span class="trap-section-label">是什么</span>
+          <div class="trap-section-text">小学生作业本拍照——光线不均、纸张折痕、铅笔淡到看不清、用橡皮擦改过的痕迹——<strong>OCR 准确率能跑到 88% 就算优秀了</strong>。剩下的 12% 全是 AI 批改的"原始毒源"。</div>
+        </div>
+        <div class="trap-section case">
+          <span class="trap-section-label">真实场景</span>
+          <div class="trap-section-text">学生写的<code>6</code>，OCR 识别成 <code>0</code> → AI 判错 → 学生委屈 → 家长群质问"题答对了凭啥扣分"。<strong>错的不是 AI，是 OCR</strong>，但用户分不清。</div>
+        </div>
+        <div class="trap-section fix">
+          <span class="trap-section-label">怎么破</span>
+          <div class="trap-section-text">把 OCR 的<strong>置信度也加入决策链</strong>。<code>OCR 置信度 &lt; 90%</code> 时直接展示"识别不清，请重拍"，不让 AI 评分。<strong>宁愿让学生重拍 1 次，也不要 AI 错判 1 次</strong>。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 陷阱 2 · 教学一致性 -->
+    <div class="trap-card t2">
+      <div class="trap-head">
+        <div class="trap-num-box">
+          <span class="trap-num-label">TRAP</span>
+          <span class="trap-num-val">02</span>
+        </div>
+        <div class="trap-title">AI 解法<span class="red">不能和老师课堂讲的冲突</span></div>
+      </div>
+      <div class="trap-body">
+        <div class="trap-section what">
+          <span class="trap-section-label">是什么</span>
+          <div class="trap-section-text">小学数学一道题，老师课堂教<strong>"列竖式"</strong>，AI 解出来直接用<strong>"乘法分配律"</strong>——答案都对，但学生懵了：哪个对？回家问家长，家长不知道，老师课堂讲过的方法也没拿分。</div>
+        </div>
+        <div class="trap-section case">
+          <span class="trap-section-label">真实场景</span>
+          <div class="trap-section-text">某次系统更新后改了模型，<strong>一周内 200+ 老师投诉</strong>——"AI 给的解法不是我教的，孩子作业全乱了"。学校差点把 AI 工具从课表里下掉。</div>
+        </div>
+        <div class="trap-section fix">
+          <span class="trap-section-label">怎么破</span>
+          <div class="trap-section-text">prompt 必须按<strong>教材版本 + 年级 + 单元</strong>动态切换——人教版三年级上册第二单元，必须只用课本里讲过的方法。<strong>不是技术问题，是数据治理问题</strong>。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 陷阱 3 · 学期节奏 -->
+    <div class="trap-card t3">
+      <div class="trap-head">
+        <div class="trap-num-box">
+          <span class="trap-num-label">TRAP</span>
+          <span class="trap-num-val">03</span>
+        </div>
+        <div class="trap-title">学期节奏 <span class="red">不让你随时上线</span></div>
+      </div>
+      <div class="trap-body">
+        <div class="trap-section what">
+          <span class="trap-section-label">是什么</span>
+          <div class="trap-section-text">互联网产品迭代逻辑——"每周一发版"。教育产品反过来——<strong>开学前一个月不许动，期中考前两周不许动，期末前一个月不许动</strong>。一年真正能发版的窗口不到 4 个月。</div>
+        </div>
+        <div class="trap-section case">
+          <span class="trap-section-label">真实场景</span>
+          <div class="trap-section-text">学员第一次入职提了"按互联网节奏每周发版"——被业务总监直接否决："你试试期末前一周改批改算法，家长能把 CEO 邮箱塞爆"。</div>
+        </div>
+        <div class="trap-section fix">
+          <span class="trap-section-label">怎么破</span>
+          <div class="trap-section-text">PM 必须把<strong>学历日历</strong>当成核心约束写进 roadmap——发版窗口只在每年 <code>7-8 月（暑假）</code>和 <code>2 月（寒假）</code>。其他时间只能修 bug、不能改算法。<strong>这是教育 PM 的底层节奏</strong>。</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：完整链路 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">一道题<span class="yellow-hi">从拍照到家长群</span>的完整链路</div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      教育 AI 不是"学生→AI→分数"这么简单。完整链路涉及 <strong style="color:#E63946">4 类角色</strong>——学生、AI、老师、家长。任何一环断了产品都废。
+    </p>
+
+    <div class="pipeline">
+      <div class="pipeline-title">📋 一道作业题的完整旅程 · 7 个真实环节</div>
+
+      <div class="pipe-step s1">
+        <div class="pipe-icon-box">
+          <span class="pipe-icon">📷</span>
+          <span class="pipe-icon-label">01</span>
+        </div>
+        <div class="pipe-content">
+          <div class="pipe-actor">
+            <span class="pipe-actor-tag">学生</span>
+            <span class="pipe-actor-name">作业本拍照上传</span>
+          </div>
+          <div class="pipe-detail">手机拍 → APP 上传。<strong>关键点</strong>：必须自动检测光线 / 倾斜度 / 模糊度，不达标直接提示"重拍"。这一步拦截了 30% 的劣质输入。</div>
+          <div class="pipe-time">耗时 5-10s</div>
+        </div>
+      </div>
+
+      <div class="pipe-step s2">
+        <div class="pipe-icon-box">
+          <span class="pipe-icon">🔍</span>
+          <span class="pipe-icon-label">02</span>
+        </div>
+        <div class="pipe-content">
+          <div class="pipe-actor">
+            <span class="pipe-actor-tag">AI</span>
+            <span class="pipe-actor-name">OCR 识别 + 题目匹配</span>
+          </div>
+          <div class="pipe-detail">手写 OCR → 文本 → 匹配题库中对应题目（用 <code>Embedding</code> 检索）。<strong>找不到匹配题就转人工</strong>——AI 不能凭空批改不在题库里的题。</div>
+          <div class="pipe-time">耗时 2-3s</div>
+        </div>
+      </div>
+
+      <div class="pipe-step s3">
+        <div class="pipe-icon-box">
+          <span class="pipe-icon">🧠</span>
+          <span class="pipe-icon-label">03</span>
+        </div>
+        <div class="pipe-content">
+          <div class="pipe-actor">
+            <span class="pipe-actor-tag">AI</span>
+            <span class="pipe-actor-name">按教材版本调用 Agent</span>
+          </div>
+          <div class="pipe-detail">系统知道这个学生是<strong>人教版三年级</strong>第二单元——prompt 自动注入"只能用课本第 X 页讲过的方法"。这是教育 AI 最关键的一步。</div>
+          <div class="pipe-time">耗时 1-2s</div>
+        </div>
+      </div>
+
+      <div class="pipe-step s4">
+        <div class="pipe-icon-box">
+          <span class="pipe-icon">⚖️</span>
+          <span class="pipe-icon-label">04</span>
+        </div>
+        <div class="pipe-content">
+          <div class="pipe-actor">
+            <span class="pipe-actor-tag">AI</span>
+            <span class="pipe-actor-name">置信度判断 · 是否兜底</span>
+          </div>
+          <div class="pipe-detail">AI 给分 + 输出置信度。<code>置信度 ≥ 90%</code> 直接发；<code>70-90%</code> 入"老师待审"队列；<code>&lt; 70%</code> 直接转人工。<strong>不让 AI 自己拍板</strong>。</div>
+          <div class="pipe-time">耗时 &lt;1s</div>
+        </div>
+      </div>
+
+      <div class="pipe-step s5">
+        <div class="pipe-icon-box">
+          <span class="pipe-icon">👩‍🏫</span>
+          <span class="pipe-icon-label">05</span>
+        </div>
+        <div class="pipe-content">
+          <div class="pipe-actor">
+            <span class="pipe-actor-tag">老师</span>
+            <span class="pipe-actor-name">人工抽审 + 修正</span>
+          </div>
+          <div class="pipe-detail">老师每天看一次"待审" + <strong>5% 已审随机抽检</strong>。这 5% 是关键——它让 AI 一直被"校准"。修正数据立刻进训练集。</div>
+          <div class="pipe-time">老师 30 分钟/天</div>
+        </div>
+      </div>
+
+      <div class="pipe-step s6">
+        <div class="pipe-icon-box">
+          <span class="pipe-icon">📝</span>
+          <span class="pipe-icon-label">06</span>
+        </div>
+        <div class="pipe-content">
+          <div class="pipe-actor">
+            <span class="pipe-actor-tag">学生</span>
+            <span class="pipe-actor-name">看反馈 · 重做错题</span>
+          </div>
+          <div class="pipe-detail">反馈措辞按<strong>年级 + 心理状态</strong>动态调整。低年级多用表情和鼓励，高年级直接讲错因。<strong>错题自动入个人错题本</strong>，这是续费率的核心驱动。</div>
+          <div class="pipe-time">学生看 1-2 分钟</div>
+        </div>
+      </div>
+
+      <div class="pipe-step s7">
+        <div class="pipe-icon-box">
+          <span class="pipe-icon">📱</span>
+          <span class="pipe-icon-label">07</span>
+        </div>
+        <div class="pipe-content">
+          <div class="pipe-actor">
+            <span class="pipe-actor-tag">家长</span>
+            <span class="pipe-actor-name">微信推送报告 · 申诉通道</span>
+          </div>
+          <div class="pipe-detail">每天 18:00 推一份<strong>学情报告</strong>给家长（今日做了什么、对错率、推荐复习）。同时<strong>一键申诉</strong>入口必须显眼——家长能投诉，反而不会去家长群闹。</div>
+          <div class="pipe-time">推送 1 次/天</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="insight-block">
+      <div class="insight-label">关键洞察</div>
+      <div class="insight-title">
+        7 个环节里——<span class="red">AI 只占 3 步</span><br>
+        剩下 4 步全是<span class="red">"人和人之间的关系"</span>
+      </div>
+      <p><strong>新手 PM</strong>只看 AI 那 3 步——OCR、批改、反馈。<strong>老练 PM</strong>知道——能不能让老师愿意用、家长愿意付费、学生愿意每天打开，全在那 4 步"非 AI 环节"里。</p>
+      <p style="margin-top:8px"><strong>这才是教育 AI 真正的护城河</strong>——不是模型多牛，是把家校学三方串成一个稳定循环。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：第一年踩坑 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">我学员<span class="yellow-hi">第一年踩的 3 个真实坑</span></div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:32px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      下面 3 个坑——<strong style="color:#E63946">每个都是教育场景独有</strong>，电商客服那套永远不会遇到。看完你就知道<strong>转岗教育 AI 该警惕什么</strong>。
+    </p>
+
+    <!-- 坑 1 · 家长群 -->
+    <div class="pit-card">
+      <span class="pit-tag-top">PIT 01 · 家校关系</span>
+      <div class="pit-head">
+        <div class="pit-quote">AI 给我儿子的字打"0 分"，理由是"字迹不清"，我儿子哭了一晚上</div>
+        <div class="pit-from">—— 某家长在班级群截图 · 阅读 200+ · 老师群转发</div>
+      </div>
+      <div class="pit-body">
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag miss">真相</span></div>
+          <div class="pit-val">不是字迹不清——是<strong>OCR 识别失败</strong>。但产品给学生看的提示是"字迹不清，请重新书写"，等于变相说"你写得差"。<strong>低年级孩子哪受得了这个</strong>。</div>
+        </div>
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag fix">改法</span></div>
+          <div class="pit-val fix">把所有 OCR 失败的提示改成<strong>"系统识别有问题，请帮我们重新拍一张照片，谢谢小同学"</strong>——把"系统错"做实，"不是学生的错"。<strong>家长投诉量当周降 70%</strong>。</div>
+        </div>
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag cost">教训</span></div>
+          <div class="pit-val">教育产品的<strong>每一句文案都是产品功能</strong>——尤其是错误提示。给孩子说话和给成年人说话是两套语言体系。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 坑 2 · 教学冲突 -->
+    <div class="pit-card">
+      <span class="pit-tag-top">PIT 02 · 老师关系</span>
+      <div class="pit-head">
+        <div class="pit-quote">你们 AI 给孩子讲的解法和我课堂讲的完全不一样，再这样我们班就停用了</div>
+        <div class="pit-from">—— 某重点小学班主任 · 群发给所有家长</div>
+      </div>
+      <div class="pit-body">
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag miss">真相</span></div>
+          <div class="pit-val">PM 没意识到——<strong>小学数学同一道题有 3-5 种正确解法</strong>，但课堂只教其中 1 种。AI 用了"更优雅"的解法，<strong>反而和老师对立</strong>。</div>
+        </div>
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag fix">改法</span></div>
+          <div class="pit-val fix">建<strong>教材-章节-解法映射表</strong>，prompt 自动加约束"<code>本题学生当前进度为人教版三年级上册第 X 页，只能使用课本上的列竖式法</code>"。<strong>老师投诉清零</strong>，学校续约率 +35%。</div>
+        </div>
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag cost">教训</span></div>
+          <div class="pit-val">教育 AI 的<strong>"对手不是别的 AI 产品"，是讲台上的老师</strong>。AI 要做老师的助手，不是替代者——一旦老师感受到威胁，他能用一句话让整个班级停用你的产品。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 坑 3 · 学期节奏 -->
+    <div class="pit-card">
+      <span class="pit-tag-top">PIT 03 · 学期节奏</span>
+      <div class="pit-head">
+        <div class="pit-quote">期末前一周你们改了什么？AI 突然把孩子的题都判错了！</div>
+        <div class="pit-from">—— 期末前 6 天 · 全国客诉爆炸 · CEO 邮箱被塞爆</div>
+      </div>
+      <div class="pit-body">
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag miss">真相</span></div>
+          <div class="pit-val">PM 按互联网习惯<strong>周三上线了新版评分模型</strong>——准确率确实更高（87% → 91%），但<strong>判分细节变了</strong>。家长发现"上周判对的题这周判错"，期末紧张氛围下情绪炸裂。</div>
+        </div>
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag fix">改法</span></div>
+          <div class="pit-val fix">立刻<strong>回滚到旧版本</strong>，并在系统加<strong>学期节奏管控</strong>——任何评分相关变更只能在 <code>寒/暑假窗口期</code>上线，其他时间锁死。<strong>这是教育 PM 的底线</strong>。</div>
+        </div>
+        <div class="pit-row">
+          <div class="pit-key"><span class="pit-key-tag cost">教训</span></div>
+          <div class="pit-val">技术上"更准"不一定<strong>用户体感"更好"</strong>——在敏感时间窗口，<strong>稳定比进步重要 100 倍</strong>。这是互联网 PM 转教育最大的认知 shift。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">教育 AI 和别的行业有什么不同</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule"><span class="h">输入端</span>——OCR 是天花板，不是模型</div>
+        <div class="truth-rule"><span class="h">输出端</span>——AI 解法必须和老师课堂保持一致</div>
+        <div class="truth-rule"><span class="h">用户端</span>——是家校学三方关系，不是单一用户</div>
+        <div class="truth-rule"><span class="h">节奏端</span>——发版窗口只有寒暑假，不能按互联网周节奏</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官知道你真做过教育 AI</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        教育 AI 的护城河——<br>
+        不是<span class="red-em">模型</span>，是<span class="red-em">对教育的敬畏</span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red">AI PM 一周到底在干嘛</span>
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">真实时间分配拆解 · 5 大工作模块</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#AI教育</span>
+        <span>#真实踩坑</span>
+        <span>#AIPM求职</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
