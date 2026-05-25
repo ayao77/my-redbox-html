@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM 线索 AI 智能打标 · NOVA AI PM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:24px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:36px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red{color:#E63946;position:relative;display:inline-block}
+.hero-title .red::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ 反认知钩子 ============ */
+.hook-card{
+  margin:24px 0 32px;background:#2B2B2B;color:#FFFFFF;border-radius:18px;
+  padding:24px 28px;box-shadow:6px 6px 0 #E63946;position:relative;
+}
+.hook-label{
+  display:inline-block;background:#E63946;color:#FFFFFF;
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.15em;
+  padding:3px 10px;border-radius:6px;margin-bottom:14px;
+}
+.hook-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;
+}
+.hook-title .yellow{color:#FFE16B}
+.hook-title .red{color:#FF8C70}
+.hook-sub{
+  margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,0.2);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:rgba(255,255,255,0.8);line-height:1.65;
+}
+.hook-sub strong{color:#FFE16B}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 20px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 标签体系矩阵 ============ */
+.tag-matrix{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px;margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.tag-matrix-label{
+  position:absolute;top:-18px;left:24px;
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;letter-spacing:0.1em;
+}
+.matrix-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#666;
+  text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.matrix-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+.matrix-dim{
+  background:#FFFEF0;border:2.5px solid #2B2B2B;border-radius:12px;
+  padding:14px 16px;box-shadow:3px 3px 0 #2B2B2B;
+}
+.matrix-dim.d1{background:#FFE9CB}
+.matrix-dim.d2{background:#A8E6CF}
+.matrix-dim.d3{background:#D0E8FF}
+.matrix-dim.d4{background:#FFD9DC}
+.matrix-dim.d5{background:#E5D4F1}
+.matrix-dim.d6{background:#FFE16B}
+.matrix-dim-head{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+  padding-bottom:8px;border-bottom:1.5px dashed rgba(0,0,0,0.15);
+}
+.matrix-dim-num{
+  background:#2B2B2B;color:#FFE16B;font-family:"Archivo Black",sans-serif;
+  font-size:10px;padding:3px 7px;border-radius:5px;letter-spacing:0.05em;
+}
+.matrix-dim-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;flex:1;
+}
+.matrix-tags{
+  display:flex;flex-wrap:wrap;gap:5px;
+}
+.matrix-tag{
+  background:#FFFFFF;border:1.5px solid #2B2B2B;border-radius:50px;
+  padding:2px 9px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:12.5px;color:#2B2B2B;
+}
+.matrix-explain{
+  margin-top:8px;padding-top:8px;border-top:1.5px dashed rgba(0,0,0,0.1);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:12.5px;color:#3D3D3D;line-height:1.5;
+}
+.matrix-explain strong{color:#9B1B27}
+
+/* 销售真实使用对比 */
+.usage-compare{
+  margin:24px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.usage-head{
+  display:grid;grid-template-columns:1fr 1fr;background:#FFFEF0;border-bottom:3px solid #2B2B2B;
+}
+.usage-head-col{
+  padding:14px 20px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;
+  display:flex;align-items:center;gap:10px;
+}
+.usage-head-col.bad{color:#9B1B27;border-right:2.5px dashed rgba(0,0,0,0.2)}
+.usage-head-col.good{color:#1B6B43}
+.usage-head-tag{
+  font-family:"Archivo Black",sans-serif;font-size:10px;
+  padding:3px 8px;border-radius:50px;letter-spacing:0.1em;
+}
+.usage-head-col.bad .usage-head-tag{background:#9B1B27;color:#FFFFFF}
+.usage-head-col.good .usage-head-tag{background:#1B6B43;color:#FFE16B}
+.usage-body{display:grid;grid-template-columns:1fr 1fr}
+.usage-col{padding:18px 20px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;line-height:1.7}
+.usage-col.bad{background:#FFD9DC;border-right:2.5px dashed rgba(0,0,0,0.2)}
+.usage-col.good{background:#A8E6CF}
+.usage-col p{margin-bottom:10px}
+.usage-col p:last-child{margin-bottom:0}
+.usage-col strong{color:#9B1B27;font-weight:bold}
+.usage-col.good strong{color:#1B6B43;font-weight:bold}
+.usage-quote{
+  background:rgba(255,255,255,0.7);border-left:3px solid #9B1B27;
+  padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:10px;
+  font-size:13.5px;font-style:italic;color:#3D3D3D;
+}
+.usage-col.good .usage-quote{border-left-color:#1B6B43}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.do{background:#A8E6CF}
+.block.warn{background:#FFD9DC}
+.block.dark{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-family:"Archivo Black",sans-serif;font-size:13px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;
+  letter-spacing:0.1em;color:#2B2B2B;
+}
+.block.do::before{content:"心法"}
+.block.warn::before{content:"翻车"}
+.block.dark::before{content:"金句";background:#2B2B2B;color:#FFE16B}
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.dark .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.dark .block-title .red-em{color:#FFE16B}
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.8;color:#2B2B2B;
+}
+.block.dark p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.dark p strong{color:#FFE16B}
+
+/* ============ Tab 02 · 准确率方法 ============ */
+.method-stack{
+  margin:32px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px;box-shadow:5px 5px 0 #2B2B2B;
+}
+.method-stack-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#666;
+  text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:2px dashed rgba(0,0,0,0.15);
+}
+.method-step{
+  margin-bottom:14px;
+  background:#FFFEF0;border:2.5px solid #2B2B2B;border-radius:12px;
+  padding:14px 16px;box-shadow:3px 3px 0 #2B2B2B;position:relative;
+}
+.method-step:last-child{margin-bottom:0}
+.method-step.s1{background:#FFE9CB}
+.method-step.s2{background:#D0E8FF}
+.method-step.s3{background:#A8E6CF}
+.method-step.s4{background:#E5D4F1}
+.method-step-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:10px;
+}
+.method-step-num{
+  background:#2B2B2B;color:#FFE16B;border-radius:8px;
+  padding:5px 11px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:-0.02em;
+}
+.method-step-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;flex:1;
+}
+.method-step-acc{
+  font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:700;color:#E63946;
+  background:#FFFFFF;border:1.5px solid #2B2B2B;padding:2px 9px;border-radius:5px;
+}
+.method-step-acc.good{color:#1B6B43}
+.method-step-detail{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#3D3D3D;line-height:1.65;
+}
+.method-step-detail strong{color:#E63946}
+.method-step-detail code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:3px;color:#1A1A1A;
+}
+
+/* prompt 示例代码块 */
+.code-block{
+  margin:24px 0 36px;background:#1A1A1A;border-radius:14px;overflow:hidden;
+  box-shadow:5px 5px 0 #2B2B2B;
+}
+.code-head{
+  background:#0D0D0D;padding:10px 16px;display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.code-dot{width:10px;height:10px;border-radius:50%}
+.code-dot.r{background:#FF5F56}
+.code-dot.y{background:#FFBD2E}
+.code-dot.g{background:#27C93F}
+.code-filename{
+  margin-left:8px;font-family:"JetBrains Mono",monospace;font-size:12px;color:rgba(255,255,255,0.6);
+}
+.code-body{
+  padding:18px 20px;font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.75;
+  color:#E8E2D4;white-space:pre-wrap;
+}
+.code-body .key{color:#FFD580;font-weight:600}
+.code-body .str{color:#A8E6CF}
+.code-body .ph{color:#7AB7FF}
+.code-body .cmt{color:#888}
+
+/* ============ Tab 03 · 采纳率冷启动 ============ */
+.adoption-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.adoption-head{
+  padding:16px 22px;border-bottom:3px solid #2B2B2B;display:flex;align-items:center;gap:12px;
+}
+.adoption-card.a1 .adoption-head{background:#FFD9DC}
+.adoption-card.a2 .adoption-head{background:#FFE9CB}
+.adoption-card.a3 .adoption-head{background:#A8E6CF}
+.adoption-id{
+  background:#2B2B2B;color:#FFE16B;font-family:"Archivo Black",sans-serif;
+  font-size:11px;padding:4px 11px;border-radius:50px;letter-spacing:0.1em;flex-shrink:0;
+}
+.adoption-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;line-height:1.4;
+}
+.adoption-body{padding:18px 22px}
+.adoption-row{
+  display:grid;grid-template-columns:80px 1fr;gap:14px;padding:9px 0;
+  border-bottom:1.5px dashed rgba(0,0,0,0.1);
+}
+.adoption-row:last-child{border-bottom:none}
+.adoption-key{
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.1em;
+  color:#888;padding-top:3px;
+}
+.adoption-val{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;line-height:1.65;
+}
+.adoption-val strong{color:#E63946}
+.adoption-val.fix strong{color:#1B6B43}
+.adoption-val code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;
+}
+
+/* ============ 面试金句 ============ */
+.truth-block{
+  margin:32px 0 36px;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px}
+.truth-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;font-size:13px;color:#888;letter-spacing:0.1em}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:24px}
+  .hook-title{font-size:18px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .block-title{font-size:17px}
+  .matrix-grid{grid-template-columns:1fr;gap:10px}
+  .usage-head,.usage-body{grid-template-columns:1fr}
+  .usage-head-col.bad,.usage-col.bad{border-right:none;border-bottom:2.5px dashed rgba(0,0,0,0.2)}
+  .method-step-name{font-size:15px}
+  .method-step-detail{font-size:13px}
+  .code-body{font-size:11px;padding:14px 16px}
+  .adoption-title{font-size:15px}
+  .adoption-row{grid-template-columns:1fr;gap:4px}
+  .adoption-key{padding-top:0}
+  .adoption-val{font-size:13.5px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.18</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 18 讲｜真实业务场景</span>
+    <h1 class="hero-title">
+      CRM <span class="red">10 万条线索</span><br>
+      AI 怎么<span class="yellow-hi">自动打标 + 分级</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 每家 B2B SaaS 都在解的真实问题</div>
+  </div>
+
+  <!-- 反认知钩子 -->
+  <div class="hook-card">
+    <span class="hook-label">90% PM 都做错的事</span>
+    <div class="hook-title">
+      把客户分成<span class="red">"高/中/低意向"</span>三档<br>
+      就以为搞定了——<br>
+      <span class="yellow">销售根本不会用</span>
+    </div>
+    <div class="hook-sub">
+      你给销售一个"高意向"标签，他想的是：<strong>"凭啥说这是高意向？打过去他要是不接呢？"</strong> 销售要的不是"分数"，是"为啥 + 怎么跟"。这条讲透 3 件事。
+    </div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">打什么</span>
+      <span class="tab-en">TAGS</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">怎么准</span>
+      <span class="tab-en">ACC</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">销售凭啥用</span>
+      <span class="tab-en">ADOPT</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01：打什么标签 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">销售真用得上的<span class="yellow-hi">6 大标签维度</span></div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      不是"高/中/低意向"这么粗，是<strong style="color:#E63946">销售拿到能立刻判断怎么跟进</strong>的具体维度。
+    </p>
+
+    <!-- 6 维标签矩阵 -->
+    <div class="tag-matrix">
+      <span class="tag-matrix-label">标签体系</span>
+      <div class="matrix-title">🎯 高级 PM 都用这套 · 6 维 18+ 标签</div>
+
+      <div class="matrix-grid">
+        <div class="matrix-dim d1">
+          <div class="matrix-dim-head">
+            <span class="matrix-dim-num">DIM 01</span>
+            <span class="matrix-dim-title">行业 + 公司规模</span>
+          </div>
+          <div class="matrix-tags">
+            <span class="matrix-tag">SaaS</span>
+            <span class="matrix-tag">电商</span>
+            <span class="matrix-tag">教育</span>
+            <span class="matrix-tag">50 人以下</span>
+            <span class="matrix-tag">500+</span>
+          </div>
+          <div class="matrix-explain">销售不同行业话术完全不同，<strong>这是分级的前置维度</strong></div>
+        </div>
+
+        <div class="matrix-dim d2">
+          <div class="matrix-dim-head">
+            <span class="matrix-dim-num">DIM 02</span>
+            <span class="matrix-dim-title">决策角色</span>
+          </div>
+          <div class="matrix-tags">
+            <span class="matrix-tag">最终决策人</span>
+            <span class="matrix-tag">使用者</span>
+            <span class="matrix-tag">影响者</span>
+          </div>
+          <div class="matrix-explain">CEO/CTO 是决策；PM/工程师是使用——<strong>谈法不一样</strong></div>
+        </div>
+
+        <div class="matrix-dim d3">
+          <div class="matrix-dim-head">
+            <span class="matrix-dim-num">DIM 03</span>
+            <span class="matrix-dim-title">需求阶段</span>
+          </div>
+          <div class="matrix-tags">
+            <span class="matrix-tag">还在调研</span>
+            <span class="matrix-tag">已 POC</span>
+            <span class="matrix-tag">在比价</span>
+            <span class="matrix-tag">立项审批</span>
+          </div>
+          <div class="matrix-explain">不同阶段销售要做的事不一样——比价阶段就该<strong>抛差异化</strong></div>
+        </div>
+
+        <div class="matrix-dim d4">
+          <div class="matrix-dim-head">
+            <span class="matrix-dim-num">DIM 04</span>
+            <span class="matrix-dim-title">紧迫性</span>
+          </div>
+          <div class="matrix-tags">
+            <span class="matrix-tag">本月有预算</span>
+            <span class="matrix-tag">Q3 上线</span>
+            <span class="matrix-tag">明年规划</span>
+            <span class="matrix-tag">无明确时间</span>
+          </div>
+          <div class="matrix-explain">销售只能服务 50 个客户/月，<strong>必须按紧迫性排序</strong></div>
+        </div>
+
+        <div class="matrix-dim d5">
+          <div class="matrix-dim-head">
+            <span class="matrix-dim-num">DIM 05</span>
+            <span class="matrix-dim-title">痛点关键词</span>
+          </div>
+          <div class="matrix-tags">
+            <span class="matrix-tag">成本太高</span>
+            <span class="matrix-tag">现有方案不满意</span>
+            <span class="matrix-tag">合规问题</span>
+          </div>
+          <div class="matrix-explain">从对话记录里提取——<strong>这是销售最值钱的弹药</strong></div>
+        </div>
+
+        <div class="matrix-dim d6">
+          <div class="matrix-dim-head">
+            <span class="matrix-dim-num">DIM 06</span>
+            <span class="matrix-dim-title">建议动作</span>
+          </div>
+          <div class="matrix-tags">
+            <span class="matrix-tag">本周电话</span>
+            <span class="matrix-tag">发案例</span>
+            <span class="matrix-tag">约 demo</span>
+            <span class="matrix-tag">先培养</span>
+          </div>
+          <div class="matrix-explain">最关键一维——<strong>告诉销售"下一步该做啥"</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 销售真实使用对比 -->
+    <div class="usage-compare">
+      <div class="usage-head">
+        <div class="usage-head-col bad">
+          <span class="usage-head-tag">90% PM</span>
+          <span>这么打标 → 销售不用</span>
+        </div>
+        <div class="usage-head-col good">
+          <span class="usage-head-tag">真懂业务的 PM</span>
+          <span>这么打标 → 销售抢着用</span>
+        </div>
+      </div>
+      <div class="usage-body">
+        <div class="usage-col bad">
+          <div class="usage-quote">客户 A 标签：<strong>高意向 · 85 分</strong></div>
+          <p><strong>销售心里</strong>：85 分凭啥？打过去他要是说不感兴趣咋办？这分能信吗？</p>
+          <p><strong>结果</strong>：销售忽略 AI 标签，继续按自己直觉打电话</p>
+        </div>
+        <div class="usage-col good">
+          <div class="usage-quote">客户 A 标签：<strong>SaaS / 200 人 / CTO / 已 POC / Q3 上线 / 现有方案不满意</strong><br>建议：<strong>本周内电话 + 发同行业案例</strong></div>
+          <p><strong>销售心里</strong>：CTO 已经 POC 了说现有方案不满意，Q3 要上线——<strong>这就是要立刻打的</strong></p>
+          <p><strong>结果</strong>：销售直接按建议动作来</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-title">
+        标签的终极测试——<br>
+        <span class="red-em">销售看完知道下一步做啥</span>
+      </div>
+      <p>你的标签如果只是"高/中/低 + 分数"，<strong>就是给销售一道判断题</strong>。他不信任就不用。</p>
+      <p style="margin-top:8px">真正的好标签是<strong>给销售一道执行题</strong>——告诉他"这个客户 + 这个情况 + 下一步做什么"。<strong>能直接执行的才是真标签</strong>。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02：怎么打才准 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">从 <span class="yellow-hi">52% 干到 87%</span> 的真实方法</div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL khuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      大模型直接判客户分类——<strong style="color:#E63946">准确率只有 50-60%</strong>。下面 4 步组合，是真实把准确率干到 85%+ 的方法。
+    </p>
+
+    <!-- 4 步方法栈 -->
+    <div class="method-stack">
+      <div class="method-stack-title">📈 准确率提升 4 步法 · 真实可复用</div>
+
+      <div class="method-step s1">
+        <div class="method-step-head">
+          <span class="method-step-num">STEP 01</span>
+          <span class="method-step-name">直接丢给 GPT-4 判断</span>
+          <span class="method-step-acc">52%</span>
+        </div>
+        <div class="method-step-detail">
+          把客户信息（公司名、岗位、对话记录）丢给 <code>GPT-4</code>，让它判断标签。<strong>基线</strong>——准确率 52%。<br>问题：模型没有<strong>行业背景知识</strong>，分不清"看起来很大的公司"和"真的能签单的公司"。
+        </div>
+      </div>
+
+      <div class="method-step s2">
+        <div class="method-step-head">
+          <span class="method-step-num">STEP 02</span>
+          <span class="method-step-name">加 Few-shot 示例</span>
+          <span class="method-step-acc">68%</span>
+        </div>
+        <div class="method-step-detail">
+          在 prompt 里塞 <code>5-8 个真实标注过的客户案例</code>。让模型"模仿"销售总监的判断逻辑。<br>提升 <strong>+16pp</strong>。但<strong>遇到新行业还是抓瞎</strong>。
+        </div>
+      </div>
+
+      <div class="method-step s3">
+        <div class="method-step-head">
+          <span class="method-step-num">STEP 03</span>
+          <span class="method-step-name">加 RAG 检索企业信息</span>
+          <span class="method-step-acc">79%</span>
+        </div>
+        <div class="method-step-detail">
+          调企查查/天眼查 API 拉<strong>公司基本面</strong>（注册资本/员工数/融资轮次/行业），喂给模型。<br>提升 <strong>+11pp</strong>。AI 不再凭空猜公司规模。
+        </div>
+      </div>
+
+      <div class="method-step s4">
+        <div class="method-step-head">
+          <span class="method-step-num">STEP 04</span>
+          <span class="method-step-name">加销售反馈闭环</span>
+          <span class="method-step-acc good">87%</span>
+        </div>
+        <div class="method-step-detail">
+          销售跟进后回填<strong>"标签对/错 + 真实结果"</strong>，每月用这些数据<strong>重新调 prompt + Few-shot 池</strong>。<br>从 79% 干到 87%，再到 90%+ 都靠这一步。<strong>这是真护城河</strong>。
+        </div>
+      </div>
+    </div>
+
+    <!-- prompt 真实模板 -->
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:16px;color:#2B2B2B;margin:24px 0 8px"><strong>真实可抄的 prompt 结构</strong>：</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <span class="code-dot r"></span>
+        <span class="code-dot y"></span>
+        <span class="code-dot g"></span>
+        <span class="code-filename">lead_scoring_prompt.txt</span>
+      </div>
+      <div class="code-body"><span class="key">## 角色</span>
+你是一位 <span class="ph">[公司名]</span> 的资深销售总监，擅长从客户信息中
+判断意向阶段并给出可执行的跟进动作。
+
+<span class="key">## 输入</span>
+客户档案: <span class="ph">{customer_profile}</span>
+对话记录: <span class="ph">{conversation_history}</span>
+企查查信息: <span class="ph">{company_info}</span>
+
+<span class="key">## 标签维度（必填）</span>
+1. 行业 + 规模
+2. 决策角色（决策人 / 使用者 / 影响者）
+3. 需求阶段（调研 / POC / 比价 / 立项）
+4. 紧迫性（本月 / Q3 / 明年 / 无明确）
+5. 痛点关键词（不超过 3 个）
+6. <span class="key">建议动作</span>（本周电话 / 发案例 / 约 demo / 先培养）
+
+<span class="key">## 示例</span>
+<span class="cmt"># 这里塞 5-8 个真实历史标注</span>
+客户 1 → 标签: <span class="str">[SaaS, 200人, CTO, POC, Q3, 成本痛, 本周电话]</span>
+客户 2 → 标签: <span class="str">[电商, 50人, 使用者, 调研, 明年, 先培养]</span>
+<span class="cmt">...</span>
+
+<span class="key">## 输出格式（严格 JSON）</span>
+<span class="str">{ "tags": [...], "next_action": "...", "reason": "..." }</span>
+
+<span class="key">## 约束</span>
+- next_action 必须从给定的 4 个动作里选
+- reason 必须基于上面提供的信息，<span class="key">不要编造</span>
+- 信息不足时 next_action 填 "先培养"</div>
+    </div>
+
+    <div class="block warn">
+      <div class="block-title">
+        最容易踩的坑——<span class="red-em">不做评估集就上线</span>
+      </div>
+      <p>很多 PM 直接把 prompt 写好就上线了。<strong>错</strong>。</p>
+      <p style="margin-top:8px">上线前必须做的——<strong>找销售总监标 100 个真实历史客户</strong>当 ground truth。每改一次 prompt 都跑一遍这 100 个，看准确率有没有提升。</p>
+      <p style="margin-top:8px">没有评估集 = 你不知道自己改的是好是坏。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03：销售凭啥用 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">为啥销售<span class="yellow-hi">就是不用 AI 标签</span></div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      技术做对了，准确率 87%，<strong style="color:#E63946">销售依然不用</strong>——这是 90% AI 项目死的地方。3 个真实痛点 + 解法。
+    </p>
+
+    <!-- 痛点 1 · 信任 -->
+    <div class="adoption-card a1">
+      <div class="adoption-head">
+        <span class="adoption-id">问题 01</span>
+        <span class="adoption-title">销售对 AI 标签<strong style="color:#9B1B27">天生不信任</strong></span>
+      </div>
+      <div class="adoption-body">
+        <div class="adoption-row">
+          <span class="adoption-key">原话</span>
+          <span class="adoption-val">"<strong>AI 又不了解我的客户</strong>，凭啥说他高意向。上次给我推的'高意向'，打过去人家直接挂了。"</span>
+        </div>
+        <div class="adoption-row">
+          <span class="adoption-key">真因</span>
+          <span class="adoption-val">不是准确率问题——是<strong>不透明</strong>。销售看不到 AI 为啥这么判，黑盒结论就是不能信。</span>
+        </div>
+        <div class="adoption-row">
+          <span class="adoption-key">解法</span>
+          <span class="adoption-val fix">每个标签<strong>必须带"判断依据"</strong>——"判为 SaaS 是因为对话提到'我们的 SaaS 产品'；判为 CTO 是因为签名档显示'CTO'；判为 POC 阶段是因为提到'已经在试用'"。<strong>透明就有信任</strong>。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 痛点 2 · 流程 -->
+    <div class="adoption-card a2">
+      <div class="adoption-head">
+        <span class="adoption-id">问题 02</span>
+        <span class="adoption-title">销售<strong style="color:#9B1B27">懒得切系统</strong>看 AI 标签</span>
+      </div>
+      <div class="adoption-body">
+        <div class="adoption-row">
+          <span class="adoption-key">原话</span>
+          <span class="adoption-val">"我每天 100 个跟进电话，<strong>哪有时间一个个去 CRM 查 AI 标签</strong>？"</span>
+        </div>
+        <div class="adoption-row">
+          <span class="adoption-key">真因</span>
+          <span class="adoption-val">AI 标签<strong>嵌入位置错了</strong>——单独建一个"AI 智能推荐"模块，销售根本不会点进去。</span>
+        </div>
+        <div class="adoption-row">
+          <span class="adoption-key">解法</span>
+          <span class="adoption-val fix">把 AI 标签<strong>直接显示在销售每天必看的 3 个位置</strong>：① CRM 客户列表的"今日推荐"栏 ② 企微聊天里"客户标签"卡片 ③ 微信打卡日报推送。<strong>嵌入流程，而不是另开模块</strong>。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 痛点 3 · 利益 -->
+    <div class="adoption-card a3">
+      <div class="adoption-head">
+        <span class="adoption-id">问题 03</span>
+        <span class="adoption-title">用 AI 标签<strong style="color:#9B1B27">销售自己没好处</strong></span>
+      </div>
+      <div class="adoption-body">
+        <div class="adoption-row">
+          <span class="adoption-key">原话</span>
+          <span class="adoption-val">"用 AI 推荐成功了——<strong>是 AI 的功劳</strong>。不用 AI 自己签了——是我自己牛。我傻才用。"</span>
+        </div>
+        <div class="adoption-row">
+          <span class="adoption-key">真因</span>
+          <span class="adoption-val">PM 没设计<strong>正反馈机制</strong>。销售用 AI 没好处，<strong>反而有"被 AI 替代"的恐惧</strong>。</span>
+        </div>
+        <div class="adoption-row">
+          <span class="adoption-key">解法</span>
+          <span class="adoption-val fix">和销售管理层谈——把"采纳 AI 推荐 + 签单"做成 <strong>额外提成项</strong>（在原有提成上加 1-2%）。<br>同时改话术："AI 不是替代你判断，是<strong>帮你提前过滤掉那些一打就挂的</strong>，让你少做无用功"。<strong>把恐惧改成赋能</strong>。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 心法 -->
+    <div class="block do">
+      <div class="block-title">
+        <span class="red-em">采纳率</span>才是 AI 产品真指标
+      </div>
+      <p>大部分 PM 汇报时只讲<strong>准确率 87%</strong>——CFO 听不懂、销售不在乎、老板没感觉。</p>
+      <p style="margin-top:8px">真正的指标——<strong>销售采纳率</strong>。AI 标签被销售实际使用的比例。从我学员真实项目看——<strong>第一个月 12% → 三个月迭代后 64%</strong>。</p>
+      <p style="margin-top:8px"><strong>这个数字才是老板真正想看的</strong>。</p>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">AI 给客户打标怎么落地</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule"><span class="h">标签要可执行</span>——不是"高/中/低"，是"下一步做什么"</div>
+        <div class="truth-rule"><span class="h">准确率要分层提</span>——Few-shot + RAG + 反馈闭环组合干到 87%+</div>
+        <div class="truth-rule"><span class="h">透明带依据</span>——每个标签附"为啥这么判"</div>
+        <div class="truth-rule"><span class="h">嵌入销售流程</span>——CRM + 企微 + 日报推送三处显示</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官知道你真做过 B2B AI 落地</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        AI 标签项目真死因——<br>
+        不是模型不准，<span class="red-em">是销售不用</span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red">销售会议录音</span>怎么 AI 自动出纪要 + 任务
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">飞书 / 钉钉都在做的 Agent 场景</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#CRM</span>
+        <span>#B2B落地</span>
+        <span>#AIPM求职</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
