@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI PM 面试备考手册 · 金融/保险客服</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{--bg:#faf9f6;--ink:#1a1408;--ink-soft:#3d3020;--ink-mute:#8a7a5a;--accent:#8b6914;--accent2:#1a4d2e;--accent3:#8b1a1a;--card-bg:#fff;--border:#d4c8a8;--shadow:3px 3px 0 #1a1408;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'Noto Sans SC',sans-serif;font-size:14.5px;line-height:1.8;}
+.hero{background:var(--ink);color:#f5f0e0;padding:48px 40px 40px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:40px;top:50%;transform:translateY(-50%);width:150px;height:150px;border:2px solid rgba(212,180,100,0.2);border-radius:50%;}
+.hero::after{content:'';position:absolute;right:60px;top:50%;transform:translateY(-50%);width:90px;height:90px;border:2px solid rgba(212,180,100,0.15);border-radius:50%;}
+.hero-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:#c8a84a;text-transform:uppercase;margin-bottom:10px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1.4;margin-bottom:14px;}
+.hero-sub{font-size:13px;color:#a09070;line-height:1.6;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+.hero-tag{background:rgba(139,105,20,0.2);border:1px solid #c8a84a;color:#d4b860;font-size:10px;padding:2px 9px;font-family:'JetBrains Mono',monospace;}
+.container{max-width:860px;margin:0 auto;padding:36px 22px 72px;}
+.section{margin-bottom:44px;opacity:0;transform:translateY(18px);transition:opacity .5s,transform .5s;}
+.section.visible{opacity:1;transform:translateY(0);}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--ink);}
+.section-num{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--accent);color:#f5f0e0;padding:2px 8px;font-weight:600;}
+.section-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;}
+.card{background:var(--card-bg);border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:12px;}
+.card:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink);transition:all .15s;}
+.card-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--ink-mute);text-transform:uppercase;margin-bottom:7px;}
+.card h3{font-size:14.5px;font-weight:700;margin-bottom:7px;}
+.card ul{padding-left:16px;}.card li{margin-bottom:3px;font-size:13.5px;color:var(--ink-soft);line-height:1.75;}
+.card.gold{border-color:var(--accent);background:#fffdf5;}
+.card.gold .card-label{color:var(--accent);}
+.card.red{border-color:var(--accent3);background:#fff8f8;}
+.card.red .card-label{color:var(--accent3);}
+.card.green{border-color:var(--accent2);background:#f5fff8;}
+.card.green .card-label{color:var(--accent2);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px;}
+th{background:var(--ink);color:#f5f0e0;padding:9px 13px;text-align:left;font-weight:600;}
+td{padding:8px 13px;border:1px solid var(--border);color:var(--ink-soft);vertical-align:top;}
+tr:nth-child(even) td{background:#faf7f0;}
+tr:hover td{background:#f5f0d8;transition:background .15s;}
+.qa-block{border:1.5px solid var(--border);margin-bottom:16px;box-shadow:2px 2px 0 var(--ink);}
+.qa-q{background:var(--ink);color:#f5f0e0;padding:11px 16px;font-weight:600;font-size:13.5px;display:flex;align-items:flex-start;gap:9px;cursor:pointer;user-select:none;}
+.qa-q .q-icon{background:var(--accent);color:#f5f0e0;font-size:10px;font-family:'JetBrains Mono',monospace;padding:1px 6px;flex-shrink:0;margin-top:1px;}
+.qa-q .chevron{margin-left:auto;font-size:11px;transition:transform .25s;flex-shrink:0;}
+.qa-q.open .chevron{transform:rotate(180deg);}
+.qa-a{display:none;padding:14px 16px;background:white;font-size:13.5px;color:var(--ink-soft);line-height:1.8;border-top:1.5px solid var(--ink);}
+.qa-a.open{display:block;}
+.qa-a .tip{display:inline-block;background:#fdf8e8;border:1px solid var(--accent);font-size:11px;padding:2px 8px;margin-bottom:9px;font-family:'JetBrains Mono',monospace;color:var(--accent);}
+.qa-a strong{color:var(--accent3);}
+.qa-a .gold{color:var(--accent);font-weight:600;}
+.alert{border-left:4px solid var(--accent3);background:#fff8f8;padding:12px 15px;margin:12px 0;font-size:13.5px;}
+.alert.gold{border-color:var(--accent);background:#fffdf5;}
+.alert .at{font-weight:700;margin-bottom:3px;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;}
+.tag{display:inline-block;font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 7px;border-radius:2px;margin:2px 3px 2px 0;}
+.tag-r{background:#fde8e8;border:1px solid #e74c3c;color:#c0392b;}
+.tag-b{background:#e8f4fd;border:1px solid #3498db;color:#2980b9;}
+.tag-g{background:#e8fdf0;border:1px solid #27ae60;color:#1e8449;}
+.tag-o{background:#fef3e2;border:1px solid #e67e22;color:#d35400;}
+.badge{display:inline-block;background:var(--ink);color:#f5f0e0;font-size:10px;padding:1px 7px;font-family:'JetBrains Mono',monospace;margin-right:5px;}
+.badge.g{background:var(--accent);}.badge.r{background:var(--accent3);}
+.warning-box{background:#fff3f3;border:2px solid var(--accent3);padding:16px 18px;margin:14px 0;}
+.warning-box .wt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent3);font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.footer{text-align:center;padding:20px;font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;border-top:1.5px solid var(--border);}
+@media(max-width:600px){.two-col{grid-template-columns:1fr;}.hero{padding:28px 18px 24px;}.container{padding:24px 14px 56px;}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-label">AI PM · 面试备考手册</div>
+  <h1>金融/保险 AI 客服<br>产品经理面试作战手册</h1>
+  <div class="hero-sub">适用场景：银行 / 保险 / 证券 / 消费金融<br>核心特征：强合规 · 风险控制 · 话术审查 · 资金安全</div>
+  <div class="hero-tags">
+    <span class="hero-tag">合规红线</span><span class="hero-tag">话术审查</span><span class="hero-tag">反欺诈</span>
+    <span class="hero-tag">双录要求</span><span class="hero-tag">监管留存</span><span class="hero-tag">风控联动</span>
+  </div>
+</div>
+<div class="container">
+
+  <div class="section" id="s1">
+    <div class="section-header"><span class="section-num">01</span><span class="section-title">金融客服的本质：合规第一</span></div>
+    <div class="warning-box">
+      <div class="wt">⚠️ 最重要的认知</div>
+      <p style="font-size:13.5px;color:#5a0000;line-height:1.8">金融AI客服的第一约束不是效率，而是<strong>合规</strong>。任何话术、任何自动化操作，都必须经过合规部门审查。一条违规的AI回复，可能导致监管处罚、舆情危机、甚至牌照风险。</p>
+    </div>
+    <div class="two-col">
+      <div class="card gold">
+        <div class="card-label">金融客服 · 特征画像</div>
+        <ul>
+          <li>话术有严格审查：不能承诺收益/夸大产品</li>
+          <li>涉及资金操作：转账/赎回需多重验证</li>
+          <li>监管对话留存：聊天记录必须保存≥5年</li>
+          <li>投诉监管通道：银保监/证监会投诉直接上报</li>
+          <li>用户信息极度敏感：账户/交易数据最高级别保护</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-label">监管要求速览</div>
+        <ul>
+          <li><strong>银行</strong>：银保监会、人民银行双重监管</li>
+          <li><strong>保险</strong>：双录要求（录音+录像）</li>
+          <li><strong>证券</strong>：适当性管理，不能向不适合用户推销产品</li>
+          <li><strong>消费金融</strong>：催收规范、利率披露要求</li>
+          <li>所有AI话术须法务+合规+监管政策三审</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="s2">
+    <div class="section-header"><span class="section-num">02</span><span class="section-title">产品架构 · 金融特有模块</span></div>
+    <div class="two-col">
+      <div class="card red">
+        <div class="card-label">⚡ 金融独有 · 合规审查模块</div>
+        <ul>
+          <li><strong>话术库合规标注</strong>：每条回复标注合规状态</li>
+          <li><strong>违规词过滤</strong>：自动拦截"保证收益""稳赚"等</li>
+          <li><strong>实时话术审查</strong>：LLM生成回复先过合规过滤器</li>
+          <li><strong>版本追踪</strong>：话术修改需审批流，留存变更记录</li>
+          <li><strong>监管报告生成</strong>：自动汇总异常对话上报</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <div class="card-label">⚡ 金融独有 · 风控联动模块</div>
+        <ul>
+          <li><strong>身份核验</strong>：高敏感操作触发人脸/短信验证</li>
+          <li><strong>反欺诈识别</strong>：异常操作模式实时预警</li>
+          <li><strong>大额操作拦截</strong>：超阈值转账强制人工复核</li>
+          <li><strong>话术异常检测</strong>：识别疑似诈骗话术保护用户</li>
+          <li><strong>黑名单联动</strong>：高风险用户对话自动升级</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <div class="card-label">通用模块（与C端相同逻辑，但执行标准更严）</div>
+      <ul style="columns:2;column-gap:24px">
+        <li>意图识别（含风险意图识别）</li>
+        <li>智能路由（高风险直接转人工）</li>
+        <li>知识库管理（合规版本控制）</li>
+        <li>情绪识别（投诉预警）</li>
+        <li>满意度收集</li>
+        <li>对话留存（监管要求5年+）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section" id="s3">
+    <div class="section-header"><span class="section-num">03</span><span class="section-title">金融客服核心指标</span></div>
+    <div class="card">
+      <table>
+        <tr><th>层级</th><th>指标</th><th>说明</th><th>参考值</th></tr>
+        <tr><td><span class="badge r">合规</span></td><td>合规违规率</td><td>违规话术触发次数/总对话</td><td>= 0（零容忍）</td></tr>
+        <tr><td><span class="badge r">合规</span></td><td>话术审查通过率</td><td>合规部门审核通过比例</td><td>100%才上线</td></tr>
+        <tr><td><span class="badge r">合规</span></td><td>监管投诉率</td><td>升级至银保监/证监会的投诉</td><td>越低越好</td></tr>
+        <tr><td><span class="badge">风控</span></td><td>反欺诈拦截率</td><td>成功识别并拦截欺诈操作</td><td>核心安全KPI</td></tr>
+        <tr><td><span class="badge">风控</span></td><td>误拦截率</td><td>正常操作被错误拦截</td><td>需平衡体验</td></tr>
+        <tr><td><span class="badge g">效率</span></td><td>自助解决率</td><td>（低于C端）安全优先</td><td>40-55%</td></tr>
+        <tr><td><span class="badge g">效率</span></td><td>首次响应时长</td><td>投诉类需更快响应</td><td>≤ 3s</td></tr>
+        <tr><td><span class="badge">质量</span></td><td>投诉解决率</td><td>一次解决不再升级的比例</td><td>≥ 85%</td></tr>
+      </table>
+    </div>
+    <div class="alert gold"><div class="at">💡 面试加分认知</div>金融客服的指标体系中，<strong>合规指标永远优先于效率指标</strong>。自助解决率可以牺牲，违规率必须为零。说出这个优先级，面试官会认可你的风险意识。</div>
+  </div>
+
+  <div class="section" id="s4">
+    <div class="section-header"><span class="section-num">04</span><span class="section-title">金融场景特有难点</span></div>
+    <div class="card red">
+      <div class="card-label">难点一 · 话术合规性管理（最高频考点）</div>
+      <h3>AI生成内容的合规风险</h3>
+      <ul>
+        <li>LLM生成回复无法保证100%合规，需要"合规过滤层"</li>
+        <li><strong>绝对禁止词</strong>：保证收益、无风险、稳赚、跑赢通胀</li>
+        <li><strong>需要加免责声明的词</strong>：历史收益、参考收益率、预期</li>
+        <li>话术更新流程：运营起草→合规审查→法务复核→灰度测试→上线</li>
+        <li>AI回复需要"保守模式"：不确定时给法律免责声明而非给答案</li>
+      </ul>
+    </div>
+    <div class="card gold">
+      <div class="card-label">难点二 · 适当性管理</div>
+      <ul>
+        <li>不同风险等级用户只能被推荐相应风险产品</li>
+        <li>AI必须识别用户风险评级，据此过滤信息</li>
+        <li>保守型客户咨询高风险产品→给风险提示+引导重新测评</li>
+        <li>这是《证券法》《基金销售办法》的强制要求</li>
+      </ul>
+    </div>
+    <div class="two-col">
+      <div class="card green">
+        <div class="card-label">难点三 · 反欺诈保护</div>
+        <ul>
+          <li>识别"冒充客服"等社工攻击话术</li>
+          <li>保护用户：拒绝引导用户转账给第三方</li>
+          <li>异常操作预警：深夜大额转账</li>
+          <li>反向教育用户识别诈骗话术</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-label">难点四 · 投诉监管通道</div>
+        <ul>
+          <li>用户说"我要投诉到银保监"必须立即升级</li>
+          <li>投诉类对话全程录音留存</li>
+          <li>15个工作日内必须给用户书面答复</li>
+          <li>监管投诉会生成KPI扣分，PM压力极大</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="s5">
+    <div class="section-header"><span class="section-num">05</span><span class="section-title">高频面试真题</span></div>
+
+    <div class="qa-block">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q1</span>金融AI客服上线前需要做哪些合规准备？<span class="chevron">▼</span></div>
+      <div class="qa-a"><span class="tip">答题框架：话术层 + 流程层 + 技术层</span>
+        <p><strong>话术层准备</strong>：所有AI回复模板经合规部门逐条审查；建立违禁词库（收益承诺类、误导类）；建立"托底话术"（不确定时的标准免责回复）。</p><br>
+        <p><strong>流程层准备</strong>：明确哪些操作AI可以自助完成（余额查询、账单查询），哪些必须人工（大额转账、销户、投诉）；建立对话留存机制，满足监管5年保存要求。</p><br>
+        <p><strong>技术层准备</strong>：上线合规过滤器，LLM生成回复先经过规则审查；灰度测试期间人工复核所有AI回复，达标后才扩量。</p><br>
+        <p><span class="gold">加分：主动说"金融AI客服上线要比C端电商慢很多，因为合规审查周期长，但这个慢是值得的，一条违规回复的代价可能是整个产品下架"。</span></p>
+      </div>
+    </div>
+
+    <div class="qa-block">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q2</span>用户投诉AI客服给了错误理财建议导致亏损，你怎么处理？<span class="chevron">▼</span></div>
+      <div class="qa-a"><span class="tip">答题框架：紧急处置 + 根因 + 系统改进</span>
+        <p><strong>紧急处置（当天）</strong>：立即关闭对应AI功能模块；将该对话上报合规和法务；安排专属CSM联系用户，不走AI通道；评估是否需要法律赔偿。</p><br>
+        <p><strong>根因分析</strong>：是话术库问题（回复本身违规）？还是AI幻觉（生成了话术库外的内容）？还是合规过滤器漏网？定位具体环节。</p><br>
+        <p><strong>系统改进</strong>：加强合规过滤层；对同类问题增加"建议咨询专业顾问"的固定兜底回复；这类高风险问题直接不走AI，强制转人工。</p><br>
+        <p><span class="gold">关键态度：金融AI客服遇到这类问题，不是"优化模型"就能解决的——要反思是否这类问题本身就不该让AI回答。</span></p>
+      </div>
+    </div>
+
+    <div class="qa-block">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q3</span>如何平衡金融客服的效率和合规？<span class="chevron">▼</span></div>
+      <div class="qa-a"><span class="tip">答题框架：问题分层 + 效率边界</span>
+        <p><strong>核心框架：按风险等级划分AI边界</strong></p><br>
+        <p><strong>AI可以高效处理的</strong>（风险低）：账单查询、余额查询、网点/利率信息、产品基础介绍（含免责声明）、通用操作引导。</p><br>
+        <p><strong>AI辅助+人工决策</strong>（中等风险）：理财产品咨询（AI生成方案，人工确认）、账户问题排查（AI收集信息，人工判断）。</p><br>
+        <p><strong>纯人工处理</strong>（高风险）：大额操作、投诉、涉及资金争议、需要专业建议的投资咨询。</p><br>
+        <p><span class="gold">总结：金融客服的效率提升来自把L1问题自动化，而L1问题的边界由合规部门划定，PM的工作是在这个边界内把效率做到极致，而不是挑战边界。</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="s6">
+    <div class="section-header"><span class="section-num">06</span><span class="section-title">面试前自检清单</span></div>
+    <div class="card">
+      <table>
+        <tr><th>检查项</th><th>重要度</th></tr>
+        <tr><td>能说出金融客服"合规优先"的具体含义</td><td><span class="tag tag-r">必须掌握</span></td></tr>
+        <tr><td>知道哪些话术金融AI绝对不能说</td><td><span class="tag tag-r">必须掌握</span></td></tr>
+        <tr><td>AI边界划定：哪些能自动化，哪些不能</td><td><span class="tag tag-r">必须掌握</span></td></tr>
+        <tr><td>合规审查流程（不是一个人能决定的）</td><td><span class="tag tag-r">必须掌握</span></td></tr>
+        <tr><td>适当性管理概念（证券/基金场景）</td><td><span class="tag tag-o">加分项</span></td></tr>
+        <tr><td>反欺诈保护的设计思路</td><td><span class="tag tag-o">加分项</span></td></tr>
+        <tr><td>监管投诉通道的处理流程</td><td><span class="tag tag-b">了解即可</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+<div class="footer">AI PM 面试备考手册 · 金融/保险客服 · 内部资料</div>
+<script>
+function toggleQA(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
+const obs=new IntersectionObserver(e=>e.forEach(i=>{if(i.isIntersecting)i.target.classList.add('visible');}),{threshold:0.08});
+document.querySelectorAll('.section').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
