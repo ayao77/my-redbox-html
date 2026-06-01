@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR 招聘 AI 简历筛选 · NOVA VOL.21</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:#FEFCF5;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;line-height:1.7;
+}
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+
+/* ========== 1. 品牌头 ========== */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:20px;border-bottom:3px solid #2B2B2B;margin-bottom:32px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{
+  width:42px;height:42px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:20px;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px}
+.vol-badge{
+  background:#2B2B2B;color:#FFE16B;border-radius:50px;
+  padding:6px 14px;
+  font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.18em;
+  transform:rotate(-2deg);
+}
+
+/* ========== 2. 标题 ========== */
+.hero{margin-bottom:28px}
+.hero-tag{
+  display:inline-block;
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:16px;color:#9B1B27;
+  padding-left:38px;position:relative;margin-bottom:8px;
+}
+.hero-tag::before{
+  content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:28px;height:3px;background:#E63946;
+}
+.hero-title{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:46px;line-height:1.15;color:#2B2B2B}
+.hero-meta{margin-top:10px;font-family:"JetBrains Mono",monospace;font-size:13px;color:#666;letter-spacing:0.12em}
+
+.red-em{color:#E63946;position:relative;display:inline-block;font-weight:bold}
+.red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);
+  padding:0 4px;
+}
+
+/* ========== 3. 钩子卡 ========== */
+.hook-card{
+  background:#2B2B2B;color:#FFFFFF;
+  border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px 28px;box-shadow:5px 5px 0 #E63946;
+  margin-bottom:48px;position:relative;
+}
+.hook-card::before{
+  content:"反认知";position:absolute;top:-14px;left:24px;
+  background:#FFE16B;color:#2B2B2B;border:3px solid #2B2B2B;border-radius:50px;
+  padding:3px 12px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+}
+.hook-card .h-line{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:24px;line-height:1.45}
+.hook-card .h-sub{
+  margin-top:12px;font-size:14px;color:rgba(255,255,255,0.78);line-height:1.65;
+}
+.hook-card .h-sub strong{color:#FFE16B}
+
+/* ========== 章节标题 ========== */
+.section-h{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:30px;color:#2B2B2B;
+  margin:56px 0 20px;display:flex;align-items:center;gap:14px;
+}
+.section-h::before{
+  content:counter(section, decimal-leading-zero);counter-increment:section;
+  font-family:"Archivo Black",sans-serif;font-size:14px;color:#FFFFFF;
+  background:#9B1B27;padding:6px 12px;border-radius:50px;letter-spacing:0.15em;
+}
+body{counter-reset:section}
+
+/* ========== 4. 简历 X 光透视 ========== */
+.xray-stage{
+  display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-bottom:24px;
+}
+.resume-paper{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  padding:20px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+  font-size:11.5px;line-height:1.7;
+}
+.resume-paper::before{
+  content:"applicant.pdf";position:absolute;top:-12px;right:18px;
+  background:#FEFCF5;border:2.5px solid #2B2B2B;border-radius:50px;
+  padding:2px 10px;font-family:"JetBrains Mono",monospace;font-size:10px;
+}
+.rp-h1{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:20px;margin-bottom:2px}
+.rp-h2{font-family:"JetBrains Mono",monospace;font-size:10px;color:#888;margin-bottom:10px;letter-spacing:0.08em}
+.rp-section-h{
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.15em;
+  color:#9B1B27;border-bottom:1.5px solid #2B2B2B;padding-bottom:3px;margin:10px 0 6px;
+}
+.rp-line{padding:2px 0}
+.rp-line.mark{position:relative}
+/* AI 框出来的字段 */
+.ai-mark{
+  display:inline-block;background:rgba(230,57,70,0.12);
+  border:1.5px dashed #E63946;padding:1px 4px;border-radius:3px;
+  position:relative;
+}
+.ai-mark.ok{background:rgba(27,107,67,0.12);border-color:#1B6B43}
+.ai-mark::after{
+  content:attr(data-tag);position:absolute;top:-14px;left:-2px;
+  font-family:"Archivo Black",sans-serif;font-size:8px;letter-spacing:0.1em;
+  color:#FFFFFF;background:#E63946;padding:1px 5px;border-radius:3px;white-space:nowrap;
+}
+.ai-mark.ok::after{background:#1B6B43}
+
+.xray-panel{
+  background:#1A1A1A;color:#A8E6CF;
+  border:3px solid #2B2B2B;border-radius:14px;
+  padding:16px;box-shadow:5px 5px 0 #2B2B2B;
+  font-family:"JetBrains Mono",monospace;font-size:11px;line-height:1.7;
+  position:relative;
+}
+.xray-panel::before{
+  content:"AI 解析输出";position:absolute;top:-12px;left:18px;
+  background:#FFE16B;color:#2B2B2B;border:2.5px solid #2B2B2B;border-radius:50px;
+  padding:2px 10px;font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.15em;
+}
+.xp-row{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px dashed rgba(168,230,207,0.15)}
+.xp-row:last-child{border-bottom:none}
+.xp-k{color:rgba(255,255,255,0.5)}
+.xp-v{color:#A8E6CF;text-align:right}
+.xp-v.err{color:#FF8585;text-decoration:line-through}
+.xp-v.warn{color:#FFE16B}
+.xp-foot{
+  margin-top:10px;padding-top:8px;border-top:1.5px solid rgba(255,255,255,0.15);
+  display:flex;justify-content:space-between;
+}
+.xp-foot-l{color:#FFE16B;font-weight:700}
+.xp-foot-r{color:#FF8585;font-weight:700}
+
+.xray-caption{
+  background:#FFFEF0;border:2.5px dashed #2B2B2B;border-radius:10px;
+  padding:14px 18px;font-size:14px;line-height:1.7;
+}
+.xray-caption strong{color:#9B1B27}
+
+/* ========== 5. 四道漏斗 ========== */
+.funnel{
+  display:flex;flex-direction:column;gap:0;margin:24px 0;
+  align-items:center;
+}
+.f-row{
+  display:flex;align-items:stretch;gap:18px;width:100%;justify-content:center;
+}
+.f-arrow{
+  font-family:"Archivo Black",sans-serif;color:#9B1B27;font-size:24px;
+  text-align:center;line-height:1;padding:6px 0;
+}
+.f-stage{
+  border:3px solid #2B2B2B;border-radius:14px;padding:14px 22px;
+  box-shadow:5px 5px 0 #2B2B2B;display:flex;justify-content:space-between;
+  align-items:center;gap:18px;transition:transform .2s;
+}
+.f-stage.s0{background:#FFFEF0;width:96%}
+.f-stage.s1{background:#A8E6CF;width:78%}
+.f-stage.s2{background:#FFE16B;width:60%}
+.f-stage.s3{background:#FFD9DC;width:44%}
+.f-stage.s4{background:#2B2B2B;color:#FFE16B;width:28%}
+.f-num{font-family:"Archivo Black",sans-serif;font-size:24px;color:#2B2B2B}
+.f-stage.s4 .f-num{color:#FFE16B}
+.f-stage.s4 .f-tech{color:rgba(255,225,107,0.7)}
+.f-name{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:17px}
+.f-tech{font-family:"JetBrains Mono",monospace;font-size:10px;color:#666;letter-spacing:0.08em;display:block;margin-top:2px}
+.f-kill{font-family:"Archivo Black",sans-serif;font-size:11px;color:#9B1B27;letter-spacing:0.1em}
+
+/* ========== 6. 三个案例 — 视觉差异化 ========== */
+.case-h{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:22px;margin:36px 0 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.case-h .badge{
+  background:#9B1B27;color:#FFFFFF;border-radius:50px;padding:3px 11px;
+  font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.18em;
+}
+
+/* 案例 A: Amazon 训练数据偏见 — diff 块 */
+.amazon-diff{
+  background:#1A1A1A;border:3px solid #2B2B2B;border-radius:14px;
+  box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.amazon-diff-bar{
+  background:#2B2B2B;padding:10px 14px;display:flex;align-items:center;gap:8px;
+  border-bottom:2px solid #000;
+}
+.tdot{width:10px;height:10px;border-radius:50%}
+.tdot.r{background:#FF5F56}.tdot.y{background:#FFBD2E}.tdot.g{background:#27C93F}
+.amazon-diff-file{flex:1;margin-left:6px;font-family:"JetBrains Mono",monospace;font-size:11px;color:rgba(255,255,255,0.6)}
+.amazon-diff-tag{
+  font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+  color:#FFFFFF;background:#9B1B27;padding:3px 10px;border-radius:50px;
+}
+.amazon-diff-body{padding:14px 18px;font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.85;color:#D8D8D8}
+.adl{display:flex;gap:10px;padding:1px 0}
+.adl .g{color:#555;width:22px;text-align:right;flex-shrink:0}
+.adl .c{flex:1}
+.adl.m{background:rgba(155,27,39,0.22)}
+.adl.m .g{color:#E63946}.adl.m .c{color:#FFB8B8}
+.adl.p{background:rgba(27,107,67,0.25)}
+.adl.p .g{color:#7ED957}.adl.p .c{color:#A8E6CF}
+.adl .hl{background:rgba(255,225,107,0.28);color:#FFE16B;padding:0 4px;border-radius:3px}
+.amazon-foot{
+  background:#FFD9DC;padding:14px 18px;border-top:2.5px solid #2B2B2B;
+  font-size:14px;line-height:1.65;
+}
+.amazon-foot strong{color:#9B1B27}
+
+/* 案例 B: 大厂 ATS 架构图 */
+.arch-stage{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;
+}
+.arch-grid{
+  display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr;gap:0;
+  align-items:center;
+}
+.arch-node{
+  background:#FFFEF0;border:3px solid #2B2B2B;border-radius:12px;
+  padding:14px 12px;text-align:center;
+  box-shadow:3px 3px 0 #2B2B2B;
+}
+.arch-node.attention{background:#FFE16B}
+.arch-node.danger{background:#FFD9DC}
+.arch-node h4{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:15px;margin-bottom:4px}
+.arch-node .tech{font-family:"JetBrains Mono",monospace;font-size:10px;color:#666;letter-spacing:0.05em;line-height:1.5}
+.arch-conn{
+  height:3px;background:#2B2B2B;position:relative;
+}
+.arch-conn::after{
+  content:"→";position:absolute;right:-6px;top:50%;transform:translateY(-50%);
+  font-family:"Archivo Black",sans-serif;color:#2B2B2B;font-size:22px;
+}
+.arch-caption{
+  margin-top:16px;background:#FFFEF0;border:2px dashed #2B2B2B;border-radius:10px;
+  padding:12px 16px;font-size:13.5px;line-height:1.7;
+}
+.arch-caption strong{color:#9B1B27}
+
+/* 案例 C: Boss 直聘 dashboard */
+.boss-dash{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.boss-bar{
+  background:#FFE16B;padding:10px 16px;display:flex;justify-content:space-between;
+  align-items:center;border-bottom:2.5px solid #2B2B2B;
+}
+.boss-title{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:16px}
+.boss-status{
+  font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+  color:#FFFFFF;background:#9B1B27;padding:3px 10px;border-radius:50px;
+}
+.boss-body{padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.boss-metric{
+  background:#FFFEF0;border:2.5px solid #2B2B2B;border-radius:10px;padding:12px 14px;
+}
+.boss-metric .label{font-family:"JetBrains Mono",monospace;font-size:10px;color:#666;letter-spacing:0.1em}
+.boss-metric .value{font-family:"Archivo Black",sans-serif;font-size:24px;color:#9B1B27;margin-top:4px}
+.boss-metric .delta{font-family:"JetBrains Mono",monospace;font-size:11px;color:#9B1B27;margin-top:2px}
+.boss-metric.ok .value{color:#1B6B43}.boss-metric.ok .delta{color:#1B6B43}
+.boss-bar-chart{grid-column:1/-1;padding:6px 0 0}
+.bbc-row{display:flex;align-items:center;gap:10px;padding:3px 0;font-size:11.5px}
+.bbc-label{width:120px;font-family:"JetBrains Mono",monospace;font-size:10.5px;color:#666;flex-shrink:0}
+.bbc-bar{flex:1;height:14px;background:#FFFEF0;border:2px solid #2B2B2B;border-radius:50px;overflow:hidden;position:relative}
+.bbc-fill{
+  display:block;height:100%;background:#9B1B27;border-radius:50px 0 0 50px;
+  transform-origin:left center;transform:scaleX(0);
+  transition:transform 1.4s cubic-bezier(.2,.7,.3,1);
+}
+.boss-dash.is-visible .bbc-fill{transform:scaleX(1)}
+.bbc-val{font-family:"Archivo Black",sans-serif;font-size:11px;color:#9B1B27;width:40px;text-align:right}
+.boss-foot{
+  background:#FFD9DC;padding:14px 18px;border-top:2.5px solid #2B2B2B;
+  font-size:13.5px;line-height:1.65;
+}
+.boss-foot strong{color:#9B1B27}
+
+/* ========== 7. PM 兜底 4 件套 — 2x2 mini dashboard ========== */
+.pm-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:18px;
+}
+.pm-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  padding:18px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.pm-card.do{background:#A8E6CF}
+.pm-card.warn{background:#FFD9DC}
+.pm-card.alert{background:#FFE16B}
+.pm-card.dark{background:#2B2B2B;color:#FFFFFF}
+.pm-card::before{
+  position:absolute;top:-14px;left:18px;
+  font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+  background:#FEFCF5;border:2.5px solid #2B2B2B;border-radius:50px;padding:3px 10px;
+}
+.pm-card:nth-child(1)::before{content:"兜底 1"}
+.pm-card:nth-child(2)::before{content:"兜底 2"}
+.pm-card:nth-child(3)::before{content:"兜底 3"}
+.pm-card:nth-child(4)::before{content:"兜底 4";background:#2B2B2B;color:#FFE16B}
+.pm-h{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:18px;margin-bottom:8px;margin-top:4px}
+.pm-d{font-size:13px;line-height:1.7;margin-bottom:10px;color:#2B2B2B}
+.pm-card.dark .pm-d{color:#FFFFFF}
+.pm-mini{
+  background:rgba(255,255,255,0.4);border:2px dashed #2B2B2B;border-radius:8px;
+  padding:8px 10px;font-family:"JetBrains Mono",monospace;font-size:10.5px;
+}
+.pm-card.dark .pm-mini{background:rgba(255,255,255,0.08);border-color:rgba(255,225,107,0.4);color:#FFE16B}
+.pm-mini .check{color:#1B6B43;font-weight:700}
+.pm-mini .x{color:#9B1B27;font-weight:700}
+.pm-card.dark .pm-mini .check{color:#A8E6CF}
+.pm-card.dark .pm-mini .x{color:#FF8585}
+
+/* ========== 8. 面试金句 — 对话气泡 ========== */
+.dialog{margin:24px 0;display:flex;flex-direction:column;gap:14px}
+.bubble{
+  border:3px solid #2B2B2B;border-radius:18px;padding:14px 18px;
+  box-shadow:5px 5px 0 #2B2B2B;max-width:84%;position:relative;
+}
+.bubble .tag{
+  position:absolute;top:-12px;font-family:"Archivo Black",sans-serif;font-size:10px;
+  letter-spacing:0.18em;padding:2px 10px;border-radius:50px;
+  border:2.5px solid #2B2B2B;
+}
+.bubble.q{background:#FFE16B;align-self:flex-start;border-bottom-left-radius:4px}
+.bubble.q .tag{left:14px;background:#2B2B2B;color:#FFE16B}
+.bubble.q::after{content:"";position:absolute;left:-3px;bottom:-3px;width:18px;height:18px;background:#FFE16B;border-left:3px solid #2B2B2B;border-bottom:3px solid #2B2B2B;border-bottom-left-radius:4px;transform:translate(0,50%)}
+.bubble.a{background:#FFFFFF;align-self:flex-end;border-bottom-right-radius:4px}
+.bubble.a .tag{right:14px;background:#9B1B27;color:#FFFFFF}
+.bubble.a .num{
+  font-family:"Archivo Black",sans-serif;color:#9B1B27;font-size:14px;
+  margin-right:6px;letter-spacing:0.1em;
+}
+.bubble.a strong{color:#9B1B27}
+.bubble.q .q-text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:18px;line-height:1.5}
+.bubble.a .a-text{font-size:13.5px;line-height:1.65}
+
+/* ========== 9. 收尾 ========== */
+.closing{
+  background:#FFFEF0;border:3px solid #2B2B2B;border-radius:18px;
+  padding:32px 28px 28px;text-align:center;
+  box-shadow:5px 5px 0 #2B2B2B;margin:56px 0 24px;
+}
+.closing-tag{
+  display:inline-block;background:#2B2B2B;color:#FFE16B;border-radius:50px;
+  padding:4px 14px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.18em;
+  margin-bottom:14px;
+}
+.closing-h{
+  display:inline-block;font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:30px;
+  position:relative;margin-bottom:10px;
+}
+.closing-h::after{
+  content:"";position:absolute;left:0;right:0;bottom:-4px;
+  height:8px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.closing p{font-size:14.5px;color:#444;line-height:1.7;max-width:540px;margin:8px auto 0}
+
+/* ========== 10. CTA ========== */
+.cta{
+  background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  box-shadow:5px 5px 0 #2B2B2B;flex-wrap:wrap;
+}
+.cta-text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:17px;flex:1;min-width:240px}
+.cta-text strong{color:#9B1B27}
+.cta-tag{
+  background:#2B2B2B;color:#FFE16B;padding:6px 14px;border-radius:50px;
+  font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.18em;flex-shrink:0;
+}
+
+/* 段落正文 */
+p.lead{font-size:14.5px;line-height:1.8;color:#444;margin:8px 0 12px}
+p.lead strong{color:#9B1B27}
+
+/* ========== 交互层 · 滚动入场 / 悬停抬升 / 扫描动画 ========== */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s cubic-bezier(.2,.7,.3,1)}
+.reveal.is-visible{opacity:1;transform:none}
+.reveal[data-delay="1"]{transition-delay:.08s}
+.reveal[data-delay="2"]{transition-delay:.16s}
+.reveal[data-delay="3"]{transition-delay:.24s}
+.reveal[data-delay="4"]{transition-delay:.32s}
+
+/* 卡片悬停抬升 */
+.f-stage,.amazon-diff,.arch-stage,.boss-dash,.pm-card,.bubble,.hook-card,.cta,.resume-paper,.xray-panel{
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.f-stage:hover,.amazon-diff:hover,.arch-stage:hover,.boss-dash:hover,.pm-card:hover,.bubble:hover,.resume-paper:hover,.xray-panel:hover{
+  transform:translate(-2px,-2px);
+  box-shadow:7px 7px 0 #2B2B2B;
+}
+.f-stage.s4:hover{box-shadow:7px 7px 0 #9B1B27}
+.hook-card:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #E63946}
+
+/* 简历 X 光「AI 扫描」动画 — 红色横线从上到下扫一次 */
+/* 注意:resume-paper 不能 overflow:hidden,否则会把 ::before "applicant.pdf" 标签裁掉 */
+.resume-paper{position:relative}
+.resume-paper::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:3px;
+  background:linear-gradient(90deg,transparent,#E63946 20%,#E63946 80%,transparent);
+  box-shadow:0 0 14px #E63946,0 0 6px #E63946;
+  opacity:0;pointer-events:none;border-radius:2px;
+}
+.xray-stage.is-visible .resume-paper::after{
+  animation:scanLine 2.4s cubic-bezier(.5,0,.5,1) .3s 1 forwards;
+}
+@keyframes scanLine{
+  0%{top:0;opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{top:100%;opacity:0}
+}
+
+/* AI 红框标记 — 扫描时逐个亮起来 */
+.ai-mark{position:relative;display:inline-block}
+.ai-mark::after{
+  content:attr(data-tag);position:absolute;top:-18px;left:50%;transform:translateX(-50%) scale(.6);
+  font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:0.06em;
+  background:#9B1B27;color:#FFFFFF;padding:2px 6px;border-radius:50px;white-space:nowrap;
+  opacity:0;transition:opacity .35s ease,transform .35s cubic-bezier(.2,1.4,.3,1);
+}
+.ai-mark.ok::after{background:#1B6B43}
+.xray-stage.is-visible .ai-mark::after{opacity:1;transform:translateX(-50%) scale(1)}
+.xray-stage.is-visible .ai-mark:nth-of-type(1)::after{transition-delay:1.0s}
+.xray-stage.is-visible .ai-mark:nth-of-type(2)::after{transition-delay:1.2s}
+.xray-stage.is-visible .ai-mark:nth-of-type(3)::after{transition-delay:1.4s}
+.xray-stage.is-visible .ai-mark:nth-of-type(4)::after{transition-delay:1.6s}
+.xray-stage.is-visible .ai-mark:nth-of-type(5)::after{transition-delay:1.8s}
+.xray-stage.is-visible .ai-mark:nth-of-type(6)::after{transition-delay:2.0s}
+.xray-stage.is-visible .ai-mark:nth-of-type(7)::after{transition-delay:2.2s}
+.ai-mark{background:rgba(230,57,70,0.0);transition:background .35s ease}
+.ai-mark.ok{background:rgba(168,230,207,0.0)}
+.xray-stage.is-visible .ai-mark{background:rgba(230,57,70,0.18)}
+.xray-stage.is-visible .ai-mark.ok{background:rgba(168,230,207,0.35)}
+
+/* AI 解析输出面板 — 行逐条出现 */
+.xp-row{opacity:0;transform:translateX(8px);transition:opacity .4s ease,transform .4s ease}
+.xray-stage.is-visible .xp-row{opacity:1;transform:none}
+.xray-stage.is-visible .xp-row:nth-child(1){transition-delay:.5s}
+.xray-stage.is-visible .xp-row:nth-child(2){transition-delay:.65s}
+.xray-stage.is-visible .xp-row:nth-child(3){transition-delay:.8s}
+.xray-stage.is-visible .xp-row:nth-child(4){transition-delay:.95s}
+.xray-stage.is-visible .xp-row:nth-child(5){transition-delay:1.1s}
+.xray-stage.is-visible .xp-row:nth-child(6){transition-delay:1.25s}
+.xray-stage.is-visible .xp-row:nth-child(7){transition-delay:1.4s}
+.xray-stage.is-visible .xp-row:nth-child(8){transition-delay:1.55s}
+.xray-stage.is-visible .xp-row:nth-child(9){transition-delay:1.7s}
+.xray-stage.is-visible .xp-row:nth-child(10){transition-delay:1.85s}
+.xp-foot{opacity:0;transform:scale(.9);transition:opacity .4s ease,transform .4s cubic-bezier(.2,1.4,.3,1)}
+.xray-stage.is-visible .xp-foot{opacity:1;transform:none;transition-delay:2.2s}
+
+/* 漏斗 — 每层从右边滑入 */
+.f-stage{opacity:0;transform:translateX(40px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.3,1)}
+.funnel.is-visible .f-stage{opacity:1;transform:none}
+.funnel.is-visible .f-stage.s0{transition-delay:0s}
+.funnel.is-visible .f-stage.s1{transition-delay:.18s}
+.funnel.is-visible .f-stage.s2{transition-delay:.36s}
+.funnel.is-visible .f-stage.s3{transition-delay:.54s}
+.funnel.is-visible .f-stage.s4{transition-delay:.72s}
+.f-arrow{opacity:0;transition:opacity .4s ease}
+.funnel.is-visible .f-arrow{opacity:1}
+
+/* PM 兜底 4 卡 — 翻转入场 */
+.pm-card{opacity:0;transform:translateY(20px) rotate(-1deg);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.3,1)}
+.pm-grid.is-visible .pm-card{opacity:1;transform:none}
+.pm-grid.is-visible .pm-card:nth-child(1){transition-delay:0s}
+.pm-grid.is-visible .pm-card:nth-child(2){transition-delay:.12s}
+.pm-grid.is-visible .pm-card:nth-child(3){transition-delay:.24s}
+.pm-grid.is-visible .pm-card:nth-child(4){transition-delay:.36s}
+
+/* 对话气泡 — 一条一条出现 */
+.bubble{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s ease}
+.dialog.is-visible .bubble{opacity:1;transform:none}
+.dialog.is-visible .bubble:nth-child(1){transition-delay:0s}
+.dialog.is-visible .bubble:nth-child(2){transition-delay:.25s}
+.dialog.is-visible .bubble:nth-child(3){transition-delay:.5s}
+.dialog.is-visible .bubble:nth-child(4){transition-delay:.75s}
+.dialog.is-visible .bubble:nth-child(5){transition-delay:1.0s}
+
+/* 数字 count-up 动画 - 文字本身保持位置稳定 */
+[data-count]{font-variant-numeric:tabular-nums}
+
+/* 钩子卡里点击高亮的关键数字 — hover 时跳一下 */
+.hook-card .h-sub strong{
+  cursor:default;display:inline-block;transition:transform .2s ease;
+}
+.hook-card .h-sub strong:hover{transform:translateY(-2px) scale(1.08)}
+
+/* 减少动效 — 尊重用户偏好 */
+@media (prefers-reduced-motion:reduce){
+  .reveal,.f-stage,.pm-card,.bubble,.bbc-fill,.ai-mark::after,.xp-row,.xp-foot,.f-arrow{
+    opacity:1!important;transform:none!important;transition:none!important;animation:none!important;
+  }
+  .resume-paper::after{display:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 1. 品牌头 -->
+  <div class="brand-bar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-name">NOVA</div>
+    </div>
+    <div class="vol-badge">AI 产品新核心 · VOL.21</div>
+  </div>
+
+  <!-- 2. 标题 -->
+  <div class="hero">
+    <div class="hero-tag">AI 产品经理实战篇之</div>
+    <h1 class="hero-title">
+      AI 是怎么在 <span class="red-em">0.4 秒</span> 里<br>
+      把你<span class="yellow-hi">简历</span>刷掉的
+    </h1>
+    <div class="hero-meta">VOL.21 · 阅读 5 分钟 · 某大厂 HR AI 落地拆解 · @NOVA</div>
+  </div>
+
+  <!-- 3. 钩子卡 -->
+  <div class="hook-card">
+    <div class="h-line">
+      春招你投的那份改了 3 遍的简历——你以为 HR 在认真看?<br>
+      不是。<strong style="color:#FFE16B">AI 0.4 秒已经替他决定了</strong>这份简历值不值得他看。
+    </div>
+    <div class="h-sub">
+      大厂一个岗位一天收 <strong>5 万</strong> 份简历,HR 一人一天最多看 <strong>200</strong> 份。
+      AI 看一份用 <strong>0.4 秒</strong>,HR 看一份用 <strong>7.4 秒</strong>。
+      <strong>75%</strong> 的简历在 HR 眼前出现之前就被 AI 过滤了——你以为你不行,其实是关键词没匹配上。
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 章节 1: AI 怎么"读"你的简历 — X 光透视图                    -->
+  <!-- ============================================================ -->
+  <h2 class="section-h">AI 不是"读懂"你,是"评分"你</h2>
+  <p class="lead">
+    AI 在你简历上做三层动作:<strong>解析 → 关键词 → embedding</strong>。
+    下面这张图是 AI "看到的"你简历——左边是原始 PDF,右边是 AI 解析后的结构化字段。
+    注意红框——那是 AI 识别错或漏的地方。
+  </p>
+
+  <div class="xray-stage">
+    <!-- 模拟简历纸 -->
+    <div class="resume-paper">
+      <div class="rp-h1">张小明</div>
+      <div class="rp-h2">PRODUCT MANAGER · 北京 · 13800138000</div>
+
+      <div class="rp-section-h">教育背景</div>
+      <div class="rp-line">
+        <span class="ai-mark ok" data-tag="✓ EDU">2018-2022 清华大学</span> 计算机科学 · 本科
+      </div>
+
+      <div class="rp-section-h">工作经历</div>
+      <div class="rp-line">
+        <span class="ai-mark" data-tag="✗ MISREAD">2022-2024 字节跳动</span> AI 产品经理
+      </div>
+      <div class="rp-line">· 主导内容推荐 AI 项目,日活提升 23%</div>
+      <div class="rp-line">· 用 py 脚本搭了一套 AB 测试看板,接入 ClickHouse</div>
+
+      <div class="rp-section-h">项目作品集</div>
+      <div class="rp-line">
+        <span class="ai-mark" data-tag="✗ OCR FAIL">[设计稿 · Figma 链接]</span>
+      </div>
+
+      <div class="rp-section-h">技能</div>
+      <div class="rp-line">
+        <span class="ai-mark" data-tag="✗ NO HIT">py 脚本</span> ·
+        <span class="ai-mark" data-tag="✗ NO HIT">大模型</span> ·
+        <span class="ai-mark ok" data-tag="✓ HIT">SQL</span> ·
+        <span class="ai-mark ok" data-tag="✓ HIT">A/B Testing</span>
+      </div>
+    </div>
+
+    <!-- AI 解析输出面板 -->
+    <div class="xray-panel">
+      <div class="xp-row"><span class="xp-k">name</span><span class="xp-v">张小明</span></div>
+      <div class="xp-row"><span class="xp-k">school</span><span class="xp-v">清华大学</span></div>
+      <div class="xp-row"><span class="xp-k">degree</span><span class="xp-v">本科</span></div>
+      <div class="xp-row"><span class="xp-k">company</span><span class="xp-v err">字节跳动 → 项目段</span></div>
+      <div class="xp-row"><span class="xp-k">years</span><span class="xp-v err">0 (识别失败)</span></div>
+      <div class="xp-row"><span class="xp-k">portfolio</span><span class="xp-v err">[null] OCR 失败</span></div>
+      <div class="xp-row"><span class="xp-k">skill: Python</span><span class="xp-v warn">未命中 (写了 "py")</span></div>
+      <div class="xp-row"><span class="xp-k">skill: LLM</span><span class="xp-v warn">未命中 (写了 "大模型")</span></div>
+      <div class="xp-row"><span class="xp-k">skill: SQL</span><span class="xp-v">命中</span></div>
+      <div class="xp-row"><span class="xp-k">skill: A/B</span><span class="xp-v">命中</span></div>
+      <div class="xp-foot">
+        <span class="xp-foot-l">SCORE</span>
+        <span class="xp-foot-r">42 / 100 · 淘汰</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="xray-caption">
+    <strong>看见了吗?</strong> 张小明真实背景是清华 + 字节 AI PM,但他被 AI 评了 42 分淘汰。
+    原因不是他不行——是<strong> "py" ≠ "Python"</strong> 关键词没匹配、<strong>作品集 Figma 链接 OCR 失败</strong>、
+    <strong>工作经历段被识别成了项目段</strong>。AI 不是不公平,是按规则做减法。
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 章节 2: 四道漏斗                                              -->
+  <!-- ============================================================ -->
+  <h2 class="section-h">四道漏斗,任何一道漏掉就死</h2>
+  <p class="lead">
+    一万份简历进 ATS,最后到 HR 眼前的只有 200 份。中间这 9800 份,是在哪几道关掉队的?
+    答案是<strong>四道漏斗</strong>——每一道都有死法。
+  </p>
+
+  <div class="funnel">
+    <div class="f-stage s0">
+      <div>
+        <div class="f-name">投递简历池</div>
+        <span class="f-tech">RESUME POOL · raw PDF/DOCX/IMG</span>
+      </div>
+      <div class="f-num" data-count="10000" data-comma="1">10,000</div>
+    </div>
+
+    <div class="f-arrow">↓ 解析关</div>
+
+    <div class="f-stage s1">
+      <div>
+        <div class="f-name">第 1 道:解析</div>
+        <span class="f-tech">PaddleOCR + LayoutLM + LLM 抽取</span>
+      </div>
+      <div>
+        <div class="f-num" data-count="8500" data-comma="1">8,500</div>
+        <div class="f-kill">−15% 死于格式</div>
+      </div>
+    </div>
+
+    <div class="f-arrow">↓ 关键词关</div>
+
+    <div class="f-stage s2">
+      <div>
+        <div class="f-name">第 2 道:关键词命中</div>
+        <span class="f-tech">JD keyword hit-rate ≥ 50%</span>
+      </div>
+      <div>
+        <div class="f-num" data-count="2000" data-comma="1">2,000</div>
+        <div class="f-kill">−75% 死于词不对</div>
+      </div>
+    </div>
+
+    <div class="f-arrow">↓ embedding 关</div>
+
+    <div class="f-stage s3">
+      <div>
+        <div class="f-name">第 3 道:语义相似</div>
+        <span class="f-tech">JD-CV cosine ≥ 0.65</span>
+      </div>
+      <div>
+        <div class="f-num" data-count="700">700</div>
+        <div class="f-kill">−65% 死于段落不通</div>
+      </div>
+    </div>
+
+    <div class="f-arrow">↓ 业务规则关</div>
+
+    <div class="f-stage s4">
+      <div>
+        <div class="f-name">第 4 道:业务规则</div>
+        <span class="f-tech">SCHOOL + COMPANY + GAP</span>
+      </div>
+      <div>
+        <div class="f-num" data-count="200">200</div>
+        <div class="f-kill">→ HR 看到</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="lead" style="margin-top:24px">
+    AI 招聘漏斗就像超市闸机——<strong>不是为了让你进,是为了拦住购物车有问题的人</strong>。
+    所以你写简历不是写给 HR 看的,先写给 AI 看的。
+  </p>
+
+  <!-- ============================================================ -->
+  <!-- 章节 3: 三个真实翻车 — 三种完全不同的视觉                   -->
+  <!-- ============================================================ -->
+  <h2 class="section-h">三个真实翻车,三种不同的死法</h2>
+
+  <!-- 案例 A: Amazon 偏见 — diff 块 -->
+  <div class="case-h"><span class="badge">CASE A</span>Amazon 招聘 AI(2014-2018)的性别偏见</div>
+  <div class="amazon-diff">
+    <div class="amazon-diff-bar">
+      <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
+      <span class="amazon-diff-file">amazon_recruiter_v3 / training_features.json</span>
+      <span class="amazon-diff-tag">BIAS</span>
+    </div>
+    <div class="amazon-diff-body">
+      <div class="adl"><span class="g">14</span><span class="c">// AI 从 10 年简历里学到的"加分特征"</span></div>
+      <div class="adl p"><span class="g">+ 15</span><span class="c">"executed", "captured", "engineered" → <span class="hl">+ 3 分</span></span></div>
+      <div class="adl m"><span class="g">- 16</span><span class="c">"women's chess club captain" → <span class="hl">− 5 分</span></span></div>
+      <div class="adl m"><span class="g">- 17</span><span class="c">"all-women's college" → <span class="hl">− 4 分</span></span></div>
+      <div class="adl m"><span class="g">- 18</span><span class="c">"maternity leave gap" → <span class="hl">− 3 分</span></span></div>
+      <div class="adl"><span class="g">19</span><span class="c">// 原因:训练数据 10 年技术岗 90% 男性 → AI 学到的不是"能力"</span></div>
+      <div class="adl"><span class="g">20</span><span class="c">// 而是"性别相关词"。Amazon 2018 直接砍掉项目。</span></div>
+    </div>
+    <div class="amazon-foot">
+      <strong>PM 教训:</strong>历史数据 ≠ 客观标准。训练数据里的偏见会被 AI 放大。
+      你设计这种系统第一件事不是建模型,是<strong>建偏见检测器</strong>——四个维度(性别/学校/城市/年龄)做事后审计。
+    </div>
+  </div>
+
+  <!-- 案例 B: 大厂 ATS 架构图 -->
+  <div class="case-h"><span class="badge">CASE B</span>某大厂 ATS:三层架构 + 50% 翻车在第一层</div>
+  <div class="arch-stage">
+    <div class="arch-grid">
+      <div class="arch-node danger">
+        <h4>解析层</h4>
+        <div class="tech">PaddleOCR<br>+ LayoutLM<br>+ LLM 抽取</div>
+      </div>
+      <div class="arch-conn"></div>
+      <div class="arch-node attention">
+        <h4>双轨打分</h4>
+        <div class="tech">关键词命中<br>+ JD-CV embedding<br>双轨融合</div>
+      </div>
+      <div class="arch-conn"></div>
+      <div class="arch-node">
+        <h4>业务排序</h4>
+        <div class="tech">学校 / 公司 tier<br>年限权重<br>输出 0-100</div>
+      </div>
+    </div>
+    <div class="arch-caption">
+      <strong>注意第一层是红色的——</strong>非标简历(设计师作品集 PDF / Notion 简历 / 图表型)
+      解析错位 = 经历段被识别成项目段,工作年限被算成 0。<strong>50% 翻车点在这一层</strong>,
+      不是模型层。这是大多数 PM 忽略的事。
+    </div>
+  </div>
+
+  <!-- 案例 C: Boss 直聘 dashboard -->
+  <div class="case-h"><span class="badge">CASE C</span>Boss 直聘 AI 匹配:推荐系统的两个老坑</div>
+  <div class="boss-dash">
+    <div class="boss-bar">
+      <div class="boss-title">候选人匹配 dashboard · 本周</div>
+      <div class="boss-status">ALERT</div>
+    </div>
+    <div class="boss-body">
+      <div class="boss-metric">
+        <div class="label">老用户被反复推同岗位次数</div>
+        <div class="value"><span data-count="17.3" data-decimals="1">17.3</span> 次</div>
+        <div class="delta">↑ 4.2 (embedding 没时间衰减)</div>
+      </div>
+      <div class="boss-metric">
+        <div class="label">新候选人排序中位</div>
+        <div class="value">第 <span data-count="482">482</span> 位</div>
+        <div class="delta">↓ 排到最后(冷启动死)</div>
+      </div>
+
+      <div class="boss-bar-chart">
+        <div class="bbc-row">
+          <span class="bbc-label">老用户 (>3 月活跃)</span>
+          <span class="bbc-bar"><span class="bbc-fill" style="width:88%"></span></span>
+          <span class="bbc-val" data-count="88" data-suffix="%">88%</span>
+        </div>
+        <div class="bbc-row">
+          <span class="bbc-label">中等活跃 (1-3 月)</span>
+          <span class="bbc-bar"><span class="bbc-fill" style="width:52%;background:#FFE16B"></span></span>
+          <span class="bbc-val" style="color:#9B5E10" data-count="52" data-suffix="%">52%</span>
+        </div>
+        <div class="bbc-row">
+          <span class="bbc-label">新候选人 (<1 月)</span>
+          <span class="bbc-bar"><span class="bbc-fill" style="width:12%"></span></span>
+          <span class="bbc-val" data-count="12" data-suffix="%">12%</span>
+        </div>
+      </div>
+    </div>
+    <div class="boss-foot">
+      <strong>PM 教训:</strong>推荐系统的两个老坑——<strong>新鲜度衰减 + 冷启动</strong>——
+      在 HR 场景翻车更明显。候选人不是商品,是有"找工作焦虑窗口期"的——3 周窗口期里 AI 没排上去就废了。
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 章节 4: PM 兜底四件套 — 2x2 mini dashboard                  -->
+  <!-- ============================================================ -->
+  <h2 class="section-h">PM 必须兜的 4 道底</h2>
+  <p class="lead">
+    HR AI 是 AI PM 落地里<strong>合规风险最高、解释性要求最高</strong>的场景。
+    每一道兜底都必须提前设计,否则上线第一周法务就来敲门。
+  </p>
+
+  <div class="pm-grid">
+    <div class="pm-card do">
+      <div class="pm-h">Explainable Score</div>
+      <div class="pm-d">每个分数必须给"为什么"。HR 拒人时要写理由——黑盒不能用。</div>
+      <div class="pm-mini">
+        SCORE: 72 / 100<br>
+        <span class="check">✓</span> JD 关键词命中 18/22<br>
+        <span class="check">✓</span> embedding 相似 0.82<br>
+        <span class="x">✗</span> 工作年限低于 JD 要求 1 年
+      </div>
+    </div>
+
+    <div class="pm-card alert">
+      <div class="pm-h">偏见审计 dashboard</div>
+      <div class="pm-d">性别 / 学校 / 城市 / 年龄四维度通过率差异 &gt; 10% 就报警。</div>
+      <div class="pm-mini">
+        male  pass  ███████░░ 41%<br>
+        female pass ████░░░░ 27% <span class="x">⚠ 差 14%</span><br>
+        985    pass ███████░░ 38%<br>
+        其他   pass █████░░░ 31%
+      </div>
+    </div>
+
+    <div class="pm-card warn">
+      <div class="pm-h">灰名单复审</div>
+      <div class="pm-d">边缘分数 45-65 强制人工抽检,AI 不单点决定误杀好简历。</div>
+      <div class="pm-mini">
+        score &lt; 45 → AI 自动淘汰<br>
+        <span class="x">score 45-65 → 人工抽检 ⚠</span><br>
+        score &gt; 65 → 进 HR 候选池<br>
+        每周人工复盘 200 份
+      </div>
+    </div>
+
+    <div class="pm-card dark">
+      <div class="pm-h">合规兜底</div>
+      <div class="pm-d">欧盟 AI Act 把 HR AI 列高风险类,中国《个保法》要求自动化决策可解释、可拒绝。</div>
+      <div class="pm-mini">
+        <span class="check">✓</span> 候选人申诉通道<br>
+        <span class="check">✓</span> 数据留存 ≥ 3 年<br>
+        <span class="check">✓</span> 决策可人工覆盖<br>
+        <span class="check">✓</span> 月度合规报告
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 章节 5: 面试金句 — 对话气泡                                  -->
+  <!-- ============================================================ -->
+  <h2 class="section-h">面试金句:被问"你做过 HR AI 简历筛选吗"按 4 句答</h2>
+
+  <div class="dialog">
+    <div class="bubble q">
+      <span class="tag">HR · 面试官</span>
+      <div class="q-text">你做过 HR AI 简历筛选系统吗?怎么落地的?</div>
+    </div>
+
+    <div class="bubble a">
+      <span class="tag">候选人 · 你</span>
+      <div class="a-text"><span class="num">1.</span><strong>先把目标定清</strong>——不是替代 HR,是漏斗里的"减法引擎",从 5 万压到 500。</div>
+    </div>
+
+    <div class="bubble a">
+      <span class="tag">候选人 · 你</span>
+      <div class="a-text"><span class="num">2.</span><strong>双轨打分</strong>——关键词命中 + JD-CV embedding 相似度,LLM 只跑二轮复审(成本约束)。</div>
+    </div>
+
+    <div class="bubble a">
+      <span class="tag">候选人 · 你</span>
+      <div class="a-text"><span class="num">3.</span><strong>必须有 explainable score + 偏见审计</strong>——性别 / 学校 / 城市 / 年龄四维度通过率差异 &gt; 10% 报警。</div>
+    </div>
+
+    <div class="bubble a">
+      <span class="tag">候选人 · 你</span>
+      <div class="a-text"><span class="num">4.</span><strong>边缘分数 45-65 强制人工复审</strong>——AI 不单点决定,合规底线在这。</div>
+    </div>
+  </div>
+
+  <p class="lead" style="margin-top:24px;text-align:center">
+    4 句答完——面试官知道你不是被 demo 带节奏的小白。
+  </p>
+
+  <!-- ============================================================ -->
+  <!-- 收尾                                                          -->
+  <!-- ============================================================ -->
+  <div class="closing">
+    <div class="closing-tag">CORE</div>
+    <div><span class="closing-h">AI 不是在挑你,是在删你</span></div>
+    <p>HR AI 的设计目标是<strong>减法</strong>,不是加法。所以你写简历不是写给 HR 看的——是先写给 AI 看的。</p>
+  </div>
+
+  <div class="cta">
+    <div class="cta-text">下条讲:<strong>《直播带货 AI 智能话术 + 选品系统》</strong><br>同样是 AI 已经在替谁做决定。关注 NOVA,每天一个 AI PM 知识点。</div>
+    <div class="cta-tag">#AIPM求职</div>
+  </div>
+
+</div>
+
+<script>
+/* ===== 滚动入场:IntersectionObserver ===== */
+(function(){
+  const targets = document.querySelectorAll('.reveal,.xray-stage,.funnel,.pm-grid,.dialog,.boss-dash,.amazon-diff,.arch-stage');
+  if(!('IntersectionObserver' in window)){
+    targets.forEach(el => el.classList.add('is-visible'));
+    return;
+  }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en => {
+      if(en.isIntersecting){
+        en.target.classList.add('is-visible');
+        io.unobserve(en.target);
+      }
+    });
+  }, {threshold: 0.18, rootMargin: '0px 0px -8% 0px'});
+  targets.forEach(el => io.observe(el));
+})();
+
+/* ===== 数字 count-up:遇到 data-count 属性,从 0 跑到目标值 ===== */
+(function(){
+  function easeOutCubic(t){return 1 - Math.pow(1-t, 3)}
+  function formatNum(n, hasComma){
+    n = Math.round(n);
+    if(hasComma) return n.toLocaleString('en-US');
+    return String(n);
+  }
+  function animateNumber(el){
+    const target = parseFloat(el.getAttribute('data-count'));
+    if(isNaN(target)) return;
+    const suffix = el.getAttribute('data-suffix') || '';
+    const prefix = el.getAttribute('data-prefix') || '';
+    const hasComma = el.getAttribute('data-comma') === '1';
+    const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+    const dur = parseInt(el.getAttribute('data-dur') || '1400', 10);
+    const t0 = performance.now();
+    function tick(now){
+      const p = Math.min(1, (now - t0) / dur);
+      const v = target * easeOutCubic(p);
+      let txt;
+      if(decimals > 0) txt = v.toFixed(decimals);
+      else txt = formatNum(v, hasComma);
+      el.textContent = prefix + txt + suffix;
+      if(p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  const nums = document.querySelectorAll('[data-count]');
+  if(!('IntersectionObserver' in window)){
+    nums.forEach(animateNumber);
+    return;
+  }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en => {
+      if(en.isIntersecting){
+        animateNumber(en.target);
+        io.unobserve(en.target);
+      }
+    });
+  }, {threshold: 0.6});
+  nums.forEach(el => io.observe(el));
+})();
+
+/* ===== PM 兜底卡片点击翻面:展示「为什么这道兜底重要」 ===== */
+(function(){
+  document.querySelectorAll('.pm-card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('flipped');
+    });
+  });
+})();
+
+/* ===== 钩子卡点击 — 弹出 0.4 秒倒计时小动画(可重复触发) ===== */
+(function(){
+  const hk = document.querySelector('.hook-card');
+  if(!hk) return;
+  hk.style.cursor = 'pointer';
+  hk.title = '点一下,体验 AI 的 0.4 秒';
+  hk.addEventListener('click', () => {
+    if(hk.dataset.busy === '1') return;
+    hk.dataset.busy = '1';
+    const tag = document.createElement('div');
+    tag.textContent = '0.40s';
+    tag.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.6);font-family:"Archivo Black",sans-serif;font-size:48px;color:#FFE16B;background:rgba(0,0,0,0.85);padding:14px 28px;border-radius:12px;pointer-events:none;opacity:0;transition:opacity .12s ease,transform .12s cubic-bezier(.2,1.6,.3,1);z-index:5;';
+    hk.appendChild(tag);
+    requestAnimationFrame(() => {
+      tag.style.opacity = '1';
+      tag.style.transform = 'translate(-50%,-50%) scale(1)';
+    });
+    let t = 40;
+    const iv = setInterval(() => {
+      t -= 1;
+      tag.textContent = (t/100).toFixed(2) + 's';
+      if(t <= 0){
+        clearInterval(iv);
+        tag.textContent = '已淘汰';
+        tag.style.color = '#FFFFFF';
+        tag.style.background = '#9B1B27';
+        setTimeout(() => {
+          tag.style.opacity = '0';
+          setTimeout(() => { tag.remove(); hk.dataset.busy = '0'; }, 250);
+        }, 700);
+      }
+    }, 10);
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Use AI PM 视角 · NOVA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:24px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:38px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red{color:#E63946;position:relative;display:inline-block}
+.hero-title .red::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ 反认知钩子 ============ */
+.hook-card{
+  margin:24px 0 32px;background:#2B2B2B;color:#FFFFFF;border-radius:18px;
+  padding:24px 28px;box-shadow:6px 6px 0 #E63946;position:relative;
+}
+.hook-label{
+  display:inline-block;background:#E63946;color:#FFFFFF;
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.15em;
+  padding:3px 10px;border-radius:6px;margin-bottom:14px;
+}
+.hook-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;
+}
+.hook-title .yellow{color:#FFE16B}
+.hook-title .red{color:#FF8C70}
+.hook-sub{
+  margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,0.2);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:rgba(255,255,255,0.8);line-height:1.65;
+}
+.hook-sub strong{color:#FFE16B}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 20px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ Tab 01 · 该不该上 · 双栏判断 ============ */
+.judge-grid{
+  margin:32px 0 36px;display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+.judge-col{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  padding:18px 20px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.judge-col.yes{background:#A8E6CF;transform:rotate(-0.6deg)}
+.judge-col.no{background:#FFD9DC;transform:rotate(0.6deg)}
+.judge-tag{
+  position:absolute;top:-14px;left:18px;
+  font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+  color:#FFFFFF;padding:3px 11px;border-radius:50px;border:2.5px solid #2B2B2B;
+}
+.judge-col.yes .judge-tag{background:#1B6B43}
+.judge-col.no .judge-tag{background:#9B1B27}
+.judge-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;
+  text-align:center;margin-top:8px;margin-bottom:12px;font-weight:bold;
+}
+.judge-col.yes .judge-title{color:#1B6B43}
+.judge-col.no .judge-title{color:#9B1B27}
+.judge-item{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;line-height:1.6;
+  padding:8px 0;display:flex;align-items:flex-start;gap:8px;
+  border-bottom:1.5px dashed rgba(0,0,0,0.12);
+}
+.judge-item:last-child{border-bottom:none}
+.judge-col.yes .judge-item::before{content:"✓";color:#1B6B43;font-weight:bold;font-size:17px;line-height:1.2;flex-shrink:0}
+.judge-col.no .judge-item::before{content:"✗";color:#9B1B27;font-weight:bold;font-size:17px;line-height:1.2;flex-shrink:0}
+.judge-item strong{font-weight:bold}
+.judge-col.yes .judge-item strong{color:#1B6B43}
+.judge-col.no .judge-item strong{color:#9B1B27}
+
+/* ============ 真实成本对比 · 数字横扫 ============ */
+.cost-bar{
+  margin:32px 0 36px;background:#1A1A1A;border-radius:16px;padding:22px 24px;
+  box-shadow:5px 5px 0 #2B2B2B;
+}
+.cost-title{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;
+  letter-spacing:0.2em;margin-bottom:14px;
+}
+.cost-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;
+}
+.cost-item{
+  background:rgba(255,225,107,0.08);border:1.5px solid rgba(255,225,107,0.25);
+  border-radius:10px;padding:12px 14px;
+}
+.cost-label{
+  font-family:"Archivo Black",sans-serif;font-size:9px;color:rgba(255,225,107,0.65);
+  letter-spacing:0.1em;margin-bottom:4px;
+}
+.cost-value{
+  font-family:"JetBrains Mono",monospace;font-size:18px;font-weight:700;color:#FFE16B;
+  letter-spacing:-0.02em;line-height:1.1;
+}
+.cost-value.high{color:#FF8C70}
+.cost-sub{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:11px;color:rgba(255,255,255,0.55);margin-top:3px;
+}
+
+/* ============ Tab 02 · 三种产品形态 ============ */
+.form-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.form-head{
+  padding:16px 22px;border-bottom:3px solid #2B2B2B;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.form-card.f1 .form-head{background:#D0E8FF}
+.form-card.f2 .form-head{background:#FFE9CB}
+.form-card.f3 .form-head{background:#E5D4F1}
+.form-id{
+  background:#2B2B2B;color:#FFE16B;font-family:"Archivo Black",sans-serif;
+  font-size:11px;padding:4px 11px;border-radius:50px;letter-spacing:0.1em;
+}
+.form-name{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;
+  flex:1;line-height:1.4;
+}
+.form-name .en{font-family:"Kalam",cursive;font-size:13px;color:#666;margin-left:6px}
+.form-suit{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:50px;
+  padding:2px 10px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:12px;color:#2B2B2B;font-weight:bold;
+}
+
+.form-body{padding:18px 22px}
+.form-row{
+  display:grid;grid-template-columns:90px 1fr;gap:14px;padding:9px 0;
+  border-bottom:1.5px dashed rgba(0,0,0,0.1);
+}
+.form-row:last-child{border-bottom:none}
+.form-key{
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.1em;color:#888;padding-top:3px;
+}
+.form-val{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;line-height:1.65;
+}
+.form-val strong{color:#E63946}
+.form-val.eg{color:#1B5599}
+.form-val.eg strong{color:#1B5599}
+.form-val code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;
+}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.do{background:#A8E6CF}
+.block.warn{background:#FFD9DC}
+.block.dark{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-family:"Archivo Black",sans-serif;font-size:13px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;
+  letter-spacing:0.1em;color:#2B2B2B;
+}
+.block.do::before{content:"心法"}
+.block.warn::before{content:"别踩"}
+.block.dark::before{content:"金句";background:#2B2B2B;color:#FFE16B}
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.dark .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.dark .block-title .red-em{color:#FFE16B}
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.8;color:#2B2B2B;
+}
+.block.dark p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.dark p strong{color:#FFE16B}
+
+/* ============ Tab 03 · 翻车 + 兜底设计 ============ */
+.crash-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  margin:42px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.crash-tag-top{
+  position:absolute;top:-16px;left:24px;z-index:5;
+  background:#E63946;color:#FFFFFF;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.1em;
+  box-shadow:2px 2px 0 #2B2B2B;
+}
+.crash-head{
+  padding:22px 22px 16px;background:#FFD9DC;border-bottom:3px solid #2B2B2B;
+  border-radius:13px 13px 0 0;
+}
+.crash-scene{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px;color:#2B2B2B;line-height:1.5;margin-bottom:6px;
+}
+.crash-scene .red{color:#9B1B27;font-weight:bold}
+.crash-meta{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:#9B1B27;letter-spacing:0.05em;
+}
+.crash-body{padding:18px 22px}
+.crash-section{margin-bottom:14px}
+.crash-section:last-child{margin-bottom:0}
+.crash-label{
+  display:inline-block;
+  font-family:"Archivo Black",sans-serif;font-size:9px;letter-spacing:0.1em;
+  padding:2px 9px;border-radius:4px;margin-bottom:6px;
+}
+.crash-section.why .crash-label{background:#FFE9CB;color:#9B5E10}
+.crash-section.fix .crash-label{background:#A8E6CF;color:#1B6B43}
+.crash-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;line-height:1.7;
+}
+.crash-text strong{color:#E63946}
+.crash-section.fix .crash-text strong{color:#1B6B43}
+.crash-text code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;
+}
+
+/* ============ 面试金句 ============ */
+.truth-block{
+  margin:32px 0 36px;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px}
+.truth-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;font-size:13px;color:#888;letter-spacing:0.1em}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:24px}
+  .hook-title{font-size:18px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .judge-grid{grid-template-columns:1fr;gap:24px}
+  .judge-item{font-size:13.5px}
+  .cost-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .cost-value{font-size:16px}
+  .block-title{font-size:17px}
+  .form-name{font-size:15.5px}
+  .form-row{grid-template-columns:1fr;gap:4px}
+  .form-key{padding-top:0}
+  .form-val{font-size:13.5px}
+  .crash-scene{font-size:15px}
+  .crash-text{font-size:13.5px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.20</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 20 讲｜下一代 Agent</span>
+    <h1 class="hero-title">
+      <span class="red">Computer Use</span><br>
+      看似神奇<span class="yellow-hi">商用化有 3 个死穴</span>
+    </h1>
+    <div class="hero-meta">By NOVA · PM 视角讲透 · 不是技术演示</div>
+  </div>
+
+  <!-- 反认知钩子 -->
+  <div class="hook-card">
+    <span class="hook-label">90% 演示都是骗你的</span>
+    <div class="hook-title">
+      Demo 视频里 AI 顺利操作浏览器——<br>
+      你以为<span class="red">能直接落地公司</span>？<br>
+      <span class="yellow">实测准确率 95% = 生产灾难</span>
+    </div>
+    <div class="hook-sub">
+      <strong>每 20 次操作 1 次错</strong>。这放在 demo 里看不出来，放在生产<strong>每天 100 次操作 = 每天 5 次事故</strong>。AI PM 要的是"在哪能真用、怎么兜底"。
+    </div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">该不该上</span>
+      <span class="tab-en">JUDGE</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">3 种产品形态</span>
+      <span class="tab-en">FORM</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">翻车+兜底</span>
+      <span class="tab-en">CRASH</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01 · 该不该上 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">PM 视角的<span class="yellow-hi">场景判断</span></div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      Computer Use 不是<strong style="color:#E63946">"哪里都能用"</strong>的能力。先看你的场景<strong style="color:#E63946">在哪边</strong>——
+    </p>
+
+    <!-- 该用 / 不该用 双栏 -->
+    <div class="judge-grid">
+      <div class="judge-col yes">
+        <span class="judge-tag">SUITABLE</span>
+        <div class="judge-title">✓ 该上 Computer Use</div>
+        <div class="judge-item"><span><strong>无 API 的老系统</strong>——只有图形界面的 ERP / 财务软件</span></div>
+        <div class="judge-item"><span><strong>低频高价值</strong>——一次操作省 30 分钟，每天跑几十次</span></div>
+        <div class="judge-item"><span><strong>允许有人监督</strong>——AI 操作时人在旁边能随时叫停</span></div>
+        <div class="judge-item"><span><strong>错了能撤回</strong>——比如填表草稿、整理数据，不是真支付</span></div>
+        <div class="judge-item"><span><strong>跨多个工具</strong>——Excel + 邮件 + 网页混着用，写脚本太麻烦</span></div>
+      </div>
+
+      <div class="judge-col no">
+        <span class="judge-tag">DON'T USE</span>
+        <div class="judge-title">✗ 别碰 Computer Use</div>
+        <div class="judge-item"><span><strong>高频高并发</strong>——每秒处理多个请求，成本会爆炸</span></div>
+        <div class="judge-item"><span><strong>有现成 API</strong>——能直接调 API 就别截图操作，慢 50 倍</span></div>
+        <div class="judge-item"><span><strong>关键金融操作</strong>——转账 / 撤销订单 / 删数据，错了要赔钱</span></div>
+        <div class="judge-item"><span><strong>对延迟敏感</strong>——客服实时回复、推荐系统，AI 操作太慢</span></div>
+        <div class="judge-item"><span><strong>责任归属模糊</strong>——出事说不清是 AI 错还是用户错</span></div>
+      </div>
+    </div>
+
+    <!-- 真实成本 -->
+    <div class="cost-bar">
+      <div class="cost-title">💰 REAL NUMBERS · 真实成本残酷对比</div>
+      <div class="cost-grid">
+        <div class="cost-item">
+          <div class="cost-label">SINGLE OP TIME</div>
+          <div class="cost-value high">10-30s</div>
+          <div class="cost-sub">单次操作耗时</div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-label">COST × API</div>
+          <div class="cost-value high">50×</div>
+          <div class="cost-sub">是普通 API 的</div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-label">ACCURACY</div>
+          <div class="cost-value">~95%</div>
+          <div class="cost-sub">最高准确率</div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-label">ERROR RATE</div>
+          <div class="cost-value high">5%</div>
+          <div class="cost-sub">每 20 次 1 次错</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block dark">
+      <div class="block-title">
+        别看 Demo 视频做决策——<br>
+        <span class="red-em">看真实成本</span>
+      </div>
+      <p>Anthropic / OpenAI 的 Computer Use demo 都是<strong>精心挑选的最佳案例</strong>，让人看完想立刻上。</p>
+      <p style="margin-top:8px"><strong>但真生产环境</strong>——平均 1 次操作 15 秒 + 调用大模型 + 每步截图理解，<strong>成本是普通 API 的 50 倍</strong>。每天跑 1000 次操作，月烧 5-10 万。</p>
+      <p style="margin-top:8px">PM 第一件事——<strong>算清楚 ROI</strong>，再决定是否启动。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02 · 3 种产品形态 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">3 种<span class="yellow-hi">真能落地</span>的产品形态</div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      光会"AI 操作电脑"没用——必须包装成<strong style="color:#E63946">用户敢用、买单的产品</strong>。3 种真实形态。
+    </p>
+
+    <!-- 形态 1 · 共驾 -->
+    <div class="form-card f1">
+      <div class="form-head">
+        <span class="form-id">FORM 01</span>
+        <span class="form-name">人机共驾<span class="en">Co-pilot Mode</span></span>
+        <span class="form-suit">最稳</span>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <span class="form-key">本质</span>
+          <span class="form-val">AI <strong>提议操作步骤</strong>，每一步等用户确认才执行。用户全程能看见、能改、能停。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">类比</span>
+          <span class="form-val">特斯拉的 <strong>L2 自动驾驶</strong>——AI 在开，但人手不能离方向盘。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">案例</span>
+          <span class="form-val eg"><strong>Anthropic 的 Computer Use Demo</strong>、<strong>Adept 的 Workflow Pilot</strong>——AI 边操作边解释，用户随时叫停。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">PM 收益</span>
+          <span class="form-val"><strong>责任清晰</strong>——出错是用户没及时叫停。商用最稳的形态。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 形态 2 · 沙箱代办 -->
+    <div class="form-card f2">
+      <div class="form-head">
+        <span class="form-id">FORM 02</span>
+        <span class="form-name">沙箱代办<span class="en">Sandbox Agent</span></span>
+        <span class="form-suit">最快试</span>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <span class="form-key">本质</span>
+          <span class="form-val">AI 在<strong>隔离虚拟机</strong>里跑——不碰真实业务系统。结果用户审核确认后再迁移。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">类比</span>
+          <span class="form-val">让实习生在<strong>测试环境</strong>试错，确认无误再写进生产。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">案例</span>
+          <span class="form-val eg"><strong>Cognition 的 Devin</strong>（在沙箱编程）、<strong>Browserbase</strong>（AI 在云端浏览器里操作）——错了不影响真生产。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">PM 收益</span>
+          <span class="form-val">用户敢让 AI 跑——<strong>有事不影响真实业务</strong>。这是 ToB 落地最受欢迎的形态。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 形态 3 · 任务分级路由 -->
+    <div class="form-card f3">
+      <div class="form-head">
+        <span class="form-id">FORM 03</span>
+        <span class="form-name">任务分级路由<span class="en">Hybrid Routing</span></span>
+        <span class="form-suit">最省钱</span>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <span class="form-key">本质</span>
+          <span class="form-val">大部分任务走 <strong>API + Function Calling</strong>（快 + 便宜）。<strong>只有需要操作 GUI 时才上 Computer Use</strong>。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">类比</span>
+          <span class="form-val">能走高速就不走小路。<strong>Computer Use 是"备用方案"</strong>，不是主路。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">案例</span>
+          <span class="form-val eg"><strong>飞书 / Notion AI</strong> 大量用 API，只在<strong>第三方老系统</strong>才上 Computer Use 接管。</span>
+        </div>
+        <div class="form-row">
+          <span class="form-key">PM 收益</span>
+          <span class="form-val">综合成本砍 80%——把贵的能力<strong>用在刀刃上</strong>。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="block do">
+      <div class="block-title">PM 心法</div>
+      <p><strong>共驾 → 安全敏感场景</strong>（金融 / 法务 / HR）</p>
+      <p><strong>沙箱 → 探索性任务</strong>（数据分析 / 内容生成）</p>
+      <p><strong>路由 → 大规模生产</strong>（客服 / 自动化办公）</p>
+      <p style="margin-top:10px">真高级 PM——<strong>三种混合用</strong>。不同任务用不同形态。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03 · 翻车 + 兜底 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">3 个<span class="yellow-hi">真实翻车</span> + 兜底设计</div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:32px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      下面 3 个翻车场景——<strong style="color:#E63946">每个都是 PM 必须提前设计兜底机制的</strong>。否则上线第一周就会被业务方喊停。
+    </p>
+
+    <!-- 翻车 1 -->
+    <div class="crash-card">
+      <span class="crash-tag-top">CRASH 01 · 误操作</span>
+      <div class="crash-head">
+        <div class="crash-scene">AI 把<span class="red">客户支付订单按错</span>，触发误退款</div>
+        <div class="crash-meta">SCENE · 财务自动化场景</div>
+      </div>
+      <div class="crash-body">
+        <div class="crash-section why">
+          <span class="crash-label">为啥发生</span>
+          <div class="crash-text">AI 截图理解时把<strong>相邻两个按钮位置认错</strong>——本来该点"确认"，点成了"退款"。这种错误在 demo 视频里看不出，但生产<strong>每 20 次 1 次发生</strong>。</div>
+        </div>
+        <div class="crash-section fix">
+          <span class="crash-label">兜底设计</span>
+          <div class="crash-text">高风险操作必须<strong>二次确认机制</strong>——AI 点完"退款"前，弹一个对话框让用户确认。或者更彻底——<code>白名单</code> 机制，AI 只能点 PM 预先批准的按钮，<strong>"退款"按钮永远不在白名单里</strong>。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 翻车 2 -->
+    <div class="crash-card">
+      <span class="crash-tag-top">CRASH 02 · 太慢</span>
+      <div class="crash-head">
+        <div class="crash-scene">客户等 <span class="red">3 分钟</span>看 AI 慢吞吞操作</div>
+        <div class="crash-meta">SCENE · 客户支持场景</div>
+      </div>
+      <div class="crash-body">
+        <div class="crash-section why">
+          <span class="crash-label">为啥发生</span>
+          <div class="crash-text">Computer Use <strong>每步要截图 + 大模型理解 + 决策</strong>。一个简单的"查订单 + 改地址"流程要 20+ 步，<strong>真跑下来 2-3 分钟</strong>。客户在客服窗口等不住，刷屏催。</div>
+        </div>
+        <div class="crash-section fix">
+          <span class="crash-label">兜底设计</span>
+          <div class="crash-text">① <strong>实时进度条</strong>——告诉用户"AI 正在第 5/12 步"，<strong>等待心理预期降下来</strong>。<br>② <strong>异步队列</strong>——常规任务进队列，几分钟后通知"已完成"，<strong>不让用户傻等</strong>。<br>③ 高频任务直接<strong>退回 API 模式</strong>，Computer Use 只做兜底。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 翻车 3 -->
+    <div class="crash-card">
+      <span class="crash-tag-top">CRASH 03 · 太贵</span>
+      <div class="crash-head">
+        <div class="crash-scene">CFO 看到月账单——<span class="red">15 万</span>API 费</div>
+        <div class="crash-meta">SCENE · 内部办公自动化</div>
+      </div>
+      <div class="crash-body">
+        <div class="crash-section why">
+          <span class="crash-label">为啥发生</span>
+          <div class="crash-text">公司 200 人都开始用 Computer Use 自动化日常任务——<strong>每人每天 50 次操作 × 200 人 = 1 万次/天</strong>。Computer Use 单价是普通 API 的 50 倍，<strong>月成本爆炸</strong>。</div>
+        </div>
+        <div class="crash-section fix">
+          <span class="crash-label">兜底设计</span>
+          <div class="crash-text">① <strong>预算硬墙</strong>——按部门 / 用户配额度，超了自动停。<br>② <strong>缓存高频操作</strong>——相同任务的操作脚本<strong>录制一次复用</strong>，下次不用 AI 重新理解屏幕。<br>③ <strong>定期 Audit</strong>——每月看哪些任务 ROI 低，<strong>砍掉或退回脚本化</strong>。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">Computer Use 怎么落地</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule"><span class="h">先算账</span>——单次成本是普通 API 的 50 倍，先算 ROI</div>
+        <div class="truth-rule"><span class="h">先选形态</span>——共驾 / 沙箱 / 路由，按业务风险选</div>
+        <div class="truth-rule"><span class="h">先设兜底</span>——二次确认 + 白名单 + 预算硬墙</div>
+        <div class="truth-rule"><span class="h">先小范围</span>——选 1 个低风险场景 POC，跑通再扩</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官知道你不是被 demo 带节奏的小白</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        Computer Use 不是<span class="red-em">万能钥匙</span>——<br>
+        是<span class="red-em">"兜底能力"</span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red">Eval 驱动开发</span> · AI 产品的新核心
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">从"写 Prompt" 到 "建 Eval"</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#ComputerUse</span>
+        <span>#Agent</span>
+        <span>#AIPM求职</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

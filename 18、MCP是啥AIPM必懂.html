@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP 协议 AI PM 视角 · NOVA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+body{
+  background:#FEFCF5;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;
+  line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+
+/* ============ 品牌头 ============ */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;border-bottom:2.5px dashed rgba(0,0,0,0.2);
+}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:38px;height:38px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:16px;position:relative;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:-4px;border:2px solid #2B2B2B;border-radius:50%;
+  border-style:dashed;opacity:0.4;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px;color:#2B2B2B;letter-spacing:-0.02em}
+.brand-tag{font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#888;letter-spacing:0.05em}
+
+/* ============ 大标题 ============ */
+.hero{margin-bottom:24px;padding:8px 6px}
+.hero-tag{
+  display:inline-block;background:#FFE16B;border:2.5px solid #2B2B2B;
+  border-radius:8px 22px 8px 22px;padding:6px 16px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;
+  margin-bottom:14px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #2B2B2B;
+}
+.hero-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:38px;line-height:1.3;color:#2B2B2B;
+}
+.hero-title .red{color:#E63946;position:relative;display:inline-block}
+.hero-title .red::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.hero-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+.hero-meta{
+  margin-top:14px;padding-top:14px;border-top:2px dashed rgba(0,0,0,0.15);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;
+}
+
+/* ============ 反认知钩子 ============ */
+.hook-card{
+  margin:24px 0 32px;background:#2B2B2B;color:#FFFFFF;border-radius:18px;
+  padding:24px 28px;box-shadow:6px 6px 0 #E63946;position:relative;
+}
+.hook-label{
+  display:inline-block;background:#E63946;color:#FFFFFF;
+  font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.15em;
+  padding:3px 10px;border-radius:6px;margin-bottom:14px;
+}
+.hook-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;
+}
+.hook-title .yellow{color:#FFE16B}
+.hook-title .red{color:#FF8C70}
+.hook-sub{
+  margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,0.2);
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:rgba(255,255,255,0.8);line-height:1.65;
+}
+.hook-sub strong{color:#FFE16B}
+
+/* ============ Tab 页签 ============ */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;
+  position:sticky;top:12px;z-index:10;background:#FEFCF5;padding:8px 0;
+}
+.tab-btn{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;padding:14px 12px;
+  cursor:pointer;font-family:"ZCOOL KuaiLe",sans-serif;text-align:center;
+  position:relative;transition:all 0.2s;box-shadow:4px 4px 0 #2B2B2B;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.tab-btn.active{background:#FFE16B;transform:translate(2px,2px);box-shadow:2px 2px 0 #2B2B2B}
+.tab-num{font-family:"Archivo Black",sans-serif;font-size:22px;color:#E63946;line-height:1}
+.tab-label{font-size:14px;color:#2B2B2B;line-height:1.3}
+.tab-en{font-family:"Archivo Black",sans-serif;font-size:9px;color:#888;letter-spacing:0.15em}
+.tab-btn.active .tab-num{color:#2B2B2B}
+.tab-btn.active .tab-en{color:#9B5E10}
+
+/* ============ Tab 内容 ============ */
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-header{
+  margin:0 0 20px;display:flex;align-items:center;gap:16px;
+  padding:16px 18px;background:#FFFEF0;border-radius:14px;border:2.5px dashed rgba(0,0,0,0.2);
+}
+.tab-header-num{
+  font-family:"Archivo Black",sans-serif;font-size:36px;color:#E63946;line-height:1;flex-shrink:0;
+}
+.tab-header-text{flex:1}
+.tab-header-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#888;letter-spacing:0.15em;margin-bottom:2px}
+.tab-header-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;color:#2B2B2B;line-height:1.3}
+.tab-header-title .yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px;
+}
+
+/* ============ 前后对比 · 大块大字 ============ */
+.before-after{
+  margin:32px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.ba-row{display:grid;grid-template-columns:120px 1fr;align-items:stretch}
+.ba-row:first-child{border-bottom:3px solid #2B2B2B}
+.ba-tag{
+  background:#2B2B2B;color:#FFFFFF;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:14px 8px;text-align:center;
+}
+.ba-tag-en{
+  font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.7);margin-bottom:4px;
+}
+.ba-tag-cn{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.1;
+}
+.ba-row.before .ba-tag{background:#9B1B27}
+.ba-row.before .ba-tag-en{color:#FFD9DC}
+.ba-row.after .ba-tag{background:#1B6B43}
+.ba-row.after .ba-tag-en{color:#A8E6CF}
+
+.ba-body{padding:18px 22px;background:#FFFEF0}
+.ba-row.before .ba-body{background:#FFD9DC}
+.ba-row.after .ba-body{background:#A8E6CF}
+.ba-line{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;color:#2B2B2B;line-height:1.7;
+  margin-bottom:6px;display:flex;align-items:flex-start;gap:8px;
+}
+.ba-line:last-child{margin-bottom:0}
+.ba-line::before{content:"·";color:#2B2B2B;font-weight:bold;font-size:22px;line-height:1;margin-top:-1px;flex-shrink:0}
+.ba-line strong{color:#9B1B27}
+.ba-row.after .ba-line strong{color:#1B6B43}
+.ba-line code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:3px;color:#1A1A1A;
+}
+
+/* ============ USB-C 类比图 ============ */
+.analogy-card{
+  margin:24px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.analogy-card::before{
+  content:"灵魂类比";position:absolute;top:-18px;left:24px;
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FFE16B;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;letter-spacing:0.1em;
+}
+.analogy-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#2B2B2B;
+  text-align:center;margin-top:10px;margin-bottom:18px;line-height:1.5;
+}
+.analogy-title .red{color:#E63946}
+.analogy-svg{width:100%;height:auto;display:block}
+.analogy-explain{
+  margin-top:16px;padding:14px 16px;background:#FFFEF0;border-radius:10px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#3D3D3D;line-height:1.7;
+  border-left:3px solid #FFE16B;
+}
+.analogy-explain strong{color:#E63946}
+
+/* ============ 通用卡片 ============ */
+.block{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px 24px;margin:32px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.block.do{background:#A8E6CF}
+.block.warn{background:#FFD9DC}
+.block.dark{background:#2B2B2B;color:#FFFFFF}
+.block::before{
+  position:absolute;top:-18px;left:24px;font-family:"Archivo Black",sans-serif;font-size:13px;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:4px 14px;
+  letter-spacing:0.1em;color:#2B2B2B;
+}
+.block.do::before{content:"心法"}
+.block.warn::before{content:"别踩"}
+.block.dark::before{content:"金句";background:#2B2B2B;color:#FFE16B}
+.block-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;line-height:1.5;color:#2B2B2B;margin-bottom:10px;
+}
+.block.dark .block-title{color:#FFFFFF}
+.block-title .red-em{color:#E63946;font-weight:bold}
+.block.dark .block-title .red-em{color:#FFE16B}
+.block p{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:15.5px;line-height:1.8;color:#2B2B2B;
+}
+.block.dark p{color:rgba(255,255,255,0.92)}
+.block p strong{color:#E63946}
+.block.dark p strong{color:#FFE16B}
+
+/* ============ Tab 02 · 决策表 ============ */
+.decision-table{
+  margin:32px 0 36px;background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  box-shadow:5px 5px 0 #2B2B2B;overflow:hidden;
+}
+.dt-head{
+  display:grid;grid-template-columns:1.4fr 1fr 1fr;background:#2B2B2B;color:#FFFFFF;
+}
+.dt-head-cell{
+  padding:14px 16px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;
+  border-right:1px solid rgba(255,255,255,0.15);
+}
+.dt-head-cell:last-child{border-right:none}
+.dt-head-cell.fc{color:#FFD580}
+.dt-head-cell.mcp{color:#A8E6CF}
+.dt-row{
+  display:grid;grid-template-columns:1.4fr 1fr 1fr;
+  border-top:1.5px dashed rgba(0,0,0,0.15);
+}
+.dt-row:first-of-type{border-top:none}
+.dt-cell{
+  padding:14px 16px;font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#2B2B2B;
+  border-right:1.5px dashed rgba(0,0,0,0.1);line-height:1.5;
+  background:#FFFEF0;
+}
+.dt-cell:last-child{border-right:none}
+.dt-cell.q{font-weight:700;background:#FFE9CB}
+.dt-cell.win{background:#A8E6CF;font-weight:600;color:#1B6B43}
+.dt-cell.win::before{content:"✓ ";color:#1B6B43;font-weight:bold;font-size:16px}
+
+/* ============ Tab 03 · 真实场景案例 ============ */
+.case-card{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  margin:42px 0 36px;box-shadow:5px 5px 0 #2B2B2B;position:relative;
+}
+.case-tag-top{
+  position:absolute;top:-16px;left:24px;z-index:5;
+  background:#E63946;color:#FFFFFF;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.1em;
+  box-shadow:2px 2px 0 #2B2B2B;
+}
+.case-head{
+  padding:22px 22px 16px;border-bottom:3px solid #2B2B2B;
+  border-radius:13px 13px 0 0;
+}
+.case-card.c1 .case-head{background:#FFE9CB}
+.case-card.c2 .case-head{background:#D0E8FF}
+.case-card.c3 .case-head{background:#E5D4F1}
+.case-title{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px;color:#2B2B2B;line-height:1.4;margin-bottom:6px;
+}
+.case-title .red{color:#E63946;font-weight:bold}
+.case-meta{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:#666;letter-spacing:0.05em;
+}
+.case-body{padding:18px 22px}
+.case-section{margin-bottom:14px}
+.case-section:last-child{margin-bottom:0}
+.case-section-label{
+  display:inline-block;
+  font-family:"Archivo Black",sans-serif;font-size:9px;letter-spacing:0.1em;
+  padding:2px 9px;border-radius:4px;margin-bottom:6px;
+}
+.case-section.before .case-section-label{background:#FFD9DC;color:#9B1B27}
+.case-section.after .case-section-label{background:#A8E6CF;color:#1B6B43}
+.case-section.gain .case-section-label{background:#FFE16B;color:#9B5E10}
+.case-section-text{
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:14.5px;color:#2B2B2B;line-height:1.7;
+}
+.case-section-text strong{color:#E63946}
+.case-section.after .case-section-text strong{color:#1B6B43}
+.case-section.gain .case-section-text strong{color:#9B5E10}
+.case-section-text code{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;
+}
+
+/* ============ 面试金句 ============ */
+.truth-block{
+  margin:32px 0 36px;background:#2B2B2B;border-radius:18px;padding:26px 24px;
+  box-shadow:6px 6px 0 #FFE16B;position:relative;
+}
+.truth-label{font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.2em;margin-bottom:12px}
+.truth-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:22px;line-height:1.5;color:#FFFFFF;margin-bottom:14px}
+.truth-title .yellow{color:#FFE16B}
+.truth-rules{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.truth-rule{
+  background:rgba(255,225,107,0.12);border:1.5px solid rgba(255,225,107,0.4);
+  border-radius:10px;padding:11px 14px;font-family:"ZCOOL KuaiLe",sans-serif;
+  font-size:15px;color:#FFFFFF;display:flex;align-items:center;gap:10px;
+}
+.truth-rule::before{content:"";width:7px;height:7px;background:#FFE16B;border-radius:50%;flex-shrink:0}
+.truth-rule .h{color:#FFE16B;font-weight:bold}
+
+/* ============ 收尾 ============ */
+.closing{
+  margin:32px 0 24px;padding:30px 24px;background:#FFFFFF;border:3px solid #2B2B2B;
+  border-radius:20px;box-shadow:6px 6px 0 #2B2B2B;text-align:center;position:relative;
+}
+.closing::before{
+  content:"结论";position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-family:"Archivo Black",sans-serif;font-size:13px;color:#2B2B2B;
+  background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;
+}
+.closing-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#888;margin-top:14px;margin-bottom:14px;letter-spacing:0.1em}
+.closing-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.closing-h .red-em{color:#E63946;position:relative;display:inline-block}
+.closing-h .red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+
+.cta{
+  margin-top:24px;background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:22px;box-shadow:5px 5px 0 #2B2B2B;position:relative;transform:rotate(-0.5deg);
+}
+.cta::before{
+  content:"下条";position:absolute;top:-18px;right:24px;font-family:"Archivo Black",sans-serif;
+  font-size:13px;color:#2B2B2B;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;letter-spacing:0.1em;transform:rotate(4deg);
+}
+.cta-label{font-family:"ZCOOL KuaiLe",sans-serif;font-size:14px;color:#1B6B43;margin-top:8px;margin-bottom:10px;letter-spacing:0.1em}
+.cta-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;line-height:1.5;color:#2B2B2B;margin-bottom:14px}
+.cta-h .red{color:#E63946}
+.cta-lines{background:#FFFFFF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.cta-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:15px;color:#2B2B2B;padding:4px 0;display:flex;align-items:center;gap:10px}
+.cta-line::before{content:"→";color:#E63946;font-weight:bold;font-size:18px}
+.cta-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cta-tags span{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:20px;padding:4px 12px;
+  font-family:"ZCOOL KuaiLe",sans-serif;font-size:13px;color:#2B2B2B;
+}
+
+.footer{margin-top:36px;text-align:center;font-family:"Archivo Black",sans-serif;font-size:13px;color:#888;letter-spacing:0.1em}
+
+@media (max-width:680px){
+  .page{padding:24px 14px 60px}
+  .brand-name{font-size:18px}
+  .hero-title{font-size:24px}
+  .hook-title{font-size:18px}
+  .tabs{gap:6px}
+  .tab-btn{padding:10px 6px}
+  .tab-num{font-size:18px}
+  .tab-label{font-size:12px}
+  .tab-en{font-size:8px;letter-spacing:0.08em}
+  .tab-header-num{font-size:28px}
+  .tab-header-title{font-size:18px}
+  .ba-row{grid-template-columns:1fr}
+  .ba-tag{padding:10px;flex-direction:row;gap:8px}
+  .ba-tag-cn{font-size:16px}
+  .ba-line{font-size:14px}
+  .block-title{font-size:17px}
+  .dt-head{grid-template-columns:1.2fr 1fr 1fr}
+  .dt-row{grid-template-columns:1.2fr 1fr 1fr}
+  .dt-cell{font-size:12.5px;padding:10px 11px}
+  .dt-head-cell{font-size:13px;padding:11px}
+  .case-title{font-size:15.5px}
+  .case-section-text{font-size:13.5px}
+  .truth-title{font-size:18px}
+  .truth-rule{font-size:14px}
+  .closing-h{font-size:19px}
+  .cta-h{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<article class="page">
+
+  <header class="brand-bar">
+    <div class="brand-logo">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-name">NOVA</div>
+        <div class="brand-tag">AI 产品经理 · 求职笔记</div>
+      </div>
+    </div>
+    <div class="brand-tag">VOL.19</div>
+  </header>
+
+  <div class="hero">
+    <span class="hero-tag">第 19 讲｜下一代 Agent 架构</span>
+    <h1 class="hero-title">
+      <span class="red">MCP</span> 是啥<br>
+      为啥<span class="yellow-hi">AI PM 必须懂</span>
+    </h1>
+    <div class="hero-meta">By NOVA · 不讲协议规范 · 只讲 PM 视角</div>
+  </div>
+
+  <!-- 反认知钩子 -->
+  <div class="hook-card">
+    <span class="hook-label">2025-2026 最重要协议</span>
+    <div class="hook-title">
+      你以为 MCP 是<span class="red">工程师才需要懂</span>的协议——<br>
+      <span class="yellow">错</span>。<br>
+      MCP 直接<span class="yellow">改写你设计 Agent 产品的方式</span>
+    </div>
+    <div class="hook-sub">
+      不懂 MCP 的 PM——还在为每个工具写 Function Calling。<strong>懂 MCP 的 PM</strong>——已经在搭"AI 应用商店"了。<strong>这是认知代差</strong>。
+    </div>
+  </div>
+
+  <!-- ============ TAB 切换 ============ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">
+      <span class="tab-num">01</span>
+      <span class="tab-label">解决啥问题</span>
+      <span class="tab-en">WHY</span>
+    </button>
+    <button class="tab-btn" data-tab="t2">
+      <span class="tab-num">02</span>
+      <span class="tab-label">vs FC 怎么选</span>
+      <span class="tab-en">CHOOSE</span>
+    </button>
+    <button class="tab-btn" data-tab="t3">
+      <span class="tab-num">03</span>
+      <span class="tab-label">3 个真实场景</span>
+      <span class="tab-en">CASES</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB 01 · 解决啥问题 ============ -->
+  <div class="tab-content active" id="t1">
+
+    <div class="tab-header">
+      <div class="tab-header-num">01</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · ONE</div>
+        <div class="tab-header-title">MCP 到底<span class="yellow-hi">解决了什么</span></div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      先不讲<strong style="color:#E63946">"MCP 是 Model Context Protocol"</strong>这种废话。直接看一个真实场景——你给 AI 接入 5 个工具，<strong style="color:#E63946">没 MCP 之前 vs 有 MCP 之后</strong>。
+    </p>
+
+    <!-- 前后对比 -->
+    <div class="before-after">
+      <div class="ba-row before">
+        <div class="ba-tag">
+          <span class="ba-tag-en">BEFORE</span>
+          <span class="ba-tag-cn">没 MCP<br>之前</span>
+        </div>
+        <div class="ba-body">
+          <div class="ba-line"><span>每接入一个新工具 → <strong>PM 写 PRD + 工程师写 Function Calling 接口</strong></span></div>
+          <div class="ba-line"><span>5 个工具 = <code>5 套 FC schema</code> + <code>5 套权限管理</code> + <code>5 套错误处理</code></span></div>
+          <div class="ba-line"><span>工具方升级 API → <strong>所有接入方都要改</strong>，谁先改谁先挂</span></div>
+          <div class="ba-line"><span>你的 Agent 只能用<strong>你接过的工具</strong>，AI 应用之间无法共享能力</span></div>
+        </div>
+      </div>
+      <div class="ba-row after">
+        <div class="ba-tag">
+          <span class="ba-tag-en">AFTER</span>
+          <span class="ba-tag-cn">有了<br>MCP</span>
+        </div>
+        <div class="ba-body">
+          <div class="ba-line"><span>工具方<strong>自己出一个 MCP Server</strong>（Notion / GitHub / 飞书都已经做了）</span></div>
+          <div class="ba-line"><span>你的 AI 应用<strong>一行配置直接接入</strong>，能力自动发现，不用写 FC</span></div>
+          <div class="ba-line"><span>工具方升级 → 改自己的 Server，<strong>客户端零修改</strong></span></div>
+          <div class="ba-line"><span>新装一个第三方 MCP Server，AI 立刻有新能力——<strong>像装 App 一样装能力</strong></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USB-C 类比 -->
+    <div class="analogy-card">
+      <div class="analogy-title">
+        <span class="red">MCP 之于 AI</span> = USB-C 之于电子设备
+      </div>
+
+      <svg class="analogy-svg" viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- 左边 没有 USB-C 的混乱 -->
+        <g>
+          <text x="120" y="25" text-anchor="middle" font-family="Archivo Black" font-size="11" fill="#9B1B27" letter-spacing="1.5">BEFORE · 一堆专有接口</text>
+
+          <!-- 中心设备 -->
+          <rect x="80" y="105" width="80" height="60" rx="8" fill="#FFD9DC" stroke="#2B2B2B" stroke-width="2.5"/>
+          <text x="120" y="140" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="13" fill="#2B2B2B" font-weight="700">你的 AI</text>
+
+          <!-- 各种专有接口 -->
+          <g>
+            <line x1="120" y1="105" x2="80" y2="60" stroke="#9B1B27" stroke-width="2"/>
+            <rect x="50" y="40" width="60" height="22" rx="4" fill="#FFFFFF" stroke="#9B1B27" stroke-width="2"/>
+            <text x="80" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#9B1B27" font-weight="700">FC_Notion</text>
+          </g>
+          <g>
+            <line x1="120" y1="105" x2="200" y2="60" stroke="#9B1B27" stroke-width="2"/>
+            <rect x="170" y="40" width="60" height="22" rx="4" fill="#FFFFFF" stroke="#9B1B27" stroke-width="2"/>
+            <text x="200" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#9B1B27" font-weight="700">FC_Slack</text>
+          </g>
+          <g>
+            <line x1="80" y1="165" x2="40" y2="210" stroke="#9B1B27" stroke-width="2"/>
+            <rect x="10" y="210" width="60" height="22" rx="4" fill="#FFFFFF" stroke="#9B1B27" stroke-width="2"/>
+            <text x="40" y="225" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#9B1B27" font-weight="700">FC_GitHub</text>
+          </g>
+          <g>
+            <line x1="160" y1="165" x2="200" y2="210" stroke="#9B1B27" stroke-width="2"/>
+            <rect x="170" y="210" width="60" height="22" rx="4" fill="#FFFFFF" stroke="#9B1B27" stroke-width="2"/>
+            <text x="200" y="225" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#9B1B27" font-weight="700">FC_飞书</text>
+          </g>
+          <g>
+            <line x1="120" y1="165" x2="120" y2="240" stroke="#9B1B27" stroke-width="2"/>
+            <rect x="90" y="245" width="60" height="22" rx="4" fill="#FFFFFF" stroke="#9B1B27" stroke-width="2"/>
+            <text x="120" y="260" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#9B1B27" font-weight="700">FC_Jira</text>
+          </g>
+        </g>
+
+        <!-- 右边 有了 USB-C 的统一 -->
+        <g>
+          <text x="540" y="25" text-anchor="middle" font-family="Archivo Black" font-size="11" fill="#1B6B43" letter-spacing="1.5">AFTER · 统一 MCP 协议</text>
+
+          <!-- 中心设备 -->
+          <rect x="500" y="105" width="80" height="60" rx="8" fill="#A8E6CF" stroke="#2B2B2B" stroke-width="2.5"/>
+          <text x="540" y="140" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="13" fill="#2B2B2B" font-weight="700">你的 AI</text>
+
+          <!-- MCP 中转器 -->
+          <rect x="430" y="105" width="50" height="60" rx="8" fill="#FFE16B" stroke="#2B2B2B" stroke-width="2.5"/>
+          <text x="455" y="130" text-anchor="middle" font-family="Archivo Black" font-size="11" fill="#2B2B2B">MCP</text>
+          <text x="455" y="148" text-anchor="middle" font-family="ZCOOL KuaiLe" font-size="10" fill="#2B2B2B" font-weight="700">协议层</text>
+          <line x1="480" y1="135" x2="500" y2="135" stroke="#2B2B2B" stroke-width="2.5"/>
+
+          <!-- 各种 MCP Server -->
+          <g>
+            <line x1="430" y1="120" x2="380" y2="60" stroke="#1B6B43" stroke-width="2"/>
+            <rect x="345" y="40" width="80" height="22" rx="4" fill="#FFFFFF" stroke="#1B6B43" stroke-width="2"/>
+            <text x="385" y="55" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1B6B43" font-weight="700">Notion MCP</text>
+          </g>
+          <g>
+            <line x1="455" y1="105" x2="455" y2="40" stroke="#1B6B43" stroke-width="2"/>
+            <rect x="420" y="18" width="70" height="22" rx="4" fill="#FFFFFF" stroke="#1B6B43" stroke-width="2"/>
+            <text x="455" y="33" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1B6B43" font-weight="700">Slack MCP</text>
+          </g>
+          <g>
+            <line x1="430" y1="150" x2="380" y2="210" stroke="#1B6B43" stroke-width="2"/>
+            <rect x="340" y="210" width="80" height="22" rx="4" fill="#FFFFFF" stroke="#1B6B43" stroke-width="2"/>
+            <text x="380" y="225" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1B6B43" font-weight="700">GitHub MCP</text>
+          </g>
+          <g>
+            <line x1="455" y1="165" x2="455" y2="240" stroke="#1B6B43" stroke-width="2"/>
+            <rect x="425" y="245" width="60" height="22" rx="4" fill="#FFFFFF" stroke="#1B6B43" stroke-width="2"/>
+            <text x="455" y="260" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1B6B43" font-weight="700">飞书 MCP</text>
+          </g>
+        </g>
+
+        <!-- 中间分隔 -->
+        <line x1="340" y1="20" x2="340" y2="270" stroke="#2B2B2B" stroke-width="1.5" stroke-dasharray="5 4"/>
+      </svg>
+
+      <div class="analogy-explain">
+        <strong>USB-C 出来之前</strong>——苹果有 Lightning、安卓有 micro USB、笔记本有自家接口。每接一个设备要换一根线。<strong>USB-C 出来之后</strong>——一根线连所有。<br><br>
+        <strong>MCP 就是 AI 世界的 USB-C</strong>。工具方做 1 个 MCP Server，所有 AI 应用直接用。
+      </div>
+    </div>
+
+    <!-- 谁在用 -->
+    <div class="block dark">
+      <div class="block-title">
+        2025-2026 谁都在用——<br>
+        <span class="red-em">不是 Anthropic 一家的事</span>
+      </div>
+      <p><strong>已经接入 MCP 的</strong>：Claude Desktop、Cursor、Cline、Continue、ChatGPT、Zed、Windsurf、飞书、阿里通义、字节豆包 IDE。</p>
+      <p style="margin-top:8px"><strong>提供 MCP Server 的工具方</strong>：GitHub、GitLab、Notion、Slack、Linear、Sentry、PostgreSQL、Stripe、Cloudflare、Anthropic 自家全套。</p>
+      <p style="margin-top:8px"><strong>这不是某家公司的小协议——是 AI 时代的"USB-C 标准"</strong>。不懂就被时代抛下。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 02 · vs FC 怎么选 ============ -->
+  <div class="tab-content" id="t2">
+
+    <div class="tab-header">
+      <div class="tab-header-num">02</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · TWO</div>
+        <div class="tab-header-title">MCP vs Function Calling<span class="yellow-hi"> 怎么选</span></div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:20px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      <strong style="color:#E63946">不是 MCP 取代 Function Calling</strong>——是不同场景用不同的。PM 必须知道<strong style="color:#E63946">什么时候用哪个</strong>。
+    </p>
+
+    <!-- 决策表 -->
+    <div class="decision-table">
+      <div class="dt-head">
+        <div class="dt-head-cell">PM 决策点</div>
+        <div class="dt-head-cell fc">用 Function Calling</div>
+        <div class="dt-head-cell mcp">用 MCP</div>
+      </div>
+
+      <div class="dt-row">
+        <div class="dt-cell q">工具是 <strong>自家内部系统</strong>？</div>
+        <div class="dt-cell win">紧密耦合性能更好</div>
+        <div class="dt-cell">无必要复杂化</div>
+      </div>
+
+      <div class="dt-row">
+        <div class="dt-cell q">工具是 <strong>第三方 SaaS</strong>？</div>
+        <div class="dt-cell">每次升级要维护</div>
+        <div class="dt-cell win">SaaS 自己出 Server</div>
+      </div>
+
+      <div class="dt-row">
+        <div class="dt-cell q">用户能<strong>自己加工具</strong>？</div>
+        <div class="dt-cell">PM 排期开发</div>
+        <div class="dt-cell win">用户装 MCP 即可</div>
+      </div>
+
+      <div class="dt-row">
+        <div class="dt-cell q">追求<strong>极致性能</strong>？</div>
+        <div class="dt-cell win">省一层协议开销</div>
+        <div class="dt-cell">多层增加延迟</div>
+      </div>
+
+      <div class="dt-row">
+        <div class="dt-cell q">做<strong>AI 平台/IDE</strong>？</div>
+        <div class="dt-cell">闭环但封闭</div>
+        <div class="dt-cell win">生态飞轮起来</div>
+      </div>
+
+      <div class="dt-row">
+        <div class="dt-cell q">工具<strong>需高频迭代</strong>？</div>
+        <div class="dt-cell">改 FC 改两边</div>
+        <div class="dt-cell win">只改 Server 端</div>
+      </div>
+
+      <div class="dt-row">
+        <div class="dt-cell q"><strong>权限隔离</strong>很严？</div>
+        <div class="dt-cell win">应用层完全控制</div>
+        <div class="dt-cell">协议层需配置</div>
+      </div>
+    </div>
+
+    <div class="block do">
+      <div class="block-title">
+        一句话 PM 决策心法
+      </div>
+      <p><strong>对内 + 性能敏感</strong> → Function Calling</p>
+      <p style="margin-top:6px"><strong>对外 + 生态扩展</strong> → MCP</p>
+      <p style="margin-top:10px"><strong>大部分高级 PM 的真实选择</strong>——两者混用。核心闭环用 FC，第三方扩展用 MCP。</p>
+    </div>
+
+    <div class="block warn">
+      <div class="block-title">
+        最容易踩的坑——<span class="red-em">所有工具都上 MCP</span>
+      </div>
+      <p>有的 PM 听说 MCP 火，把<strong>核心高频内部工具也改成 MCP</strong>——延迟翻 2-3 倍，错误率上升，被工程师骂死。</p>
+      <p style="margin-top:8px"><strong>记住</strong>——MCP 是为<strong>"互不相识的工具方和 AI 方"</strong>设计的。你和你自家工具不需要"互不相识"。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB 03 · 3 个真实场景 ============ -->
+  <div class="tab-content" id="t3">
+
+    <div class="tab-header">
+      <div class="tab-header-num">03</div>
+      <div class="tab-header-text">
+        <div class="tab-header-label">PART · THREE</div>
+        <div class="tab-header-title">MCP <span class="yellow-hi">改变产品架构</span>的 3 个场景</div>
+      </div>
+    </div>
+
+    <p style="font-family:'ZCOOL KuaiLe',sans-serif;font-size:15.5px;color:#3D3D3D;line-height:1.75;margin-bottom:32px;padding:14px 18px;background:#FFFEF0;border-left:3px solid #FFE16B;border-radius:0 8px 8px 0">
+      光看协议没用——看 MCP <strong style="color:#E63946">怎么改变你做产品的方式</strong>。3 个真实场景，PM 能立刻看到收益。
+    </p>
+
+    <!-- 案例 1 · 内部多系统 Agent -->
+    <div class="case-card c1">
+      <span class="case-tag-top">CASE 01 · 内部 Agent</span>
+      <div class="case-head">
+        <div class="case-title">公司 Agent 接<span class="red">30 个内部系统</span></div>
+        <div class="case-meta">SCENARIO · 中大厂内部 AI 助手</div>
+      </div>
+      <div class="case-body">
+        <div class="case-section before">
+          <span class="case-section-label">没 MCP 之前</span>
+          <div class="case-section-text">每接一个内部系统（HR、ERP、报销、知识库、监控...）—— PM 写 PRD → 工程写 FC → 测试 → 上线。<strong>30 个系统 = 30 个轮回</strong>。新增一个系统排期 2 周。</div>
+        </div>
+        <div class="case-section after">
+          <span class="case-section-label">用 MCP 之后</span>
+          <div class="case-section-text">建一个公司内部 <code>MCP Marketplace</code>——各业务团队自己出 MCP Server 入驻。AI 应用方<strong>0 改动接新工具</strong>。从 PM 推驱动变 <strong>业务方自助</strong>。</div>
+        </div>
+        <div class="case-section gain">
+          <span class="case-section-label">PM 视角的真收益</span>
+          <div class="case-section-text">PM 不用<strong>排队接需求</strong>了——你成为"平台架构师"，定义协议和准入标准，<strong>放大杠杆几十倍</strong>。这是 PM 的角色升级。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 案例 2 · 客户支持 Agent -->
+    <div class="case-card c2">
+      <span class="case-tag-top">CASE 02 · 客户支持</span>
+      <div class="case-head">
+        <div class="case-title">支持 Agent 跨 <span class="red">Zendesk + Slack + Jira</span> 流转</div>
+        <div class="case-meta">SCENARIO · ToB SaaS 客户支持自动化</div>
+      </div>
+      <div class="case-body">
+        <div class="case-section before">
+          <span class="case-section-label">没 MCP 之前</span>
+          <div class="case-section-text">客户在 Zendesk 提工单 → 你写 FC 把信息拉过来 → AI 判断 → 写 FC 同步到 Slack 群 → 升级写 FC 建 Jira。<strong>3 个工具 3 套接口</strong>，任何一家升级 API 都断链。</div>
+        </div>
+        <div class="case-section after">
+          <span class="case-section-label">用 MCP 之后</span>
+          <div class="case-section-text">Zendesk、Slack、Jira 都<strong>官方出 MCP Server</strong>。你的 Agent 配置文件里写三行，能力直接到位。三家任何升级，<strong>你完全无感</strong>。</div>
+        </div>
+        <div class="case-section gain">
+          <span class="case-section-label">PM 视角的真收益</span>
+          <div class="case-section-text">维护成本砍 80%——以前每月要花 1 周修各种接口断链，现在 0。<strong>省下的时间用来设计更复杂的工作流</strong>。这就是 MCP 的杠杆。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 案例 3 · 用户自助扩展 -->
+    <div class="case-card c3">
+      <span class="case-tag-top">CASE 03 · 用户自助</span>
+      <div class="case-head">
+        <div class="case-title">让用户<span class="red">自己给你的 AI 装能力</span></div>
+        <div class="case-meta">SCENARIO · AI 应用市场化策略</div>
+      </div>
+      <div class="case-body">
+        <div class="case-section before">
+          <span class="case-section-label">没 MCP 之前</span>
+          <div class="case-section-text">用户要新功能——提需求 → PM 评估 → 工程排期 → 上线。<strong>用户能装的功能 = PM 排期决定</strong>。AI 应用同质化严重。</div>
+        </div>
+        <div class="case-section after">
+          <span class="case-section-label">用 MCP 之后</span>
+          <div class="case-section-text">用户在你的 App 里<strong>一键添加 MCP Server</strong>——想接 Linear？装 Linear MCP。想接自家 ERP？技术员自己写一个。<strong>能力从 PM 中心化变成生态化</strong>。</div>
+        </div>
+        <div class="case-section gain">
+          <span class="case-section-label">PM 视角的真收益</span>
+          <div class="case-section-text">你做的不再是"一个应用"——是"<strong>一个能力承载平台</strong>"。用户黏性指数级上升（装了 N 个 MCP 后切换成本极高）。Cursor 就是这么起来的。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 面试金句 -->
+    <div class="truth-block">
+      <div class="truth-label">面试金句 · 直接抄</div>
+      <div class="truth-title">
+        被问"<span class="yellow">MCP 和 Function Calling 有啥区别</span>"——
+      </div>
+      <div class="truth-rules">
+        <div class="truth-rule"><span class="h">协议层</span>——MCP 是开放标准，FC 是模型私有接口</div>
+        <div class="truth-rule"><span class="h">扩展性</span>——MCP 装即用，FC 必须写代码</div>
+        <div class="truth-rule"><span class="h">解耦度</span>——MCP 工具方升级客户端零改，FC 双端同步</div>
+        <div class="truth-rule"><span class="h">PM 选型</span>——对内 + 性能敏感用 FC，对外 + 生态用 MCP</div>
+      </div>
+      <p style="margin-top:14px;font-family:'ZCOOL KuaiLe',sans-serif;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;padding-top:14px;border-top:1px dashed rgba(255,225,107,0.3)">
+        4 句答完，<span style="color:#FFE16B;font-weight:bold">面试官知道你跟得上 2025-2026 节奏</span>
+      </p>
+    </div>
+
+    <!-- 收尾 -->
+    <div class="closing">
+      <div class="closing-label">核心结论 · TAKEAWAY</div>
+      <div class="closing-h">
+        MCP 改变的不是 Agent 技术——<br>
+        是 <span class="red-em">PM 的角色边界</span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-label">下一篇预告 · NEXT</div>
+      <div class="cta-h">
+        下条讲<br>
+        <span class="red">Computer Use</span> · AI 直接操作你电脑
+      </div>
+      <div class="cta-lines">
+        <div class="cta-line">Claude / GPT 都在卷的能力</div>
+        <div class="cta-line">关注 + 收藏不迷路</div>
+      </div>
+      <div class="cta-tags">
+        <span>#AI产品经理</span>
+        <span>#MCP</span>
+        <span>#Agent架构</span>
+        <span>#AIPM求职</span>
+      </div>
+    </div>
+
+    <div class="footer">© NOVA · AI PM · 每天讲透一个知识点</div>
+
+  </div>
+
+</article>
+
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    contents.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

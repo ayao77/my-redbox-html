@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>直播带货 AI 智能话术加选品 · NOVA VOL.22</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Kalam:wght@400;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:#FEFCF5;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);
+  background-size:24px 24px;
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  color:#2B2B2B;line-height:1.7;
+}
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+
+/* ========== 1. 品牌头 ========== */
+.brand-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:20px;border-bottom:3px solid #2B2B2B;margin-bottom:32px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{
+  width:42px;height:42px;background:#2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:20px;
+}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px}
+.vol-badge{
+  background:#2B2B2B;color:#FFE16B;border-radius:50px;
+  padding:6px 14px;
+  font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.18em;
+  transform:rotate(-2deg);
+}
+
+/* ========== 2. 标题区 ========== */
+.hero{margin-bottom:28px}
+.hero-tag{
+  display:inline-block;
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:16px;color:#9B1B27;
+  padding-left:38px;position:relative;margin-bottom:8px;
+}
+.hero-tag::before{
+  content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:28px;height:3px;background:#E63946;
+}
+.hero-title{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:44px;line-height:1.18;color:#2B2B2B}
+.hero-meta{margin-top:10px;font-family:"JetBrains Mono",monospace;font-size:13px;color:#666;letter-spacing:0.12em}
+
+.red-em{color:#E63946;position:relative;display:inline-block;font-weight:900}
+.red-em::after{
+  content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;
+  height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.yellow-hi{
+  background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);
+  padding:0 4px;
+}
+
+/* ========== 3. 开场钩子卡 (黑色直播间感) ========== */
+.hook-card{
+  background:#2B2B2B;color:#FFFFFF;
+  border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px 28px;
+  box-shadow:5px 5px 0 #E63946;
+  margin-bottom:24px;position:relative;
+}
+.hook-card::before{
+  content:"反认知";position:absolute;top:-14px;left:24px;
+  background:#FFE16B;color:#2B2B2B;border:3px solid #2B2B2B;border-radius:50px;
+  padding:3px 12px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+}
+.hook-card .h-line{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:24px;line-height:1.45;
+}
+.hook-card .h-sub{
+  margin-top:10px;font-size:14px;color:rgba(255,255,255,0.7);line-height:1.65;
+}
+.hook-card .h-sub strong{color:#FFE16B;font-weight:900}
+
+/* ========== 4. 数字震慑卡 ========== */
+.shock-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px;
+}
+.shock{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  padding:18px 16px;text-align:center;
+  box-shadow:4px 4px 0 #2B2B2B;
+}
+.shock .num{
+  font-family:"Archivo Black",sans-serif;font-size:32px;color:#E63946;
+  line-height:1;letter-spacing:-0.02em;
+}
+.shock .unit{font-family:"Archivo Black",sans-serif;font-size:14px;color:#2B2B2B;margin-top:2px}
+.shock .lbl{margin-top:8px;font-size:12px;color:#555;line-height:1.4}
+
+/* ========== 5. Section 标题 ========== */
+.sec-h{
+  display:flex;align-items:center;gap:14px;margin:48px 0 20px;
+}
+.sec-h .sec-no{
+  width:46px;height:46px;background:#FFE16B;border:3px solid #2B2B2B;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo Black",sans-serif;font-size:20px;color:#2B2B2B;
+  box-shadow:3px 3px 0 #2B2B2B;flex-shrink:0;
+}
+.sec-h .sec-t{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:26px;color:#2B2B2B;line-height:1.25;
+}
+.sec-h .sec-t small{
+  display:block;font-size:13px;color:#9B1B27;font-weight:700;letter-spacing:0.1em;margin-top:2px;
+}
+
+/* ========== Part 1 · 三层架构横向流图 ========== */
+.arch-wrap{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:28px 22px 22px;
+  box-shadow:5px 5px 0 #2B2B2B;
+  position:relative;margin-bottom:18px;
+}
+.arch-wrap::before{
+  content:"系统架构";position:absolute;top:-14px;left:24px;
+  background:#FEFCF5;color:#2B2B2B;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+}
+.arch-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:stretch;
+  margin-top:6px;
+}
+.arch-col{
+  background:#FFFEF0;border:3px solid #2B2B2B;border-radius:12px;
+  padding:14px 12px;display:flex;flex-direction:column;
+  position:relative;
+}
+.arch-col.l2{background:#FFE16B}
+.arch-col.l3{background:#A8E6CF}
+.arch-col .stage{
+  font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.15em;color:#9B1B27;
+  margin-bottom:6px;
+}
+.arch-col .name{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:19px;color:#2B2B2B;margin-bottom:10px;line-height:1.25;
+}
+.arch-col .tech{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:#444;
+  background:rgba(255,255,255,0.6);border:1.5px dashed #2B2B2B;border-radius:8px;
+  padding:8px 10px;margin-bottom:8px;line-height:1.5;
+}
+.arch-col .bullets{font-size:13px;line-height:1.55;color:#222}
+.arch-col .bullets div{margin-bottom:3px}
+.arch-col .bullets div::before{content:"・";color:#9B1B27;font-weight:900}
+
+/* 延迟卡尺 */
+.latency-bar{
+  margin-top:18px;background:#2B2B2B;color:#FFFFFF;border-radius:12px;
+  padding:14px 18px;display:flex;align-items:center;gap:14px;
+  border:3px solid #2B2B2B;
+}
+.latency-bar .lk{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.15em;flex-shrink:0;
+}
+.latency-bar .lv{
+  font-family:"Archivo Black",sans-serif;font-size:22px;color:#FFFFFF;flex-shrink:0;
+}
+.latency-bar .lv em{font-style:normal;color:#FFE16B}
+.latency-bar .ld{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.5}
+
+/* 反差对比 */
+.contrast{
+  display:flex;gap:10px;margin-top:16px;
+  background:#FFD9DC;border:3px solid #2B2B2B;border-radius:12px;
+  padding:14px 16px;align-items:center;
+}
+.contrast .ctag{
+  background:#9B1B27;color:#FFFFFF;font-family:"Archivo Black",sans-serif;font-size:11px;
+  padding:3px 10px;border-radius:50px;letter-spacing:0.15em;flex-shrink:0;
+}
+.contrast .ctxt{font-size:14px;line-height:1.55;color:#2B2B2B}
+.contrast .ctxt strong{color:#9B1B27;font-weight:900}
+
+/* ========== Part 2 · 双面对比卡 ========== */
+.duo-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;
+}
+.duo{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:16px;
+  padding:20px 20px 18px;
+  box-shadow:5px 5px 0 #2B2B2B;
+  position:relative;
+}
+.duo.left{background:#FFFEF0}
+.duo.right{background:#E8F4FD}
+.duo .duo-tag{
+  position:absolute;top:-14px;left:18px;
+  background:#2B2B2B;color:#FFE16B;border:3px solid #2B2B2B;border-radius:50px;
+  padding:3px 12px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+}
+.duo .duo-h{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:22px;margin-bottom:4px;color:#2B2B2B;
+}
+.duo .duo-sub{font-size:13px;color:#666;margin-bottom:14px;letter-spacing:0.04em}
+.duo .row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:6px 0;border-bottom:1.5px dashed rgba(43,43,43,0.25);font-size:13px;
+}
+.duo .row:last-child{border-bottom:none}
+.duo .row .k{color:#555}
+.duo .row .v{font-family:"Archivo Black",sans-serif;color:#2B2B2B;font-size:14px}
+.duo .row .v em{font-style:normal;color:#E63946}
+.duo .cost{
+  margin-top:12px;background:rgba(255,255,255,0.7);border:1.5px dashed #2B2B2B;border-radius:8px;
+  padding:8px 10px;font-family:"JetBrains Mono",monospace;font-size:12px;color:#444;line-height:1.5;
+}
+
+/* 红线警告卡 */
+.redline{
+  background:#9B1B27;color:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  padding:16px 18px;
+  box-shadow:5px 5px 0 #2B2B2B;
+  display:flex;gap:14px;align-items:flex-start;
+  position:relative;margin-bottom:18px;
+}
+.redline::before{
+  content:"⚠ 广告法红线";position:absolute;top:-14px;left:18px;
+  background:#FFE16B;color:#9B1B27;border:3px solid #2B2B2B;border-radius:50px;
+  padding:3px 12px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.12em;
+}
+.redline .rk{
+  font-family:"Archivo Black",sans-serif;font-size:38px;color:#FFE16B;line-height:1;flex-shrink:0;
+}
+.redline .rt{font-size:14px;line-height:1.6}
+.redline .rt strong{color:#FFE16B;font-weight:900}
+.redline .rt .quote{
+  display:block;margin-top:6px;font-style:italic;font-size:13px;color:rgba(255,255,255,0.85);
+}
+
+/* ========== Part 3 · 翻车卡 ========== */
+.crash{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:24px 22px 22px;
+  box-shadow:5px 5px 0 #2B2B2B;
+  margin:24px 0;position:relative;
+}
+.crash::before{
+  position:absolute;top:-16px;left:22px;
+  background:#9B1B27;color:#FFFFFF;border:3px solid #2B2B2B;border-radius:50px;
+  padding:4px 14px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+}
+.crash.c1::before{content:"翻车 1 · 僵硬死"}
+.crash.c2::before{content:"翻车 2 · 合规死"}
+.crash.c3::before{content:"翻车 3 · 目标函数死"}
+.crash .crash-h{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:22px;color:#2B2B2B;margin:4px 0 4px;
+}
+.crash .crash-sub{font-size:13px;color:#666;margin-bottom:14px}
+
+/* Case A · 时段 GMV 柱状对比 */
+.gmv-chart{
+  background:#FFFEF0;border:2px solid #2B2B2B;border-radius:12px;padding:16px 14px 14px;
+  margin:14px 0 12px;
+}
+.gmv-chart .chart-h{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:13px;color:#2B2B2B;margin-bottom:12px;
+}
+.gmv-bars{display:flex;justify-content:space-between;align-items:flex-end;height:120px;gap:8px;padding:0 4px}
+.gmv-slot{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.gmv-pair{display:flex;align-items:flex-end;gap:3px;height:100%;width:100%;justify-content:center}
+.gmv-bar{
+  width:14px;border:1.5px solid #2B2B2B;border-radius:3px 3px 0 0;
+  transform-origin:bottom;transform:scaleY(0);transition:transform 0.9s cubic-bezier(0.34,1.56,0.64,1);
+}
+.gmv-bar.real{background:#A8E6CF}
+.gmv-bar.dig{background:#FFD9DC}
+.gmv-chart.in-view .gmv-bar{transform:scaleY(1)}
+.gmv-time{font-family:"JetBrains Mono",monospace;font-size:10px;color:#555;margin-top:2px}
+.gmv-legend{display:flex;gap:14px;margin-top:10px;font-size:11px;color:#444;justify-content:center}
+.gmv-legend span{display:flex;align-items:center;gap:5px}
+.gmv-legend .dot{width:10px;height:10px;border:1.5px solid #2B2B2B;border-radius:2px}
+.gmv-legend .dot.real{background:#A8E6CF}
+.gmv-legend .dot.dig{background:#FFD9DC}
+.gmv-summary{
+  margin-top:10px;font-size:13px;color:#2B2B2B;line-height:1.55;
+  background:rgba(255,255,255,0.7);border:1.5px dashed #2B2B2B;border-radius:8px;padding:8px 10px;
+}
+.gmv-summary strong{color:#9B1B27;font-weight:900}
+
+/* Case B · 罚单 timeline */
+.fine-block{
+  background:#FFD9DC;border:2px solid #2B2B2B;border-radius:12px;padding:16px 14px;margin:14px 0 12px;
+}
+.fine-quote{
+  background:#FFFFFF;border:2px solid #2B2B2B;border-radius:10px;padding:12px 14px;
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:16px;color:#2B2B2B;position:relative;margin-bottom:14px;
+}
+.fine-quote::before{
+  content:"主播按提词器念";position:absolute;top:-12px;left:14px;
+  background:#FFE16B;border:2px solid #2B2B2B;border-radius:50px;
+  padding:2px 10px;font-family:"Archivo Black",sans-serif;font-size:10px;letter-spacing:0.12em;
+}
+.fine-quote .ban{
+  display:inline-block;background:#9B1B27;color:#FFFFFF;
+  padding:1px 6px;border-radius:4px;margin:0 1px;font-weight:900;
+}
+.fine-law{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;margin-bottom:14px;
+}
+.fine-law .cell{
+  background:#FFFFFF;border:1.5px solid #2B2B2B;border-radius:8px;padding:8px 10px;
+}
+.fine-law .cell .k{font-family:"Archivo Black",sans-serif;font-size:10px;color:#9B1B27;letter-spacing:0.12em;margin-bottom:3px}
+.fine-law .cell .v{color:#2B2B2B;line-height:1.5}
+.fine-stamp{
+  background:#9B1B27;color:#FFFFFF;border-radius:10px;padding:12px 14px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.fine-stamp .fk{font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.15em}
+.fine-stamp .fv{font-family:"Archivo Black",sans-serif;font-size:30px;color:#FFFFFF;line-height:1}
+.fine-stamp .fv em{font-style:normal;color:#FFE16B;font-size:18px;margin-right:4px}
+.why-card{
+  background:#2B2B2B;color:#FFFFFF;border:2px solid #2B2B2B;border-radius:10px;padding:12px 14px;margin-top:12px;
+  font-size:13px;line-height:1.6;
+}
+.why-card .wk{
+  font-family:"Archivo Black",sans-serif;font-size:11px;color:#FFE16B;letter-spacing:0.12em;margin-bottom:4px;
+}
+.why-card strong{color:#FFE16B;font-weight:900}
+
+/* Case C · 三指标交叉对比 */
+.cross-chart{
+  background:#FFFEF0;border:2px solid #2B2B2B;border-radius:12px;padding:16px 14px;margin:14px 0 12px;
+}
+.cross-chart .chart-h{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:13px;color:#2B2B2B;margin-bottom:14px;
+}
+.cross-row{
+  display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;
+  padding:10px 0;border-bottom:1.5px dashed rgba(43,43,43,0.25);
+}
+.cross-row:last-child{border-bottom:none}
+.cross-row .ck{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:12px;color:#2B2B2B;line-height:1.3}
+.cross-row .bars{display:flex;flex-direction:column;gap:4px}
+.cross-row .bar{
+  height:14px;border:1.5px solid #2B2B2B;border-radius:3px;
+  display:flex;align-items:center;padding:0 6px;
+  font-family:"Archivo Black",sans-serif;font-size:10px;color:#2B2B2B;
+  transform-origin:left;transform:scaleX(0);transition:transform 1s cubic-bezier(0.34,1.56,0.64,1);
+}
+.cross-row .bar.ai{background:#FFD9DC}
+.cross-row .bar.hu{background:#A8E6CF}
+.cross-chart.in-view .bar{transform:scaleX(1)}
+.cross-row .verdict{
+  font-family:"Archivo Black",sans-serif;font-size:11px;text-align:right;
+}
+.cross-row .verdict.lose{color:#9B1B27}
+.cross-row .verdict.win{color:#1A8870}
+.cross-legend{display:flex;gap:14px;font-size:11px;color:#444;justify-content:center;margin-top:8px}
+.cross-legend .dot{width:10px;height:10px;border:1.5px solid #2B2B2B;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:5px}
+.cross-legend .dot.ai{background:#FFD9DC}
+.cross-legend .dot.hu{background:#A8E6CF}
+
+/* PM 教训卡 */
+.lesson{
+  background:#A8E6CF;border:2.5px solid #2B2B2B;border-radius:12px;padding:14px 16px;margin-top:14px;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.lesson .lk{
+  background:#2B2B2B;color:#FFE16B;font-family:"Archivo Black",sans-serif;
+  font-size:10px;padding:3px 10px;border-radius:50px;letter-spacing:0.12em;flex-shrink:0;margin-top:3px;
+}
+.lesson .lt{font-size:13.5px;color:#2B2B2B;line-height:1.6}
+.lesson .lt strong{color:#9B1B27;font-weight:900}
+
+/* ========== Part 4 · 兜底 dashboard ========== */
+.guard-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;
+}
+.guard{
+  background:#FFFFFF;border:3px solid #2B2B2B;border-radius:14px;
+  padding:18px 18px 16px;position:relative;
+  box-shadow:5px 5px 0 #2B2B2B;
+}
+.guard::before{
+  position:absolute;top:-14px;left:16px;
+  background:#FFE16B;color:#2B2B2B;border:3px solid #2B2B2B;border-radius:50px;
+  padding:3px 12px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+}
+.guard.g1::before{content:"兜底 1"}
+.guard.g2::before{content:"兜底 2"}
+.guard.g3::before{content:"兜底 3"}
+.guard.g4::before{content:"兜底 4"}
+.guard .gh{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:17px;color:#2B2B2B;margin-bottom:8px;line-height:1.3;
+}
+.guard .gd{font-size:13px;color:#333;line-height:1.6;margin-bottom:10px}
+.guard .gd strong{color:#9B1B27;font-weight:900}
+.guard .gm{
+  background:#FEFCF5;border:1.5px dashed #2B2B2B;border-radius:8px;
+  padding:8px 10px;font-family:"JetBrains Mono",monospace;font-size:11px;color:#444;line-height:1.5;
+}
+.guard .gm em{font-style:normal;color:#E63946;font-weight:700}
+
+.guard-summary{
+  background:#2B2B2B;color:#FFFFFF;border-radius:14px;padding:18px 22px;
+  box-shadow:5px 5px 0 #E63946;
+  margin-bottom:24px;
+}
+.guard-summary .qs{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:15px;color:#FFE16B;margin-bottom:6px;
+}
+.guard-summary .qa{font-size:14px;line-height:1.65;color:#FFFFFF}
+.guard-summary .qa strong{color:#FFE16B;font-weight:900}
+
+/* ========== 面试金句 ========== */
+.interview{
+  background:#2B2B2B;color:#FFFFFF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:28px 26px;margin:40px 0 32px;
+  box-shadow:5px 5px 0 #FFE16B;
+  position:relative;
+}
+.interview::before{
+  content:"面试金句 · 截图收藏";position:absolute;top:-14px;left:24px;
+  background:#FFE16B;color:#2B2B2B;border:3px solid #2B2B2B;border-radius:50px;
+  padding:3px 14px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em;
+}
+.interview .q{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:18px;color:#FFE16B;margin-bottom:14px;
+}
+.interview .ans{display:flex;flex-direction:column;gap:10px}
+.interview .line{
+  background:rgba(255,255,255,0.06);border-left:4px solid #FFE16B;border-radius:0 10px 10px 0;
+  padding:10px 14px;display:flex;gap:12px;align-items:flex-start;
+}
+.interview .ln{font-family:"Archivo Black",sans-serif;font-size:14px;color:#FFE16B;flex-shrink:0;margin-top:1px}
+.interview .lt{font-size:14px;line-height:1.6;color:#FFFFFF}
+.interview .lt strong{color:#FFE16B;font-weight:900}
+
+/* ========== 收尾 ========== */
+.closing{
+  background:#FFFEF0;border:3px solid #2B2B2B;border-radius:18px;
+  padding:30px 28px;text-align:center;
+  box-shadow:5px 5px 0 #2B2B2B;
+  margin:40px 0 28px;
+}
+.closing-h{
+  display:inline-block;
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;
+  font-size:24px;position:relative;margin-bottom:10px;line-height:1.35;
+}
+.closing-h::after{
+  content:"";position:absolute;left:0;right:0;bottom:-4px;
+  height:8px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1;
+}
+.closing p{font-size:14px;color:#444;margin-top:6px;line-height:1.65}
+
+.cta{
+  background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;
+  padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  box-shadow:5px 5px 0 #2B2B2B;flex-wrap:wrap;
+}
+.cta-text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:900;font-size:15px;line-height:1.55}
+.cta-text strong{color:#9B1B27}
+.cta-tag{
+  background:#2B2B2B;color:#FFE16B;padding:6px 14px;border-radius:50px;
+  font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.18em;flex-shrink:0;
+}
+
+/* ========== 滚动揭示 ========== */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.in-view{opacity:1;transform:translateY(0)}
+
+@media (max-width:640px){
+  .shock-row{grid-template-columns:1fr;gap:10px}
+  .arch-grid{grid-template-columns:1fr;gap:14px}
+  .duo-grid{grid-template-columns:1fr}
+  .guard-grid{grid-template-columns:1fr}
+  .hero-title{font-size:34px}
+  .fine-law{grid-template-columns:1fr}
+  .cross-row{grid-template-columns:80px 1fr 60px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============ 1. 品牌头 ============ -->
+  <div class="brand-bar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-name">NOVA</div>
+    </div>
+    <div class="vol-badge">AI 产品新核心 · VOL.22</div>
+  </div>
+
+  <!-- ============ 2. 标题区 ============ -->
+  <div class="hero">
+    <div class="hero-tag">AI 产品经理实战篇之</div>
+    <h1 class="hero-title">
+      直播间里 <span class="red-em">AI 才是真主播</span><br>
+      真人只是 <span class="yellow-hi">输出端</span>
+    </h1>
+    <div class="hero-meta">VOL.22 · 阅读时长 7 分钟 · @NOVA</div>
+  </div>
+
+  <!-- ============ 3. 开场钩子卡 ============ -->
+  <div class="hook-card">
+    <div class="h-line">双十一晚上 9 点,头部主播直播间——弹幕一秒 800 条。<br>AI 系统 800 毫秒之内做完三件事。</div>
+    <div class="h-sub">分类完每一条弹幕情绪、算完当下这 50 秒转化率、决定主播下一句该说"<strong>逼单</strong>"还是"<strong>福利</strong>"。主播看着提词器念,以为是自己在控场——其实 AI 才是真主播。</div>
+  </div>
+
+  <!-- ============ 4. 数字震慑 ============ -->
+  <div class="shock-row reveal">
+    <div class="shock">
+      <div class="num">800<span class="unit">ms</span></div>
+      <div class="lbl">全链路延迟阈值<br>超过即决策链路废掉</div>
+    </div>
+    <div class="shock">
+      <div class="num">200-500<span class="unit"></span></div>
+      <div class="lbl">一场 4 小时直播<br>AI 介入次数</div>
+    </div>
+    <div class="shock">
+      <div class="num">+40%<span class="unit"></span></div>
+      <div class="lbl">CTR 涨,投诉率<br>同步涨 1.8-2.3 倍</div>
+    </div>
+  </div>
+
+  <!-- ============ Part 1 · 三层架构 ============ -->
+  <div class="sec-h reveal">
+    <div class="sec-no">1</div>
+    <div class="sec-t">AI 直播带货系统的三层架构<small>感知 → 决策 → 输出 / 端到端 &lt; 800 ms</small></div>
+  </div>
+
+  <div class="arch-wrap reveal">
+    <div class="arch-grid">
+      <div class="arch-col l1">
+        <div class="stage">LAYER 01</div>
+        <div class="name">感知层<br>抓信号</div>
+        <div class="tech">Kafka 流式拉取<br>BERT 情绪分类<br>准确率 85% - 92%</div>
+        <div class="bullets">
+          <div>弹幕流(800 条 / 秒)</div>
+          <div>转化率</div>
+          <div>停留时长</div>
+        </div>
+      </div>
+      <div class="arch-col l2">
+        <div class="stage">LAYER 02</div>
+        <div class="name">决策层<br>下指令</div>
+        <div class="tech">规则引擎 + LLM<br>混合架构</div>
+        <div class="bullets">
+          <div>情绪高 → 福利上链</div>
+          <div>转化降 → 再讲卖点</div>
+          <div>停留降 → 切下个 SKU</div>
+        </div>
+      </div>
+      <div class="arch-col l3">
+        <div class="stage">LAYER 03</div>
+        <div class="name">输出层<br>触达主播</div>
+        <div class="tech">提词器推送 0.5 s<br>或 TTS 数字人合成</div>
+        <div class="bullets">
+          <div>真人:推到耳麦</div>
+          <div>数字人:TTS 播报</div>
+          <div>话术延迟可观测</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="latency-bar">
+      <div class="lk">端到端延迟</div>
+      <div class="lv"><em>&lt; 800</em> ms</div>
+      <div class="ld">超过 800 毫秒 → 弹幕情绪过期、转化数据滞后、话术触发延迟。主播说出来的话和当下直播间状态对不上,粉丝立刻感知不对劲。</div>
+    </div>
+
+    <div class="contrast">
+      <div class="ctag">差别</div>
+      <div class="ctxt">这是直播 AI 和电商推荐<strong>最大的不同</strong>——电商可以慢 1 秒,直播不行。</div>
+    </div>
+  </div>
+
+  <!-- ============ Part 2 · 替主播决定两件事 ============ -->
+  <div class="sec-h reveal">
+    <div class="sec-no">2</div>
+    <div class="sec-t">AI 在直播间替主播决定的两件事<small>说什么 / 选什么</small></div>
+  </div>
+
+  <div class="duo-grid reveal">
+    <div class="duo left">
+      <div class="duo-tag">说什么</div>
+      <div class="duo-h">实时话术</div>
+      <div class="duo-sub">规则引擎触发 + LLM 生成</div>
+      <div class="row"><span class="k">一场直播时长</span><span class="v">4 小时</span></div>
+      <div class="row"><span class="k">AI 介入次数</span><span class="v"><em>200-500 次</em></span></div>
+      <div class="row"><span class="k">单次成本</span><span class="v">0.02-0.08 元</span></div>
+      <div class="row"><span class="k">推送方式</span><span class="v">耳麦 / 提词器</span></div>
+      <div class="cost">每次都是规则触发 → LLM 生成具体话术 → 推到主播耳麦或提词器</div>
+    </div>
+    <div class="duo right">
+      <div class="duo-tag">选什么</div>
+      <div class="duo-h">实时选品</div>
+      <div class="duo-sub">商品向量化 + 用户画像 + 多目标排序</div>
+      <div class="row"><span class="k">人工排品 / 4 小时</span><span class="v">20-30 SKU</span></div>
+      <div class="row"><span class="k">AI 排品 / 4 小时</span><span class="v"><em>80-120 SKU</em></span></div>
+      <div class="row"><span class="k">CTR 提升</span><span class="v"><em>+30% ~ +50%</em></span></div>
+      <div class="row"><span class="k">隐藏代价</span><span class="v">投诉 ×1.8-2.3</span></div>
+      <div class="cost">Item2Vec + 实时画像 + 多目标排序,动态调度直播间 SKU 顺序</div>
+    </div>
+  </div>
+
+  <div class="redline reveal">
+    <div class="rk">!</div>
+    <div class="rt">
+      LLM 生成的话术,直接触发<strong>广告法红线</strong>。"最便宜""国家级""疗效百分之百"——这些就是绝对化用词。
+      <span class="quote">《广告法》第 9 条第 7 项 · 直接罚 20 万起步</span>
+    </div>
+  </div>
+
+  <!-- ============ Part 3 · 三个翻车 ============ -->
+  <div class="sec-h reveal">
+    <div class="sec-no">3</div>
+    <div class="sec-t">三个真实翻车,三种完全不同的死法<small>僵硬死 / 合规死 / 目标函数死</small></div>
+  </div>
+
+  <!-- Case A · 京东言犀 + 阿里灵犀 -->
+  <div class="crash c1 reveal">
+    <div class="crash-h">京东言犀 + 阿里灵犀<br>数字人主播的僵硬感死</div>
+    <div class="crash-sub">2023 年,主打 24 小时无人直播 · 架构:数字人渲染 + ASR + LLM + TTS</div>
+
+    <div class="gmv-chart" id="gmv">
+      <div class="chart-h">GMV 对比 · 真人 vs 数字人(同款商品 / 同直播间)</div>
+      <div class="gmv-bars">
+        <div class="gmv-slot">
+          <div class="gmv-pair">
+            <div class="gmv-bar real" style="height:30%"></div>
+            <div class="gmv-bar dig" style="height:70%"></div>
+          </div>
+          <div class="gmv-time">00-06 点</div>
+        </div>
+        <div class="gmv-slot">
+          <div class="gmv-pair">
+            <div class="gmv-bar real" style="height:60%"></div>
+            <div class="gmv-bar dig" style="height:40%"></div>
+          </div>
+          <div class="gmv-time">06-12 点</div>
+        </div>
+        <div class="gmv-slot">
+          <div class="gmv-pair">
+            <div class="gmv-bar real" style="height:75%"></div>
+            <div class="gmv-bar dig" style="height:30%"></div>
+          </div>
+          <div class="gmv-time">12-19 点</div>
+        </div>
+        <div class="gmv-slot">
+          <div class="gmv-pair">
+            <div class="gmv-bar real" style="height:100%"></div>
+            <div class="gmv-bar dig" style="height:18%"></div>
+          </div>
+          <div class="gmv-time">19-23 点</div>
+        </div>
+      </div>
+      <div class="gmv-legend">
+        <span><span class="dot real"></span>真人主播</span>
+        <span><span class="dot dig"></span>数字人主播</span>
+      </div>
+      <div class="gmv-summary">24 小时数字人 GMV 只有真人的 <strong>15% - 25%</strong>。夜间 0-6 点反而表现好(填补真人不能播时段),黄金时段 19-23 点完全打不过真人——表情僵硬、回答机械、人货关系建立不起来。</div>
+    </div>
+
+    <div class="lesson">
+      <div class="lk">PM 教训</div>
+      <div class="lt">数字人<strong>不是替代真人</strong>,是补盲区。把它定位成夜班加长尾 SKU 库存清理,ROI 才正。想用数字人打主流时段——九成翻车。</div>
+    </div>
+  </div>
+
+  <!-- Case B · 某头部 MCN -->
+  <div class="crash c2 reveal">
+    <div class="crash-h">某头部 MCN 实时话术引擎<br>合规死</div>
+    <div class="crash-sub">逻辑没问题,但漏了一道——LLM 输出没过合规过滤</div>
+
+    <div class="fine-block">
+      <div class="fine-quote">
+        "这是<span class="ban">国家级</span>标准,<span class="ban">绝对最便宜</span>"
+      </div>
+
+      <div class="fine-law">
+        <div class="cell">
+          <div class="k">违禁条款 1</div>
+          <div class="v">《广告法》第 9 条第 7 项 · 绝对化用语</div>
+        </div>
+        <div class="cell">
+          <div class="k">违禁条款 2</div>
+          <div class="v">《广告法》第 11 条 · 虚假比较</div>
+        </div>
+      </div>
+
+      <div class="fine-stamp">
+        <div class="fk">市场监督管理局 · 顶格罚款</div>
+        <div class="fv"><em>¥</em>80 万 +</div>
+      </div>
+    </div>
+
+    <div class="why-card">
+      <div class="wk">为什么会发生</div>
+      PM 当时设计的合规审查,是让 LLM 自审自己写的东西——也就是让 <strong>GPT 生成话术再让 GPT 检查违规</strong>。LLM 训练数据里"国家级"经常作为正面修饰,它根本判断不出这是广告法违禁词。
+    </div>
+
+    <div class="lesson">
+      <div class="lk">PM 教训</div>
+      <div class="lt">合规过滤必须<strong>独立规则引擎</strong>卡,不能用 LLM 自审。规则库每月更新,法务过一遍。违禁词库 200+ 起步。</div>
+    </div>
+  </div>
+
+  <!-- Case C · 某美妆品牌 -->
+  <div class="crash c3 reveal">
+    <div class="crash-h">某美妆品牌 AI 选品系统<br>目标函数死</div>
+    <div class="crash-sub">技术栈:商品向量化 + 用户画像 + 多目标排序 · 上线后 CTR +40%、GMV +22%</div>
+
+    <div class="cross-chart" id="cross">
+      <div class="chart-h">短期数据漂亮 vs 长期质量崩盘(三个月对比)</div>
+
+      <div class="cross-row">
+        <div class="ck">CTR<br>(点击率)</div>
+        <div class="bars">
+          <div class="bar ai" style="width:80%">AI 推 12%</div>
+          <div class="bar hu" style="width:53%">人工 8%</div>
+        </div>
+        <div class="verdict win">AI 赢</div>
+      </div>
+
+      <div class="cross-row">
+        <div class="ck">7 天<br>退货率</div>
+        <div class="bars">
+          <div class="bar ai" style="width:95%">AI 推 19%</div>
+          <div class="bar hu" style="width:40%">人工 8%</div>
+        </div>
+        <div class="verdict lose">AI 输</div>
+      </div>
+
+      <div class="cross-row">
+        <div class="ck">30 天<br>复购率</div>
+        <div class="bars">
+          <div class="bar ai" style="width:39%">AI 推 11%</div>
+          <div class="bar hu" style="width:100%">人工 28%</div>
+        </div>
+        <div class="verdict lose">AI 惨败</div>
+      </div>
+
+      <div class="cross-legend">
+        <span><span class="dot ai"></span>AI 推爆款</span>
+        <span><span class="dot hu"></span>人工挑款</span>
+      </div>
+    </div>
+
+    <div class="why-card">
+      <div class="wk">为什么会发生</div>
+      AI 优化的目标函数是 <strong>CTR + CVR</strong>——短期转化。它学到了一件事:把"高转化但口碑差"的爆款赠品<strong>反复推</strong>。短期 KPI 起飞,长期信任掉光。投诉率比人工选品高 <strong>1.8-2.3 倍</strong>,退货率从 8% 飙到 19%。
+    </div>
+
+    <div class="lesson">
+      <div class="lk">PM 教训</div>
+      <div class="lt">推荐目标函数<strong>不能只看转化</strong>——必须加长期负反馈。7 天退货率、30 天复购率、差评率,作为推荐目标的负权重。每周回灌一次模型,防止只学短期爆款。</div>
+    </div>
+  </div>
+
+  <!-- ============ Part 4 · 4 道兜底 ============ -->
+  <div class="sec-h reveal">
+    <div class="sec-no">4</div>
+    <div class="sec-t">PM 必须兜的 4 道底<small>合规 · 人设 · 长期反馈 · 人工否决</small></div>
+  </div>
+
+  <div class="guard-grid reveal">
+    <div class="guard g1">
+      <div class="gh">合规过滤独立层</div>
+      <div class="gd">LLM 输出过<strong>规则引擎</strong>:违禁词库 200+、绝对化检测、医疗功效拦截、价格虚标检测。独立于 LLM 之外,法务每月过一次。</div>
+      <div class="gm">延迟 &lt; <em>30 ms</em> · 不阻塞主链 · 绝对不让 LLM 自审</div>
+    </div>
+    <div class="guard g2">
+      <div class="gh">主播人设硬约束</div>
+      <div class="gd">选品系统加"<strong>人设向量</strong>"。主打性价比的主播,AI 不允许推 1000 元 + 单品(即使转化高)。人设守不住,粉丝一周走光。</div>
+      <div class="gm">排序硬过滤 · 延迟近 <em>0 ms</em> · 人设错位率周报告</div>
+    </div>
+    <div class="guard g3">
+      <div class="gh">长期指标负反馈</div>
+      <div class="gd">除 CTR / CVR,加 <strong>7 天退货率、30 天复购率、差评率</strong>。短期 80% + 长期负反馈 <strong>20%</strong>。每周回灌一次模型。</div>
+      <div class="gm">周级回灌 · 不影响实时链路 · 防止只学短期爆款</div>
+    </div>
+    <div class="guard g4">
+      <div class="gh">人工否决通道</div>
+      <div class="gd">任何 AI 决策——切品、话术、价格——主播必须有"<strong>否决按钮</strong>"。1 秒内点掉。主播经验最后兜底。</div>
+      <div class="gm">异步通道 · 不阻塞主链 · 完全自动化就是灾难</div>
+    </div>
+  </div>
+
+  <div class="guard-summary reveal">
+    <div class="qs">Q · 加这么多兜底,实时性不就废了吗?</div>
+    <div class="qa">错。合规过滤是规则引擎,延迟 <strong>30 ms 以内</strong>;人设约束是排序硬过滤,几乎零延迟;长期反馈是周级回灌,不影响实时链路;人工否决是异步通道,不阻塞主链。<br><br>整套系统加上四道兜底,总延迟还能压在 <strong>800 ms 以内</strong>。技术可行——关键看 PM 第一天有没有想清楚。</div>
+  </div>
+
+  <!-- ============ 面试金句 ============ -->
+  <div class="interview reveal">
+    <div class="q">被问"你做过直播带货 AI 系统吗,怎么落地的"——按 4 句答</div>
+    <div class="ans">
+      <div class="line">
+        <div class="ln">01</div>
+        <div class="lt"><strong>三层架构</strong>——感知层(弹幕 + 转化 + 停留)+ 决策层(规则 + LLM)+ 输出层(提词器 / TTS)。全链路延迟 &lt; 800 ms。</div>
+      </div>
+      <div class="line">
+        <div class="ln">02</div>
+        <div class="lt"><strong>替主播决定两件事</strong>——说什么(实时话术)+ 选什么(动态排品)。每场 AI 介入 200-500 次。</div>
+      </div>
+      <div class="line">
+        <div class="ln">03</div>
+        <div class="lt"><strong>合规过滤必须独立规则引擎</strong>,绝对不能 LLM 自审。违禁词库 200+,法务每月过。某 MCN 翻车罚过 80 万。</div>
+      </div>
+      <div class="line">
+        <div class="ln">04</div>
+        <div class="lt"><strong>推荐目标函数必须加长期负反馈</strong>——7 天退货率、30 天复购率、差评率,权重 20%。不然粉丝群 3 个月废掉。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 收尾 ============ -->
+  <div class="closing reveal">
+    <div class="closing-h">AI 不是替你播,是替你做<span class="red-em">实时决策</span></div>
+    <p>直播间里的真人主播只是 AI 的输出端。<br>这条产业链已经反过来了。</p>
+  </div>
+
+  <!-- ============ 下期预告 ============ -->
+  <div class="cta">
+    <div class="cta-text">下期:<strong>《AI 客服替谁做了工单分流》</strong><br>关注 NOVA,每天一个 AI PM 知识点。</div>
+    <div class="cta-tag">#AI产品经理 #直播带货</div>
+  </div>
+
+</div>
+
+<script>
+// 滚动揭示 + 触发柱状图动画
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in-view');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:0.15,rootMargin:'0px 0px -40px 0px'});
+
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+document.querySelectorAll('#gmv,#cross').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

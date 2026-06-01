@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 客服 2026 选 RAG 还是 Agent · NOVA AI PM Vol.23</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Archivo+Black&family=Bebas+Neue&family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700;900&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --paper:#FEFCF5;
+  --paper-2:#FFFEF0;
+  --ink:#1C1A18;
+  --ink-2:#3D3833;
+  --ink-3:#7A746B;
+  --yellow:#FFE16B;
+  --yellow-deep:#F4C430;
+  --red:#E63946;
+  --red-deep:#9B1B27;
+  --green:#1B6B43;
+  --green-light:#A8E6CF;
+  --pink:#FFD9DC;
+  --rule:#1C1A18;
+  --hardshadow:5px 5px 0 var(--ink);
+  --hardshadow-sm:3px 3px 0 var(--ink);
+  --hardshadow-lg:8px 8px 0 var(--ink);
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display-en:"Archivo Black","Bebas Neue",sans-serif;
+  --display-cn:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);min-height:100vh;font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* 进度条 */
+.progress{position:fixed;top:0;left:0;height:5px;width:100%;background:transparent;z-index:100;transform-origin:left;transform:scaleX(0);transition:transform .15s linear}
+.progress-bar{height:100%;width:100%;background:var(--red);border-bottom:2px solid var(--ink)}
+
+/* 品牌头 */
+.brand-bar{background:var(--ink);color:var(--paper);padding:14px 0;border-bottom:4px solid var(--yellow)}
+.brand-inner{max-width:760px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.brand-name{font-family:var(--display-en);font-size:20px;letter-spacing:4px;color:var(--yellow)}
+.brand-meta{font-size:12px;letter-spacing:2px;color:var(--paper)}
+.brand-meta b{color:var(--yellow);font-weight:900}
+
+/* 主容器 */
+.stage{max-width:760px;margin:0 auto;padding:32px 24px 100px}
+
+/* 反认知钩子开场 */
+.hook{margin-bottom:36px}
+.hook-tag{display:inline-block;background:var(--red);color:#fff;padding:6px 16px;font-size:13px;font-weight:900;letter-spacing:2px;border:3px solid var(--ink);box-shadow:var(--hardshadow-sm);transform:rotate(-2deg);margin-bottom:18px}
+.hook h1{font-family:var(--sans);font-size:42px;font-weight:900;line-height:1.18;letter-spacing:-1px;margin-bottom:14px;color:var(--ink)}
+.hook h1 .hl{background:var(--yellow);padding:0 8px;display:inline-block;box-shadow:3px 3px 0 var(--ink);border:2px solid var(--ink);border-radius:4px}
+.hook h1 .strike{position:relative}
+.hook h1 .strike::after{content:"";position:absolute;left:-4px;right:-4px;top:55%;height:5px;background:var(--red);transform:rotate(-2deg)}
+.hook-sub{font-size:17px;color:var(--ink-2);line-height:1.7;margin-bottom:24px}
+.hook-sub strong{color:var(--red-deep);font-weight:900;background:var(--yellow);padding:0 4px}
+
+/* 数据三连惊叹 */
+.shock-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:24px 0;padding:24px 18px;background:var(--ink);border:4px solid var(--yellow);border-radius:20px;box-shadow:var(--hardshadow-lg)}
+.shock-item{text-align:center;color:var(--paper);padding:8px 4px}
+.shock-num{font-family:var(--display-en);font-size:44px;font-weight:900;line-height:1;letter-spacing:-1px}
+.shock-num.r{color:var(--red)}
+.shock-num.y{color:var(--yellow)}
+.shock-num.g{color:var(--green-light)}
+.shock-num .unit{font-size:18px;margin-left:2px}
+.shock-cap{font-size:11px;color:var(--paper-2);margin-top:8px;letter-spacing:1px;line-height:1.5}
+.shock-divider{color:var(--yellow);font-size:32px;font-weight:900;text-align:center;align-self:center;font-family:var(--display-en)}
+
+.shock-foot{font-family:var(--display-cn);font-size:18px;text-align:center;color:var(--paper);margin-top:18px;padding-top:16px;border-top:2px dashed var(--yellow);line-height:1.5}
+.shock-foot .em{color:var(--yellow);font-weight:900}
+
+/* 三件事预告 */
+.preview{background:var(--paper-2);border:3px dashed var(--ink);border-radius:18px;padding:20px 24px;margin:28px 0}
+.preview-title{font-family:var(--display-cn);font-size:18px;color:var(--red);margin-bottom:12px;display:inline-block;background:var(--yellow);padding:4px 10px;border:2px solid var(--ink);box-shadow:var(--hardshadow-sm);transform:rotate(-1deg)}
+.preview ol{margin-left:24px;font-size:15px;line-height:1.85;color:var(--ink)}
+.preview ol li{margin-bottom:4px;font-weight:700}
+.preview ol li::marker{color:var(--red);font-weight:900}
+.preview ol li strong{background:var(--yellow);padding:0 3px;color:var(--ink)}
+
+/* 章节通用 */
+.section{margin:48px 0}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.sec-num{font-family:var(--display-en);font-size:54px;color:var(--red);line-height:.85;letter-spacing:-2px;flex-shrink:0}
+.sec-title{font-family:var(--sans);font-size:24px;font-weight:900;color:var(--ink);line-height:1.3;letter-spacing:-.5px;flex:1;border-bottom:4px solid var(--ink);padding-bottom:6px}
+.sec-title .hl{background:var(--yellow);padding:0 4px}
+
+.lead{font-size:16px;line-height:1.8;color:var(--ink-2);margin-bottom:18px}
+.lead .em{background:var(--yellow);padding:0 4px;font-weight:900;color:var(--ink)}
+.lead .red{color:var(--red-deep);font-weight:900}
+.lead strong{font-weight:900;color:var(--ink)}
+
+/* 三种架构对照 */
+.arch-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:18px 0}
+.arch-card{background:var(--paper);border:4px solid var(--ink);border-radius:16px;padding:18px 16px;box-shadow:var(--hardshadow);position:relative;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s cubic-bezier(.34,1.56,.64,1)}
+.arch-card:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.arch-card.rag{background:#FFF0DC}
+.arch-card.agent{background:#FFD9DC}
+.arch-card.mix{background:#E8F5E9}
+.arch-tag{display:inline-block;font-family:var(--display-en);font-size:11px;letter-spacing:2px;padding:4px 8px;border:2px solid var(--ink);background:#fff;font-weight:900;margin-bottom:10px}
+.arch-card.rag .arch-tag{color:var(--red)}
+.arch-card.agent .arch-tag{color:var(--red-deep);background:var(--yellow)}
+.arch-card.mix .arch-tag{color:var(--green)}
+.arch-card h4{font-family:var(--display-cn);font-size:20px;color:var(--ink);margin-bottom:8px;line-height:1.2}
+.arch-meta{font-family:var(--display-cn);font-size:13px;color:var(--ink-2);margin-bottom:12px;padding-bottom:10px;border-bottom:2px dashed var(--ink-3);font-style:italic}
+.arch-list{font-size:13px;line-height:1.65;color:var(--ink)}
+.arch-list .li{padding:4px 0;display:flex;gap:6px}
+.arch-list .li::before{content:"·";color:var(--red);font-weight:900;flex-shrink:0}
+.arch-list .strong{font-weight:900}
+.arch-cost{margin-top:12px;padding:8px 10px;background:var(--ink);color:var(--yellow);border-radius:8px;text-align:center;font-family:var(--display-en);font-size:16px;letter-spacing:1px;font-weight:900}
+.arch-card.rag .arch-cost{background:var(--green);color:#fff}
+.arch-card.agent .arch-cost{background:var(--red);color:#fff}
+.arch-card.mix .arch-cost{background:var(--ink);color:var(--yellow)}
+.arch-cost-cap{font-size:10px;letter-spacing:1px;display:block;margin-top:2px;opacity:.85}
+
+/* 决策三维 */
+.decide{margin:24px 0;background:var(--paper);border:4px solid var(--ink);border-radius:20px;padding:24px;box-shadow:var(--hardshadow)}
+.decide-head{display:inline-block;font-family:var(--display-cn);font-size:18px;color:var(--ink);background:var(--yellow);padding:6px 14px;border:3px solid var(--ink);box-shadow:var(--hardshadow-sm);transform:rotate(-1deg);margin-bottom:18px}
+.decide-row{display:grid;grid-template-columns:140px 1fr 1fr;gap:12px;border-bottom:2px dashed var(--ink);padding:14px 0;align-items:center}
+.decide-row:first-of-type{padding-top:0}
+.decide-row:last-child{border-bottom:none;padding-bottom:0}
+.decide-dim{font-family:var(--display-cn);font-size:18px;font-weight:900;color:var(--red);display:flex;align-items:center;gap:8px}
+.decide-dim .icon{width:32px;height:32px;background:var(--yellow);border:2px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--display-en);font-size:14px;color:var(--ink)}
+.decide-cell{padding:10px 14px;background:var(--paper-2);border:2px solid var(--ink);border-radius:10px;font-size:14px;line-height:1.6}
+.decide-cell.go{background:#E8F5E9}
+.decide-cell.no{background:#FFEBE9}
+.decide-cell .tag{display:inline-block;background:#fff;padding:2px 8px;font-size:11px;font-weight:900;border:2px solid var(--ink);border-radius:6px;margin-bottom:6px;letter-spacing:1px}
+.decide-cell.go .tag{color:var(--green)}
+.decide-cell.no .tag{color:var(--red)}
+.decide-cell b{font-weight:900;color:var(--ink)}
+
+/* 案例三连 */
+.case{margin:18px 0;background:var(--paper);border:4px solid var(--ink);border-radius:18px;padding:22px 24px;box-shadow:var(--hardshadow)}
+.case.a{border-top:12px solid var(--green)}
+.case.b{border-top:12px solid var(--red)}
+.case.c{border-top:12px solid var(--ink);background:#FFFBE0}
+.case-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;border-bottom:2px dashed var(--ink);padding-bottom:12px}
+.case-tag{font-family:var(--display-en);font-size:12px;letter-spacing:2px;padding:3px 10px;border:2px solid var(--ink);background:var(--yellow);color:var(--ink);font-weight:900}
+.case.a .case-tag{background:var(--green);color:#fff}
+.case.b .case-tag{background:var(--red);color:#fff}
+.case-name{font-family:var(--display-cn);font-size:18px;color:var(--ink);flex:1}
+.case-pick{font-size:12px;color:var(--ink-3);font-weight:700;letter-spacing:1px;background:#fff;padding:3px 8px;border:2px solid var(--ink);border-radius:6px}
+.case-body{font-size:14px;line-height:1.75;color:var(--ink-2)}
+.case-row{padding:6px 0;display:grid;grid-template-columns:80px 1fr;gap:12px;border-bottom:1px dashed var(--ink-3)}
+.case-row:last-child{border-bottom:none}
+.case-row .lab{font-weight:900;color:var(--ink);font-size:12px;letter-spacing:1px;align-self:center}
+.case-row .val{color:var(--ink-2)}
+.case-row .val b{font-weight:900;color:var(--ink)}
+.case-row .val .r{color:var(--red-deep);font-weight:900}
+.case-row .val .g{color:var(--green);font-weight:900}
+
+/* 翻车清单 */
+.crash-grid{display:grid;grid-template-columns:1fr;gap:14px;margin:18px 0}
+.crash{background:var(--paper);border:4px solid var(--ink);border-radius:16px;padding:18px 20px;box-shadow:var(--hardshadow-sm);display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+.crash-tag{font-family:var(--display-cn);font-size:13px;background:var(--red);color:#fff;padding:8px 12px;border:2px solid var(--ink);text-align:center;font-weight:900;letter-spacing:1px;line-height:1.2;writing-mode:horizontal-tb}
+.crash.rag .crash-tag{background:var(--red)}
+.crash.agent .crash-tag{background:var(--red-deep)}
+.crash.mix .crash-tag{background:var(--ink)}
+.crash-body h5{font-size:16px;font-weight:900;color:var(--ink);margin-bottom:10px;font-family:var(--display-cn)}
+.crash-die{font-size:13px;color:var(--ink-2);line-height:1.7;padding:8px 12px;background:#FFEBE9;border-left:4px solid var(--red);border-radius:6px;margin-bottom:10px}
+.crash-die::before{content:"3 个死穴 · ";font-weight:900;color:var(--red);font-size:11px;letter-spacing:1px}
+.crash-fix{font-size:13px;color:var(--ink);line-height:1.7;padding:8px 12px;background:#E8F5E9;border-left:4px solid var(--green);border-radius:6px}
+.crash-fix::before{content:"PM 兜底 · ";font-weight:900;color:var(--green);font-size:11px;letter-spacing:1px}
+
+/* 面试金句 */
+.interview{margin:36px 0;background:var(--ink);color:var(--paper);border:4px solid var(--yellow);border-radius:20px;padding:30px 28px;box-shadow:var(--hardshadow-lg);position:relative}
+.interview::before{content:"§";position:absolute;top:14px;right:18px;font-family:var(--display-en);font-size:60px;color:var(--yellow);opacity:.5;line-height:1}
+.interview-eyebrow{font-family:var(--display-en);font-size:11px;letter-spacing:3px;color:var(--yellow);margin-bottom:8px}
+.interview-q{font-family:var(--display-cn);font-size:22px;color:var(--paper);margin-bottom:20px;line-height:1.4}
+.interview-q::before{content:"\"";color:var(--red)}
+.interview-q::after{content:"\"";color:var(--red)}
+.interview-lines{display:flex;flex-direction:column;gap:12px}
+.interview-line{display:grid;grid-template-columns:60px 1fr;gap:14px;align-items:baseline;padding-bottom:10px;border-bottom:1px dashed rgba(254,252,245,.2)}
+.interview-line:last-child{border-bottom:none}
+.interview-line-no{background:var(--yellow);color:var(--ink);font-family:var(--display-en);font-size:13px;padding:4px 8px;border-radius:6px;text-align:center;letter-spacing:1px;font-weight:900}
+.interview-line-text{font-size:15px;line-height:1.7}
+.interview-line-text .em{background:var(--red);color:#fff;padding:0 4px;font-weight:900}
+.interview-foot{margin-top:16px;padding-top:14px;border-top:2px solid rgba(254,252,245,.15);text-align:center;font-size:13px;color:rgba(254,252,245,.65);font-style:italic;line-height:1.6}
+
+/* 一句话总结 */
+.takeaway{margin:40px 0 24px;background:var(--yellow);border:4px solid var(--ink);border-radius:20px;padding:32px 28px;text-align:center;box-shadow:var(--hardshadow)}
+.takeaway-tag{display:inline-block;background:var(--ink);color:var(--yellow);font-family:var(--display-en);font-size:11px;letter-spacing:3px;padding:4px 12px;border-radius:6px;margin-bottom:14px}
+.takeaway-text{font-family:var(--display-cn);font-size:22px;line-height:1.55;color:var(--ink);font-weight:900}
+.takeaway-text .r{color:var(--red-deep)}
+
+/* 下期预告 + 关注 */
+.coda{background:var(--paper);border:4px dashed var(--ink);border-radius:18px;padding:22px 24px;margin-top:24px;text-align:center}
+.coda-tag{display:inline-block;background:var(--red);color:#fff;font-family:var(--display-cn);font-size:13px;padding:4px 12px;border:2px solid var(--ink);box-shadow:var(--hardshadow-sm);transform:rotate(-2deg);margin-bottom:14px}
+.coda-next{font-family:var(--display-cn);font-size:18px;color:var(--ink);margin-bottom:8px;font-weight:900}
+.coda-next .hl{background:var(--yellow);padding:0 4px}
+.coda-hint{font-size:13px;color:var(--ink-2);font-style:italic;margin-bottom:14px}
+.coda-cta{display:inline-block;background:var(--ink);color:var(--yellow);font-family:var(--display-cn);font-size:15px;padding:8px 18px;border-radius:30px;border:2px solid var(--ink);box-shadow:var(--hardshadow-sm);font-weight:900;letter-spacing:1px}
+
+footer{margin-top:36px;text-align:center;font-size:12px;color:var(--ink-3);padding:12px}
+footer .brand{font-family:var(--display-en);color:var(--red);letter-spacing:3px}
+
+/* 入场动画 */
+.fade{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.34,1.56,.64,1)}
+.fade.in{opacity:1;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}.progress{display:none}.arch-card{transition:none}}
+
+@media (max-width:680px){
+  .stage{padding:24px 16px 80px}
+  .hook h1{font-size:32px}
+  .shock-row{grid-template-columns:1fr;gap:10px}
+  .shock-divider{display:none}
+  .shock-num{font-size:36px}
+  .arch-row{grid-template-columns:1fr}
+  .sec-num{font-size:42px}
+  .sec-title{font-size:20px}
+  .decide-row{grid-template-columns:1fr;gap:8px}
+  .decide-dim{margin-bottom:4px}
+  .case-head{flex-direction:column;align-items:flex-start;gap:6px}
+  .crash{grid-template-columns:1fr;gap:10px}
+  .interview-q{font-size:18px}
+  .takeaway-text{font-size:18px}
+}
+</style>
+</head>
+<body>
+<div class="progress"><div class="progress-bar"></div></div>
+
+<div class="brand-bar">
+  <div class="brand-inner">
+    <div class="brand-name">NOVA · AI PM</div>
+    <div class="brand-meta">Vol.<b>23</b> · AI 客服 2026 · L3 · 落地决策</div>
+  </div>
+</div>
+
+<div class="stage">
+
+  <!-- Hook -->
+  <section class="hook fade">
+    <span class="hook-tag">8 成团队选错</span>
+    <h1>2026 上 AI 客服别再问<span class="strike">做不做</span>了<br>是 <span class="hl">选 RAG 还是 Agent</span></h1>
+    <p class="hook-sub">我做过 3 个 AI 客服项目。一个月烧 2.8 万,一个月烧 28 万,一个月烧 6.5 万。差的不是流量,是<strong>架构选型</strong>。Agent 不是 RAG 的升级版,是完全不同的产品形态 — 贵 10 倍。</p>
+
+    <div class="shock-row">
+      <div class="shock-item">
+        <div class="shock-num g" data-count="2.8">0<span class="unit">万/月</span></div>
+        <div class="shock-cap">A · 电商<br>纯 RAG 客服</div>
+      </div>
+      <div class="shock-item">
+        <div class="shock-num r" data-count="28">0<span class="unit">万/月</span></div>
+        <div class="shock-cap">B · SaaS<br>纯 Agent 客服</div>
+      </div>
+      <div class="shock-item">
+        <div class="shock-num y" data-count="6.5">0<span class="unit">万/月</span></div>
+        <div class="shock-cap">C · 跨境<br>混合架构</div>
+      </div>
+      <div class="shock-foot">同业务量 <span class="em">10 倍成本差</span> — 不是技术错,是<span class="em">商业账没算</span></div>
+    </div>
+  </section>
+
+  <!-- 预告三件事 -->
+  <section class="preview fade">
+    <div class="preview-title">今天用 PM 视角讲透 3 件事</div>
+    <ol>
+      <li>三种架构的<strong>本质差异</strong> — 它们不是代差,是形态</li>
+      <li>选型<strong>三维度</strong> — 复杂度 / 流量 / 客单价</li>
+      <li>每种架构的 <strong>PM 必踩翻车</strong></li>
+    </ol>
+  </section>
+
+  <!-- § 01 三种架构本质 -->
+  <section class="section fade">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-title">三种架构的<span class="hl">本质差异</span> · 不是代差,是形态</div>
+    </div>
+    <p class="lead">很多人以为 Agent 就是 "RAG 加上 Tool"。<span class="red">错</span>。本质完全不一样。三种各有适合的业务画像,不是 "代差升级" 关系。</p>
+
+    <div class="arch-row">
+      <div class="arch-card rag">
+        <span class="arch-tag">RAG 客服</span>
+        <h4>自助超市导购</h4>
+        <div class="arch-meta">智能搜索 + 改写答案 · 单轮无规划</div>
+        <div class="arch-list">
+          <div class="li"><span>能告诉你东西在哪</span></div>
+          <div class="li"><span><span class="strong">不会替你付钱</span></span></div>
+          <div class="li"><span>问答型场景</span></div>
+        </div>
+        <div class="arch-cost">2-5 万/月<span class="arch-cost-cap">中等流量 · 月成本</span></div>
+      </div>
+
+      <div class="arch-card agent">
+        <span class="arch-tag">AGENT 客服</span>
+        <h4>私人助理</h4>
+        <div class="arch-meta">搜索 + 决策 + 调工具 + 多步串联</div>
+        <div class="arch-list">
+          <div class="li"><span>能下单付款退货</span></div>
+          <div class="li"><span><span class="strong">全程都办了</span></span></div>
+          <div class="li"><span>多步操作场景</span></div>
+        </div>
+        <div class="arch-cost">15-50 万/月<span class="arch-cost-cap">同流量 · 贵 10 倍</span></div>
+      </div>
+
+      <div class="arch-card mix">
+        <span class="arch-tag">混合架构</span>
+        <h4>医院分诊</h4>
+        <div class="arch-meta">意图分流路由 · 双路径并行</div>
+        <div class="arch-list">
+          <div class="li"><span>小病自助挂号</span></div>
+          <div class="li"><span><span class="strong">大病转专家</span></span></div>
+          <div class="li"><span>2026 主流方案</span></div>
+        </div>
+        <div class="arch-cost">5-10 万/月<span class="arch-cost-cap">省 70% + 解决率 +30%</span></div>
+      </div>
+    </div>
+
+    <p class="lead">心法 — <span class="em">强行用 Agent 解决退货政策这种单步问答 = 直升机送外卖,能送到但烧死你</span>。</p>
+  </section>
+
+  <!-- § 02 三维选型 -->
+  <section class="section fade">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-title">选型<span class="hl">三维度</span> · 不靠手感,靠 3 个数字</div>
+    </div>
+
+    <div class="decide">
+      <div class="decide-head">3 个数字决定路线</div>
+      <div class="decide-row">
+        <div class="decide-dim"><span class="icon">A</span>复杂度</div>
+        <div class="decide-cell no"><span class="tag">RAG 够</span>单步问答 · 退货政策 / 物流 / 发票</div>
+        <div class="decide-cell go"><span class="tag">必上 Agent</span>多步操作 · 查日志 / 改配置 / 串联系统</div>
+      </div>
+      <div class="decide-row">
+        <div class="decide-dim"><span class="icon">B</span>流量量级</div>
+        <div class="decide-cell no"><span class="tag">RAG 主路径</span>高频 &gt; <b>1000 单/日</b> · Agent 月烧扛不住</div>
+        <div class="decide-cell go"><span class="tag">Agent 全上</span>低频高价 &lt; 100 单/日 · 客单价 &gt; <b>1 万</b></div>
+      </div>
+      <div class="decide-row">
+        <div class="decide-dim"><span class="icon">C</span>客单价</div>
+        <div class="decide-cell no"><span class="tag">商业不通</span>客单价 &lt; <b>100 元</b> · 纯 Agent 别想</div>
+        <div class="decide-cell go"><span class="tag">放心上</span>客单价 &gt; <b>5000 元</b> · Agent 成本占比 &lt; 5%</div>
+      </div>
+    </div>
+
+    <p class="lead">如果业务又高频又复杂?<span class="em">混合架构</span> — 80% 流量走 RAG,20% 升级 Agent。这是 2026 的主流方案,我对接的跨境项目就这么做,<strong>月省 70% 成本同时拉高 30 分解决率</strong>。</p>
+  </section>
+
+  <!-- § 03 三案例 -->
+  <section class="section fade">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-title">三个<span class="hl">真实案例</span> · 三种画像分别选了什么</div>
+    </div>
+
+    <div class="case a">
+      <div class="case-head">
+        <span class="case-tag">CASE A</span>
+        <span class="case-name">中型电商 · 选 RAG</span>
+        <span class="case-pick">高频低复杂 / 中等流量</span>
+      </div>
+      <div class="case-body">
+        <div class="case-row"><span class="lab">业务</span><span class="val">日均 800 单咨询 — 退换货 / 物流 / 发票为主</span></div>
+        <div class="case-row"><span class="lab">方案</span><span class="val">RAG + 工业级三招(Rerank + Hybrid + 父子分块)</span></div>
+        <div class="case-row"><span class="lab">数据</span><span class="val">准确率 <span class="g">87%</span> · 转人工率 <span class="g">18%</span> · 月成本 <span class="g">2.8 万</span></span></div>
+        <div class="case-row"><span class="lab">教训</span><span class="val">高频低复杂场景,<b>RAG 足够,Agent 是过度设计</b></span></div>
+      </div>
+    </div>
+
+    <div class="case b">
+      <div class="case-head">
+        <span class="case-tag">CASE B</span>
+        <span class="case-name">SaaS 厂商 · 选 Agent</span>
+        <span class="case-pick">多步操作 / 高客单价</span>
+      </div>
+      <div class="case-body">
+        <div class="case-row"><span class="lab">业务</span><span class="val">技术工单 — 查日志 → 排查 → 重启 → 通知 一条龙</span></div>
+        <div class="case-row"><span class="lab">方案</span><span class="val">Agent + Tool(查日志/监控/通知 API)+ MCP 标准化</span></div>
+        <div class="case-row"><span class="lab">数据</span><span class="val">首次解决率 <span class="g">78%</span> · 月成本 <span class="r">28 万</span> · 仅给付费客户</span></div>
+        <div class="case-row"><span class="lab">教训</span><span class="val">多步真实操作只能上 Agent,但<b>商业模型必须 cover 成本</b></span></div>
+      </div>
+    </div>
+
+    <div class="case c">
+      <div class="case-head">
+        <span class="case-tag">CASE C</span>
+        <span class="case-name">跨境出海 · 混合架构</span>
+        <span class="case-pick">2026 主流方案</span>
+      </div>
+      <div class="case-body">
+        <div class="case-row"><span class="lab">业务</span><span class="val">80% 售前简单问答 + 20% 售后复杂处理</span></div>
+        <div class="case-row"><span class="lab">方案</span><span class="val">意图分流 — 简单 RAG · 复杂升级 Agent · 统一回答模板</span></div>
+        <div class="case-row"><span class="lab">数据</span><span class="val">准确率 <span class="g">85%</span> · 月成本 <span class="g">6.5 万</span> · 比纯 Agent 省 <span class="g">70%</span></span></div>
+        <div class="case-row"><span class="lab">教训</span><span class="val">纯架构是过渡形态,<b>混合架构才是 2026 主流</b></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 04 翻车清单 -->
+  <section class="section fade">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-title">三种架构的 <span class="hl">PM 防翻车</span></div>
+    </div>
+    <p class="lead">无论选哪个,都有特定的必踩翻车。<span class="em">PM 上线前必须写进 PRD</span>,不是写进事故复盘报告。</p>
+
+    <div class="crash-grid">
+      <div class="crash rag">
+        <div class="crash-tag">RAG<br>翻车</div>
+        <div class="crash-body">
+          <h5>RAG 客服三个死穴</h5>
+          <div class="crash-die">多步问题模型硬编 · 知识更新滞后 · 多轮上下文丢失</div>
+          <div class="crash-fix">多步问题强制转人工或升级 Agent · 文档变更自动触发索引重建 · 多轮场景用对话摘要压缩</div>
+        </div>
+      </div>
+
+      <div class="crash agent">
+        <div class="crash-tag">Agent<br>翻车</div>
+        <div class="crash-body">
+          <h5>Agent 客服三个死穴</h5>
+          <div class="crash-die">Tool 调用错 · 循环死锁 · 成本爆炸(月烧超预算 3 倍)</div>
+          <div class="crash-fix">每个 Tool 配高质量描述+示例 · 设最大迭代轮数(默认 5 轮) · Token 仪表盘+预算告警 · 超预算自动降级 RAG</div>
+        </div>
+      </div>
+
+      <div class="crash mix">
+        <div class="crash-tag">混合<br>翻车</div>
+        <div class="crash-body">
+          <h5>混合架构三个死穴</h5>
+          <div class="crash-die">意图分类错路 · 双路体验不一致 · 运营复杂度翻倍</div>
+          <div class="crash-fix">意图分类器单独建 Eval(准确率 90%+) · 两条路径强制统一回答模板 · 开两套监控仪表盘 + 错误归因机制</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 面试金句 -->
+  <section class="interview fade">
+    <div class="interview-eyebrow">INTERVIEW GOLD · 高频题</div>
+    <div class="interview-q">你的 AI 客服选什么架构?</div>
+    <div class="interview-lines">
+      <div class="interview-line"><div class="interview-line-no">第 1</div><div class="interview-line-text">看<span class="em">业务形态</span> — 高频低复杂走 RAG · 多步真实操作走 Agent · SaaS 长尾走混合。</div></div>
+      <div class="interview-line"><div class="interview-line-no">第 2</div><div class="interview-line-text">用<span class="em">三维度判断</span> — 复杂度、流量、客单价。不靠手感靠数字。</div></div>
+      <div class="interview-line"><div class="interview-line-no">第 3</div><div class="interview-line-text">做<span class="em">商业账测算</span> — RAG 月 2-5 万,Agent 月烧 15-50 万,差 10 倍。算不过来不上 Agent。</div></div>
+      <div class="interview-line"><div class="interview-line-no">第 4</div><div class="interview-line-text">每种架构提前写<span class="em">翻车兜底</span> — RAG 防硬编、Agent 防死锁、混合防分类错路。</div></div>
+    </div>
+    <div class="interview-foot">4 句答完,面试官知道你不是被 Agent 概念带节奏的小白,是算过账上过线的 PM。</div>
+  </section>
+
+  <!-- 一句话总结 -->
+  <section class="takeaway fade">
+    <div class="takeaway-tag">ONE-LINE</div>
+    <div class="takeaway-text">Agent 是<span class="r">产品上限</span> · RAG 是<span class="r">商业底线</span> · 混合是 <span class="r">2026 主流</span><br><br>强行上 Agent 解决简单问答 — 直升机送外卖 · 烧死你</div>
+  </section>
+
+  <!-- 下期预告 + CTA -->
+  <section class="coda fade">
+    <div class="coda-tag">下期预告 + 关注</div>
+    <div class="coda-next">Vol.24 · <span class="hl">AI 客服的 Eval 体系</span> 怎么搭</div>
+    <div class="coda-hint">Agent 跟 RAG 评估方式完全不一样 — 8 成团队连 Eval 都没建对</div>
+    <div class="coda-cta">关注 NOVA · 每天一个 AI PM 知识点</div>
+  </section>
+
+  <footer><p><span class="brand">NOVA</span> · AI PM · Vol.23 · Nova 著</p></footer>
+
+</div>
+
+<script>
+(function(){const bar=document.querySelector('.progress');if(!bar)return;function tick(){const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;bar.style.transform='scaleX('+(max>0?h.scrollTop/max:0)+')';}window.addEventListener('scroll',tick,{passive:true});tick();})();
+(function(){const els=document.querySelectorAll('.fade');if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return;}const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});els.forEach(e=>io.observe(e));})();
+(function(){const nodes=document.querySelectorAll('[data-count]');if(!nodes.length)return;function countUp(el){const target=parseFloat(el.dataset.count);if(isNaN(target))return;const dur=1400;const start=performance.now();const unit=el.querySelector('.unit');const unitHTML=unit?unit.outerHTML:'';const decimals=String(target).split('.')[1]?String(target).split('.')[1].length:0;function tick(now){const t=Math.min(1,(now-start)/dur);const eased=1-Math.pow(1-t,3);const v=(target*eased).toFixed(decimals);el.innerHTML=v+unitHTML;if(t<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}if(!('IntersectionObserver' in window)){nodes.forEach(countUp);return;}const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){countUp(e.target);io.unobserve(e.target);}});},{threshold:.5});nodes.forEach(n=>io.observe(n));})();
+</script>
+</body>
+</html>
