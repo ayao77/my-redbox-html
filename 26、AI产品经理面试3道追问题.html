@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 产品经理面试 3 道追问题 90% PM 翻车 · NOVA Vol.26</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Archivo+Black&family=Bebas+Neue&family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --paper:#FEFCF5;--paper-2:#FFFEF0;--paper-3:#F5EFE0;
+  --ink:#1C1A18;--ink-2:#3D3833;--ink-3:#7A746B;
+  --yellow:#FFE16B;--yellow-deep:#F4C430;--yellow-light:#FFF5C2;
+  --coral:#FF7A6B;--coral-light:#FFE0DC;
+  --red:#E63946;--red-light:#FFEBE9;
+  --green:#5CB85C;--green-deep:#3A8E3A;--green-light:#E0F2E0;
+  --pink:#FFD9DC;--peach:#FFE8D6;--mint:#D6F0E0;
+  --sans:"Noto Sans SC","PingFang SC",sans-serif;
+  --display-en:"Archivo Black","Bebas Neue",sans-serif;
+  --display-cn:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono","SF Mono",monospace;
+  --hardshadow:5px 5px 0 var(--ink);
+  --hardshadow-sm:3px 3px 0 var(--ink);
+}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);min-height:100vh;font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* 顶部进度条 */
+.progress{position:fixed;top:0;left:0;height:5px;width:100%;background:transparent;z-index:100;transform-origin:left;transform:scaleX(0);transition:transform .15s linear}
+.progress-bar{height:100%;width:100%;background:var(--coral);border-bottom:2px solid var(--ink)}
+
+/* 顶部 sticky 导航(交互1 · 章节锚点) */
+.nav{position:sticky;top:0;background:var(--paper-2);border-bottom:3px solid var(--ink);z-index:50;padding:10px 0}
+.nav-inner{max-width:780px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nav-brand{font-family:var(--display-en);font-size:14px;color:var(--coral);letter-spacing:2px;font-weight:900;margin-right:auto}
+.nav-link{font-family:var(--display-cn);font-size:12px;color:var(--ink-2);padding:5px 10px;border:2px solid var(--ink);border-radius:6px;background:var(--paper);cursor:pointer;transition:all .15s;text-decoration:none}
+.nav-link:hover{background:var(--yellow);transform:translateY(-2px);box-shadow:2px 2px 0 var(--ink)}
+.nav-link.active{background:var(--coral);color:#fff}
+
+/* 主容器 */
+.stage{max-width:780px;margin:0 auto;padding:32px 24px 100px}
+
+/* Hook · 打字机面试官气泡 */
+.hook{margin-bottom:36px}
+.hook-tag{display:inline-flex;align-items:center;gap:8px;background:var(--coral);color:#fff;padding:6px 14px;font-size:13px;font-weight:900;letter-spacing:1px;border:3px solid var(--ink);box-shadow:var(--hardshadow-sm);transform:rotate(-2deg);margin-bottom:16px;font-family:var(--display-cn)}
+.hook-tag::before{content:"⚠";color:var(--yellow);font-size:16px}
+
+.hook h1{font-family:var(--sans);font-size:36px;font-weight:900;line-height:1.25;letter-spacing:-1px;margin-bottom:18px;color:var(--ink)}
+.hook h1 .hl{background:var(--yellow);padding:0 8px;display:inline-block;box-shadow:3px 3px 0 var(--ink);border:2px solid var(--ink);border-radius:4px}
+.hook h1 .ko{position:relative;color:var(--ink-3)}
+.hook h1 .ko::after{content:"";position:absolute;left:-3px;right:-3px;top:55%;height:5px;background:var(--coral);transform:rotate(-2deg)}
+
+.hook-lead{font-size:15px;line-height:1.8;color:var(--ink-2);margin-bottom:22px}
+.hook-lead strong{background:var(--yellow);color:var(--ink);font-weight:900;padding:0 4px}
+
+/* 交互 2 · 面试官打字机气泡 */
+.interviewer-hook{margin:24px 0;padding:20px 22px;background:var(--paper-2);border:3px dashed var(--ink);border-radius:14px}
+.ih-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ih-avatar{width:42px;height:42px;border-radius:50%;background:var(--coral);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;font-family:var(--display-en)}
+.ih-meta{font-family:var(--display-cn);font-size:14px;color:var(--ink);font-weight:900}
+.ih-meta small{display:block;font-family:var(--sans);font-size:11px;color:var(--ink-3);font-weight:400;letter-spacing:1px;margin-top:2px}
+.ih-bubble{font-family:var(--display-cn);font-size:19px;line-height:1.55;color:var(--ink);padding:14px 18px;background:var(--yellow-light);border:2px solid var(--ink);border-radius:14px;border-top-left-radius:0;font-weight:900;position:relative;min-height:60px}
+.typewriter::after{content:"|";color:var(--coral);animation:blink 1s infinite;font-weight:900;margin-left:2px}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+
+/* 交互 3 · 数字 count-up 三连卡 */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+.stat-card{background:var(--paper);border:3px solid var(--ink);border-radius:14px;padding:18px 14px;text-align:center;box-shadow:var(--hardshadow-sm);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease}
+.stat-card:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.stat-card.c1{background:var(--coral-light)}
+.stat-card.c2{background:var(--yellow-light)}
+.stat-card.c3{background:var(--green-light)}
+.stat-num{font-family:var(--display-en);font-size:34px;font-weight:900;line-height:1;color:var(--ink)}
+.stat-num .unit{font-size:14px;margin-left:2px;color:var(--ink-2)}
+.stat-card.c1 .stat-num{color:var(--red)}
+.stat-card.c2 .stat-num{color:var(--yellow-deep)}
+.stat-card.c3 .stat-num{color:var(--green-deep)}
+.stat-cap{font-size:11px;color:var(--ink-2);margin-top:6px;font-weight:700;letter-spacing:.5px;line-height:1.5}
+
+/* 三件事预告 */
+.preview{background:var(--peach);border:3px dashed var(--ink);border-radius:18px;padding:20px 22px;margin:28px 0}
+.preview-title{font-family:var(--display-cn);font-size:16px;color:var(--red);margin-bottom:12px;display:inline-block;background:var(--yellow);padding:4px 10px;border:2px solid var(--ink);box-shadow:var(--hardshadow-sm);transform:rotate(-1deg);font-weight:900}
+.preview ol{margin-left:24px;font-size:14px;line-height:1.85;color:var(--ink)}
+.preview ol li{margin-bottom:4px;font-weight:700}
+.preview ol li::marker{color:var(--red);font-weight:900}
+.preview ol li strong{background:var(--yellow);padding:0 3px;color:var(--ink)}
+
+/* 三道追问块 · 交互 4 · 错答/正确答 Tab 切换 */
+.qa-block{margin:36px 0;background:var(--paper);border:4px solid var(--ink);border-radius:18px;padding:24px 22px;box-shadow:var(--hardshadow);scroll-margin-top:80px}
+.q-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:2px dashed var(--ink)}
+.q-tag{font-family:var(--mono);font-size:13px;font-weight:700;background:var(--ink);color:var(--yellow);padding:4px 10px;border-radius:6px;letter-spacing:1px}
+.q-block .q-tag{}
+.q-title{font-family:var(--display-cn);font-size:21px;font-weight:900;color:var(--ink);flex:1;line-height:1.3}
+
+/* 面试官气泡(每题) */
+.q-asked{margin:14px 0;padding:14px 16px;background:var(--yellow-light);border:2px solid var(--ink);border-radius:14px;border-top-left-radius:0;font-size:15px;color:var(--ink);line-height:1.65;font-weight:700;position:relative}
+.q-asked::before{content:"👤 面试官";position:absolute;top:-12px;left:14px;background:var(--ink);color:var(--yellow);font-family:var(--display-cn);font-size:10px;padding:3px 8px;border-radius:5px;letter-spacing:1px;font-weight:900}
+
+/* Tab 切换 */
+.tabs{display:flex;gap:8px;margin:18px 0 14px;border-bottom:3px solid var(--ink);padding-bottom:0}
+.tab-btn{flex:1;padding:11px 12px;border:3px solid var(--ink);border-bottom:none;border-radius:10px 10px 0 0;font-family:var(--display-cn);font-size:14px;font-weight:900;cursor:pointer;transition:all .15s;background:var(--paper-3);color:var(--ink-3);position:relative;bottom:-3px}
+.tab-btn:hover{background:var(--paper-2)}
+.tab-btn.active{background:var(--red-light);color:var(--red);bottom:-3px}
+.tab-btn.right.active{background:var(--green-light);color:var(--green-deep)}
+.tab-btn .ico{margin-right:4px;font-size:14px}
+
+.tab-pane{display:none;padding:16px 0 4px;animation:fadeIn .25s ease}
+.tab-pane.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* 错答 pane */
+.wrong-box{padding:14px 16px;background:var(--red-light);border:2px solid var(--red);border-radius:10px}
+.wrong-quote{font-family:var(--display-cn);font-size:15px;color:var(--ink);line-height:1.7;margin-bottom:10px;font-style:italic}
+.wrong-quote::before{content:"\"";color:var(--red);font-size:22px;margin-right:4px;vertical-align:top}
+.wrong-quote::after{content:"\"";color:var(--red);font-size:22px;margin-left:4px}
+.wrong-why{margin-top:10px;padding-top:10px;border-top:2px dashed var(--red);font-size:13px;line-height:1.7;color:var(--ink)}
+.wrong-why::before{content:"错在哪 · ";font-weight:900;color:var(--red);font-family:var(--display-cn);font-size:13px}
+
+/* 正确答 pane · 4 句模板 · 交互 5 · 一键复制 */
+.right-box{padding:14px 0}
+.four-lines{list-style:none;display:flex;flex-direction:column;gap:10px}
+.line-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:12px 14px;background:var(--green-light);border:2px solid var(--green-deep);border-radius:10px;align-items:start}
+.line-no{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--green-deep);color:#fff;padding:3px 8px;border-radius:5px;letter-spacing:1px;white-space:nowrap}
+.line-text{font-size:13px;color:var(--ink);line-height:1.6}
+.line-text b{font-weight:900;background:var(--yellow);padding:0 3px}
+.line-text .tag{display:inline-block;background:#fff;border:2px solid var(--green-deep);color:var(--green-deep);font-family:var(--display-cn);font-size:11px;font-weight:900;padding:1px 6px;border-radius:5px;margin-right:6px;letter-spacing:.5px}
+.copy-btn{background:#fff;border:2px solid var(--ink);color:var(--ink);font-family:var(--mono);font-size:10px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;letter-spacing:1px;flex-shrink:0;transition:all .15s}
+.copy-btn:hover{background:var(--yellow);transform:translateY(-1px)}
+.copy-btn.copied{background:var(--green);color:#fff;border-color:var(--green-deep)}
+
+.right-memo{margin-top:14px;padding:10px 14px;background:var(--yellow);border:2px solid var(--ink);border-radius:10px;font-size:13px;color:var(--ink);line-height:1.6}
+.right-memo::before{content:"记一句 · ";font-weight:900;color:var(--red);font-family:var(--display-cn);font-size:13px}
+
+/* 交互 6 · 数据对比卡(轻量,不大块黑底) */
+.compare-zone{margin:28px 0;background:var(--mint);border:3px solid var(--ink);border-radius:16px;padding:20px 22px;box-shadow:var(--hardshadow-sm)}
+.compare-title{font-family:var(--display-cn);font-size:16px;color:var(--ink);margin-bottom:14px;display:inline-block;background:#fff;border:2px solid var(--ink);padding:3px 10px;font-weight:900;border-radius:6px}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cp-row{background:#fff;padding:10px 12px;border:2px solid var(--ink);border-radius:8px;display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.cp-row .lab{color:var(--ink-2);font-weight:700}
+.cp-row .val{font-family:var(--display-en);font-size:18px;font-weight:900;color:var(--coral)}
+.cp-row.good .val{color:var(--green-deep)}
+.cp-row.full{grid-column:span 2;background:var(--ink);color:var(--yellow)}
+.cp-row.full .lab{color:var(--paper-2)}
+.cp-row.full .val{font-size:22px;color:var(--yellow)}
+
+/* 交互 7 · 测一测小测试 */
+.quiz{margin:36px 0;background:var(--paper);border:4px solid var(--ink);border-radius:18px;padding:24px 22px;box-shadow:var(--hardshadow)}
+.quiz-head{text-align:center;margin-bottom:18px}
+.quiz-head h3{font-family:var(--display-cn);font-size:22px;color:var(--ink);margin-bottom:6px}
+.quiz-head h3 .em{background:var(--yellow);padding:0 6px;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);display:inline-block}
+.quiz-head p{font-size:13px;color:var(--ink-2);font-style:italic}
+.quiz-score{margin-top:14px;padding:8px 14px;background:var(--yellow-light);border:2px solid var(--ink);border-radius:30px;display:inline-block;font-family:var(--display-cn);font-size:14px;color:var(--ink);font-weight:900}
+.quiz-score span{color:var(--coral);font-family:var(--display-en);font-size:18px;margin:0 4px}
+
+.qz-card{margin:16px 0;padding:18px;background:var(--paper-2);border:3px solid var(--ink);border-radius:12px}
+.qz-q{font-family:var(--display-cn);font-size:15px;color:var(--ink);margin-bottom:14px;font-weight:900;line-height:1.5}
+.qz-q::before{content:"Q";display:inline-block;background:var(--coral);color:#fff;font-family:var(--display-en);font-size:11px;padding:3px 8px;border-radius:5px;margin-right:8px;border:2px solid var(--ink);font-weight:900}
+.qz-options{display:flex;flex-direction:column;gap:8px}
+.qz-opt{padding:10px 14px;background:#fff;border:2px solid var(--ink);border-radius:8px;cursor:pointer;font-size:13px;color:var(--ink);text-align:left;font-family:var(--sans);transition:all .15s}
+.qz-opt:hover:not(:disabled){background:var(--yellow-light);transform:translateY(-1px);box-shadow:2px 2px 0 var(--ink)}
+.qz-opt:disabled{cursor:default;opacity:.6}
+.qz-opt.correct{background:var(--green-light);border-color:var(--green-deep);color:var(--green-deep);font-weight:700}
+.qz-opt.correct::before{content:"✓ ";font-weight:900;color:var(--green-deep)}
+.qz-opt.wrong{background:var(--red-light);border-color:var(--red);color:var(--red);font-weight:700}
+.qz-opt.wrong::before{content:"✗ ";font-weight:900;color:var(--red)}
+.qz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.6;display:none}
+.qz-feedback.show{display:block;animation:fadeIn .3s ease}
+.qz-feedback.correct{background:var(--green-light);border:2px solid var(--green-deep);color:var(--ink)}
+.qz-feedback.correct::before{content:"✓ 答对 · ";font-weight:900;color:var(--green-deep)}
+.qz-feedback.wrong{background:var(--red-light);border:2px solid var(--red);color:var(--ink)}
+.qz-feedback.wrong::before{content:"✗ 答错 · ";font-weight:900;color:var(--red)}
+
+/* 一句话总结 */
+.takeaway{margin:40px 0 24px;background:var(--yellow);border:4px solid var(--ink);border-radius:18px;padding:28px 24px;text-align:center;box-shadow:var(--hardshadow)}
+.takeaway-tag{display:inline-block;background:var(--ink);color:var(--yellow);font-family:var(--display-en);font-size:11px;letter-spacing:3px;padding:4px 12px;border-radius:6px;margin-bottom:14px;font-weight:900}
+.takeaway-text{font-family:var(--display-cn);font-size:20px;line-height:1.55;color:var(--ink);font-weight:900}
+.takeaway-text .r{color:var(--red-deep)}
+
+/* CTA · 变现挂钩 */
+.cta{margin-top:24px;padding:24px;background:var(--coral-light);border:3px solid var(--ink);border-radius:18px;box-shadow:var(--hardshadow)}
+.cta h3{font-family:var(--display-cn);font-size:18px;color:var(--ink);margin-bottom:14px;text-align:center}
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.cta-card{background:#fff;border:2px solid var(--ink);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .15s}
+.cta-card:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink);background:var(--yellow-light)}
+.cta-card .keyword{font-family:var(--display-cn);font-size:18px;font-weight:900;color:var(--red);display:inline-block;background:var(--yellow);padding:3px 10px;border:2px solid var(--ink);border-radius:6px;margin-bottom:6px}
+.cta-card .desc{font-size:12px;color:var(--ink-2);line-height:1.5}
+
+.next-up{margin-top:24px;padding:18px 22px;background:var(--paper-2);border:3px dashed var(--ink);border-radius:14px;text-align:center}
+.next-up .tag{display:inline-block;background:var(--ink);color:var(--yellow);font-family:var(--display-en);font-size:10px;padding:3px 10px;border-radius:5px;letter-spacing:2px;margin-bottom:10px}
+.next-up .title{font-family:var(--display-cn);font-size:17px;color:var(--ink);font-weight:900;margin-bottom:6px}
+.next-up .hl{background:var(--yellow);padding:0 4px}
+.next-up p{font-size:12px;color:var(--ink-2);font-style:italic}
+
+footer{margin-top:32px;text-align:center;font-size:12px;color:var(--ink-3);padding:12px}
+footer .brand{font-family:var(--display-en);color:var(--coral);letter-spacing:3px;font-weight:900}
+
+/* 入场动画 */
+.fade{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.34,1.56,.64,1)}
+.fade.in{opacity:1;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}.progress{display:none}}
+
+@media (max-width:680px){
+  .stage{padding:24px 16px 80px}
+  .hook h1{font-size:28px}
+  .stats-row{grid-template-columns:1fr;gap:10px}
+  .compare-grid{grid-template-columns:1fr}
+  .cp-row.full{grid-column:span 1}
+  .cta-grid{grid-template-columns:1fr}
+  .nav-link{font-size:11px;padding:4px 8px}
+  .tab-btn{font-size:13px;padding:9px 8px}
+}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-bar"></div></div>
+
+<!-- 交互 1 · 顶部章节导航 -->
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-brand">NOVA · AI PM</span>
+    <a href="#q1" class="nav-link">追问 1 · ROI</a>
+    <a href="#q2" class="nav-link">追问 2 · 升级</a>
+    <a href="#q3" class="nav-link">追问 3 · 事故</a>
+    <a href="#quiz" class="nav-link">🎯 测一测</a>
+  </div>
+</nav>
+
+<div class="stage">
+
+  <!-- Hook -->
+  <section class="hook fade">
+    <span class="hook-tag">90% PM 翻车</span>
+    <h1>AI 产品经理面试<br>这 <span class="hl">3 道追问题</span> <span class="ko">概念题没用</span></h1>
+    <p class="hook-lead">我面过 12 个 AI PM 候选人。前面 5 道概念题(RAG / Agent / Eval),大家都背得溜。但<strong>第 6 道追问题一上来,90% 当场卡壳</strong>。那一秒钟,面试官心里就给你判完了 — 这人没做过。</p>
+
+    <!-- 交互 2 · 打字机面试官气泡 -->
+    <div class="interviewer-hook">
+      <div class="ih-head">
+        <div class="ih-avatar">👤</div>
+        <div class="ih-meta">面试官<small>30 秒后 · 你已经讲完什么是 RAG...</small></div>
+      </div>
+      <div class="ih-bubble"><span id="typewriter" class="typewriter"></span></div>
+    </div>
+
+    <!-- 交互 3 · 数字 count-up -->
+    <div class="stats-row">
+      <div class="stat-card c1">
+        <div class="stat-num" data-count="90">0<span class="unit">%</span></div>
+        <div class="stat-cap">追问环节<br>翻车率</div>
+      </div>
+      <div class="stat-card c2">
+        <div class="stat-num" data-count="85">0<span class="unit">%</span></div>
+        <div class="stat-cap">答错追问<br>直接挂概率</div>
+      </div>
+      <div class="stat-card c3">
+        <div class="stat-num" data-count="100">0<span class="unit">%</span></div>
+        <div class="stat-cap">拿 35k+ Offer<br>追问全对率</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 三件事 -->
+  <section class="preview fade">
+    <div class="preview-title">今天讲透 3 道追问 · 含完整答案</div>
+    <ol>
+      <li>追问 1 · <strong>你的 AI 产品 ROI 怎么算</strong>?</li>
+      <li>追问 2 · <strong>模型升级了你怎么应对</strong>?</li>
+      <li>追问 3 · <strong>AI 产品上线后怎么定义事故</strong>?</li>
+    </ol>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 追问 1 · ROI -->
+  <section class="qa-block fade" id="q1">
+    <div class="q-head"><span class="q-tag">追问 01</span><h3 class="q-title">你做的 AI 产品 · 怎么算 ROI?</h3></div>
+
+    <div class="q-asked">"我看到你做过一个 AI 客服项目,准确率从 65% 涨到 92%。这个项目的 ROI 怎么算?"</div>
+
+    <!-- Tab · 交互 4 -->
+    <div class="tabs">
+      <button class="tab-btn wrong active" data-target="q1-wrong"><span class="ico">❌</span>90% PM 错答</button>
+      <button class="tab-btn right" data-target="q1-right"><span class="ico">✅</span>正确答(可抄)</button>
+    </div>
+
+    <div class="tab-pane active" id="q1-wrong">
+      <div class="wrong-box">
+        <p class="wrong-quote">准确率涨了 27 个百分点 · 转人工率从 40% 降到 18% · 用户满意度提升...</p>
+        <div class="wrong-why">只答了产品指标,完全没答商业账。面试官心里在想:这是研发,不是产品经理。</div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="q1-right">
+      <div class="right-box">
+        <ol class="four-lines">
+          <li class="line-item">
+            <span class="line-no">第 1 句</span>
+            <span class="line-text"><span class="tag">成本侧</span>模型 API 月费 <b>6800 元</b> · 替代 3 个客服(月薪 1.3 万 × 3 = 4 万)· <b>净省 33000 元 / 月</b></span>
+            <button class="copy-btn" data-copy="第 1 句:成本侧 — 模型 API 月费 6800,替代 3 个客服月薪共 4 万,净省 3.3 万/月">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 2 句</span>
+            <span class="line-text"><span class="tag">收入侧</span>响应速度 3 分钟 → 30 秒 · 转化率提升 <b>8%</b> · 带动月 GMV <b>+50 万</b></span>
+            <button class="copy-btn" data-copy="第 2 句:收入侧 — 响应速度 3 分钟降到 30 秒,转化率提升 8%,月 GMV +50 万">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 3 句</span>
+            <span class="line-text"><span class="tag">风险侧</span>替代了人工误操作的合规风险 · 上线后 <b>0 起合规事故</b>(此前一次赔付加诉讼 ≈ 80 万)</span>
+            <button class="copy-btn" data-copy="第 3 句:风险侧 — 替代了人工合规风险,上线后 0 起事故,过去一次事故损失约 80 万">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 4 句</span>
+            <span class="line-text"><span class="tag">综合</span>投入 80 万 · 月省 30 万 + 增收 50 万 · <b>2.3 个月回本</b></span>
+            <button class="copy-btn" data-copy="第 4 句:综合算账 — 投入 80 万,月省 30 万+增收 50 万,2.3 个月回本">复制</button>
+          </li>
+        </ol>
+        <div class="right-memo">AI 产品 ROI 必须三层算 — <b>成本 + 收入 + 风险</b>。只答准确率 = 厨师跟老板说"我厨艺好",老板问的是赚多少钱。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 追问 2 · 模型升级 -->
+  <section class="qa-block fade" id="q2">
+    <div class="q-head"><span class="q-tag">追问 02</span><h3 class="q-title">模型升级了 · 你怎么保证产品不退化?</h3></div>
+
+    <div class="q-asked">"GPT-4.5 / Claude 4 / Gemini 3 都升级了。你的 AI 产品怎么应对?"</div>
+
+    <div class="tabs">
+      <button class="tab-btn wrong active" data-target="q2-wrong"><span class="ico">❌</span>90% PM 错答</button>
+      <button class="tab-btn right" data-target="q2-right"><span class="ico">✅</span>正确答(可抄)</button>
+    </div>
+
+    <div class="tab-pane active" id="q2-wrong">
+      <div class="wrong-box">
+        <p class="wrong-quote">重新测一遍,如果效果好就升级。</p>
+        <div class="wrong-why">没机制 · 没流程 · 没量化。这种回答告诉面试官:你没经历过模型升级,没做过上线项目。</div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="q2-right">
+      <div class="right-box">
+        <ol class="four-lines">
+          <li class="line-item">
+            <span class="line-no">第 1 句</span>
+            <span class="line-text"><span class="tag">Eval 集</span>维护<b>黄金 Eval 集</b> · 500-1000 条标注样本 · 版本号 v1.0 / v1.1 / v2.0</span>
+            <button class="copy-btn" data-copy="第 1 句:维护黄金 Eval 集,500-1000 条标注样本,带版本号 v1.0/v1.1">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 2 句</span>
+            <span class="line-text"><span class="tag">回归</span>自动回归测试 · 准确率掉 <b>≥ 2pt 不允许升级</b> · 先排查原因</span>
+            <button class="copy-btn" data-copy="第 2 句:自动回归测试,准确率掉 ≥ 2pt 不允许升级,先排查原因">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 3 句</span>
+            <span class="line-text"><span class="tag">灰度</span>灰度上线 · <b>10% → 30% → 50% → 100%</b> · 每阶段观察 24-48h</span>
+            <button class="copy-btn" data-copy="第 3 句:灰度上线 10% → 30% → 50% → 100%,每阶段观察 24-48h">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 4 句</span>
+            <span class="line-text"><span class="tag">闭环</span>Bad Case 反馈闭环 · 用户点踩 → 进 Eval 集 → <b>下次回归覆盖</b></span>
+            <button class="copy-btn" data-copy="第 4 句:Bad Case 反馈闭环,用户点踩进 Eval 集,下次回归覆盖">复制</button>
+          </li>
+        </ol>
+        <div class="right-memo">模型升级的应对 不是"重测",是"<b>回归测试体系</b>"。这是 AI PM 的工程化思维。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 追问 3 · 事故定义 -->
+  <section class="qa-block fade" id="q3">
+    <div class="q-head"><span class="q-tag">追问 03</span><h3 class="q-title">AI 上线后 · 你怎么定义"事故"?</h3></div>
+
+    <div class="q-asked">"假设你的 AI 客服上线了,某天用户在小红书发帖说被你的 AI 骂了。你怎么定级处理?"</div>
+
+    <div class="tabs">
+      <button class="tab-btn wrong active" data-target="q3-wrong"><span class="ico">❌</span>90% PM 错答</button>
+      <button class="tab-btn right" data-target="q3-right"><span class="ico">✅</span>正确答(可抄)</button>
+    </div>
+
+    <div class="tab-pane active" id="q3-wrong">
+      <div class="wrong-box">
+        <p class="wrong-quote">赶紧道歉,然后让技术修一下。</p>
+        <div class="wrong-why">没分级 · 没 SOP · 没复盘机制。一看就是没经历过线上事故。面试官想:这人来公司第一次事故就要靠他自己学习了。</div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="q3-right">
+      <div class="right-box">
+        <ol class="four-lines">
+          <li class="line-item">
+            <span class="line-no">第 1 句</span>
+            <span class="line-text"><span class="tag">定级</span><b>P0-P4 五级</b>事故 · AI 骂人涉及伦理 = P0 · <b>30 分钟内回滚</b> + 公司公关同步发声明</span>
+            <button class="copy-btn" data-copy="第 1 句:P0-P4 五级事故。AI 骂人涉及伦理 = P0,30 分钟内回滚 + 公关声明">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 2 句</span>
+            <span class="line-text"><span class="tag">SLA</span>P0 <b>30min 回滚</b> · P1 2h 修复 · P2 24h · P3 一周 · P4 季度迭代</span>
+            <button class="copy-btn" data-copy="第 2 句:每级 SLA — P0 30min,P1 2h,P2 24h,P3 一周,P4 季度迭代">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 3 句</span>
+            <span class="line-text"><span class="tag">责任</span>每级有责任人 · P0 公司层 CEO 知会 · P1 技术 Lead · P2 PM · P3-P4 backlog</span>
+            <button class="copy-btn" data-copy="第 3 句:每级责任人 — P0 公司层 CEO 知会,P1 技术 Lead,P2 PM,P3-P4 backlog">复制</button>
+          </li>
+          <li class="line-item">
+            <span class="line-no">第 4 句</span>
+            <span class="line-text"><span class="tag">复盘</span>所有事故必须走<b>复盘流程</b> · 根因分析 + 改进措施 + Eval 集补充</span>
+            <button class="copy-btn" data-copy="第 4 句:所有事故必须走复盘 — 根因分析 + 改进措施 + Eval 集补充">复制</button>
+          </li>
+        </ol>
+        <div class="right-memo">AI 产品事故的处理 不是"道歉",是"<b>P0-P4 五级 SOP + 复盘</b>"。这是真正把 AI 当商业资产管的标志。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 数据对比 · 轻量浅色卡 -->
+  <section class="compare-zone fade">
+    <div class="compare-title">📊 12 个 AI PM 候选人 · 真实数据</div>
+    <div class="compare-grid">
+      <div class="cp-row"><span class="lab">概念题答对率</span><span class="val">80%+</span></div>
+      <div class="cp-row good"><span class="lab">追问翻车率</span><span class="val">90%</span></div>
+      <div class="cp-row"><span class="lab">追问答错 → 挂</span><span class="val">85%</span></div>
+      <div class="cp-row good"><span class="lab">追问答对 → Offer</span><span class="val">70%</span></div>
+      <div class="cp-row full"><span class="lab">拿 35k+ Offer 的人 追问全对率</span><span class="val">100%</span></div>
+    </div>
+  </section>
+
+  <!-- 测一测 · 交互 7 -->
+  <section class="quiz fade" id="quiz">
+    <div class="quiz-head">
+      <h3>🎯 测一测 · 你能答对几道 <span class="em">追问</span>?</h3>
+      <p>3 道单选题 · 答完看你能拿几 k Offer</p>
+      <div class="quiz-score">当前得分 · <span id="quiz-score-num">0</span> / 3</div>
+    </div>
+
+    <div class="qz-card" data-correct="b">
+      <div class="qz-q">追问 1:你做的 AI 产品 ROI 怎么算?</div>
+      <div class="qz-options">
+        <button class="qz-opt" data-opt="a">A · 准确率涨了 27pt,转人工率降了 22pt</button>
+        <button class="qz-opt" data-opt="b">B · 三层算账 — 成本侧/收入侧/风险侧 + 综合回本周期</button>
+        <button class="qz-opt" data-opt="c">C · 用户量翻 3 倍,客单价涨 20%</button>
+      </div>
+      <div class="qz-feedback">B 是正确答 — AI 产品 ROI 必须三层算,只答产品指标(A、C)= 你是研发不是 PM。</div>
+    </div>
+
+    <div class="qz-card" data-correct="c">
+      <div class="qz-q">追问 2:GPT 升级了 · 你的产品怎么办?</div>
+      <div class="qz-options">
+        <button class="qz-opt" data-opt="a">A · 重新测一遍,效果好就升级</button>
+        <button class="qz-opt" data-opt="b">B · 先观察 1 周用户反馈再决定</button>
+        <button class="qz-opt" data-opt="c">C · 跑黄金 Eval 集 + 自动回归 + 灰度 + Bad Case 闭环</button>
+      </div>
+      <div class="qz-feedback">C 是正确答 — 回归测试体系。A 没机制(玩具党),B 没量化(运气派)。</div>
+    </div>
+
+    <div class="qz-card" data-correct="a">
+      <div class="qz-q">追问 3:AI 客服骂了用户上热搜 · 怎么处理?</div>
+      <div class="qz-options">
+        <button class="qz-opt" data-opt="a">A · P0 事故 30 分钟回滚 + 公关声明 + 走复盘流程</button>
+        <button class="qz-opt" data-opt="b">B · 让技术赶紧修,同时联系 PR 删帖</button>
+        <button class="qz-opt" data-opt="c">C · 道歉 + 给用户补偿券</button>
+      </div>
+      <div class="qz-feedback">A 是正确答 — P0-P4 五级 SOP。B 没分级流程,C 没复盘机制,都是没做过的标志。</div>
+    </div>
+  </section>
+
+  <!-- 一句话总结 -->
+  <section class="takeaway fade">
+    <div class="takeaway-tag">ONE-LINE · 直接抄</div>
+    <div class="takeaway-text">概念题考你 <span class="r">背得多深</span><br>追问题考你 <span class="r">做得多真</span><br><br>90% PM 死在第 3 题</div>
+  </section>
+
+  <!-- CTA · 加粉钩子 -->
+  <section class="cta fade">
+    <h3>🎁 评论区扣关键词 · 私信送你</h3>
+    <div class="cta-grid">
+      <div class="cta-card">
+        <span class="keyword">追问</span>
+        <div class="desc">3 道追问题完整 Word 版 · 12 句答案 + 真实数据可直接背</div>
+      </div>
+      <div class="cta-card">
+        <span class="keyword">面试题</span>
+        <div class="desc">AI PM 面试 30 道高频题清单 · 含 RAG / Agent / Eval / MCP / Tool 全部考点</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:12px;color:var(--ink-2);font-style:italic;margin-top:6px">关注 NOVA · 每周更新一道 AI PM 面试追问 · 求职季陪你打到拿 Offer</p>
+  </section>
+
+  <!-- 下一期 -->
+  <section class="next-up fade">
+    <span class="tag">NEXT · VOL.27</span>
+    <div class="title">AI 产品经理 <span class="hl">简历怎么写</span></div>
+    <p>简历过不去 · 再厉害的追问能力也用不上 · 评论区告诉我想听哪部分</p>
+  </section>
+
+  <footer><p><span class="brand">NOVA</span> · AI PM · Vol.26 · Nova 著</p></footer>
+
+</div>
+
+<script>
+// 进度条
+(function(){const bar=document.querySelector('.progress');if(!bar)return;function tick(){const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;bar.style.transform='scaleX('+(max>0?h.scrollTop/max:0)+')';}window.addEventListener('scroll',tick,{passive:true});tick();})();
+
+// 入场动画
+(function(){const els=document.querySelectorAll('.fade');if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return;}const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});els.forEach(e=>io.observe(e));})();
+
+// 数字 count-up
+(function(){const nodes=document.querySelectorAll('[data-count]');if(!nodes.length)return;function countUp(el){const target=parseFloat(el.dataset.count);if(isNaN(target))return;const dur=1400;const start=performance.now();const unit=el.querySelector('.unit');const unitHTML=unit?unit.outerHTML:'';function tick(now){const t=Math.min(1,(now-start)/dur);const eased=1-Math.pow(1-t,3);const v=Math.round(target*eased);el.innerHTML=v+unitHTML;if(t<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}if(!('IntersectionObserver' in window)){nodes.forEach(countUp);return;}const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){countUp(e.target);io.unobserve(e.target);}});},{threshold:.5});nodes.forEach(n=>io.observe(n));})();
+
+// 打字机面试官气泡
+(function(){
+  const el = document.getElementById('typewriter');
+  if(!el) return;
+  const text = "前面 RAG 你讲完了 — 那你做的 AI 产品 ROI 怎么算?";
+  let i = 0;
+  function type(){
+    if(i <= text.length){
+      el.textContent = text.slice(0, i);
+      i++;
+      setTimeout(type, 75);
+    } else {
+      el.classList.remove('typewriter');
+    }
+  }
+  // 等首屏入场后再打字
+  setTimeout(type, 800);
+})();
+
+// Tab 切换
+(function(){
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = btn.dataset.target;
+      const parent = btn.closest('.qa-block');
+      // 切换 tab 按钮
+      parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      // 切换 pane
+      parent.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+      document.getElementById(target).classList.add('active');
+    });
+  });
+})();
+
+// 一键复制
+(function(){
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const text = btn.dataset.copy;
+      try{
+        await navigator.clipboard.writeText(text);
+        const orig = btn.textContent;
+        btn.textContent = '✓ 已复制';
+        btn.classList.add('copied');
+        setTimeout(()=>{
+          btn.textContent = orig;
+          btn.classList.remove('copied');
+        }, 1500);
+      }catch(e){
+        // fallback
+        const ta=document.createElement('textarea');
+        ta.value=text;document.body.appendChild(ta);
+        ta.select();document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent='✓ 已复制';
+        btn.classList.add('copied');
+        setTimeout(()=>{btn.textContent='复制';btn.classList.remove('copied');},1500);
+      }
+    });
+  });
+})();
+
+// 测一测
+(function(){
+  let score = 0;
+  const scoreEl = document.getElementById('quiz-score-num');
+  document.querySelectorAll('.qz-card').forEach(card=>{
+    const correct = card.dataset.correct;
+    const opts = card.querySelectorAll('.qz-opt');
+    const feedback = card.querySelector('.qz-feedback');
+    opts.forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        if(opt.disabled) return;
+        const chose = opt.dataset.opt;
+        opts.forEach(o=>{
+          o.disabled = true;
+          if(o.dataset.opt === correct) o.classList.add('correct');
+          else if(o === opt) o.classList.add('wrong');
+        });
+        if(chose === correct){
+          score++;
+          scoreEl.textContent = score;
+          feedback.classList.add('correct','show');
+        } else {
+          feedback.classList.add('wrong','show');
+        }
+      });
+    });
+  });
+})();
+
+// 章节导航高亮
+(function(){
+  const links = document.querySelectorAll('.nav-link');
+  const sections = ['q1','q2','q3','quiz'].map(id => document.getElementById(id)).filter(Boolean);
+  if(!('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        const id = e.target.id;
+        links.forEach(l=>{
+          if(l.getAttribute('href') === '#' + id) l.classList.add('active');
+          else l.classList.remove('active');
+        });
+      }
+    });
+  }, {threshold:0.35});
+  sections.forEach(s=>io.observe(s));
+})();
+</script>
+</body>
+</html>

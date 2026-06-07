@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol.30 · AI 产品上线前 7 道 NoGo 红线</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Archivo+Black&family=Bebas+Neue&family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@600;900&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#FEFCF5;--paper-2:#FFFEF0;--paper-3:#F5EFE0;--paper-4:#EDE5D0;
+  --ink:#1C1A18;--ink-2:#3D3833;--ink-3:#7A746B;--ink-4:#A8A096;
+  --yellow:#FFD93D;--yellow-deep:#F4B400;--yellow-light:#FFF0A8;--yellow-soft:#FFF7D1;
+  --coral:#FF5E5B;--coral-deep:#E03C39;--coral-light:#FFD4D2;--coral-soft:#FFE9E7;
+  --red:#D62828;--red-deep:#9D1818;--red-bright:#F02C2C;--red-light:#FCC9C7;
+  --green:#3EA040;--green-deep:#247226;--green-light:#BFE3C0;--green-soft:#DEF1DE;
+  --blue:#3461A8;--blue-deep:#1E3F73;--blue-light:#C2D2EC;--blue-soft:#DFE7F4;
+  --purple:#6B4FA0;--purple-light:#D8CCEC;--purple-soft:#EBE2F4;
+  --orange:#FF8C42;--orange-deep:#D96523;--orange-light:#FFD9BF;--orange-soft:#FFEADD;
+  --sans:"Noto Sans SC","PingFang SC",sans-serif;
+  --serif:"Noto Serif SC","Songti SC",serif;
+  --display-en:"Archivo Black","Bebas Neue",sans-serif;
+  --display-cn:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono",monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.78;-webkit-font-smoothing:antialiased;font-weight:500}
+
+.progress-bar{position:fixed;top:0;left:0;height:6px;background:linear-gradient(90deg,var(--red) 0%,var(--coral) 25%,var(--orange) 50%,var(--yellow-deep) 75%,var(--green) 100%);z-index:100;width:0%;transition:width .08s ease-out;box-shadow:0 2px 12px rgba(214,40,40,.4)}
+
+.toc-nav{position:sticky;top:0;background:var(--paper-3);color:var(--ink);z-index:50;padding:14px 30px;display:flex;gap:14px;align-items:center;overflow-x:auto;white-space:nowrap;border-bottom:4px solid var(--coral);box-shadow:0 6px 0 rgba(28,26,24,.06)}
+.toc-nav .toc-brand{font-family:var(--display-en);font-size:15px;letter-spacing:3px;color:var(--ink);font-weight:900;flex-shrink:0;display:flex;align-items:center;gap:8px}
+.toc-nav .toc-brand::before{content:"●";color:var(--coral);font-size:18px;animation:beat 1.5s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.2);opacity:.7}}
+.toc-nav .toc-brand .vol{color:var(--coral);font-family:var(--mono);font-size:11px;margin-left:4px}
+.toc-nav .toc-link{font-family:var(--display-cn);font-size:13px;color:var(--ink-2);text-decoration:none;padding:6px 12px;border:2px solid transparent;border-radius:6px;font-weight:700;flex-shrink:0;transition:all .2s}
+.toc-nav .toc-link:hover{background:var(--yellow);color:var(--ink);border-color:var(--ink);transform:translateY(-2px)}
+.toc-nav .toc-link.active{background:var(--yellow);color:var(--ink);border-color:var(--ink);box-shadow:0 3px 0 var(--ink);transform:translateY(-2px)}
+
+main{max-width:980px;margin:0 auto;padding:60px 40px 80px}
+
+/* ============ HERO ============ */
+.hero{margin-bottom:70px;position:relative}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.hero-vol{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;letter-spacing:3px;color:#fff;background:var(--coral);font-weight:700;padding:7px 14px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);border-radius:4px}
+.hero-vol::before{content:"NOVA";font-family:var(--display-en);letter-spacing:2px;border-right:1.5px solid rgba(255,255,255,.4);padding-right:8px}
+.hero-tag{font-family:var(--display-cn);font-size:12px;color:var(--ink);background:var(--yellow);padding:5px 11px;border:3px solid var(--ink);border-radius:4px;font-weight:900;letter-spacing:1px}
+
+.hero h1{font-family:var(--sans);font-size:58px;font-weight:900;line-height:1.1;letter-spacing:-2px;color:var(--ink);margin-bottom:26px}
+.hero h1 .hl{background:var(--yellow);padding:2px 16px;display:inline-block;box-shadow:8px 8px 0 var(--ink);border:5px solid var(--ink);border-radius:6px;transform:rotate(-1deg);position:relative}
+.hero h1 .hl::after{content:"";position:absolute;top:-12px;right:-14px;width:32px;height:32px;background:var(--coral);border:3px solid var(--ink);border-radius:50%;box-shadow:3px 3px 0 var(--ink);animation:wobble 3s ease-in-out infinite}
+@keyframes wobble{0%,100%{transform:rotate(0)}50%{transform:rotate(20deg)}}
+.hero-sub{font-family:var(--sans);font-size:18px;color:var(--ink-2);font-weight:500;line-height:1.75;margin-bottom:36px;max-width:780px}
+.hero-sub .em{background:var(--yellow);padding:1px 7px;border:2px solid var(--ink);border-radius:3px;font-weight:900;color:var(--ink)}
+
+/* 开场卡 — 朋友 PRD 故事 */
+.story-card{background:var(--paper-3);border:5px solid var(--ink);box-shadow:12px 12px 0 var(--coral);padding:36px 40px;margin-bottom:44px;border-radius:16px;position:relative;font-family:var(--serif);font-size:17px;line-height:1.95;color:var(--ink)}
+.story-card::before{content:"开场 · 这周发生的事";position:absolute;top:-19px;left:28px;background:var(--coral);color:#fff;font-family:var(--display-cn);font-size:13px;font-weight:900;padding:6px 16px;border:3px solid var(--ink);border-radius:4px;letter-spacing:1.5px;box-shadow:4px 4px 0 var(--ink)}
+.story-card p{margin-bottom:14px}
+.story-card p:last-child{margin-bottom:0}
+.story-card .quote{font-family:var(--sans);font-size:15.5px;background:var(--yellow-light);padding:14px 18px;border-left:5px solid var(--coral);border-radius:0 8px 8px 0;margin:8px 0;font-weight:600;color:var(--ink-2);font-style:italic}
+.story-card strong{color:var(--coral-deep);font-weight:900;font-family:var(--sans);background:rgba(255,217,61,.4);padding:0 4px;border-radius:2px}
+
+/* ============ 我的 14 份 ============ */
+.context-row{display:grid;grid-template-columns:1fr 1.4fr;gap:24px;margin-bottom:30px;align-items:stretch}
+.ctx-num-card{background:#fff;border:5px solid var(--ink);box-shadow:8px 8px 0 var(--ink);border-radius:14px;padding:28px 24px;text-align:center;position:relative;overflow:hidden}
+.ctx-num-card::before{content:"";position:absolute;top:-30px;left:-30px;width:100px;height:100px;background:radial-gradient(circle,var(--coral) 0%,transparent 70%);opacity:.4}
+.ctx-num-card .label-tiny{position:relative;z-index:2;font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:2px;font-weight:700;margin-bottom:6px}
+.ctx-num-card .num{position:relative;z-index:2;font-family:var(--display-en);font-size:96px;font-weight:900;color:var(--ink);line-height:1;letter-spacing:-4px;text-shadow:5px 5px 0 var(--yellow)}
+.ctx-num-card .num.cnum{color:var(--coral-deep)}
+.ctx-num-card .unit{position:relative;z-index:2;font-family:var(--display-cn);font-size:18px;color:var(--ink);font-weight:900;margin-top:4px}
+.ctx-num-card .desc{position:relative;z-index:2;font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:1px;font-weight:700;margin-top:8px}
+
+.ctx-text{background:var(--yellow-soft);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);border-radius:12px;padding:24px;font-family:var(--sans);font-size:15.5px;line-height:1.85;color:var(--ink);font-weight:500;display:flex;flex-direction:column;justify-content:center}
+.ctx-text strong{color:var(--coral-deep);font-weight:900;background:var(--yellow);padding:0 4px;border-radius:2px}
+.ctx-text .breakdown{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;background:#fff;border:2.5px solid var(--ink);border-radius:8px;font-family:var(--mono);font-size:13px;color:var(--ink);font-weight:700;flex-wrap:wrap}
+.ctx-text .pill{padding:3px 9px;border:2px solid var(--ink);border-radius:4px}
+.ctx-text .pill.g{background:var(--green-soft);color:var(--green-deep)}
+.ctx-text .pill.o{background:var(--orange-soft);color:var(--orange-deep)}
+.ctx-text .pill.r{background:var(--red-light);color:var(--red-deep)}
+
+/* ============ sec-title ============ */
+.sec-title{font-family:var(--display-cn);font-size:36px;font-weight:900;color:var(--ink);margin-top:80px;margin-bottom:28px;padding-bottom:16px;border-bottom:5px solid var(--ink);display:flex;align-items:center;gap:16px;position:relative}
+.sec-title::after{content:"";position:absolute;bottom:-5px;left:0;width:100px;height:5px;background:var(--coral)}
+.sec-title::before{content:"";position:absolute;bottom:-12px;left:0;width:60px;height:3px;background:var(--yellow);border-radius:2px}
+.sec-title .num-tag{background:var(--ink);color:var(--yellow);font-family:var(--mono);font-size:14px;padding:7px 13px;border-radius:5px;letter-spacing:1.5px;font-weight:700;box-shadow:4px 4px 0 var(--coral)}
+.sec-intro{font-family:var(--sans);font-size:15.5px;color:var(--ink-2);margin-bottom:30px;line-height:1.85;max-width:860px;font-weight:500}
+
+/* ============ 7 件事 — 故事卡 ============ */
+.things{display:flex;flex-direction:column;gap:34px;position:relative}
+.things::before{content:"";position:absolute;left:54px;top:30px;bottom:30px;width:3px;background:repeating-linear-gradient(180deg,var(--ink) 0 6px,transparent 6px 12px);opacity:.3}
+
+.thing{background:#fff;border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);border-radius:16px;overflow:hidden;transition:all .25s;position:relative}
+.thing:hover{transform:translate(-3px,-5px);box-shadow:12px 14px 0 var(--ink)}
+
+.thing-head{display:grid;grid-template-columns:72px 1fr auto;gap:20px;align-items:center;padding:22px 28px;border-bottom:5px solid var(--ink)}
+.thing[data-g="1"] .thing-head{background:var(--coral-soft)}
+.thing[data-g="2"] .thing-head{background:var(--orange-soft)}
+.thing[data-g="3"] .thing-head{background:var(--yellow-soft)}
+.thing[data-g="4"] .thing-head{background:var(--purple-soft)}
+.thing[data-g="5"] .thing-head{background:var(--blue-soft)}
+.thing[data-g="6"] .thing-head{background:var(--green-soft)}
+.thing[data-g="7"] .thing-head{background:var(--red-soft)}
+
+.thing-light{position:relative;width:62px;height:62px;background:var(--ink);border:3px solid var(--ink);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:4px 4px 0 rgba(0,0,0,.3)}
+.thing-light .dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.2)}
+.thing-light .dot.r{background:var(--red);box-shadow:0 0 10px var(--red),0 0 18px rgba(214,40,40,.5);border-color:var(--red-deep)}
+.thing-light .dot.y{background:rgba(255,217,61,.2)}
+.thing-light .dot.g{background:rgba(62,160,64,.2)}
+
+.thing-no{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:2px;font-weight:700;margin-bottom:3px}
+.thing-no::before{content:"第 "}
+.thing-no::after{content:" 件"}
+.thing-title{font-family:var(--display-cn);font-size:24px;font-weight:900;line-height:1.25;color:var(--ink)}
+.thing-title .nub{display:block;font-family:var(--sans);font-size:15px;color:var(--ink-2);font-weight:700;margin-top:6px;line-height:1.4;letter-spacing:0}
+.thing-tag{font-family:var(--mono);font-size:11px;font-weight:700;background:rgba(255,255,255,.95);color:var(--ink);padding:7px 12px;border-radius:4px;letter-spacing:1.2px;white-space:nowrap;border:2px solid var(--ink);box-shadow:2px 2px 0 rgba(0,0,0,.3)}
+
+.thing-body{padding:26px 28px;font-family:var(--sans);font-size:15.5px;line-height:1.9;color:var(--ink);font-weight:500}
+.thing-body p{margin-bottom:14px}
+.thing-body p:last-child{margin-bottom:0}
+.thing-body .scene{background:var(--yellow-light);border-left:5px solid var(--coral);padding:14px 18px;font-family:var(--serif);font-size:15px;font-style:italic;color:var(--ink);margin:14px 0;border-radius:0 8px 8px 0;font-weight:600;line-height:1.8}
+.thing-body strong{color:var(--coral-deep);font-weight:900;background:rgba(255,217,61,.4);padding:0 4px;border-radius:2px}
+.thing-body code{font-family:var(--mono);font-size:14px;background:var(--paper-3);color:var(--ink);padding:1px 6px;border:1.5px solid var(--ink);border-radius:3px;font-weight:700}
+
+.thing-cta{padding:18px 28px;background:var(--paper-3);border-top:4px solid var(--ink);font-family:var(--sans);font-size:14.5px;color:var(--ink);font-weight:600;display:flex;align-items:flex-start;gap:12px;line-height:1.65}
+.thing-cta::before{content:"📝";font-size:22px;flex-shrink:0;line-height:1}
+.thing-cta strong{color:var(--coral-deep);font-weight:900}
+
+/* ============ 面试金句 — 改成「如果面试官追问」 ============ */
+.itv-card{background:var(--yellow-light);border:5px solid var(--ink);box-shadow:10px 10px 0 var(--coral);padding:38px 40px;border-radius:16px;position:relative;margin-top:14px}
+.itv-card::before{content:"如果面试官追问 · 这是我会怎么答";position:absolute;top:-19px;left:30px;background:var(--coral);color:#fff;font-family:var(--display-cn);font-size:14px;font-weight:900;padding:6px 16px;border:3px solid var(--ink);border-radius:4px;letter-spacing:1.5px;box-shadow:4px 4px 0 var(--ink)}
+.itv-q{font-family:var(--display-cn);font-size:21px;color:var(--coral-deep);font-weight:900;margin-bottom:24px;letter-spacing:.5px;padding-left:50px;position:relative;line-height:1.5}
+.itv-q::before{content:"Q";font-family:var(--display-en);font-size:32px;color:#fff;background:var(--coral);border:3px solid var(--ink);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:absolute;left:0;top:4px;box-shadow:3px 3px 0 var(--ink)}
+.itv-body{font-family:var(--sans);font-size:16px;line-height:1.95;color:var(--ink);font-weight:500}
+.itv-body p{margin-bottom:14px;background:#fff;border:3px solid var(--ink);border-radius:10px;padding:14px 18px;box-shadow:3px 3px 0 var(--ink)}
+.itv-body p:last-child{margin-bottom:0}
+.itv-body strong{color:var(--coral-deep);font-weight:900;background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:3px}
+
+/* ============ 收尾 / 总结 — 不再用-1/-2/-3 ============ */
+.outro-think{background:#fff;border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);padding:36px 40px;border-radius:16px;margin-top:14px;font-family:var(--serif);font-size:17px;line-height:1.95;color:var(--ink);font-weight:600}
+.outro-think p{margin-bottom:14px}
+.outro-think p:last-child{margin-bottom:0;text-align:center;font-family:var(--display-cn);font-size:18px;color:var(--coral-deep);font-weight:900;padding-top:18px;border-top:3px dashed var(--ink-3);margin-top:18px}
+.outro-think strong{color:var(--coral-deep);font-weight:900;background:var(--yellow);padding:0 5px;border-radius:2px}
+
+/* ============ CTA ============ */
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px}
+.cta-card{background:var(--yellow);border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);padding:32px 26px;border-radius:16px;text-align:center;transition:all .25s;position:relative;overflow:hidden}
+.cta-card::before{content:"";position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:var(--coral);border-radius:50%;opacity:.15}
+.cta-card:nth-child(2){background:var(--coral-light)}
+.cta-card:nth-child(2)::before{background:var(--blue)}
+.cta-card:hover{transform:translate(-3px,-5px);box-shadow:12px 14px 0 var(--ink)}
+.cta-card .cta-tag{position:relative;z-index:2;display:inline-block;font-family:var(--mono);font-size:11px;color:#fff;background:var(--coral);padding:5px 12px;border:2px solid var(--ink);border-radius:4px;letter-spacing:1.5px;font-weight:700;margin-bottom:18px}
+.cta-card h4{position:relative;z-index:2;font-family:var(--display-cn);font-size:20px;color:var(--ink);font-weight:900;margin-bottom:12px;line-height:1.35}
+.cta-card p{position:relative;z-index:2;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);line-height:1.75;margin-bottom:20px;font-weight:500}
+.cta-btn{position:relative;z-index:2;display:inline-flex;align-items:center;gap:10px;background:var(--coral);color:#fff;font-family:var(--display-cn);font-size:16px;font-weight:900;padding:12px 24px;border:3px solid var(--ink);border-radius:10px;cursor:pointer;transition:all .15s;letter-spacing:.8px;box-shadow:4px 4px 0 var(--ink);overflow:hidden}
+.cta-btn::before{content:"📋 "}
+.cta-btn:hover{background:var(--coral-deep);transform:translateY(-3px);box-shadow:5px 7px 0 var(--ink)}
+.cta-btn:active{transform:translateY(0);box-shadow:2px 2px 0 var(--ink)}
+.cta-btn.copied{background:var(--green-deep);color:#fff;animation:bump .4s ease}
+.cta-btn.copied::before{content:"✓ "}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+/* 下期 */
+.next-card{background:var(--blue);border:5px solid var(--ink);box-shadow:9px 9px 0 var(--blue-deep);padding:30px 32px;border-radius:16px;margin-top:36px;color:#fff;position:relative;overflow:hidden}
+.next-card::before{content:"";position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:var(--yellow);border-radius:50%;opacity:.12}
+.next-card .next-q{position:relative;z-index:2;font-family:var(--display-cn);font-size:19px;color:var(--yellow);font-weight:900;margin-bottom:18px;letter-spacing:.5px}
+.next-card .next-q::before{content:"🔮 下一期想讲什么?评论区告诉我 · "}
+.next-list{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px}
+.next-item{background:#fff;border:3px solid var(--ink);padding:13px 18px;border-radius:10px;font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:14px;box-shadow:3px 3px 0 var(--blue-deep);cursor:pointer;transition:all .2s}
+.next-item:hover{transform:translateX(8px);box-shadow:6px 3px 0 var(--blue-deep)}
+.next-item .tag{background:var(--blue-deep);color:var(--yellow);font-family:var(--display-en);font-size:14px;padding:4px 11px;border-radius:5px;font-weight:900;border:2px solid var(--ink)}
+
+/* 收尾 */
+.outro{margin-top:60px;padding:42px 30px;background:var(--yellow);border:5px solid var(--ink);box-shadow:10px 10px 0 var(--coral);border-radius:16px;text-align:center;position:relative;overflow:hidden}
+.outro::before{content:"NOVA";position:absolute;font-family:var(--display-en);font-size:240px;color:rgba(28,26,24,.04);font-weight:900;letter-spacing:30px;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none}
+.outro p{position:relative;z-index:2;font-family:var(--display-cn);font-size:18px;font-weight:900;margin-bottom:8px;letter-spacing:.5px;color:var(--ink)}
+.outro .nova{position:relative;z-index:2;font-family:var(--display-en);font-size:42px;color:var(--coral);letter-spacing:8px;font-weight:900;margin-top:20px;text-shadow:5px 5px 0 var(--ink);display:inline-block}
+.outro .nova::before,.outro .nova::after{content:"✦";color:var(--coral-deep);font-size:24px;margin:0 12px;vertical-align:middle}
+.outro .small{position:relative;z-index:2;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);font-weight:500;margin-top:12px}
+
+.fade-in{opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+.fade-in.in{opacity:1;transform:translateY(0)}
+.ripple{position:absolute;border-radius:50%;transform:scale(0);background:rgba(255,255,255,.6);animation:rippleAnim .6s linear;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+@media (max-width:760px){
+  .hero h1{font-size:36px}
+  .context-row{grid-template-columns:1fr}
+  .ctx-num-card .num{font-size:60px}
+  .thing-body{padding:20px}
+  .thing-head{grid-template-columns:54px 1fr;gap:12px;padding:18px}
+  .thing-light{width:54px;height:54px}
+  .thing-tag{display:none}
+  .things::before{display:none}
+  .cta-grid{grid-template-columns:1fr}
+  main{padding:30px 16px 60px}
+  .toc-nav{padding:10px 16px;gap:8px}
+  .sec-title{font-size:26px}
+  .story-card{font-size:15.5px;padding:24px}
+  .outro .nova{font-size:30px;letter-spacing:5px}
+  .outro::before{font-size:140px;letter-spacing:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="bar"></div>
+
+<nav class="toc-nav">
+  <span class="toc-brand">AI PM <span class="vol">VOL.30</span></span>
+  <a class="toc-link" href="#hook">开场</a>
+  <a class="toc-link" href="#context">我的 14 份</a>
+  <a class="toc-link" href="#things">7 件事</a>
+  <a class="toc-link" href="#interview">追问</a>
+  <a class="toc-link" href="#think">收尾</a>
+  <a class="toc-link" href="#cta">领模板</a>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="hook">
+    <div class="hero-meta">
+      <span class="hero-vol">VOL.30</span>
+      <span class="hero-tag">上线 Review 篇</span>
+    </div>
+    <h1>AI 产品上线前<br>有 <span class="hl">7 件事</span> 我会问你</h1>
+    <p class="hero-sub">不是 Checklist · 是我读完 14 份方案、自己也踩了好几个坑之后,
+      留下的<span class="em">最容易让你上线一两个月里掉口碑的 7 个隐患点</span>。</p>
+
+    <div class="story-card fade-in">
+      <p>上周一个朋友找我看她的 AI 客服 PRD。她已经写到 <strong>第十二版</strong>,下周三准备进上线 Review 会议。</p>
+      <p>我读完,关掉文档,跟她说:</p>
+      <p class="quote">「先别上。不是 PRD 写得不好,是我读完之后有七件事不确定你想清楚了没。每一件都不大,但任何一件没想透,上线之后都会变成两个礼拜的事故复盘。」</p>
+      <p>今天我把这<strong>七件事</strong>讲清楚。下次你写完上线方案,可以一条一条对一遍。
+        如果有一条你心里没底,那就别急着上。</p>
+    </div>
+  </section>
+
+  <!-- 我的 14 份 -->
+  <section id="context" class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">FACT</span>我去年上半年的一组私下数据</h2>
+    <p class="sec-intro">为什么我说这件事关键?因为我手里有一组我自己的数据,虽然不在 PPT 里,但比 PPT 真。</p>
+    <div class="context-row">
+      <div class="ctx-num-card">
+        <div class="label-tiny">PROJECTS REVIEWED</div>
+        <div class="num cnum"><span data-count="14">0</span></div>
+        <div class="unit">份上线方案</div>
+        <div class="desc">自己做的 / 朋友找我看的 / 同事让我帮忙过的</div>
+      </div>
+      <div class="ctx-text">
+        我去年上半年陆续看过 <strong>14 份</strong> AI 产品的上线方案。真正能在 Review 会议上一次过的,只有 <strong>3 份</strong>。
+        剩下 11 份每一份都是缺某一两件,补完再上,平均往后延 2 周到 3 周。
+        最关键的是,这 11 份里面有 <strong>8 份上线之后真的出了问题</strong> —— 不是炸大新闻那种,是小事故。
+        但这种小事故,一个月里出现三五次,你的产品就掉口碑了。
+        <div class="breakdown">
+          <span class="pill g">3 份 · 一次过</span>
+          <span class="pill o">11 份 · 缺件补做</span>
+          <span class="pill r">8 份 · 上线后出小事故</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 件事 -->
+  <section id="things" class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">7 THINGS</span>我会问你的 7 件事</h2>
+    <p class="sec-intro">每件事我会讲三层:一句话现象 · 我自己怎么 check 这件事 · 一个我亲历或亲眼见过的真实小细节。</p>
+
+    <div class="things">
+
+      <!-- 1 -->
+      <article class="thing fade-in" data-g="1">
+        <div class="thing-head">
+          <div class="thing-light"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <div>
+            <div class="thing-no">01</div>
+            <div class="thing-title">Eval 集这件事,不在大小,在新鲜度<span class="nub">很多人以为做了 200 条就算合格 · 错</span></div>
+          </div>
+          <div class="thing-tag">EVAL · 新鲜度</div>
+        </div>
+        <div class="thing-body">
+          <p>我看过最坑的一份 Eval 集,<strong>250 条样本</strong>,看着挺多。我拉时间戳一看,<strong>82% 都是 6 个月前的</strong>。</p>
+          <p>为什么是个问题?因为用户问问题的方式半年变一次。半年前用户问"这个产品怎么样",现在用户开口就是"对比一下我之前买的那个"。
+            你的 Eval 集还在测半年前的问句,准确率好看,但<strong>跟现在的用户根本对不上</strong>。</p>
+          <div class="scene">我的标准:Eval 集里至少 <code>1/3</code> 要是<strong>最近 60 天</strong>的真实用户问句,不是构造的。做不到就别说 Eval 准备好了。</div>
+        </div>
+        <div class="thing-cta">如果你回答<strong>"我们 Eval 集 200 条"</strong>,我会追问一句:这 200 条里有几条是过去两个月新捞的?</div>
+      </article>
+
+      <!-- 2 -->
+      <article class="thing fade-in" data-g="2">
+        <div class="thing-head">
+          <div class="thing-light"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <div>
+            <div class="thing-no">02</div>
+            <div class="thing-title">兜底链的坑,在过渡上<span class="nub">L1/L2/L3 大家都会说 · 真正的坑在边界</span></div>
+          </div>
+          <div class="thing-tag">FALLBACK · 边界演练</div>
+        </div>
+        <div class="thing-body">
+          <p>我去年帮一个朋友复盘他们的 AI 翻译产品。L1 自动降级、L2 规则话术、L3 转人工,文档里都有。</p>
+          <p>上线 <strong>第 5 天</strong> 他跟我说,L3 转人工的工单<strong>全卡在客服 Queue 里,卡了 18 小时</strong>。</p>
+          <div class="scene">原因特别简单:L3 兜底生成的工单,标题格式是 <code>AI 客服转人工 + 用户 ID</code>。
+            他们客服系统的工单分发逻辑里,<strong>标题带"AI"的工单默认归到一个空队列</strong>。这个队列没人值班。</div>
+          <p>设计兜底链时没人想过这事。所以我现在看兜底链方案,会专门问一句:<strong>L3 兜底生成的东西,是不是真的能进到那个最后接住它的人手里</strong>。
+            这一步不演练一次,你设计得再漂亮都没用。</p>
+        </div>
+        <div class="thing-cta">如果你回答<strong>"L3 已经实现"</strong>,我会追问:你上次让一个真实工单走完 L3 全链路,是哪一天?</div>
+      </article>
+
+      <!-- 3 -->
+      <article class="thing fade-in" data-g="3">
+        <div class="thing-head">
+          <div class="thing-light"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <div>
+            <div class="thing-no">03</div>
+            <div class="thing-title">灰度方案,在颗粒度<span class="nub">5% / 20% / 50% / 100% 看着专业 · 但 5% 怎么界定</span></div>
+          </div>
+          <div class="thing-tag">CANARY · 颗粒度</div>
+        </div>
+        <div class="thing-body">
+          <p>我自己上一个项目踩过这个坑。我当时也写"灰度 5%",上线前 SRE 问我一句:<strong>5% 怎么界定?</strong></p>
+          <p>是按用户 ID 取模,还是按设备 ID,还是按地理区域?是包含游客用户吗?是优先给老用户看还是新用户?</p>
+          <div class="scene">我没想过。立项时也没写。<br>
+            工程团队只能自己定。结果他们按 UID 取模,但产品的核心场景刚好集中在一批新注册用户身上。
+            我们灰度的 5% 里面,<strong>新用户占比只有 0.3%</strong>。等于灰度了个寂寞。</div>
+          <p>所以我现在写灰度,一定会把<strong>"按什么切""包不包含游客""新老用户怎么分"</strong>这三条写在 PRD 里。三句话,救命。</p>
+        </div>
+        <div class="thing-cta">如果你回答<strong>"灰度 5%"</strong>,我会追问:这 5% 是按 UID、设备、还是地区切的?核心人群在里面占多少?</div>
+      </article>
+
+      <!-- 4 -->
+      <article class="thing fade-in" data-g="4">
+        <div class="thing-head">
+          <div class="thing-light"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <div>
+            <div class="thing-no">04</div>
+            <div class="thing-title">Kill Switch,在响应时间<span class="nub">不是有 · 是几分钟内能生效</span></div>
+          </div>
+          <div class="thing-tag">SWITCH · 11 分钟</div>
+        </div>
+        <div class="thing-body">
+          <p>我跟一个 SRE 朋友吃饭聊到过。他说他们公司有个规矩,任何标"AI"的新产品上线前,
+            SRE 团队必须在他面前真的按一次 Kill Switch,看响应时间。</p>
+          <p>他给我看过他们的内部记录:有一次某 AI 项目上线前演练,他们点 Kill Switch,
+            <strong>11 分钟才生效</strong>。原因是配置中心的鉴权用的是 OAuth,
+            上次有人改过过期时间没通知,SRE 当时打开页面发现要重新授权,中间还要找人审批。</p>
+          <div class="scene">11 分钟,在一个正在炸的产品面前,<strong>是一辈子</strong>。</div>
+          <p>我现在看上线方案,会专门问一句:<strong>最近一次 Kill Switch 演练是什么时候、谁按的、几分钟生效</strong>。
+            如果回答"配置文档里有",那就是没演练。</p>
+        </div>
+        <div class="thing-cta">如果你回答<strong>"Kill Switch 已配置"</strong>,我会追问:上次按下去到全量生效,实测了多少秒?</div>
+      </article>
+
+      <!-- 5 -->
+      <article class="thing fade-in" data-g="5">
+        <div class="thing-head">
+          <div class="thing-light"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <div>
+            <div class="thing-no">05</div>
+            <div class="thing-title">合规,不是法务签字就完事<span class="nub">总指标没问题 · 子人群里可能正在炸</span></div>
+          </div>
+          <div class="thing-tag">COMPLIANCE · 子人群</div>
+        </div>
+        <div class="thing-body">
+          <p>我朋友的产品有一个偏见审计,审了性别和年龄两个维度。性别维度通过率差距<strong>3 个百分点</strong>,看着合规。她当时也松了口气。</p>
+          <p>我让她再拉个数据 —— 同样的性别维度,在<strong>25 岁以下用户里,通过率差距是 11 个百分点</strong>。</p>
+          <div class="scene">为什么?因为她的训练数据里,25 岁以下女性的样本量只有男性的一半。
+            <strong>整体平均看着没问题,切到子人群就崩</strong>。</div>
+          <p>我后来跟她说:合规审计不要只看总指标,至少切<strong>三个常见的子人群</strong>试试:年龄、地域、收入。
+            任何一个子人群上有 <strong>大于 8 个百分点</strong> 的偏差,就是合规风险。</p>
+          <p>法务不会替你做这个切片。<strong>这是你自己的事。</strong></p>
+        </div>
+        <div class="thing-cta">如果你回答<strong>"偏见审计已过"</strong>,我会追问:你切了哪几个子人群?最差那一组的偏差有多大?</div>
+      </article>
+
+      <!-- 6 -->
+      <article class="thing fade-in" data-g="6">
+        <div class="thing-head">
+          <div class="thing-light"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <div>
+            <div class="thing-no">06</div>
+            <div class="thing-title">成本告警,坑在阈值定太松<span class="nub">"超 100% 告警"听着合理 · 真触发时已经晚了</span></div>
+          </div>
+          <div class="thing-tag">COST · 三档</div>
+        </div>
+        <div class="thing-body">
+          <p>我跟一个 AI 产品的 PM 聊过,他配的成本告警是"<strong>超月预算 100% 告警</strong>"。听着挺合理。</p>
+          <p>结果上线 <strong>第 28 天</strong> 触发了。当时月初他们做了一个营销活动,日均请求量涨了 <strong>3 倍</strong>,他没想到。
+            告警来的那一刻,他打开后台:</p>
+          <div class="scene">当月已经花了 <strong>82 万</strong>,预算是 <strong>80 万</strong>。
+            再 24 小时就会涨到接近 <strong>150 万</strong>,因为活动是 7 天的。<br>
+            <strong>告警来得太晚,等于没告警。</strong></div>
+          <p>我自己现在的习惯,是配<strong>三档</strong>:
+            <code>70% 预警</code>、<code>90% 报警</code>、<code>100% 强制降级</code> 到便宜模型。
+            强制降级要把<strong>代码写进去</strong>,不是写在 PRD 里。</p>
+          <p>这一档很多 PM 不配,因为麻烦,要跟工程团队对很多接口。
+            但是当你真的烧到 120 万的时候,你会感谢那个让你忍着写完降级代码的自己。</p>
+        </div>
+        <div class="thing-cta">如果你回答<strong>"成本告警已配"</strong>,我会追问:预警在多少%?报警在多少%?降级是手动还是代码层?</div>
+      </article>
+
+      <!-- 7 -->
+      <article class="thing fade-in" data-g="7">
+        <div class="thing-head">
+          <div class="thing-light"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <div>
+            <div class="thing-no">07</div>
+            <div class="thing-title">数据飞轮,看 Bad Case 池真的在涨<span class="nub">这是我自己犯过最大的错 · 不是凡尔赛</span></div>
+          </div>
+          <div class="thing-tag">FLYWHEEL · 真涨</div>
+        </div>
+        <div class="thing-body">
+          <p>我之前做过一个 AI 摘要产品,上线时数据飞轮的链路全部画好了。
+            用户点不满意按钮 → 落地点踩日志 → 进 Bad Case 池 → 数据团队每周标 → 进训练队列。流程图很漂亮。</p>
+          <p>上线 <strong>两个月</strong>,我打开 Bad Case 池一看:</p>
+          <div class="scene"><strong>23 条样本。</strong>两个月 23 条。这种密度根本没办法做迭代。</div>
+          <p>后来我才发现,我的产品里"不满意"按钮的位置,<strong>藏在一个二级菜单里</strong>。用户根本看不到。
+            他们不满意的时候直接关掉页面,这种"不满意"我们没采集到。</p>
+          <p>数据飞轮不是看你画了多少流程图,是看 <strong>Bad Case 池每周真的在涨</strong>。
+            我现在看任何 AI 产品的飞轮设计,会问一个问题:<strong>上线一个月,Bad Case 池预期能涨到多少条?</strong>
+            如果回答"我们没估算",那基本上后面就涨不到。</p>
+        </div>
+        <div class="thing-cta">如果你回答<strong>"飞轮已搭好"</strong>,我会追问:上线一个月,你估算 Bad Case 池会到多少条?按钮在哪一级菜单?</div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 面试金句 -->
+  <section id="interview" class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">INTERVIEW</span>如果面试官追问</h2>
+    <div class="itv-card">
+      <div class="itv-q">"你 AI 产品上线前,具体会做什么?"</div>
+      <div class="itv-body">
+        <p>我不会背 Checklist 给你。我会说 —— <strong>我会问自己 7 件事</strong>。
+          Eval 集的样本是不是过去两个月新的、L3 兜底的工单是不是真的有人接住、
+          灰度的 5% 里我的核心人群占多少。</p>
+        <p>如果这 7 件事里有一件我心里没底,<strong>我会推迟上线两周</strong>,
+          而不是用 Review 会议的气氛硬着头皮上。</p>
+        <p>因为我见过太多上线方案,文档写得很全,但每一件都是 <strong>"已配置"</strong>,
+          没人答得出 <strong>"上次实测是什么时候"</strong>。
+          区别就在这一句话上。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 收尾思考 -->
+  <section id="think" class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">CLOSE</span>七件事讲完</h2>
+    <div class="outro-think">
+      <p>我反复说我自己犯过哪些错,不是凡尔赛。是因为<strong>这七件事的坑,只能靠真的踩一次才记得住</strong>。</p>
+      <p>如果你下周要上线,这一期可能就是你最后一次能在白天空想的机会。</p>
+      <p>看完之后,把你自己手里的方案拿出来,一件一件对一下。</p>
+      <p>对完心里有底,再去 Review。</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">FREE</span>领模板 · 评论区扣关键词</h2>
+    <div class="cta-grid">
+      <div class="cta-card">
+        <span class="cta-tag">VOL.30 模板</span>
+        <h4>7 件事 · 28 条可填空自检 + 上线前 14 天倒计时</h4>
+        <p>每件事配「该问的问题 / 该实测的动作 / 上线前哪一天该做完」<br>直接打印贴工位上,从 D-14 倒推</p>
+        <button class="cta-btn" data-copy="NoGo">扣【NoGo】</button>
+      </div>
+      <div class="cta-card">
+        <span class="cta-tag">全栈系列</span>
+        <h4>AI PM 全栈知识地图 Vol.1-29</h4>
+        <p>Prompt / Context / RAG / MCP / Agent / Eval / 兜底链 / PRD / 立项<br>10 个模块整理成一份 Word</p>
+        <button class="cta-btn" data-copy="知识地图">扣【知识地图】</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 下期 -->
+  <section class="fade-in">
+    <div class="next-card">
+      <div class="next-q">三个候选,告诉我你想听哪个</div>
+      <div class="next-list">
+        <div class="next-item"><span class="tag">A</span>AI 产品月度成本到底花在哪 · 拆给你看</div>
+        <div class="next-item"><span class="tag">B</span>AI PM 面试里那种"你做过什么"的回答有什么标准</div>
+        <div class="next-item"><span class="tag">C</span>AI PM 想转行实战派 · 有哪些事是真的会被问到的</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 收尾 -->
+  <section class="outro fade-in">
+    <p>觉得有用的话 · 记得收藏一下</p>
+    <p>关注 Mia · 每天一个 AI PM 知识点</p>
+    <div class="nova">NOVA</div>
+    <div class="small">前卫 AI 产品经理 · 不被 Demo 带节奏的实战派</div>
+  </section>
+
+</main>
+
+<script>
+const bar = document.getElementById('bar');
+window.addEventListener('scroll', () => {
+  const sc = document.documentElement.scrollTop || document.body.scrollTop;
+  const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  bar.style.width = (sc / h * 100) + '%';
+}, {passive:true});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }});
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+const numObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = parseInt(el.dataset.count, 10);
+      const dur = 1400, start = performance.now();
+      function tick(t) {
+        const p = Math.min((t - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      numObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('[data-count]').forEach(el => numObserver.observe(el));
+
+const tocLinks = document.querySelectorAll('.toc-link');
+const sections = ['hook','context','things','interview','think','cta'].map(id => document.getElementById(id)).filter(Boolean);
+window.addEventListener('scroll', () => {
+  let active = '';
+  const offset = 150;
+  sections.forEach(s => { if (s.getBoundingClientRect().top <= offset) active = s.id; });
+  tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + active));
+}, {passive:true});
+
+document.querySelectorAll('.cta-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+
+    const text = btn.dataset.copy;
+    const fallback = () => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(err){}
+      ta.remove();
+    };
+    const showCopied = () => {
+      const o = btn.textContent.replace('已复制 '+text,'').replace('✓ ','');
+      btn.classList.add('copied');
+      btn.textContent = '已复制 ' + text;
+      setTimeout(() => { btn.classList.remove('copied'); btn.textContent = o; }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(()=>{ fallback(); showCopied(); });
+    } else { fallback(); showCopied(); }
+  });
+});
+
+document.querySelectorAll('.next-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const tag = item.querySelector('.tag').textContent.trim();
+    try {
+      navigator.clipboard.writeText(tag);
+      const orig = item.style.background;
+      item.style.background = '#FFD93D';
+      setTimeout(() => item.style.background = orig, 800);
+    } catch(e){}
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tool Schema 怎么设计 · NOVA AI PM Vol.25</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Archivo+Black&family=Bebas+Neue&family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700;900&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --paper:#FEFCF5;--paper-2:#FFFEF0;--ink:#1C1A18;--ink-2:#3D3833;--ink-3:#7A746B;
+  --yellow:#FFE16B;--yellow-deep:#F4C430;--red:#E63946;--red-deep:#9B1B27;
+  --green:#1B6B43;--green-light:#A8E6CF;--blue:#4A6FA5;--blue-light:#D6E4F5;--pink:#FFD9DC;
+  --rule:#1C1A18;
+  --hardshadow:5px 5px 0 var(--ink);--hardshadow-sm:3px 3px 0 var(--ink);--hardshadow-lg:8px 8px 0 var(--ink);
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display-en:"Archivo Black","Bebas Neue",sans-serif;
+  --display-cn:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);min-height:100vh;font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.progress{position:fixed;top:0;left:0;height:5px;width:100%;background:transparent;z-index:100;transform-origin:left;transform:scaleX(0);transition:transform .15s linear}
+.progress-bar{height:100%;width:100%;background:var(--red);border-bottom:2px solid var(--ink)}
+.brand-bar{background:var(--ink);color:var(--paper);padding:14px 0;border-bottom:4px solid var(--yellow)}
+.brand-inner{max-width:760px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.brand-name{font-family:var(--display-en);font-size:20px;letter-spacing:4px;color:var(--yellow)}
+.brand-meta{font-size:12px;letter-spacing:2px;color:var(--paper)}
+.brand-meta b{color:var(--yellow);font-weight:900}
+.stage{max-width:760px;margin:0 auto;padding:32px 24px 100px}
+
+/* Hook · 紧凑杂志封面风 */
+.hook{margin-bottom:32px}
+.hook-meta{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.tag-eyebrow{background:var(--ink);color:var(--yellow);font-family:var(--display-en);font-size:11px;letter-spacing:2px;padding:6px 12px;border-radius:5px;font-weight:900;border:2px solid var(--ink)}
+.tag-warn{background:var(--red);color:#fff;font-family:var(--display-cn);font-size:13px;letter-spacing:1px;padding:5px 12px;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);transform:rotate(-2deg);font-weight:900}
+.hook-title{font-family:var(--sans);font-size:32px;font-weight:900;line-height:1.32;letter-spacing:-.5px;margin-bottom:18px;color:var(--ink)}
+.hook-title .strike{position:relative;color:var(--ink-3);font-weight:900}
+.hook-title .strike::after{content:"";position:absolute;left:-3px;right:-3px;top:55%;height:5px;background:var(--red);transform:rotate(-2deg)}
+.hook-title .hl{background:var(--yellow);padding:0 8px;display:inline-block;box-shadow:3px 3px 0 var(--ink);border:2px solid var(--ink);border-radius:4px}
+.hook-lead{font-size:15px;line-height:1.8;color:var(--ink-2);margin-bottom:22px}
+.hook-lead strong{background:var(--yellow);color:var(--ink);font-weight:900;padding:0 4px}
+
+/* Hero 数据条 · inline 紧凑横排 */
+.hero-stats{background:var(--ink);border:4px solid var(--ink);border-radius:14px;padding:18px 22px;box-shadow:6px 6px 0 var(--ink)}
+.hs-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+.hs-block{display:flex;flex-direction:column;align-items:center;gap:4px}
+.hs-tag{font-family:var(--display-cn);font-size:11px;color:var(--paper-2);background:var(--ink-2);padding:2px 8px;border-radius:5px;font-weight:700;letter-spacing:.5px;opacity:.85}
+.hs-num{font-family:var(--display-en);font-size:36px;font-weight:900;line-height:1;padding:6px 12px;border:2px solid;border-radius:8px}
+.hs-num.red{color:var(--red);border-color:var(--red);background:rgba(230,57,70,.12)}
+.hs-num.green{color:var(--green-light);border-color:var(--green-light);background:rgba(168,230,207,.12)}
+.hs-arrow{font-family:var(--display-en);font-size:28px;color:var(--yellow);font-weight:900;align-self:center}
+.hs-lift{background:var(--yellow);color:var(--ink);font-family:var(--display-en);font-size:22px;font-weight:900;padding:8px 14px;border:2px solid var(--ink);border-radius:8px;align-self:center;box-shadow:3px 3px 0 var(--red);margin-left:6px}
+.hs-foot{font-family:var(--display-cn);font-size:13px;color:var(--paper-2);text-align:center;margin-top:14px;padding-top:12px;border-top:1px dashed var(--yellow);line-height:1.4}
+.hs-foot .em{color:var(--yellow);font-weight:900}
+
+/* 三件事预告 */
+.preview{background:var(--paper-2);border:3px dashed var(--ink);border-radius:18px;padding:20px 24px;margin:28px 0}
+.preview-title{font-family:var(--display-cn);font-size:18px;color:var(--red);margin-bottom:12px;display:inline-block;background:var(--yellow);padding:4px 10px;border:2px solid var(--ink);box-shadow:var(--hardshadow-sm);transform:rotate(-1deg)}
+.preview ol{margin-left:24px;font-size:15px;line-height:1.85;color:var(--ink)}
+.preview ol li{margin-bottom:4px;font-weight:700}
+.preview ol li::marker{color:var(--red);font-weight:900}
+.preview ol li strong{background:var(--yellow);padding:0 3px;color:var(--ink)}
+
+/* 章节通用 */
+.section{margin:48px 0}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.sec-num{font-family:var(--display-en);font-size:54px;color:var(--red);line-height:.85;letter-spacing:-2px;flex-shrink:0}
+.sec-title{font-family:var(--sans);font-size:24px;font-weight:900;color:var(--ink);line-height:1.3;letter-spacing:-.5px;flex:1;border-bottom:4px solid var(--ink);padding-bottom:6px}
+.sec-title .hl{background:var(--yellow);padding:0 4px}
+.lead{font-size:16px;line-height:1.8;color:var(--ink-2);margin-bottom:18px}
+.lead .em{background:var(--yellow);padding:0 4px;font-weight:900;color:var(--ink)}
+.lead .red{color:var(--red-deep);font-weight:900}
+.lead strong{font-weight:900;color:var(--ink)}
+
+/* 定义 + 类比 + 误区 */
+.def-card{background:var(--ink);color:var(--yellow);border:4px solid var(--yellow);border-radius:20px;padding:28px 30px;margin:24px 0;text-align:center;box-shadow:var(--hardshadow)}
+.def-eyebrow{color:var(--yellow);font-size:12px;letter-spacing:4px;font-weight:900;margin-bottom:12px;text-transform:uppercase}
+.def-text{font-family:var(--display-cn);font-size:22px;font-weight:900;line-height:1.55;color:var(--paper-2)}
+.def-text .red{color:var(--red)}
+.def-text .y{color:var(--yellow)}
+.analogy{background:var(--paper-2);border:3px solid var(--ink);border-radius:18px;padding:24px 26px;margin:20px 0;box-shadow:var(--hardshadow-sm)}
+.analogy-tag{display:inline-block;background:var(--yellow);color:var(--ink);font-family:var(--display-cn);font-weight:900;font-size:12px;letter-spacing:2px;padding:5px 12px;border-radius:10px;border:2px solid var(--ink);margin-bottom:12px}
+.analogy p{font-size:16px;line-height:1.75;color:var(--ink);margin-bottom:8px}
+.analogy p strong{font-weight:900;color:var(--red-deep);background:var(--yellow);padding:0 3px}
+.clarify{background:var(--paper);border:3px dashed var(--ink);border-radius:18px;padding:22px 26px;margin:20px 0}
+.clarify h4{font-family:var(--display-cn);font-size:16px;color:var(--red);margin-bottom:14px}
+.clarify-row{display:grid;grid-template-columns:80px 1fr;gap:14px;align-items:start;padding:10px 0;border-top:2px dashed #DDD9CC}
+.clarify-row:first-of-type{border-top:none;padding-top:0}
+.clarify-tag{background:#F5EAE8;color:var(--red);font-family:var(--display-cn);font-weight:900;font-size:13px;padding:4px 10px;border-radius:8px;text-align:center;border:2px solid var(--red)}
+.clarify-tag.ok{color:var(--green);border-color:var(--green);background:#EAF3E5}
+.clarify-text{font-size:14px;line-height:1.7;color:var(--ink-2)}
+.clarify-text strong{color:var(--ink);font-weight:900;background:var(--yellow);padding:0 3px}
+
+/* 四要素圆桌 */
+.elements{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.el-card{background:var(--paper);border:4px solid var(--ink);border-radius:18px;padding:18px 20px;box-shadow:var(--hardshadow-sm);position:relative}
+.el-card.e1{background:#FFF0DC}
+.el-card.e2{background:#FFE8D6;border-color:var(--ink);grid-column:span 2}
+.el-card.e3{background:var(--blue-light)}
+.el-card.e4{background:#EAF3E5}
+.el-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.el-no{background:var(--ink);color:var(--yellow);font-family:var(--mono);font-size:14px;font-weight:900;padding:4px 10px;border-radius:6px;letter-spacing:1px}
+.el-card.e2 .el-no{background:var(--red);color:#fff}
+.el-card.e3 .el-no{background:var(--blue)}
+.el-card.e4 .el-no{background:var(--green)}
+.el-title{font-family:var(--display-cn);font-size:18px;font-weight:900;color:var(--ink);flex:1}
+.el-title .en{font-family:var(--display-en);font-size:11px;color:var(--ink-3);letter-spacing:1px;margin-left:6px;font-weight:400}
+.el-body{font-size:13px;line-height:1.7;color:var(--ink-2)}
+.el-body b{color:var(--ink);font-weight:900;background:var(--yellow);padding:0 3px}
+.el-body .bad{color:var(--red);font-weight:700}
+.el-body .good{color:var(--green);font-weight:700}
+.el-vs{margin-top:10px;padding:10px;background:#fff;border:2px solid var(--ink);border-radius:10px;font-size:12px;line-height:1.6}
+.el-vs .bad{color:var(--red);font-weight:900}
+.el-vs .good{color:var(--green);font-weight:900}
+.el-vs .lab{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:3px;margin-right:4px;letter-spacing:1px;color:#fff}
+.el-vs .lab.bad{background:var(--red)}
+.el-vs .lab.good{background:var(--green)}
+
+/* description 5 件事 */
+.must-5{margin-top:12px;background:#fff;border:2px solid var(--ink);border-radius:10px;padding:12px 14px}
+.must-5-tag{display:inline-block;background:var(--red);color:#fff;font-family:var(--display-cn);font-size:11px;font-weight:900;padding:3px 8px;border-radius:5px;margin-bottom:8px;letter-spacing:1px}
+.must-5-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;line-height:1.55;color:var(--ink)}
+.must-5-grid .mi{padding-left:18px;position:relative}
+.must-5-grid .mi::before{content:counter(mi)".";counter-increment:mi;font-family:var(--mono);font-weight:900;color:var(--red);position:absolute;left:0}
+.must-5-grid{counter-reset:mi}
+.must-5-grid .mi b{font-weight:900}
+
+/* 三案例 */
+.cases{display:flex;flex-direction:column;gap:14px;margin:18px 0}
+.case-row{background:var(--paper);border:4px solid var(--ink);border-radius:16px;padding:18px 20px;box-shadow:var(--hardshadow-sm)}
+.case-row.a{background:#EAF3E5;border-color:var(--green)}
+.case-row.b{background:#FFEBE9;border-color:var(--red)}
+.case-row.c{background:#FFF0DC;border-color:var(--yellow-deep)}
+.case-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:2px dashed var(--ink)}
+.case-tag{font-family:var(--mono);font-size:11px;font-weight:900;padding:3px 8px;border:2px solid var(--ink);background:#fff;letter-spacing:1px}
+.case-name{font-family:var(--display-cn);font-size:16px;font-weight:900;color:var(--ink);flex:1}
+.case-pick{font-size:11px;color:var(--ink-3);font-weight:700;letter-spacing:1px;background:#fff;padding:3px 8px;border:2px solid var(--ink);border-radius:5px}
+.case-body{font-size:13px;line-height:1.7;color:var(--ink)}
+.case-body .row{padding:5px 0;display:grid;grid-template-columns:60px 1fr;gap:10px}
+.case-body .row .l{font-weight:900;color:var(--ink);font-size:11px;letter-spacing:1px;align-self:center}
+.case-body .row b{color:var(--ink);font-weight:900;background:var(--yellow);padding:0 3px}
+.case-row.b .case-body .row b{background:#fff;border:1px solid var(--red);color:var(--red-deep)}
+
+/* 翻车 */
+.crash-grid{display:grid;grid-template-columns:1fr;gap:14px;margin:18px 0}
+.crash{background:var(--paper);border:4px solid var(--ink);border-radius:16px;padding:18px 20px;box-shadow:var(--hardshadow-sm);display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+.crash-tag{font-family:var(--display-cn);font-size:13px;background:var(--red);color:#fff;padding:8px 12px;border:2px solid var(--ink);text-align:center;font-weight:900;letter-spacing:1px;line-height:1.2}
+.crash-body h5{font-size:16px;font-weight:900;color:var(--ink);margin-bottom:10px;font-family:var(--display-cn)}
+.crash-die{font-size:13px;color:var(--ink-2);line-height:1.7;padding:8px 12px;background:#FFEBE9;border-left:4px solid var(--red);border-radius:6px;margin-bottom:10px}
+.crash-die::before{content:"症状 · ";font-weight:900;color:var(--red);font-size:11px;letter-spacing:1px}
+.crash-fix{font-size:13px;color:var(--ink);line-height:1.7;padding:8px 12px;background:#EAF3E5;border-left:4px solid var(--green);border-radius:6px}
+.crash-fix::before{content:"PM 兜底 · ";font-weight:900;color:var(--green);font-size:11px;letter-spacing:1px}
+
+/* 面试金句 + 5 变种 */
+.interview{margin:36px 0 18px;background:var(--ink);color:var(--paper);border:4px solid var(--yellow);border-radius:20px;padding:30px 28px;box-shadow:var(--hardshadow-lg);position:relative}
+.interview::before{content:"§";position:absolute;top:14px;right:18px;font-family:var(--display-en);font-size:60px;color:var(--yellow);opacity:.5;line-height:1}
+.interview-eyebrow{font-family:var(--display-en);font-size:11px;letter-spacing:3px;color:var(--yellow);margin-bottom:8px}
+.interview-q{font-family:var(--display-cn);font-size:22px;color:var(--paper);margin-bottom:20px;line-height:1.4}
+.interview-q::before{content:"\"";color:var(--red)}
+.interview-q::after{content:"\"";color:var(--red)}
+.interview-lines{display:flex;flex-direction:column;gap:12px}
+.interview-line{display:grid;grid-template-columns:60px 1fr;gap:14px;align-items:baseline;padding-bottom:10px;border-bottom:1px dashed rgba(254,252,245,.2)}
+.interview-line:last-child{border-bottom:none}
+.interview-line-no{background:var(--yellow);color:var(--ink);font-family:var(--display-en);font-size:13px;padding:4px 8px;border-radius:6px;text-align:center;letter-spacing:1px;font-weight:900}
+.interview-line-text{font-size:15px;line-height:1.7}
+.interview-line-text .em{background:var(--red);color:#fff;padding:0 4px;font-weight:900}
+.interview-foot{margin-top:16px;padding-top:14px;border-top:2px solid rgba(254,252,245,.15);text-align:center;font-size:13px;color:rgba(254,252,245,.65);font-style:italic;line-height:1.6}
+.variants{display:flex;flex-direction:column;gap:12px;margin:18px 0 28px}
+.var-card{background:var(--paper);border:3px solid var(--ink);border-radius:14px;padding:16px 18px;box-shadow:var(--hardshadow-sm)}
+.var-no{display:inline-block;background:var(--red);color:#fff;font-family:var(--mono);font-size:11px;font-weight:900;padding:3px 8px;border:2px solid var(--ink);border-radius:5px;letter-spacing:1px;margin-bottom:10px}
+.var-q{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:8px;line-height:1.5}
+.var-q::before{content:"Q · ";color:var(--red);font-weight:900}
+.var-a{font-size:13px;color:var(--ink-2);line-height:1.7;padding:10px 12px;background:#EAF3E5;border-left:4px solid var(--green);border-radius:6px}
+.var-a::before{content:"A · ";color:var(--green);font-weight:900}
+.var-a b{color:var(--ink);font-weight:900;background:var(--yellow);padding:0 3px}
+
+/* 一句话总结 */
+.takeaway{margin:40px 0 24px;background:var(--yellow);border:4px solid var(--ink);border-radius:20px;padding:32px 28px;text-align:center;box-shadow:var(--hardshadow)}
+.takeaway-tag{display:inline-block;background:var(--ink);color:var(--yellow);font-family:var(--display-en);font-size:11px;letter-spacing:3px;padding:4px 12px;border-radius:6px;margin-bottom:14px}
+.takeaway-text{font-family:var(--display-cn);font-size:22px;line-height:1.55;color:var(--ink);font-weight:900}
+.takeaway-text .r{color:var(--red-deep)}
+
+/* 下期 */
+.coda{background:var(--paper);border:4px dashed var(--ink);border-radius:18px;padding:22px 24px;margin-top:24px;text-align:center}
+.coda-tag{display:inline-block;background:var(--red);color:#fff;font-family:var(--display-cn);font-size:13px;padding:4px 12px;border:2px solid var(--ink);box-shadow:var(--hardshadow-sm);transform:rotate(-2deg);margin-bottom:14px}
+.coda-next{font-family:var(--display-cn);font-size:18px;color:var(--ink);margin-bottom:8px;font-weight:900}
+.coda-next .hl{background:var(--yellow);padding:0 4px}
+.coda-options{display:flex;flex-direction:column;gap:6px;margin:10px 0 14px;text-align:left;padding:12px 16px;background:var(--paper-2);border:2px dashed var(--ink);border-radius:10px;list-style:none}
+.coda-options li{font-size:13px;color:var(--ink);font-weight:700;padding-left:20px;position:relative;line-height:1.6}
+.coda-options li::before{content:"▸";position:absolute;left:6px;color:var(--red);font-weight:900}
+.coda-cta{display:inline-block;background:var(--ink);color:var(--yellow);font-family:var(--display-cn);font-size:15px;padding:8px 18px;border-radius:30px;border:2px solid var(--ink);box-shadow:var(--hardshadow-sm);font-weight:900;letter-spacing:1px}
+footer{margin-top:36px;text-align:center;font-size:12px;color:var(--ink-3);padding:12px}
+footer .brand{font-family:var(--display-en);color:var(--red);letter-spacing:3px}
+
+/* 入场 */
+.fade{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.34,1.56,.64,1)}
+.fade.in{opacity:1;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}.progress{display:none}}
+@media (max-width:680px){
+  .stage{padding:24px 16px 80px}
+  .hook h1{font-size:30px}
+  .duel-row{grid-template-columns:1fr;gap:10px}
+  .duel-arrow{transform:rotate(90deg);font-size:28px}
+  .duel-num{font-size:36px}
+  .sec-num{font-size:42px}
+  .sec-title{font-size:20px}
+  .elements{grid-template-columns:1fr}
+  .el-card.e2{grid-column:span 1}
+  .must-5-grid{grid-template-columns:1fr}
+  .crash{grid-template-columns:1fr;gap:10px}
+  .takeaway-text{font-size:18px}
+}
+</style>
+</head>
+<body>
+<div class="progress"><div class="progress-bar"></div></div>
+
+<div class="brand-bar">
+  <div class="brand-inner">
+    <div class="brand-name">NOVA · AI PM</div>
+    <div class="brand-meta">Vol.<b>25</b> · Tool Schema · 执行层</div>
+  </div>
+</div>
+
+<div class="stage">
+
+  <!-- Hook · 反认知开场 -->
+  <section class="hook fade">
+    <div class="hook-meta">
+      <span class="tag-eyebrow">VOL.25 · 高频题</span>
+      <span class="tag-warn">9 成 PM 写错</span>
+    </div>
+
+    <h1 class="hook-title">FC 准确率低 <span class="strike">不是模型蠢</span><br>是 Tool 描述 <span class="hl">写差了</span></h1>
+
+    <p class="hook-lead">某 AI 客服把 Tool 描述写成 6 个字 "获取订单信息"。模型靠这 6 个字决定何时调、传什么参数、返回怎么解读 — <strong>准确率只有 65%</strong>。换成 280 字的 PM 视角 Schema,准确率冲到 92%。</p>
+
+    <!-- Hero 数据条 · inline 横排紧凑 -->
+    <div class="hero-stats">
+      <div class="hs-row">
+        <div class="hs-block">
+          <span class="hs-tag">改造前</span>
+          <span class="hs-num red">65%</span>
+        </div>
+        <span class="hs-arrow">→</span>
+        <div class="hs-block">
+          <span class="hs-tag">改造后</span>
+          <span class="hs-num green">92%</span>
+        </div>
+        <span class="hs-lift">+27pt</span>
+      </div>
+      <p class="hs-foot">同一个 Tool · 同一个模型 · <span class="em">只动 Schema</span></p>
+    </div>
+  </section>
+
+  <!-- 三件事 -->
+  <section class="preview fade">
+    <div class="preview-title">今天 PM 视角讲透 3 件事</div>
+    <ol>
+      <li>Tool Schema <strong>四要素</strong> + description 必含 5 件事</li>
+      <li><strong>3 个真实案例</strong> · 美妆/SaaS/跨境</li>
+      <li>3 种<strong>典型翻车</strong>与 PM 兜底</li>
+    </ol>
+  </section>
+
+  <!-- § 01 是什么 -->
+  <section class="section fade">
+    <div class="sec-head"><div class="sec-num">01</div><div class="sec-title">Tool Schema <span class="hl">到底是什么</span></div></div>
+
+    <div class="def-card">
+      <div class="def-eyebrow">一句话定义</div>
+      <div class="def-text">Tool Schema · 告诉模型<br><span class="y">"这个工具干嘛 / 何时用 / 参数怎么填 / 返回什么"</span><br>的<span class="red">结构化描述</span></div>
+    </div>
+
+    <div class="analogy">
+      <span class="analogy-tag">类比 · 招聘 JD</span>
+      <p><strong>Tool Schema 就是给模型的"招聘 JD"</strong>。</p>
+      <p>JD 写"会做事" — 来面试的五花八门;JD 写"擅长 Excel 数据透视 / 熟悉跨境财务" — 精准匹配。模型每次决定调用哪个工具,本质上就是在"面试"哪个工具合适。<strong>Schema 写得抽象模型乱选,Schema 写得具体精准命中</strong>。</p>
+    </div>
+
+    <div class="clarify">
+      <h4>三个误区 · 必须澄清</h4>
+      <div class="clarify-row">
+        <div class="clarify-tag">误区 1</div>
+        <div class="clarify-text">Tool Schema 是<strong>工程师的活</strong>,PM 写需求就行。<br>最大的误区。描述部分是自然语言,这是产品需求,不是技术活。</div>
+      </div>
+      <div class="clarify-row">
+        <div class="clarify-tag">误区 2</div>
+        <div class="clarify-text">描述<strong>越短越好</strong>,省 Token。<br>错。Schema 走 Prompt 缓存,不变部分只算一次成本。200 字换 +20pt 准确率,完全值。</div>
+      </div>
+      <div class="clarify-row">
+        <div class="clarify-tag">误区 3</div>
+        <div class="clarify-text">只要 Schema 写好,模型就<strong>完美调用</strong>。<br>也不对。Schema 是基础,还要配并行调用、错误反馈、Eval 监控。是组合拳。</div>
+      </div>
+      <div class="clarify-row">
+        <div class="clarify-tag ok">正解</div>
+        <div class="clarify-text"><strong>Tool Schema = PM 的产品需求文档</strong>,不是工程师的代码注释。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 02 四要素 -->
+  <section class="section fade">
+    <div class="sec-head"><div class="sec-num">02</div><div class="sec-title">Tool Schema <span class="hl">四要素</span> · 工业级标准</div></div>
+    <p class="lead">任何能上线的 Tool Schema 必须含 4 样 — <span class="em">name / description / parameters / examples</span>。每一项都有质量标准。</p>
+
+    <div class="elements">
+      <div class="el-card e1">
+        <div class="el-head"><span class="el-no">01</span><div class="el-title">name<span class="en">名字</span></div></div>
+        <div class="el-body">格式 — <b>动词 + 对象</b>,清晰唯一。多 Tool 时模型选不准 90% 是名字写差了。</div>
+        <div class="el-vs">
+          <div><span class="lab bad">反例</span><span class="bad">get_info</span> — 拿什么 info?</div>
+          <div style="margin-top:6px"><span class="lab good">正例</span><span class="good">get_order_status</span> — 看名字就明白</div>
+        </div>
+      </div>
+
+      <div class="el-card e2">
+        <div class="el-head"><span class="el-no">02</span><div class="el-title">description<span class="en">描述 · PM 主战场</span></div></div>
+        <div class="el-body">工业级 <b>200-500 字</b>。这是 PM 主要发力的地方。<strong>8 成 PM 写 20-50 字</strong>,这是首要翻车原因。</div>
+        <div class="must-5">
+          <span class="must-5-tag">description 必含 5 件事</span>
+          <div class="must-5-grid">
+            <div class="mi">这个工具<b>干什么</b></div>
+            <div class="mi">什么时候<b>应该</b>调用</div>
+            <div class="mi">什么时候<b>不应该</b>调用</div>
+            <div class="mi">参数<b>简要说明</b></div>
+            <div class="mi">返回什么 / <b>怎么解读</b></div>
+          </div>
+        </div>
+        <div class="el-vs" style="margin-top:10px">
+          <div><span class="lab bad">反例(6 字)</span>"获取订单信息"</div>
+          <div style="margin-top:6px"><span class="lab good">正例(130 字)</span>"当用户询问订单当前状态时调用。order_id 必须 16 位数字。返回物流状态、预计到达、当前位置。<b>不要在用户没提供订单号时盲调</b>,优先询问。只查询近 3 个月,更早调 query_archive_order。"</div>
+        </div>
+      </div>
+
+      <div class="el-card e3">
+        <div class="el-head"><span class="el-no">03</span><div class="el-title">parameters<span class="en">参数</span></div></div>
+        <div class="el-body">用 <b>JSON Schema</b> 精确定义。每参数 4 样必齐:类型 / 约束 / 必填可选 / 示例值。</div>
+        <div class="el-vs">
+          <div><span class="lab bad">反例</span><span class="bad">order_id: string</span> — 模型可能传订单名/备注/姓名</div>
+          <div style="margin-top:6px"><span class="lab good">正例</span><span class="good">order_id: string, 16 位数字, 必填, e.g. "1234567890123456"</span></div>
+        </div>
+      </div>
+
+      <div class="el-card e4">
+        <div class="el-head"><span class="el-no">04</span><div class="el-title">examples<span class="en">示例</span></div></div>
+        <div class="el-body">每 Tool 配 <b>3-5 个 few-shot</b>。3 类示例必齐 — 一个应该调用的、一个不该调用的、一个相似 Tool 怎么区分。</div>
+        <div class="el-vs">
+          <div><span class="lab good">必备 3 类</span></div>
+          <div style="margin-top:4px"><b>① 应该调</b> · 用户:"我订单 X 到哪了" → 调 get_order_status</div>
+          <div style="margin-top:4px"><b>② 不应该调</b> · 用户:"帮我查最近这单" → 先问订单号(不调)</div>
+          <div style="margin-top:4px"><b>③ 区分相似</b> · 用户:"我退货那单进展" → 调 search_order_by_status,不调 get_order_status</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="lead">心法 — <span class="em">四要素齐全,且每一项都精雕细琢</span>。这是工业级 Schema 的底线。</p>
+  </section>
+
+  <!-- § 03 三案例 -->
+  <section class="section fade">
+    <div class="sec-head"><div class="sec-num">03</div><div class="sec-title">3 个<span class="hl">真实案例</span> · 不同场景</div></div>
+
+    <div class="cases">
+      <div class="case-row a">
+        <div class="case-head"><span class="case-tag">CASE A</span><span class="case-name">美妆电商客服 · 5 Tool 改造</span><span class="case-pick">效率 + 准确率</span></div>
+        <div class="case-body">
+          <div class="row"><span class="l">改造前</span><span>5 个 Tool 各 20-30 字描述 · 准确率 <b>65%</b> · 频繁选错工具</span></div>
+          <div class="row"><span class="l">方案</span><span>每 Tool 描述扩到 200+ 字 + 5 个 few-shot + JSON Schema 精确约束 + 开启并行调用</span></div>
+          <div class="row"><span class="l">数据</span><span>准确率 <b>92%</b> · 延迟 8s→3s · 月成本 <b>反降 20%</b>(选错重试少了)</span></div>
+          <div class="row"><span class="l">教训</span><span>Tool Schema <b>不是注释</b>,是产品需求文档</span></div>
+        </div>
+      </div>
+
+      <div class="case-row b">
+        <div class="case-head"><span class="case-tag">CASE B</span><span class="case-name">SaaS 工单 Agent · 生产事故</span><span class="case-pick">危险等级缺失</span></div>
+        <div class="case-body">
+          <div class="row"><span class="l">背景</span><span>7 个 Tool,工程师套用 <b>OpenAPI 注释</b>生成 Schema</span></div>
+          <div class="row"><span class="l">翻车</span><span>模型把"重启服务"调成"停止服务" — <b>生产环境直接事故</b></span></div>
+          <div class="row"><span class="l">复盘</span><span>OpenAPI 里"重启=stop+start"没说清,"危险等级"也没标</span></div>
+          <div class="row"><span class="l">教训</span><span>Schema 必须含<b>"使用边界"</b>和<b>"危险等级"</b>。涉及生产/金额/不可逆操作的 Tool 必须明确</span></div>
+        </div>
+      </div>
+
+      <div class="case-row c">
+        <div class="case-head"><span class="case-tag">CASE C</span><span class="case-name">跨境选品 Agent · 并行调用</span><span class="case-pick">延迟优化</span></div>
+        <div class="case-body">
+          <div class="row"><span class="l">背景</span><span>10 个 Tool 串行调用 · 响应延迟 <b>25 秒</b> · 用户等不到</span></div>
+          <div class="row"><span class="l">方案</span><span>Schema 里标注哪些 Tool 之间无依赖、可并行</span></div>
+          <div class="row"><span class="l">数据</span><span>延迟降到 <b>8 秒</b> · 用户留存 <b>+18%</b></span></div>
+          <div class="row"><span class="l">教训</span><span>Schema 不只描述单 Tool · 还要描述<b>工具关系</b>(哪些可并行/有依赖/互斥)</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 04 三种翻车 -->
+  <section class="section fade">
+    <div class="sec-head"><div class="sec-num">04</div><div class="sec-title">3 种<span class="hl">典型翻车</span>与 PM 兜底</div></div>
+    <div class="crash-grid">
+      <div class="crash">
+        <div class="crash-tag">翻车<br>01</div>
+        <div class="crash-body">
+          <h5>描述太抽象</h5>
+          <div class="crash-die">"获取订单"、"查询信息"、"操作系统" — 模型不知道什么时候用、边界在哪。PM 写得最多。</div>
+          <div class="crash-fix">每个描述强制写 <b>5 件事</b> — 干什么/什么时候用/什么时候不用/参数说明/返回什么。<b>任何一项漏写不允许提交</b>。</div>
+        </div>
+      </div>
+      <div class="crash">
+        <div class="crash-tag">翻车<br>02</div>
+        <div class="crash-body">
+          <h5>参数定义模糊</h5>
+          <div class="crash-die">只写 type:string · 没格式约束 · 没示例值 · 没必填可选 — 模型乱传,工程师代码崩。</div>
+          <div class="crash-fix">每个参数 <b>4 样必齐</b> — 类型 / 约束 / 必填可选标记 / 示例值。如果有枚举值,枚举列表必须列全。</div>
+        </div>
+      </div>
+      <div class="crash">
+        <div class="crash-tag">翻车<br>03</div>
+        <div class="crash-body">
+          <h5>示例缺失或不典型</h5>
+          <div class="crash-die">0 示例 · 或都是"用户问订单号就调用"这种 toy case — 模型遇复杂场景就乱。</div>
+          <div class="crash-fix">每个 Tool 至少 <b>3 个示例</b>,必含 — 一个应该调用的 · 一个不应该调用的(让模型学边界) · 一个相似 Tool 怎么区分。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 05 面试金句 + 5 变种 -->
+  <section class="section fade">
+    <div class="sec-head"><div class="sec-num">05</div><div class="sec-title">面试金句 · <span class="hl">主题 + 5 变种</span></div></div>
+
+    <div class="interview">
+      <div class="interview-eyebrow">INTERVIEW GOLD · 高频题</div>
+      <div class="interview-q">你怎么设计 Tool Schema?</div>
+      <div class="interview-lines">
+        <div class="interview-line"><div class="interview-line-no">第 1</div><div class="interview-line-text"><span class="em">4 要素必齐</span> — name 动词+对象 · description 200-500 字含 5 件事 · parameters JSON Schema 精确定义 · examples 3-5 个 few-shot。</div></div>
+        <div class="interview-line"><div class="interview-line-no">第 2</div><div class="interview-line-text">Tool Schema 是 <span class="em">PM 的活</span>不是工程师的 — 描述和示例是自然语言,是产品需求一部分。</div></div>
+        <div class="interview-line"><div class="interview-line-no">第 3</div><div class="interview-line-text">做 <span class="em">AB 测试</span> — 同测试集跑两版,看调用准确率、看延迟、看成本。提升 20-30pt 常见。</div></div>
+        <div class="interview-line"><div class="interview-line-no">第 4</div><div class="interview-line-text">做 <span class="em">监控</span> — 调用准确率仪表盘 / Bad Case 反馈 / 月度 Schema 复盘。是 Eval 体系一部分。</div></div>
+      </div>
+      <div class="interview-foot">4 句答完,面试官知道你不是把 Tool Schema 当工程附属物的水货 PM。</div>
+    </div>
+
+    <div class="variants">
+      <div class="var-card">
+        <span class="var-no">变种 01</span>
+        <div class="var-q">Tool 描述写多少字合适?</div>
+        <div class="var-a">工业级 <b>200-500 字</b>。8 成 PM 写 20-50 字,这是首要翻车原因。OpenAI 和 Anthropic 官方推荐都是 200 字以上。</div>
+      </div>
+      <div class="var-card">
+        <span class="var-no">变种 02</span>
+        <div class="var-q">Tool Schema 是 PM 的工作还是工程师的?</div>
+        <div class="var-a"><b>PM 主导</b>。描述和示例是自然语言,是产品需求文档。参数定义跟工程师协作。工程师写出来的 Schema 准确率永远比 PM 写的低。</div>
+      </div>
+      <div class="var-card">
+        <span class="var-no">变种 03</span>
+        <div class="var-q">并行调用怎么开?</div>
+        <div class="var-a">Schema 标注哪些 Tool <b>无依赖、可并行</b>。模型自动识别批量调用。延迟降 <b>50-70%</b>。GPT-4 / Claude / Gemini 都支持。</div>
+      </div>
+      <div class="var-card">
+        <span class="var-no">变种 04</span>
+        <div class="var-q">怎么测 Tool Schema 质量?</div>
+        <div class="var-a">三层 — <b>50-100 条调用测试集</b>看准确率 · AB 测试新旧 Schema · Bad Case 反馈机制。是 Eval 体系一部分。</div>
+      </div>
+      <div class="var-card">
+        <span class="var-no">变种 05</span>
+        <div class="var-q">涉及生产环境的危险 Tool 怎么处理?</div>
+        <div class="var-a">Schema 描述里明确 <b>"危险等级"</b>和<b>"使用边界"</b>;代码层做二次确认 wrapper;模型调用前必须用户确认。<b>这是合规底线</b>。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 一句话总结 -->
+  <section class="takeaway fade">
+    <div class="takeaway-tag">ONE-LINE</div>
+    <div class="takeaway-text">Schema 改一次 准确率拉高 <span class="r">+27pt</span><br>模型没变 Tool 没变<br><br>变的是 PM 把它当不当 <span class="r">PRD</span> 写</div>
+  </section>
+
+  <!-- 下期预告 -->
+  <section class="coda fade">
+    <div class="coda-tag">下期预告 · 3 选 1</div>
+    <div class="coda-next"><span class="hl">Vol.26 候选</span> · 评论区告诉我想听哪个</div>
+    <ul class="coda-options">
+      <li>选项 A · AI 产品 PRD 怎么写(含模板)</li>
+      <li>选项 B · Eval 数据集怎么建(承接 Vol.24)</li>
+      <li>选项 C · RAG 工业级翻车合集</li>
+    </ul>
+    <div class="coda-cta">关注 NOVA · 每天一个 AI PM 知识点</div>
+  </section>
+
+  <footer><p><span class="brand">NOVA</span> · AI PM · Vol.25 · Nova 著</p></footer>
+
+</div>
+
+<script>
+(function(){const bar=document.querySelector('.progress');if(!bar)return;function tick(){const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;bar.style.transform='scaleX('+(max>0?h.scrollTop/max:0)+')';}window.addEventListener('scroll',tick,{passive:true});tick();})();
+(function(){const els=document.querySelectorAll('.fade');if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return;}const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});els.forEach(e=>io.observe(e));})();
+</script>
+</body>
+</html>
