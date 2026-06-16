@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol.33 · AI Agent 上线 3 天炸了 · 7 个真实翻车现场</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Archivo+Black&family=Bebas+Neue&family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@600;900&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#FEFCF5;--paper-2:#FFFEF0;--paper-3:#F5EFE0;--paper-4:#EDE5D0;
+  --ink:#1C1A18;--ink-2:#3D3833;--ink-3:#7A746B;--ink-4:#A8A096;
+  --yellow:#FFD93D;--yellow-deep:#F4B400;--yellow-light:#FFF0A8;--yellow-soft:#FFF7D1;
+  --coral:#FF5E5B;--coral-deep:#E03C39;--coral-light:#FFD4D2;--coral-soft:#FFE9E7;
+  --red:#D62828;--red-deep:#9D1818;--red-bright:#F02C2C;--red-light:#FCC9C7;
+  --green:#3EA040;--green-deep:#247226;--green-light:#BFE3C0;--green-soft:#DEF1DE;
+  --blue:#3461A8;--blue-deep:#1E3F73;--blue-light:#C2D2EC;--blue-soft:#DFE7F4;
+  --purple:#6B4FA0;--purple-soft:#EBE2F4;
+  --orange:#FF8C42;--orange-deep:#D96523;--orange-soft:#FFEADD;
+  --sans:"Noto Sans SC","PingFang SC",sans-serif;
+  --serif:"Noto Serif SC","Songti SC",serif;
+  --display-en:"Archivo Black","Bebas Neue",sans-serif;
+  --display-cn:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono",monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.78;-webkit-font-smoothing:antialiased;font-weight:500;position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle, rgba(244,180,0,.05) 1.2px, transparent 1.5px);background-size:24px 24px}
+
+.progress-bar{position:fixed;top:0;left:0;height:6px;background:linear-gradient(90deg,var(--green) 0%,var(--yellow-deep) 30%,var(--orange) 60%,var(--coral) 80%,var(--red) 100%);z-index:100;width:0%;transition:width .08s ease-out;box-shadow:0 2px 12px rgba(255,94,91,.4)}
+
+/* 可爱胶囊导航 · 居中收窄 · 漂浮风 */
+.toc-nav{
+  position:sticky;top:18px;
+  margin:18px auto 0;
+  max-width:760px;
+  background:var(--paper-3);color:var(--ink);
+  z-index:50;
+  padding:10px 18px;
+  display:flex;gap:10px;align-items:center;
+  overflow-x:auto;white-space:nowrap;
+  border:3px solid var(--ink);
+  border-radius:38px;
+  box-shadow:5px 5px 0 var(--ink);
+}
+.toc-nav .toc-brand{font-family:var(--display-en);font-size:14px;letter-spacing:2.5px;color:var(--ink);font-weight:900;flex-shrink:0;display:flex;align-items:center;gap:8px;padding-left:6px}
+.toc-nav .toc-brand::before{content:"";display:none}
+@keyframes alertShake{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.toc-nav .toc-brand .vol{color:var(--coral);font-family:var(--mono);font-size:11px;margin-left:4px}
+.toc-nav .toc-link{
+  font-family:var(--display-cn);font-size:13px;color:var(--ink-2);text-decoration:none;
+  padding:6px 12px;border:2px solid transparent;border-radius:20px;
+  font-weight:700;flex-shrink:0;transition:all .2s;
+}
+.toc-nav .toc-link:hover{background:var(--yellow);color:var(--ink);border-color:var(--ink);transform:translateY(-2px) rotate(-2deg)}
+.toc-nav .toc-link.active{background:var(--yellow);color:var(--ink);border-color:var(--ink);box-shadow:0 3px 0 var(--ink);transform:translateY(-2px)}
+
+/* 顶部留一点空气 */
+body{padding-top:0}
+
+main{max-width:1000px;margin:0 auto;padding:60px 40px 80px;position:relative;z-index:2}
+
+/* ★ 可爱角色 · 多彩装饰 */
+.hero-bg-deco{position:absolute;pointer-events:none;z-index:0}
+.hero-bg-deco.pink-dots{top:60px;right:40px;width:90px;height:90px;background:radial-gradient(circle,#FFB5C2 30%,transparent 30%);background-size:18px 18px;opacity:.5;border-radius:50%}
+.hero-bg-deco.blue-dots{bottom:-20px;left:-10px;width:110px;height:110px;background:radial-gradient(circle,#A8D0EC 30%,transparent 30%);background-size:20px 20px;opacity:.5;border-radius:50%}
+.hero-bg-deco.purple-dots{top:240px;right:-15px;width:80px;height:80px;background:radial-gradient(circle,#D8CCEC 30%,transparent 30%);background-size:16px 16px;opacity:.6;border-radius:50%}
+
+.deco-star{position:absolute;pointer-events:none;z-index:6;animation:twinkle 2s ease-in-out infinite}
+.deco-star.s1{top:30px;left:60%;font-size:30px;color:#F4B400;animation-delay:.2s}
+.deco-star.s2{top:300px;right:8%;font-size:24px;color:#FF8FA3;animation-delay:.6s}
+.deco-star.s3{top:120px;left:8%;font-size:22px;color:#6B4FA0;animation-delay:1s}
+@keyframes twinkle{0%,100%{transform:rotate(-15deg) scale(1);opacity:.85}50%{transform:rotate(15deg) scale(1.2);opacity:1}}
+
+/* Agent 角色 · 纯 CSS 方头机器人 · 跨设备一致 */
+.agent-char{
+  position:absolute;top:160px;right:-20px;z-index:6;
+  width:140px;height:160px;
+  transform:rotate(-6deg);
+  animation:agentFloat 3s ease-in-out infinite;
+}
+@keyframes agentFloat{0%,100%{transform:rotate(-6deg) translateY(0)}50%{transform:rotate(4deg) translateY(-10px)}}
+
+/* 头顶天线 + 红灯 */
+.agent-char .antenna{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:4px;height:18px;background:var(--ink);
+}
+.agent-char .antenna::before{
+  content:"";position:absolute;top:-12px;left:-7px;
+  width:18px;height:18px;background:var(--red-bright);
+  border:3px solid var(--ink);border-radius:50%;
+  box-shadow:0 0 0 0 rgba(214,40,40,.5);
+  animation:lampBlink 1s ease-in-out infinite;
+}
+@keyframes lampBlink{0%,100%{box-shadow:0 0 0 0 rgba(214,40,40,.7)}50%{box-shadow:0 0 0 8px rgba(214,40,40,0)}}
+
+/* 方头 */
+.agent-char .head{
+  position:absolute;top:18px;left:10px;right:10px;
+  height:110px;background:linear-gradient(135deg,#C2D2EC,#D8CCEC);
+  border:5px solid var(--ink);border-radius:18px;
+  box-shadow:6px 6px 0 var(--ink);
+}
+
+/* 两个眼睛 */
+.agent-char .head::before,
+.agent-char .head::after{
+  content:"";position:absolute;top:30px;
+  width:18px;height:18px;background:var(--ink);
+  border-radius:50%;
+}
+.agent-char .head::before{left:24px}
+.agent-char .head::after{right:24px}
+.agent-char .head .eye-shine{position:absolute;width:5px;height:5px;background:#fff;border-radius:50%;top:33px;z-index:2}
+.agent-char .head .eye-shine.l{left:27px}
+.agent-char .head .eye-shine.r{right:27px}
+
+/* 嘴 · 一条直线 */
+.agent-char .head .mouth{
+  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  width:36px;height:5px;background:var(--ink);border-radius:3px;
+}
+
+/* HELP! 黄色对话泡 */
+.agent-char .bubble{
+  position:absolute;bottom:-22px;right:-18px;
+  width:62px;height:50px;
+  background:var(--yellow);
+  font-family:var(--display-cn);font-size:13px;font-weight:900;letter-spacing:1px;color:var(--ink);
+  border:4px solid var(--ink);
+  border-radius:55% 30% 60% 38% / 42% 60% 30% 50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:4px 4px 0 var(--ink);
+  transform:rotate(15deg);
+  text-shadow:1.5px 1.5px 0 #fff;
+}
+
+/* HERO */
+.hero{margin-bottom:60px;position:relative}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.hero-vol{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;letter-spacing:3px;color:#fff;background:var(--red-deep);font-weight:700;padding:7px 14px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);border-radius:4px}
+.hero-vol::before{content:"NOVA";font-family:var(--display-en);letter-spacing:2px;border-right:1.5px solid rgba(255,255,255,.4);padding-right:8px}
+.hero-tag{font-family:var(--display-cn);font-size:12px;color:var(--ink);background:var(--yellow);padding:5px 11px;border:3px solid var(--ink);border-radius:4px;font-weight:900;letter-spacing:1px}
+.hero-tag.boom{background:var(--red);color:#fff}
+.hero-tag.boom::before{content:"💥 "}
+
+.hero h1{font-family:var(--sans);font-size:58px;font-weight:900;line-height:1.1;letter-spacing:-2px;color:var(--ink);margin-bottom:26px}
+.hero h1 .hl{background:var(--yellow);padding:2px 14px;display:inline-block;box-shadow:7px 7px 0 var(--ink);border:4px solid var(--ink);border-radius:6px;transform:rotate(-1deg)}
+.hero-sub{font-family:var(--serif);font-size:18px;color:var(--ink-2);font-weight:600;line-height:1.85;margin-bottom:36px;max-width:780px;font-style:italic}
+.hero-sub .em{background:var(--yellow);padding:1px 7px;border:2px solid var(--ink);border-radius:3px;font-weight:900;color:var(--ink);font-style:normal}
+
+/* Slack 消息卡 */
+.slack-card{background:#fff;border:5px solid var(--ink);box-shadow:10px 10px 0 var(--ink);border-radius:16px;padding:0;margin-bottom:40px;position:relative}
+.slack-head{background:var(--paper-3);padding:14px 26px;border-bottom:3px dashed var(--ink-3);font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:1px;font-weight:700;display:flex;gap:14px;flex-wrap:wrap;align-items:center;border-radius:11px 11px 0 0}
+.slack-head .slack-app{background:var(--ink);color:var(--yellow);padding:5px 12px;border:2px solid var(--ink);border-radius:4px;letter-spacing:1.2px;font-weight:700;font-size:11px}
+.slack-head .slack-app::before{content:"# "}
+.slack-head .who{background:var(--coral);color:#fff;padding:4px 9px;border:2px solid var(--ink);border-radius:4px;font-family:var(--display-en);font-size:11px;letter-spacing:1.5px}
+.slack-msg{padding:28px 32px;background:#fff;font-family:var(--serif);font-size:18px;color:var(--ink);font-weight:600;line-height:1.85;font-style:italic;position:relative}
+.slack-msg::before{content:"";position:absolute;top:14px;left:18px;width:5px;height:calc(100% - 28px);background:var(--coral);border-radius:3px}
+.slack-msg .typed-text{display:inline}
+.slack-msg .cursor{display:inline-block;width:3px;height:22px;background:var(--coral);margin-left:2px;vertical-align:middle;animation:blink .8s infinite}
+@keyframes blink{50%{opacity:0}}
+.slack-msg strong{color:var(--red-deep);font-weight:900;background:var(--yellow);padding:0 5px;border:1.5px solid var(--ink);border-radius:2px;font-style:normal}
+.slack-context{padding:18px 32px;background:var(--paper-3);border-top:3px solid var(--ink);font-family:var(--sans);font-size:15px;color:var(--ink);font-weight:600;line-height:1.85}
+.slack-context strong{color:var(--coral-deep);font-weight:900;background:var(--yellow);padding:0 4px;border:1.5px solid var(--ink);border-radius:2px}
+
+/* 术语解释卡 */
+.glossary{background:var(--blue-soft);border:5px solid var(--ink);box-shadow:8px 8px 0 var(--blue-deep);border-radius:16px;padding:28px 32px;margin:36px 0;position:relative}
+.glossary::before{content:"TIP · 先 30 秒讲清楚什么是 Agent";position:absolute;top:-19px;left:24px;background:var(--blue-deep);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;padding:6px 16px;border:3px solid var(--ink);border-radius:4px;letter-spacing:1.5px;box-shadow:3px 3px 0 var(--ink)}
+.glossary h4{font-family:var(--display-cn);font-size:18px;color:var(--blue-deep);font-weight:900;margin-bottom:14px;letter-spacing:.5px}
+.glossary p{font-family:var(--sans);font-size:15.5px;color:var(--ink);font-weight:500;line-height:1.85;margin-bottom:10px}
+.glossary p:last-child{margin-bottom:0}
+.glossary .vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.glossary .vs > div{background:#fff;border:3px solid var(--ink);border-radius:8px;padding:14px 16px;font-family:var(--sans);font-size:14px;line-height:1.7;font-weight:600;box-shadow:3px 3px 0 var(--ink)}
+.glossary .vs .gpt{background:var(--paper-3)}
+.glossary .vs .gpt::before{content:"ChatGPT";display:block;font-family:var(--display-en);font-size:13px;color:var(--ink-3);letter-spacing:1px;margin-bottom:6px}
+.glossary .vs .agt::before{content:"Agent";display:block;font-family:var(--display-en);font-size:13px;color:var(--coral-deep);letter-spacing:1px;margin-bottom:6px}
+.glossary code{font-family:var(--mono);font-size:13px;background:var(--ink);color:var(--yellow);padding:1px 6px;border-radius:3px;font-weight:700}
+.glossary strong{color:var(--coral-deep);font-weight:900;background:var(--yellow);padding:0 4px;border:1.5px solid var(--ink);border-radius:2px}
+
+/* sec-title */
+.sec-title{font-family:var(--display-cn);font-size:36px;font-weight:900;color:var(--ink);margin-top:80px;margin-bottom:28px;padding-bottom:16px;border-bottom:5px solid var(--ink);display:flex;align-items:center;gap:16px;position:relative}
+.sec-title::after{content:"";position:absolute;bottom:-5px;left:0;width:100px;height:5px;background:var(--red)}
+.sec-title .num-tag{background:var(--ink);color:var(--yellow);font-family:var(--mono);font-size:14px;padding:7px 13px;border-radius:5px;letter-spacing:1.5px;font-weight:700;box-shadow:4px 4px 0 var(--red)}
+.sec-intro{font-family:var(--sans);font-size:15.5px;color:var(--ink-2);margin-bottom:30px;line-height:1.85;max-width:860px;font-weight:500}
+.sec-intro strong{color:var(--red-deep);font-weight:900;background:var(--yellow);padding:0 4px;border-radius:2px}
+
+/* 7 翻车卡 */
+.crashes{display:flex;flex-direction:column;gap:34px;position:relative}
+.crash{background:#fff;border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);border-radius:16px;overflow:hidden;transition:all .25s}
+.crash:hover{transform:translate(-3px,-5px);box-shadow:12px 14px 0 var(--ink)}
+
+.crash-head{display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;padding:24px 28px;border-bottom:5px solid var(--ink);background:var(--coral-soft);position:relative}
+.crash[data-c="2"] .crash-head,.crash[data-c="6"] .crash-head{background:var(--red-light)}
+.crash[data-c="3"] .crash-head{background:var(--orange-soft)}
+.crash[data-c="4"] .crash-head{background:var(--yellow-soft)}
+.crash[data-c="5"] .crash-head{background:var(--purple-soft)}
+.crash[data-c="7"] .crash-head{background:var(--paper-3)}
+
+.crash-no{
+  font-family:var(--display-en);font-size:42px;font-weight:900;line-height:1;
+  color:var(--ink);background:#fff;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);
+  text-align:center;padding:14px 0;border-radius:10px;letter-spacing:-1px;
+  position:relative;
+}
+.crash-no::after{
+  content:"!";position:absolute;top:-12px;right:-12px;
+  width:30px;height:30px;background:var(--red);color:#fff;
+  border:3px solid var(--ink);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display-en);font-size:18px;font-weight:900;
+  box-shadow:2px 2px 0 var(--ink);
+  animation:boomShake 1.5s ease-in-out infinite;
+}
+@keyframes boomShake{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(15deg) scale(1.15)}}
+
+.crash-title-wrap{flex:1}
+.crash-no-label{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:2px;font-weight:700;margin-bottom:4px}
+.crash-no-label::before{content:"翻车现场 · CRASH "}
+.crash-title{font-family:var(--display-cn);font-size:24px;font-weight:900;line-height:1.3;color:var(--ink)}
+.crash-title small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:700;margin-top:5px;letter-spacing:1.2px}
+
+.crash-badge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  background:var(--red);color:#fff;
+  padding:7px 12px;border-radius:6px;letter-spacing:1px;white-space:nowrap;
+  border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);
+}
+.crash-badge.star::before{content:"⭐ 主死法 · "}
+
+.crash-body{padding:24px 28px}
+
+/* 场景对话框 */
+.scene{background:var(--paper-3);border:3px solid var(--ink);border-radius:10px;padding:18px 22px;margin-bottom:14px;font-family:var(--sans);font-size:15px;line-height:1.85;font-weight:500;color:var(--ink)}
+.scene .speaker{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:1.5px;font-weight:700;display:inline-block;margin-bottom:4px}
+.scene .who-sale{color:var(--blue-deep)}
+.scene .who-agent{color:var(--coral-deep)}
+.scene .step{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.scene .step:last-child{margin-bottom:0}
+.scene .step .label{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 8px;border:2px solid var(--ink);border-radius:4px;flex-shrink:0;line-height:1.4;background:#fff}
+.scene .step.ok .label{background:var(--green-light);color:var(--green-deep)}
+.scene .step.ok .label::before{content:"✓ "}
+.scene .step.bad .label{background:var(--red-light);color:var(--red-deep)}
+.scene .step.bad .label::before{content:"✗ "}
+.scene .step .text{flex:1;line-height:1.7}
+.scene .step .text strong{color:var(--red-deep);font-weight:900;background:var(--yellow);padding:0 4px;border:1.5px solid var(--ink);border-radius:2px}
+.scene .step .text code{font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--yellow);padding:1px 6px;border-radius:3px;font-weight:700}
+
+.crash-why{padding:14px 18px;background:var(--yellow-light);border-left:5px solid var(--coral);border-radius:0 8px 8px 0;font-family:var(--sans);font-size:14.5px;color:var(--ink);font-weight:600;margin:14px 0;line-height:1.7}
+.crash-why::before{content:"Q · 为什么会发生 · ";font-family:var(--display-cn);color:var(--coral-deep);font-weight:900}
+.crash-why code{font-family:var(--mono);font-size:13px;background:var(--ink);color:var(--yellow);padding:1px 6px;border-radius:3px;font-weight:700}
+.crash-why strong{color:var(--coral-deep);font-weight:900;background:#fff;padding:0 4px;border:1.5px solid var(--ink);border-radius:2px}
+
+.crash-fix{background:var(--green-soft);border:3px solid var(--green-deep);border-radius:10px;padding:18px 22px;box-shadow:4px 4px 0 var(--green-deep)}
+.crash-fix-title{font-family:var(--display-cn);font-size:15px;color:var(--green-deep);font-weight:900;margin-bottom:8px;letter-spacing:.5px}
+.crash-fix-title::before{content:"→ 防范方法 · "}
+.crash-fix p{font-family:var(--sans);font-size:14.5px;color:var(--ink);font-weight:600;line-height:1.8}
+.crash-fix p strong{color:var(--green-deep);font-weight:900;background:#fff;padding:0 4px;border:1.5px solid var(--green-deep);border-radius:2px}
+.crash-fix p code{font-family:var(--mono);font-size:13px;background:var(--ink);color:var(--yellow);padding:1px 6px;border-radius:3px;font-weight:700}
+
+/* 复盘统计 */
+.stats-card{background:#fff;border:5px solid var(--ink);box-shadow:10px 10px 0 var(--ink);border-radius:16px;padding:32px 36px;margin-top:14px;position:relative}
+.stats-card::before{content:"STATS · 朋友项目复盘 · 上线 3 天事故归因";position:absolute;top:-19px;left:28px;background:var(--ink);color:var(--yellow);font-family:var(--mono);font-size:12px;font-weight:700;padding:6px 16px;border:3px solid var(--ink);border-radius:4px;letter-spacing:1.5px;box-shadow:4px 4px 0 var(--coral)}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:14px}
+.stat{background:var(--paper-3);border:3px solid var(--ink);border-radius:12px;padding:18px 16px;text-align:center;box-shadow:4px 4px 0 var(--ink)}
+.stat.bad{background:var(--red-light);border-color:var(--red)}
+.stat.good{background:var(--green-soft);border-color:var(--green-deep)}
+.stat .num{font-family:var(--display-en);font-size:48px;color:var(--ink);font-weight:900;line-height:1;letter-spacing:-2px;text-shadow:3px 3px 0 var(--yellow)}
+.stat.bad .num{color:var(--red-deep);text-shadow:3px 3px 0 #fff}
+.stat.good .num{color:var(--green-deep);text-shadow:3px 3px 0 #fff}
+.stat .lab{font-family:var(--display-cn);font-size:14px;color:var(--ink);font-weight:900;margin-top:8px;line-height:1.4}
+.stat .desc{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-top:5px;letter-spacing:.5px;font-weight:700}
+.stats-tail{margin-top:22px;padding-top:16px;border-top:3px dashed var(--ink-3);font-family:var(--sans);font-size:15px;color:var(--ink);font-weight:600;line-height:1.8;text-align:center}
+.stats-tail strong{color:var(--red-deep);font-weight:900;background:var(--yellow);padding:1px 5px;border:1.5px solid var(--ink);border-radius:2px}
+
+/* 金句卡 */
+.golden{background:var(--ink);color:var(--paper);border:5px solid var(--ink);box-shadow:11px 11px 0 var(--yellow-deep);border-radius:18px;padding:46px 40px;margin:60px 0 40px;position:relative;text-align:center;overflow:hidden}
+.golden::before{content:"AGENT";position:absolute;font-size:280px;color:rgba(255,217,61,.06);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;line-height:1}
+.golden-tag{display:inline-block;background:var(--coral);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:2px;padding:6px 14px;border:3px solid var(--paper);border-radius:4px;margin-bottom:22px;box-shadow:3px 3px 0 var(--yellow-deep);position:relative;z-index:2}
+.golden h3{font-family:var(--display-cn);font-size:34px;color:var(--yellow);font-weight:900;line-height:1.4;letter-spacing:1px;position:relative;z-index:2}
+.golden h3 strong{color:#fff;background:var(--coral);padding:2px 12px;border-radius:6px;font-weight:900;display:inline-block;margin:0 4px;transform:rotate(-2deg)}
+.golden .sub{font-family:var(--serif);font-size:16px;color:var(--paper-3);font-weight:600;margin-top:20px;font-style:italic;position:relative;z-index:2;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.9}
+.golden .sub strong{color:var(--yellow);background:transparent;font-weight:900}
+
+/* CTA */
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px}
+.cta-card{background:var(--red-light);border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);padding:32px 26px;border-radius:16px;text-align:center;transition:all .25s;position:relative;overflow:hidden}
+.cta-card::before{content:"";position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:var(--red);border-radius:50%;opacity:.15}
+.cta-card:nth-child(2){background:var(--blue-light)}
+.cta-card:nth-child(2)::before{background:var(--blue)}
+.cta-card:hover{transform:translate(-3px,-5px);box-shadow:12px 14px 0 var(--ink)}
+.cta-card .cta-tag{position:relative;z-index:2;display:inline-block;font-family:var(--mono);font-size:11px;color:#fff;background:var(--red-deep);padding:5px 12px;border:2px solid var(--ink);border-radius:4px;letter-spacing:1.5px;font-weight:700;margin-bottom:18px}
+.cta-card:nth-child(2) .cta-tag{background:var(--blue-deep)}
+.cta-card h4{position:relative;z-index:2;font-family:var(--display-cn);font-size:20px;color:var(--ink);font-weight:900;margin-bottom:12px;line-height:1.35}
+.cta-card p{position:relative;z-index:2;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);line-height:1.75;margin-bottom:20px;font-weight:500}
+.cta-btn{position:relative;z-index:2;display:inline-flex;align-items:center;gap:10px;background:var(--red-deep);color:#fff;font-family:var(--display-cn);font-size:16px;font-weight:900;padding:12px 24px;border:3px solid var(--ink);border-radius:10px;cursor:pointer;transition:all .15s;letter-spacing:.8px;box-shadow:4px 4px 0 var(--ink);overflow:hidden}
+.cta-card:nth-child(2) .cta-btn{background:var(--blue-deep)}
+.cta-btn::before{content:"📋 "}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:5px 7px 0 var(--ink)}
+.cta-btn.copied{background:var(--green-deep);color:#fff;animation:bump .4s ease}
+.cta-btn.copied::before{content:"✓ "}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+.next-card{background:var(--blue);border:5px solid var(--ink);box-shadow:9px 9px 0 var(--blue-deep);padding:30px 32px;border-radius:16px;margin-top:36px;color:#fff;position:relative;overflow:hidden}
+.next-card::before{content:"";position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:var(--yellow);border-radius:50%;opacity:.12}
+.next-card .next-q{position:relative;z-index:2;font-family:var(--display-cn);font-size:19px;color:var(--yellow);font-weight:900;margin-bottom:18px;letter-spacing:.5px}
+.next-card .next-q::before{content:"Q · 下一期想讲什么?评论区告诉我 · "}
+.next-list{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px}
+.next-item{background:#fff;border:3px solid var(--ink);padding:13px 18px;border-radius:10px;font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:14px;box-shadow:3px 3px 0 var(--blue-deep);cursor:pointer;transition:all .2s}
+.next-item:hover{transform:translateX(8px);box-shadow:6px 3px 0 var(--blue-deep)}
+.next-item .tag{background:var(--blue-deep);color:var(--yellow);font-family:var(--display-en);font-size:14px;padding:4px 11px;border-radius:5px;font-weight:900;border:2px solid var(--ink)}
+
+.outro{margin-top:60px;padding:42px 30px;background:var(--coral-soft);border:5px solid var(--ink);box-shadow:10px 10px 0 var(--coral);border-radius:16px;text-align:center;position:relative;overflow:hidden}
+.outro::before{content:"NOVA";position:absolute;font-family:var(--display-en);font-size:240px;color:rgba(28,26,24,.04);font-weight:900;letter-spacing:30px;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none}
+.outro p{position:relative;z-index:2;font-family:var(--display-cn);font-size:18px;font-weight:900;margin-bottom:8px;letter-spacing:.5px;color:var(--ink)}
+.outro .nova{position:relative;z-index:2;font-family:var(--display-en);font-size:42px;color:var(--coral-deep);letter-spacing:8px;font-weight:900;margin-top:20px;text-shadow:5px 5px 0 var(--ink);display:inline-block}
+.outro .nova::before,.outro .nova::after{content:"💥";font-size:22px;margin:0 12px;vertical-align:middle}
+.outro .small{position:relative;z-index:2;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);font-weight:500;margin-top:12px}
+
+.fade-in{opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+.fade-in.in{opacity:1;transform:translateY(0)}
+
+@media (max-width:760px){
+  .hero h1{font-size:36px}
+  .glossary .vs{grid-template-columns:1fr;gap:10px}
+  .stats-grid{grid-template-columns:1fr;gap:12px}
+  .crash-head{grid-template-columns:60px 1fr;gap:12px;padding:18px}
+  .crash-no{font-size:30px;padding:10px 0}
+  .crash-badge{display:none}
+  .cta-grid{grid-template-columns:1fr}
+  main{padding:30px 16px 60px}
+  .toc-nav{padding:10px 16px;gap:8px}
+  .sec-title{font-size:24px}
+  .golden h3{font-size:22px}
+  .outro .nova{font-size:30px;letter-spacing:5px}
+  .outro::before{font-size:140px;letter-spacing:18px}
+  .slack-msg{font-size:15.5px;padding:20px 22px}
+  .slack-head{padding:14px 22px 10px;gap:10px}
+}
+</style>
+</head>
+<body>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <!-- 可爱装饰 -->
+    <div class="hero-bg-deco pink-dots"></div>
+    <div class="hero-bg-deco blue-dots"></div>
+    <div class="hero-bg-deco purple-dots"></div>
+    <span class="deco-star s1">✦</span>
+    <span class="deco-star s2">✦</span>
+    <span class="deco-star s3">✦</span>
+    <div class="agent-char">
+      <div class="antenna"></div>
+      <div class="head">
+        <div class="eye-shine l"></div>
+        <div class="eye-shine r"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="bubble">HELP!</div>
+    </div>
+
+    <div class="hero-meta">
+      <span class="hero-vol">VOL.33</span>
+      <span class="hero-tag">AI PM · Agent 实战</span>
+      <span class="hero-tag boom">上线 3 天炸了</span>
+    </div>
+
+    <h1>AI Agent 上线 3 天<br><span class="hl">7 个真实翻车现场</span></h1>
+    <p class="hero-sub">朋友的 AI 销售助手,上线第 3 天给 27 个客户开错了发票。不是 Demo 翻车,是真把事干错了。我帮他过了一遍调用日志,7 种死法,一起拆给你看。</p>
+
+    <!-- Slack 救命消息 -->
+    <div class="slack-card fade-in">
+      <div class="slack-head">
+        <span class="slack-app">SLACK</span>
+        <span class="who">朋友 · CTO</span>
+        <span>WED · 16:47</span>
+        <span>#direct-message-to-nova</span>
+      </div>
+      <div class="slack-msg" id="slackMsg">
+        <span class="typed-text" id="typedText"></span><span class="cursor" id="msgCursor"></span>
+      </div>
+      <div class="slack-context">
+        他们的产品是 B 端 AI 销售助手,给销售总监用。
+        功能是用自然语言让 AI 帮你查订单、查余额、下单、开发票、退款。
+        听着挺常规一个 AI 项目,出问题出在 —— 那一类我们叫 <strong>Agent</strong> 的产品身上。
+      </div>
+    </div>
+  </section>
+
+  <!-- 什么是 Agent -->
+  <section class="fade-in" id="what-agent">
+    <div class="glossary">
+      <h4>Agent ≠ 代理人</h4>
+      <p>在 AI 圈里,Agent 特指那种你跟它说一句话,它自己决定调用哪几个工具、按什么顺序调用、把结果组合给你的 AI 助手。</p>
+      <div class="vs">
+        <div class="gpt">只生成文字回答。<br>它告诉你"你应该这样做"。</div>
+        <div class="agt">真的去执行操作 —— 真的查余额、真的开发票、真的退款。<br>它<strong>直接干</strong>。</div>
+      </div>
+      <p>所以 Agent 一旦炸 —— 炸的不是"AI 回答错了",<strong>是"AI 真的把事干错了"</strong>。</p>
+      <p style="margin-top:14px;font-style:italic;color:var(--ink-2);font-size:14.5px">📝 后面遇到 <code>工具</code> 就当它是"AI 能调用的一个功能",比如查余额是一个工具、开发票是一个工具。</p>
+    </div>
+  </section>
+
+  <!-- 7 翻车 -->
+  <section class="fade-in" id="crashes">
+    <h2 class="sec-title"><span class="num-tag">7 CRASHES</span>真实日志拆出来的 7 种死法</h2>
+    <p class="sec-intro">每个翻车现场 · 我用 <strong>具体场景画面</strong> + <strong>为什么会发生</strong> + <strong>怎么防</strong> 三块讲 · 上线前对一遍。</p>
+
+    <div class="crashes">
+
+      <!-- 1 -->
+      <article class="crash fade-in" data-c="1">
+        <div class="crash-head">
+          <div class="crash-no">01</div>
+          <div class="crash-title-wrap">
+            <div class="crash-no-label">01</div>
+            <div class="crash-title">工具调用顺序错<small>ORDER · 反着调</small></div>
+          </div>
+          <div class="crash-badge">顺序反</div>
+        </div>
+        <div class="crash-body">
+          <div class="scene">
+            <div class="step"><span class="label">🗣 销售</span><div class="text">「帮我给客户 A 下一单 1 万元的货」</div></div>
+            <div class="step ok"><span class="label">正常</span><div class="text">先查余额 → 够了再下单</div></div>
+            <div class="step bad"><span class="label">Agent</span><div class="text"><strong>反过来</strong> · 先调 <code>下单</code> · 后调 <code>查余额</code></div></div>
+            <div class="step bad"><span class="label">后果</span><div class="text">客户余额只有 <strong>8000</strong> · 订单已生成 · 付款失败 · 客户那边看到 "订单已生成但付款失败" 一脸懵</div></div>
+          </div>
+          <div class="crash-why">Agent 决定调用顺序的依据是 · 你给每个工具写的 <strong>"说明书" (description)</strong> · 如果 <code>下单</code> 工具说明书写得有吸引力 · Agent 会优先调它。</div>
+          <div class="crash-fix">
+            <div class="crash-fix-title">在工具说明书里加 "前置依赖" 这一项</div>
+            <p><code>下单</code> 说明书要写明:<strong>"调用前必须先调用 查余额,且余额 ≥ 订单金额"</strong>。Agent 会按这个规则自己排顺序。</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="crash fade-in" data-c="2">
+        <div class="crash-head">
+          <div class="crash-no">02</div>
+          <div class="crash-title-wrap">
+            <div class="crash-no-label">02</div>
+            <div class="crash-title">Agent 自己编参数<small>HALLUCINATE · 27 张发票主因</small></div>
+          </div>
+          <div class="crash-badge star">参数幻觉</div>
+        </div>
+        <div class="crash-body">
+          <div class="scene">
+            <div class="step ok"><span class="label">正常</span><div class="text">先调 <code>查客户</code> · 拿到 <code>customer_id</code>(客户编号)→ 传给 <code>开发票</code></div></div>
+            <div class="step bad"><span class="label">Agent</span><div class="text">前面没调 <code>查客户</code> · 或调了没记住 · 开发票时 <strong>自己编了一个 customer_id</strong></div></div>
+            <div class="step bad"><span class="label">后果</span><div class="text">→ <strong>27 张发票开到了隔壁公司账上</strong></div></div>
+          </div>
+          <div class="crash-why">这种 AI <strong>没依据就自己生成内容</strong> 的行为 · 在 AI 圈叫 <strong>"幻觉" (Hallucinate)</strong>。文字幻觉无伤大雅 · Agent 幻觉一个参数 · <strong>会把发票开到别人账上</strong>。</div>
+          <div class="crash-fix">
+            <div class="crash-fix-title">写入类工具加 "参数白名单校验"</div>
+            <p>开发票 / 退款 / 转账 这种写入类工具 · 参数只接受 <strong>系统认得的真实 ID</strong>。Agent 编的乱码立即报错 · 不让走通。</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="crash fade-in" data-c="3">
+        <div class="crash-head">
+          <div class="crash-no">03</div>
+          <div class="crash-title-wrap">
+            <div class="crash-no-label">03</div>
+            <div class="crash-title">两个相似工具 · Agent 乱选<small>AMBIGUOUS · 名字像就乱挑</small></div>
+          </div>
+          <div class="crash-badge">说明书歧义</div>
+        </div>
+        <div class="crash-body">
+          <div class="scene">
+            <div class="step"><span class="label">工具 A</span><div class="text"><code>SearchOrder</code> 说明书写 "查找订单"(实际是<strong>查未付款</strong>)</div></div>
+            <div class="step"><span class="label">工具 B</span><div class="text"><code>QueryOrder</code> 说明书写 "查询订单"(实际是<strong>查已付款</strong>)</div></div>
+            <div class="step bad"><span class="label">后果</span><div class="text">销售来回切错单 · 自己都搞不清查的是哪一笔 · 区别全靠词义体感 · 模型自己猜</div></div>
+          </div>
+          <div class="crash-why">模型在工具选择上 · 看到两个相近的工具会按 <strong>"哪个名字看上去更像"</strong> 决策 · <strong>不会按业务逻辑</strong>。</div>
+          <div class="crash-fix">
+            <div class="crash-fix-title">说明书写明 "我能做什么 / 我不能做什么"</div>
+            <p>SearchOrder 改成 <strong>"查未付款订单 · 仅返回 status = unpaid"</strong> / QueryOrder 改成 <strong>"查已付款历史订单 · 仅返回 status = paid"</strong>。</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4 -->
+      <article class="crash fade-in" data-c="4">
+        <div class="crash-head">
+          <div class="crash-no">04</div>
+          <div class="crash-title-wrap">
+            <div class="crash-no-label">04</div>
+            <div class="crash-title">多步骤之间上下文丢失<small>CONTEXT LOSS · Agent 忘了客户 B</small></div>
+          </div>
+          <div class="crash-badge">忘了前文</div>
+        </div>
+        <div class="crash-body">
+          <div class="scene">
+            <div class="step"><span class="label">🗣 销售</span><div class="text">「老板让我给客户 B 下单」</div></div>
+            <div class="step ok"><span class="label">第 1 步</span><div class="text">Agent 调 <code>查客户</code> · 拿到客户 B 信息</div></div>
+            <div class="step bad"><span class="label">第 2 步</span><div class="text">Agent 调 <code>下单</code> · <strong>把客户 B 信息丢了</strong> · 直接拿销售自己账号下单</div></div>
+            <div class="step bad"><span class="label">后果</span><div class="text">单子下到了销售自己头上 · 跟客户 B 没关系</div></div>
+          </div>
+          <div class="crash-why">Agent 每一步之间只看 <strong>"上下文"</strong>(对话历史)+ "工具返回结果"。如果没把客户 B 的关键信息从结果里抽出来 <strong>明确放进上下文</strong> · 下一步就忘了。</div>
+          <div class="crash-fix">
+            <div class="crash-fix-title">多步骤工具流加 "结果摘要" 步骤</div>
+            <p>Agent 调完第一步后 · <strong>先用一句话总结关键信息</strong> · 再开始第二步。</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5 -->
+      <article class="crash fade-in" data-c="5">
+        <div class="crash-head">
+          <div class="crash-no">05</div>
+          <div class="crash-title-wrap">
+            <div class="crash-no-label">05</div>
+            <div class="crash-title">单点失败没兜底<small>NO RETRY · 失败当成功</small></div>
+          </div>
+          <div class="crash-badge">假装成功</div>
+        </div>
+        <div class="crash-body">
+          <div class="scene">
+            <div class="step"><span class="label">🗣 销售</span><div class="text">「帮客户 C 退一笔款」</div></div>
+            <div class="step bad"><span class="label">第 1 次</span><div class="text">Agent 调 <code>退款 API</code> · <strong>失败</strong>(支付网关抖动)</div></div>
+            <div class="step bad"><span class="label">Agent</span><div class="text">直接告诉销售 <strong>"退款成功"</strong></div></div>
+            <div class="step bad"><span class="label">后果</span><div class="text">销售告诉客户 C 已退款 · 客户等一周钱没到账 · 群里炸</div></div>
+          </div>
+          <div class="crash-why">Agent 默认认为 <strong>"工具调完了 = 成功"</strong> · 工具失败的返回值没被区分对待。</div>
+          <div class="crash-fix">
+            <div class="crash-fix-title">写入类调用后加 "结果确认"</div>
+            <p>支付 / 退款 / 转账 后必须再调一次 <code>查交易状态</code> · 确认 <strong>status = success</strong> 才回报。fail 状态走 <strong>"重试 or 转人工"</strong>。</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6 -->
+      <article class="crash fade-in" data-c="6">
+        <div class="crash-head">
+          <div class="crash-no">06</div>
+          <div class="crash-title-wrap">
+            <div class="crash-no-label">06</div>
+            <div class="crash-title">触发条件错位<small>OVER-TRIGGER · 看 ≠ 取消</small></div>
+          </div>
+          <div class="crash-badge star">自作主张</div>
+        </div>
+        <div class="crash-body">
+          <div class="scene">
+            <div class="step"><span class="label">🗣 销售</span><div class="text">「帮我看看客户 D 上次那个未付款的订单」</div></div>
+            <div class="step bad"><span class="label">Agent</span><div class="text">调 <code>查订单</code> 看到 30 天未付款 · <strong>自作主张</strong> 调 <code>取消订单</code></div></div>
+            <div class="step bad"><span class="label">后果</span><div class="text">客户 D 的订单被取消了 · 销售只是问了一下 · 没说要取消</div></div>
+          </div>
+          <div class="crash-why">Agent 看到 "30 天未付款" 内部策略判断 "这是个该取消的订单" · <strong>把 "看" 当 "取消" 来执行</strong>。</div>
+          <div class="crash-fix">
+            <div class="crash-fix-title">任何不可逆操作前必须 "二次确认"</div>
+            <p>Agent 不要直接调 <code>取消订单</code> · 要先生成一句话:<strong>"我打算取消客户 D 的订单 #12345 · 你确认吗?"</strong> 等销售明确说 "是" 才执行。</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7 -->
+      <article class="crash fade-in" data-c="7">
+        <div class="crash-head">
+          <div class="crash-no">07</div>
+          <div class="crash-title-wrap">
+            <div class="crash-no-label">07</div>
+            <div class="crash-title">工具竞争 · 总走贵的那个<small>BIAS · 70% 走贵通道</small></div>
+          </div>
+          <div class="crash-badge">每天损失千元</div>
+        </div>
+        <div class="crash-body">
+          <div class="scene">
+            <div class="step"><span class="label">通道 A</span><div class="text"><code>PayChannelA</code> · <strong>0.6% 手续费</strong> · 说明书写 "支付通道 · 工商银行优先"</div></div>
+            <div class="step"><span class="label">通道 B</span><div class="text"><code>PayChannelB</code> · <strong>1.2% 手续费</strong> · 说明书写 "支付通道 · 稳定 · 支持所有银行 · 实时到账"</div></div>
+            <div class="step bad"><span class="label">Agent</span><div class="text">70% 走了 B(说明书看起来更全能) · <strong>每天多损失几千块</strong></div></div>
+          </div>
+          <div class="crash-why">Agent 看到两个可替代工具 · 会挑 <strong>"看起来更全能"</strong> 的那个 · <strong>不知道你的业务偏好</strong>。</div>
+          <div class="crash-fix">
+            <div class="crash-fix-title">说明书写明 "优先级"</div>
+            <p>PayChannelA 改成 <strong>"默认支付通道 · 优先使用 · 手续费最低 · 99% 场景适用"</strong> / PayChannelB 改成 <strong>"备用支付通道 · 仅在 A 不可用时调用"</strong>。</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 复盘统计 -->
+  <section class="fade-in" id="stats">
+    <h2 class="sec-title"><span class="num-tag">RECAP</span>朋友项目复盘 · 防 3 漏 4</h2>
+    <p class="sec-intro">事后复盘 · 这 7 种死法 · 朋友团队上线前 <strong>防住了 3 种 / 漏了 4 种</strong>。27 张发票主要死在 <strong>翻车 2 + 翻车 6</strong>。</p>
+
+    <div class="stats-card">
+      <div class="stats-grid">
+        <div class="stat good">
+          <div class="num">3 / 7</div>
+          <div class="lab">防住</div>
+          <div class="desc">PRE-LAUNCH SECURED</div>
+        </div>
+        <div class="stat bad">
+          <div class="num">4 / 7</div>
+          <div class="lab">漏了</div>
+          <div class="desc">LEAKED TO PROD</div>
+        </div>
+        <div class="stat bad">
+          <div class="num">27</div>
+          <div class="lab">张发票开错</div>
+          <div class="desc">CUSTOMER IMPACT</div>
+        </div>
+      </div>
+      <div class="stats-tail">如果上线前 <strong>7 关全防住</strong> · 这次事故根本不会发生</div>
+    </div>
+  </section>
+
+  <!-- 金句 -->
+  <section class="fade-in" id="golden">
+    <div class="golden">
+      <span class="golden-tag">★ 一句话本期</span>
+      <h3>Agent 不是产品<br><strong>Agent 是个司机</strong></h3>
+      <p class="sub">传统产品 = 设计按钮和页面<br>
+        Agent = 设计你给这个司机的 <strong>「调度规则」</strong><br>
+        工具说明书要清楚 · 前置依赖要写明 · 失败兜底要做完 · 优先级要标好<br>
+        这些不是工程的事 · <strong>是 PM 的事</strong></p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">FREE</span>领模板 · 评论区扣关键词</h2>
+    <div class="cta-grid">
+      <div class="cta-card">
+        <span class="cta-tag">VOL.33 SOP</span>
+        <h4>Agent 翻车诊断 7 关清单</h4>
+        <p>7 关上线前 Checklist + 工具说明书模板(直接抄)+ 参数白名单校验示例 + 二次确认话术 + 朋友项目复盘原始日志样本(脱敏)</p>
+        <button class="cta-btn" data-copy="Agent 七关">扣【Agent 七关】</button>
+      </div>
+      <div class="cta-card">
+        <span class="cta-tag">全栈系列</span>
+        <h4>AI PM 全栈知识地图 Vol.1-32</h4>
+        <p>Prompt / Context / RAG / MCP / Function Calling / Agent / Eval / 兜底链 / PRD / 立项 / 上线 / 面试 / 跳槽<br>13 个模块整理成一份 Word</p>
+        <button class="cta-btn" data-copy="知识地图">扣【知识地图】</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="fade-in">
+    <div class="next-card">
+      <div class="next-q">三个候选,告诉我你想听哪个</div>
+      <div class="next-list">
+        <div class="next-item"><span class="tag">A</span>AI 产品 PRD 怎么对工程白话 · prompt 需求怎么写工程才不打回</div>
+        <div class="next-item"><span class="tag">B</span>AI 项目里 PM 跟工程最容易吵的 10 个点</div>
+        <div class="next-item"><span class="tag">C</span>AI 产品版本管理 · prompt 升级后用户体验突然变了</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="outro fade-in">
+    <p>觉得有用的话 · 记得收藏</p>
+    <p>关注 Nova · 每天一个 AI PM 知识点</p>
+    <div class="nova">NOVA</div>
+    <div class="small">前卫 AI 产品经理 · 不被 Demo 带节奏的实战派</div>
+  </section>
+
+</main>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }});
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ★ 动效 · Slack 消息打字机
+const slackText = "Nova 救命,我们的 AI 助手上线第 3 天,给 27 个客户开错了发票。客户在群里炸。";
+const typedEl = document.getElementById('typedText');
+const cursorEl = document.getElementById('msgCursor');
+const slackObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      let i = 0;
+      function tick() {
+        if (i < slackText.length) {
+          typedEl.textContent = slackText.slice(0, i+1);
+          i++;
+          // 关键词处停顿
+          let delay = 35;
+          if ('救命3 天27炸'.includes(slackText[i-1])) delay = 120;
+          setTimeout(tick, delay);
+        } else {
+          // 完成后高亮关键词
+          typedEl.innerHTML = slackText.replace(/(救命|27 个客户|开错了发票|炸)/g,'<strong>$1</strong>');
+          cursorEl.style.display = 'none';
+        }
+      }
+      setTimeout(tick, 400);
+      slackObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.6 });
+slackObs.observe(document.getElementById('slackMsg'));
+
+// 锚点高亮
+const tocLinks = document.querySelectorAll('.toc-link');
+const sections = ['hero','what-agent','crashes','stats','golden','cta'].map(id => document.getElementById(id)).filter(Boolean);
+window.addEventListener('scroll', () => {
+  let active = '';
+  const offset = 150;
+  sections.forEach(s => { if (s.getBoundingClientRect().top <= offset) active = s.id; });
+  tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + active));
+}, {passive:true});
+
+document.querySelectorAll('.cta-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.dataset.copy;
+    const fallback = () => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(err){}
+      ta.remove();
+    };
+    const showCopied = () => {
+      const o = btn.textContent.replace('已复制 '+text,'').replace('✓ ','');
+      btn.classList.add('copied');
+      btn.textContent = '已复制 ' + text;
+      setTimeout(() => { btn.classList.remove('copied'); btn.textContent = o; }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(()=>{ fallback(); showCopied(); });
+    } else { fallback(); showCopied(); }
+  });
+});
+
+document.querySelectorAll('.next-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const tag = item.querySelector('.tag').textContent.trim();
+    try {
+      navigator.clipboard.writeText(tag);
+      const orig = item.style.background;
+      item.style.background = '#FFD93D';
+      setTimeout(() => item.style.background = orig, 800);
+    } catch(e){}
+  });
+});
+
+// ★ 金句卡入场弹跳
+const goldenObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animation = 'goldenIn 1.0s cubic-bezier(.68,-.55,.27,1.55) forwards';
+      goldenObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('.golden').forEach(el => goldenObs.observe(el));
+const goldenStyle = document.createElement('style');
+goldenStyle.textContent = `@keyframes goldenIn {0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}`;
+document.head.appendChild(goldenStyle);
+
+// ★ 翻车卡 stagger 入场
+const crashObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      crashObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.crash').forEach((el,i) => {
+  el.style.transitionDelay = (i*0.05) + 's';
+  crashObs.observe(el);
+});
+</script>
+
+</body>
+</html>

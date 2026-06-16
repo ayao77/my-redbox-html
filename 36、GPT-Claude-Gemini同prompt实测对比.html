@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol.36 · AI PM 不选模型 · 但你要懂的 5 件事</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FAF7F2;--cream-2:#F5F0E8;--cream-3:#EFEAE2;--cream-4:#E8DFD2;
+  --peach:#E8D5D0;--peach-deep:#D9B8B0;--peach-soft:#F2E5E0;--peach-light:#F7EDE8;
+  --rose:#C99490;--rose-deep:#B86C7A;--rose-soft:#E8D5D5;
+  --cherry:#B86C7A;--cherry-deep:#8C5260;
+  --lavender:#C9BFD4;--lavender-deep:#A89BB5;--lavender-soft:#DDD2E0;--lavender-light:#ECE5F0;
+  --mint:#B5C8C0;--mint-deep:#8FA89F;--mint-soft:#D0DBD5;--mint-light:#E3ECE7;
+  --sky:#B8CFD9;--sky-deep:#8FA8B5;--sky-soft:#D2DEE5;--sky-light:#E5EDF1;
+  --butter:#E0D0A8;--butter-deep:#B89C68;--butter-soft:#F0E5C8;--butter-light:#F5EED9;
+  --cocoa:#6B5B4F;--cocoa-deep:#4A3F35;--cocoa-2:#8C7F70;--cocoa-3:#B5AB9C;
+  --paper:#FAF7F2;--paper-2:#FCFAF5;
+
+  --sans:"Inter","Noto Sans SC","PingFang SC",sans-serif;
+  --display-en:"Inter","Noto Sans SC",sans-serif;
+  --display-cn:"Inter","Noto Sans SC","PingFang SC",sans-serif;
+  --mono:"Inter","Noto Sans SC",sans-serif;
+}
+
+body{font-family:var(--sans);background:var(--paper);color:var(--cocoa-deep);line-height:1.8;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.container{max-width:860px;margin:0 auto;padding:56px 48px 100px;position:relative}
+
+.bg-tex{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(217,184,176,.10) 380px, transparent 620px),
+    radial-gradient(circle at 88% 22%, rgba(201,191,212,.09) 320px, transparent 540px),
+    radial-gradient(circle at 50% 78%, rgba(224,208,168,.07) 400px, transparent 620px),
+    radial-gradient(circle at 25% 95%, rgba(181,200,192,.06) 350px, transparent 550px);
+}
+
+/* 顶栏 */
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:var(--cocoa-deep);color:var(--cream);border:3px solid var(--cocoa-deep);box-shadow:5px 5px 0 var(--peach-deep);border-radius:22px;margin-bottom:48px}
+.brand-l{font-family:var(--display-en);font-size:14px;letter-spacing:3px;font-weight:700}
+.brand-l .vol{color:var(--butter);font-family:var(--mono);font-size:11px;margin-left:10px;letter-spacing:2px}
+.brand-r{font-family:var(--display-cn);font-size:13px;color:var(--peach-soft);letter-spacing:1px}
+
+/* HERO */
+.hero{position:relative;margin-bottom:60px}
+.kicker-row{display:flex;align-items:center;gap:12px;margin-bottom:26px;flex-wrap:wrap}
+.kicker{display:inline-flex;align-items:center;gap:8px;background:var(--cherry);color:#fff;padding:8px 18px;border:2px solid var(--cocoa-deep);box-shadow:3px 3px 0 var(--cocoa-deep);font-family:var(--display-cn);font-size:13px;font-weight:700;letter-spacing:.5px;border-radius:24px}
+.kicker.alt{background:var(--butter);color:var(--cocoa-deep)}
+.kicker.new{background:var(--lavender-deep);color:#fff}
+
+.h1{font-size:54px;font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:26px;color:var(--cocoa-deep)}
+.h1 .p-hl{background:var(--peach-deep);color:#fff;padding:0 16px;display:inline-block;border-radius:14px}
+.h1 .c-hl{color:var(--cherry-deep)}
+
+.sub{font-family:var(--display-cn);font-size:18px;color:var(--cocoa-2);font-weight:500;margin-bottom:30px;letter-spacing:.3px;line-height:1.65}
+.sub .em{color:var(--cherry);font-weight:700}
+
+/* 3 个场景 hero cards */
+.scenes-hero{display:grid;grid-template-columns:1fr;gap:14px;margin-top:36px}
+.scene-hero{background:#fff;border:2px solid var(--cocoa-deep);box-shadow:4px 4px 0 var(--lavender);border-radius:18px;padding:22px 26px;position:relative;transition:transform .25s}
+.scene-hero:nth-child(1){background:var(--peach-soft);box-shadow:4px 4px 0 var(--peach-deep)}
+.scene-hero:nth-child(2){background:var(--mint-light);box-shadow:4px 4px 0 var(--mint-deep)}
+.scene-hero:nth-child(3){background:var(--lavender-light);box-shadow:4px 4px 0 var(--lavender-deep)}
+.scene-hero:hover{transform:translateY(-3px)}
+.scene-hero-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;color:var(--cocoa-2);letter-spacing:2px;font-weight:600;margin-bottom:10px;text-transform:uppercase}
+.scene-hero-tag::before{content:"●";color:var(--cherry)}
+.scene-hero-q{font-family:var(--display-cn);font-size:17px;color:var(--cocoa-deep);font-weight:700;line-height:1.5}
+.scene-hero-q .who{color:var(--cocoa-2);font-weight:600}
+.scene-hero-q .talk{background:#fff;border:1.5px solid var(--cocoa-2);border-radius:10px;padding:8px 12px;display:inline-block;margin:6px 0 6px;font-size:15px}
+.scene-hero-arrow{font-family:var(--display-cn);font-size:14px;color:var(--cherry);font-weight:700;margin-top:6px}
+
+/* 章节 */
+.sec{margin:90px 0 40px}
+.sec-tag{display:inline-block;background:var(--cocoa-deep);color:var(--cream);padding:5px 14px;font-family:var(--mono);font-size:10px;letter-spacing:2.5px;font-weight:600;margin-bottom:16px;border-radius:12px;text-transform:uppercase}
+.sec-h2{font-size:34px;font-weight:800;line-height:1.25;color:var(--cocoa-deep);margin-bottom:10px;letter-spacing:-.4px}
+.sec-h2 .em{background:var(--butter);padding:0 10px;display:inline-block;border-radius:8px}
+.sec-h2 .em-p{background:var(--peach-deep);color:#fff;padding:0 10px;display:inline-block;border-radius:8px}
+.sec-desc{font-size:15px;color:var(--cocoa-2);line-height:1.85;margin-top:16px;max-width:760px}
+.sec-desc .em{background:var(--butter-soft);padding:1px 7px;font-weight:600;border-radius:4px}
+
+/* 4 模型一句话拍下 */
+.knife-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px}
+.knife-card{background:#fff;border:2px solid var(--cocoa-deep);border-radius:18px;padding:20px 22px;position:relative;transition:transform .25s;box-shadow:4px 4px 0 var(--cocoa-deep)}
+.knife-card.k1{background:var(--mint-light);box-shadow:4px 4px 0 var(--mint-deep)}
+.knife-card.k2{background:var(--peach-soft);box-shadow:4px 4px 0 var(--peach-deep)}
+.knife-card.k3{background:var(--sky-light);box-shadow:4px 4px 0 var(--sky-deep)}
+.knife-card.k4{background:var(--lavender-light);box-shadow:4px 4px 0 var(--lavender-deep);border-color:var(--cherry)}
+.knife-card:hover{transform:translateY(-4px)}
+.knife-card .row1{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;gap:10px}
+.knife-name{font-family:var(--display-en);font-size:18px;font-weight:700;color:var(--cocoa-deep);letter-spacing:-.3px}
+.knife-tag{font-family:var(--display-en);font-size:10px;color:var(--cocoa-2);letter-spacing:1.5px;font-weight:600;text-transform:uppercase}
+.knife-card.k4 .knife-tag{color:var(--cherry);font-weight:700}
+.knife-analogy{font-family:var(--display-cn);font-size:20px;font-weight:700;color:var(--cocoa-deep);margin-bottom:6px;letter-spacing:-.3px}
+.knife-desc{font-size:13px;color:var(--cocoa-2);line-height:1.6}
+
+/* 5 件事 cards */
+.things-list{display:flex;flex-direction:column;gap:28px;margin-top:30px}
+.thing-card{background:#fff;border:2px solid var(--cocoa-deep);box-shadow:6px 6px 0 var(--cocoa-deep);border-radius:22px;padding:32px;position:relative;overflow:hidden}
+.thing-card.t1{box-shadow:6px 6px 0 var(--peach-deep)}
+.thing-card.t2{box-shadow:6px 6px 0 var(--mint-deep)}
+.thing-card.t3{box-shadow:6px 6px 0 var(--lavender-deep)}
+.thing-card.t4{box-shadow:6px 6px 0 var(--butter-deep)}
+.thing-card.t5{box-shadow:6px 6px 0 var(--sky-deep)}
+
+.thing-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;border-bottom:2px dashed var(--cocoa-3);padding-bottom:14px}
+.thing-no{font-family:var(--display-en);font-size:42px;font-weight:800;color:var(--cocoa-deep);line-height:1;letter-spacing:-2px;flex-shrink:0}
+.thing-card.t1 .thing-no{color:var(--rose-deep)}
+.thing-card.t2 .thing-no{color:var(--mint-deep)}
+.thing-card.t3 .thing-no{color:var(--lavender-deep)}
+.thing-card.t4 .thing-no{color:var(--butter-deep)}
+.thing-card.t5 .thing-no{color:var(--sky-deep)}
+.thing-head-l{flex:1}
+.thing-title{font-family:var(--display-cn);font-size:22px;font-weight:700;color:var(--cocoa-deep);line-height:1.3;margin-bottom:4px;letter-spacing:-.2px}
+.thing-sub{font-size:13px;color:var(--cocoa-2);font-weight:500;line-height:1.5}
+
+/* 错答 / PM 答 对比 */
+.answer-row{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+.ans-block{padding:18px 22px;border:2px solid var(--cocoa-deep);border-radius:14px}
+.ans-bad{background:var(--peach-soft)}
+.ans-good{background:var(--mint-light)}
+.ans-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--display-en);font-size:11px;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+.ans-bad .ans-tag{background:var(--cherry);color:#fff}
+.ans-good .ans-tag{background:var(--mint-deep);color:#fff}
+.ans-bad .ans-tag::before{content:"✗ "}
+.ans-good .ans-tag::before{content:"✓ "}
+.ans-quote{font-family:var(--display-cn);font-size:15px;color:var(--cocoa-deep);font-weight:600;line-height:1.6;margin-bottom:8px}
+.ans-quote .talk{background:#fff;border:1.5px solid var(--cocoa-3);padding:6px 12px;border-radius:8px;display:inline-block;font-size:14px;font-weight:500;line-height:1.5;margin:3px 0}
+.ans-detail{font-size:13px;color:var(--cocoa-2);line-height:1.65}
+.ans-detail .em{background:var(--butter-soft);padding:1px 6px;font-weight:600;border-radius:4px;color:var(--cocoa-deep)}
+
+/* 4 句法 / 3 句法 步骤块 */
+.steps-block{margin-top:18px;background:var(--cream-2);border:2px solid var(--cocoa-deep);border-radius:16px;padding:22px 26px;box-shadow:4px 4px 0 var(--cocoa-deep)}
+.steps-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--display-en);font-size:11px;letter-spacing:2px;color:var(--cherry);font-weight:700;margin-bottom:14px;text-transform:uppercase}
+.steps-tag::before{content:"●"}
+.step-row{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.step-row:last-child{margin-bottom:0}
+.step-no{flex-shrink:0;width:30px;height:30px;background:var(--cocoa-deep);color:var(--cream);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--display-en);font-size:13px;font-weight:700}
+.step-text{flex:1;font-size:14px;color:var(--cocoa-deep);line-height:1.65;padding-top:3px}
+.step-text .talk{background:#fff;border:1.5px solid var(--cocoa-3);padding:6px 12px;border-radius:8px;display:inline-block;font-size:14px;font-weight:500;line-height:1.5;margin:3px 0}
+.step-text .em{background:var(--butter);padding:1px 7px;font-weight:600;border-radius:4px}
+
+/* PRD 模板块 */
+.prd-block{margin-top:18px;background:var(--lavender-light);border:2px solid var(--cocoa-deep);border-radius:16px;padding:24px 28px;box-shadow:4px 4px 0 var(--lavender-deep);font-family:var(--mono);font-size:13px;line-height:1.9;color:var(--cocoa-deep)}
+.prd-tag{font-family:var(--display-en);font-size:11px;color:var(--lavender-deep);letter-spacing:2px;font-weight:700;margin-bottom:12px;display:block;text-transform:uppercase}
+.prd-block .lbl{color:var(--cherry);font-weight:600}
+.prd-block .gap{display:inline-block;min-width:60px;border-bottom:1.5px dashed var(--cocoa-2);margin:0 4px}
+
+/* 用户感受对照 */
+.feel-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}
+.feel-row{display:grid;grid-template-columns:160px 1fr 1fr;gap:14px;align-items:center;padding:14px 18px;background:var(--cream-2);border:2px solid var(--cocoa-deep);border-radius:14px}
+.feel-scene{font-family:var(--display-cn);font-size:14px;color:var(--cocoa-deep);font-weight:700;line-height:1.4}
+.feel-bad{background:var(--peach-soft);border:1.5px solid var(--rose-deep);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--cocoa-deep);line-height:1.5}
+.feel-good{background:var(--mint-light);border:1.5px solid var(--mint-deep);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--cocoa-deep);line-height:1.5}
+.feel-bad .lab,.feel-good .lab{display:block;font-family:var(--display-en);font-size:10px;letter-spacing:1.5px;font-weight:700;margin-bottom:4px;text-transform:uppercase}
+.feel-bad .lab{color:var(--cherry)}
+.feel-good .lab{color:var(--mint-deep)}
+.feel-bad .em,.feel-good .em{font-weight:700;background:rgba(255,255,255,.6);padding:1px 6px;border-radius:4px}
+
+/* Fable 5 spec mini (嵌在第 5 件事里) */
+.fable-mini{margin-top:18px;background:linear-gradient(135deg,var(--lavender-light) 0%, var(--peach-soft) 100%);border:2px solid var(--cocoa-deep);border-radius:18px;padding:22px 26px;box-shadow:5px 5px 0 var(--lavender-deep)}
+.fable-mini-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lavender-deep);color:#fff;font-family:var(--display-en);font-size:11px;letter-spacing:2px;font-weight:700;padding:5px 12px;border-radius:10px;margin-bottom:12px}
+.fable-mini-tag::before{content:"NEW ●"}
+.fable-mini-title{font-family:var(--display-cn);font-size:17px;font-weight:700;color:var(--cocoa-deep);margin-bottom:10px}
+.fable-mini-body{font-size:13px;color:var(--cocoa-deep);line-height:1.7}
+.fable-mini-body .em{background:#fff;padding:1px 7px;border-radius:5px;font-weight:600}
+
+/* 收尾金句 */
+.golden{background:linear-gradient(135deg,var(--peach) 0%,var(--peach-deep) 100%);color:var(--cocoa-deep);padding:48px 40px;border:3px solid var(--cocoa-deep);box-shadow:6px 6px 0 var(--cocoa-deep);border-radius:24px;margin-top:60px;position:relative;overflow:hidden;text-align:center}
+.golden-tag{font-family:var(--display-en);font-size:11px;color:var(--cocoa-deep);letter-spacing:3px;font-weight:600;margin-bottom:14px;text-transform:uppercase}
+.golden-h{font-family:var(--display-cn);font-size:30px;font-weight:700;color:var(--cocoa-deep);line-height:1.4;letter-spacing:-.3px}
+.golden-h .em{background:var(--cocoa-deep);color:var(--butter);padding:2px 14px;border-radius:10px;display:inline-block;margin:2px 4px}
+.golden-sub{font-size:14px;color:var(--cocoa-deep);font-weight:600;margin-top:20px;line-height:1.8;opacity:.85}
+
+/* CTA */
+.cta{background:#fff;border:3px solid var(--cocoa-deep);box-shadow:6px 6px 0 var(--peach-deep);border-radius:24px;padding:38px;margin-top:48px}
+.cta-tag{font-family:var(--display-en);font-size:12px;letter-spacing:3px;color:var(--cherry);font-weight:700;margin-bottom:10px;text-transform:uppercase}
+.cta-h{font-family:var(--display-cn);font-size:26px;font-weight:700;color:var(--cocoa-deep);line-height:1.4;margin-bottom:14px;letter-spacing:-.3px}
+.cta-h .em{background:var(--butter);padding:0 12px;border-radius:8px}
+.cta-list{display:grid;grid-template-columns:1fr;gap:10px;margin-top:18px}
+.cta-row{display:flex;align-items:flex-start;gap:9px;padding:12px 14px;background:var(--peach-soft);border:1.5px solid var(--cocoa-deep);border-radius:12px;font-size:13px;color:var(--cocoa-deep);line-height:1.6}
+.cta-row .ok{color:var(--mint-deep);font-weight:700;flex-shrink:0}
+.cta-keyword{margin-top:20px;display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--cocoa-deep);color:var(--cream);border-radius:14px;border:2px solid var(--cocoa-deep)}
+.cta-keyword .lab{font-family:var(--display-en);font-size:11px;color:var(--butter);letter-spacing:2px;font-weight:700;text-transform:uppercase}
+.cta-keyword .kw{font-family:var(--display-cn);font-size:17px;color:var(--butter);font-weight:700;padding:3px 11px;background:rgba(224,208,168,.15);border-radius:7px}
+.cta-keyword .arrow{color:var(--peach-deep);font-weight:700}
+
+/* 下期预告 */
+.next-up{margin-top:36px;background:var(--cream-2);border:2px dashed var(--cocoa-deep);border-radius:18px;padding:28px}
+.next-up-tag{font-family:var(--display-en);font-size:11px;color:var(--cherry);letter-spacing:2.5px;font-weight:700;margin-bottom:8px;text-transform:uppercase}
+.next-up-h{font-family:var(--display-cn);font-size:20px;font-weight:700;color:var(--cocoa-deep);margin-bottom:14px}
+.next-list{display:grid;grid-template-columns:1fr;gap:10px}
+.next-item{padding:14px 16px;background:#fff;border:1.5px solid var(--cocoa-deep);border-radius:12px;font-size:13.5px;color:var(--cocoa-deep);line-height:1.6;font-weight:500}
+.next-item .l{font-family:var(--display-en);color:var(--cherry);font-size:14px;margin-right:5px;letter-spacing:1px;font-weight:700}
+
+/* footer */
+.footer{margin-top:56px;padding:24px 0;border-top:2px dashed var(--cocoa-3);text-align:center;color:var(--cocoa-2);font-size:12px;font-family:var(--mono);letter-spacing:1px}
+.footer .author{color:var(--cherry);font-family:var(--display-en);font-size:15px;letter-spacing:4px;font-weight:700;margin-bottom:6px;display:block;text-transform:uppercase}
+
+.fi{opacity:0;transform:translateY(28px);transition:opacity .8s ease, transform .8s ease}
+.fi.on{opacity:1;transform:translateY(0)}
+
+@media(max-width:780px){
+  .container{padding:24px 18px 60px}
+  .h1{font-size:34px}
+  .sub{font-size:15px}
+  .knife-grid,.feel-row{grid-template-columns:1fr}
+  .feel-row{gap:10px}
+  .sec-h2,.golden-h,.cta-h{font-size:22px}
+  .thing-card{padding:22px}
+  .thing-no{font-size:34px}
+  .thing-title{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-tex"></div>
+
+<div class="container">
+
+  <!-- 顶栏 -->
+  <div class="brand-bar">
+    <div class="brand-l">NOVA · AI PM <span class="vol">VOL.36</span></div>
+    <div class="brand-r">PM 视角 · 2026-06-13</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero fi">
+    <div class="kicker-row">
+      <span class="kicker">PM 视角</span>
+      <span class="kicker alt">不讲技术 · 讲翻译</span>
+      <span class="kicker new">Fable 5 也在</span>
+    </div>
+    <h1 class="h1">
+      AI PM <span class="p-hl">不选模型</span><br>
+      但你要懂的 <span class="c-hl">5 件事</span>
+    </h1>
+    <div class="sub">
+      模型选型 = 后端 / CTO / 架构师拍的<br>
+      但 9 成 PM 会撞上 <span class="em">3 个场景</span> — 答不出 = 这事就不归你管
+    </div>
+
+    <!-- 3 个真实场景 hero -->
+    <div class="scenes-hero">
+      <div class="scene-hero fi">
+        <div class="scene-hero-tag">场景 01 · 老板问</div>
+        <div class="scene-hero-q">
+          <span class="who">老板:</span><br>
+          <span class="talk">「我看大家都在用 OpenAI · 我们怎么不直接也用?」</span><br>
+          <span class="scene-hero-arrow">→ 你怎么答?</span>
+        </div>
+      </div>
+      <div class="scene-hero fi">
+        <div class="scene-hero-tag">场景 02 · 客户问</div>
+        <div class="scene-hero-q">
+          <span class="who">客户(合同前):</span><br>
+          <span class="talk">「你们用的是什么大模型?GPT 吗?」</span><br>
+          <span class="scene-hero-arrow">→ 你怎么答?</span>
+        </div>
+      </div>
+      <div class="scene-hero fi">
+        <div class="scene-hero-tag">场景 03 · CEO 问</div>
+        <div class="scene-hero-q">
+          <span class="who">CEO(6/9 之后):</span><br>
+          <span class="talk">「Anthropic 发了 Claude Fable 5 · 我们要不要切?」</span><br>
+          <span class="scene-hero-arrow">→ 你怎么答?</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 模型一句话拍下 -->
+  <section class="sec fi">
+    <span class="sec-tag">先记 4 个名字 · 一句话拍下</span>
+    <h2 class="sec-h2">不用记英文 · 记 <span class="em">类比</span></h2>
+    <p class="sec-desc">PM 不需要记 token 价格 · 不需要记 benchmark 分。记住后面 4 个一句话标签 — 后面 5 件事的翻译全部从这一句来。</p>
+
+    <div class="knife-grid">
+      <div class="knife-card k1 fi">
+        <div class="row1">
+          <span class="knife-name">GPT</span>
+          <span class="knife-tag">OPENAI</span>
+        </div>
+        <div class="knife-analogy">全能写作家</div>
+        <div class="knife-desc">文笔最好 · 我们刷的 ChatGPT 就是它 · 创意 / 文案 / Agentic 标杆</div>
+      </div>
+      <div class="knife-card k2 fi">
+        <div class="row1">
+          <span class="knife-name">Claude</span>
+          <span class="knife-tag">ANTHROPIC</span>
+        </div>
+        <div class="knife-analogy">严谨工程师</div>
+        <div class="knife-desc">看长文档不会瞎编 · 代码最强 · 报告 / 财报 / 合同类业务首选</div>
+      </div>
+      <div class="knife-card k3 fi">
+        <div class="row1">
+          <span class="knife-name">Gemini</span>
+          <span class="knife-tag">GOOGLE</span>
+        </div>
+        <div class="knife-analogy">学霸 · 便宜</div>
+        <div class="knife-desc">多模态最强 · 价格最低 · 数据分析 / 视频图片场景王者</div>
+      </div>
+      <div class="knife-card k4 fi">
+        <div class="row1">
+          <span class="knife-name">Fable 5</span>
+          <span class="knife-tag">6/9 刚发</span>
+        </div>
+        <div class="knife-analogy">杀手锏</div>
+        <div class="knife-desc">Claude 之上一档 · 关键时刻一击致命 · 但贵 2 倍 · 别用在日常活</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 件事 -->
+  <section class="sec fi">
+    <span class="sec-tag">5 件事 · PM 视角</span>
+    <h2 class="sec-h2">PM 不选模型<br>但要懂 <span class="em-p">这 5 件事</span></h2>
+    <p class="sec-desc">每件事给你<span class="em">错答 vs PM 视角答</span> + 可以直接抄的话术模板。</p>
+
+    <div class="things-list">
+
+      <!-- 第 1 件 -->
+      <article class="thing-card t1 fi">
+        <div class="thing-head">
+          <div class="thing-no">01</div>
+          <div class="thing-head-l">
+            <div class="thing-title">跟老板汇报「为什么不用 OpenAI」</div>
+            <div class="thing-sub">老板的常见问法 · PM 最容易直接接受 · 半年后翻车背锅</div>
+          </div>
+        </div>
+
+        <div class="answer-row">
+          <div class="ans-block ans-bad">
+            <span class="ans-tag">9 成 PM</span>
+            <div class="ans-quote">「他说啥我就做啥」 · 默默接受用 OpenAI</div>
+            <div class="ans-detail">代价:半年后产品翻车 · <span class="em">PM 背锅</span> · 老板不会记得是他自己拍的</div>
+          </div>
+          <div class="ans-block ans-good">
+            <span class="ans-tag">PM 视角</span>
+            <div class="ans-quote">讲 <span class="em" style="background:#fff;padding:1px 7px;border-radius:5px">商业语言</span> · 不讲 token 价格</div>
+          </div>
+        </div>
+
+        <div class="steps-block">
+          <span class="steps-tag">★ 老板汇报 · 3 句话术</span>
+          <div class="step-row">
+            <div class="step-no">1</div>
+            <div class="step-text"><span class="talk">「同样预算下 · Gemini 我们能服务的用户量是 OpenAI 的 <strong>2.5 倍</strong> · 这就是为什么 PMF 阶段用 Gemini」</span></div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">2</div>
+            <div class="step-text"><span class="talk">「同样精准度下 · Claude 在长文档摘要场景错误率比 OpenAI <strong>低 4-5 倍</strong> · 这就是为什么财报 / 报告类用 Claude」</span></div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">3</div>
+            <div class="step-text"><span class="talk">「OpenAI 强项是创意和 Agentic · Marketing 模块 + 客服 Agent 我们继续用 OpenAI」</span></div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">+</div>
+            <div class="step-text">老板会问「混用不复杂?」· 你接 <span class="talk">「同样复杂度 · 不绑定一家 · 某家挂了能切 · 其实是<span class="em">降低风险</span>」</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 第 2 件 -->
+      <article class="thing-card t2 fi">
+        <div class="thing-head">
+          <div class="thing-no">02</div>
+          <div class="thing-head-l">
+            <div class="thing-title">客户问「用什么大模型」该怎么答</div>
+            <div class="thing-sub">客户问 = 担心 3 件事 · 不是好奇 · 把担心翻译成承诺再答</div>
+          </div>
+        </div>
+
+        <div class="answer-row">
+          <div class="ans-block ans-bad">
+            <span class="ans-tag">9 成 PM</span>
+            <div class="ans-quote">「我们用 GPT-4」 · 一句话甩出去</div>
+            <div class="ans-detail">代价:客户没听到他想听的 · 继续<span class="em">担心数据泄漏 / 涨价 / 责任</span> · 合同卡住</div>
+          </div>
+          <div class="ans-block ans-good">
+            <span class="ans-tag">PM 视角</span>
+            <div class="ans-quote">把客户 3 个担心翻译成 4 句承诺 · 不说 token 不说 benchmark</div>
+          </div>
+        </div>
+
+        <div class="steps-block">
+          <span class="steps-tag">★ 客户问答 · 4 句法 · 直接背</span>
+          <div class="step-row">
+            <div class="step-no">1</div>
+            <div class="step-text"><span class="talk">「我们用 <span class="em">Anthropic + Google 双供应商</span> · 根据场景动态调度」</span><br><span style="font-size:12px;color:var(--cocoa-2)">→ 解 客户担心「绑死一家」</span></div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">2</div>
+            <div class="step-text"><span class="talk">「您的数据全部在我们<span class="em">私有云</span> · 不进训练 · SOC 2 + GDPR」</span><br><span style="font-size:12px;color:var(--cocoa-2)">→ 解 客户担心「数据泄漏」</span></div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">3</div>
+            <div class="step-text"><span class="talk">「成本我们已经<span class="em">锁 3 年</span> · 上游涨价我们承担」</span><br><span style="font-size:12px;color:var(--cocoa-2)">→ 解 客户担心「突然涨价」</span></div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">4</div>
+            <div class="step-text"><span class="talk">「SLA <span class="em">99.9</span> · 赔偿条款合同附件 A」</span><br><span style="font-size:12px;color:var(--cocoa-2)">→ 解 客户担心「出问题没人管」</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 第 3 件 -->
+      <article class="thing-card t3 fi">
+        <div class="thing-head">
+          <div class="thing-no">03</div>
+          <div class="thing-head-l">
+            <div class="thing-title">PRD 里「模型选型」章节怎么写</div>
+            <div class="thing-sub">写「能力要求」不写「模型名」 · 留余地 · 半年后不被自己 PRD 打脸</div>
+          </div>
+        </div>
+
+        <div class="answer-row">
+          <div class="ans-block ans-bad">
+            <span class="ans-tag">9 成 PM</span>
+            <div class="ans-quote">PRD 写 「使用 GPT-4o · 理由是稳定」</div>
+            <div class="ans-detail">代价:半年后工程师为成本切别家 · 你的 PRD <span class="em">成了打脸证据</span></div>
+          </div>
+          <div class="ans-block ans-good">
+            <span class="ans-tag">PM 视角</span>
+            <div class="ans-quote">写「能力需求」 · 让工程师匹配模型 · 不替工程师做决定</div>
+          </div>
+        </div>
+
+        <div class="prd-block">
+          <span class="prd-tag">★ PRD 模板 · 直接抄</span>
+          <span class="lbl">Section X · 模型能力要求</span><br>
+          1. 长文档检索准确率 ≥ <span class="gap">XX</span>% · 核心场景 <span class="gap">XXXX</span> · 文档大小 <span class="gap">XX</span> 页<br>
+          2. P99 响应时延 ≤ <span class="gap">XXX</span> ms · 用户端 RT 敏感<br>
+          3. 单次调用成本 ≤ <span class="gap">XX</span> 美分 · 保毛利率 ≥ <span class="gap">XX</span>%<br>
+          <br>
+          <span style="color:var(--cocoa-2);font-style:italic">具体由后端按能力清单匹配 · 本 PRD 不绑定供应商 · 以便未来切换</span>
+        </div>
+      </article>
+
+      <!-- 第 4 件 -->
+      <article class="thing-card t4 fi">
+        <div class="thing-head">
+          <div class="thing-no">04</div>
+          <div class="thing-head-l">
+            <div class="thing-title">客户实际感受到的模型差异</div>
+            <div class="thing-sub">PM 真正该看的不是 benchmark · 是「准 / 快 / 贵 / 调性」 · 直接决定续费率</div>
+          </div>
+        </div>
+
+        <div class="feel-grid">
+          <div class="feel-row">
+            <div class="feel-scene">企业知识库问答<br><span style="font-size:11px;color:var(--cocoa-2);font-weight:500">→ 决定 续费率</span></div>
+            <div class="feel-bad">
+              <span class="lab">OpenAI</span>
+              答案<span class="em">「泛」</span> · 客户觉得「不准」
+            </div>
+            <div class="feel-good">
+              <span class="lab">Claude</span>
+              答案<span class="em">带页码定位</span> · 客户觉得「靠谱」
+            </div>
+          </div>
+          <div class="feel-row">
+            <div class="feel-scene">营销文案生成<br><span style="font-size:11px;color:var(--cocoa-2);font-weight:500">→ 决定 退订率</span></div>
+            <div class="feel-bad">
+              <span class="lab">OpenAI</span>
+              有<span class="em">「人味」</span> · 客户觉得能用
+            </div>
+            <div class="feel-good">
+              <span class="lab">Claude</span>
+              <span class="em">「太严肃」</span> · 调性不匹配 · 退订
+            </div>
+          </div>
+          <div class="feel-row">
+            <div class="feel-scene">数据分析助手<br><span style="font-size:11px;color:var(--cocoa-2);font-weight:500">→ 决定 DAU</span></div>
+            <div class="feel-bad">
+              <span class="lab">OpenAI</span>
+              又<span class="em">「贵又慢」</span> · 客户觉得「卡」
+            </div>
+            <div class="feel-good">
+              <span class="lab">Gemini</span>
+              又<span class="em">「便宜又快」</span> · 客户觉得「丝滑」
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 第 5 件 · Fable 5 真实事件 -->
+      <article class="thing-card t5 fi">
+        <div class="thing-head">
+          <div class="thing-no">05</div>
+          <div class="thing-head-l">
+            <div class="thing-title">新模型出来该不该切(Fable 5 教科书案例)</div>
+            <div class="thing-sub">过去 4 天发生的真实事件 · 教 PM 一个最贵的「等 4 周」教学</div>
+          </div>
+        </div>
+
+        <!-- 4 天 timeline -->
+        <div style="margin-top:16px;background:#fff;border:2px solid var(--cocoa-deep);border-radius:18px;padding:24px 26px;box-shadow:4px 4px 0 var(--cherry)">
+          <div style="display:inline-flex;align-items:center;gap:6px;font-family:var(--display-en);font-size:11px;color:var(--cherry);letter-spacing:2px;font-weight:700;margin-bottom:18px;text-transform:uppercase">● 4 天真实 TIMELINE</div>
+
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:14px;margin-bottom:14px;align-items:start;padding:12px 14px;background:var(--mint-light);border-radius:12px;border:1.5px solid var(--mint-deep)">
+            <div style="font-family:var(--display-en);font-size:15px;color:var(--mint-deep);font-weight:800;letter-spacing:.5px">6/9</div>
+            <div style="font-size:13.5px;color:var(--cocoa-deep);line-height:1.6">Anthropic 发布 Fable 5 + Mythos 5 · SWE-bench Pro <strong>80.3 业界 SOTA</strong> · GitHub Copilot 同步集成 · 朋友圈刷屏 · 老板拍桌「切!」</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:14px;margin-bottom:14px;align-items:start;padding:12px 14px;background:var(--butter-light);border-radius:12px;border:1.5px solid var(--butter-deep)">
+            <div style="font-family:var(--display-en);font-size:15px;color:var(--butter-deep);font-weight:800;letter-spacing:.5px">6/10</div>
+            <div style="font-size:13.5px;color:var(--cocoa-deep);line-height:1.6">被指控<strong>「秘密降级」</strong> · 检测到敏感场景偷偷改 prompt + 调内部参数 · 研究员 backlash · Anthropic 道歉</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:14px;margin-bottom:14px;align-items:start;padding:12px 14px;background:var(--peach-soft);border-radius:12px;border:1.5px solid var(--cherry)">
+            <div style="font-family:var(--display-en);font-size:15px;color:var(--cherry);font-weight:800;letter-spacing:.5px">6/12<br><span style="font-size:10px;font-weight:600">5:21pm ET</span></div>
+            <div style="font-size:13.5px;color:var(--cocoa-deep);line-height:1.6"><strong>美国政府发 export-control directive</strong> · 要求暂停外国人访问 · Anthropic 因无法可靠区分 · <strong style="background:var(--cherry);color:#fff;padding:1px 6px;border-radius:4px">全球下架所有客户</strong></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:14px;align-items:start;padding:12px 14px;background:var(--lavender-light);border-radius:12px;border:1.5px solid var(--lavender-deep)">
+            <div style="font-family:var(--display-en);font-size:15px;color:var(--lavender-deep);font-weight:800;letter-spacing:.5px">6/13<br><span style="font-size:10px;font-weight:600">今天</span></div>
+            <div style="font-size:13.5px;color:var(--cocoa-deep);line-height:1.6">Fable 5 接口完全用不了 · 状态 = 暂停中 · 其他 Claude 模型(Opus 4.8 / Sonnet 4.6 / Haiku 4.5)正常 · <strong>上线即下架 72 小时</strong></div>
+          </div>
+        </div>
+
+        <!-- 反认知 · 想象一下 -->
+        <div style="margin-top:18px;background:var(--cocoa-deep);color:var(--cream);padding:24px 28px;border-radius:18px;border:2px solid var(--cocoa-deep);box-shadow:4px 4px 0 var(--cherry)">
+          <div style="font-family:var(--display-en);font-size:11px;color:var(--butter);letter-spacing:2px;font-weight:700;margin-bottom:12px;text-transform:uppercase">● 想象一下</div>
+          <div style="font-family:var(--display-cn);font-size:15.5px;color:var(--cream);font-weight:600;line-height:1.75">
+            你老板 <span style="background:var(--cherry);color:#fff;padding:1px 7px;border-radius:5px">6/9 拍桌「切」</span> · 你头脑一热说好<br>
+            工程师 ALL IN 2 周切 Fable 5<br>
+            <span style="background:var(--cherry);color:#fff;padding:1px 7px;border-radius:5px">6/12 刚切完上线</span> · 5:21pm Anthropic 全球下架<br>
+            生产瘫痪 · 客户问「你们怎么挂了」<br>
+            <span style="background:var(--butter);color:var(--cocoa-deep);padding:1px 7px;border-radius:5px">→ 6/13 你被开除</span>
+          </div>
+        </div>
+
+        <!-- Q0 + 3 问框架 -->
+        <div class="steps-block">
+          <span class="steps-tag">★ 新模型评估 · Q0 + 3 问框架</span>
+          <div class="step-row">
+            <div class="step-no">0</div>
+            <div class="step-text"><strong>前置 · 你能不能等 4 周?</strong> · 新模型前 4 周 = <span class="em">死亡观察期</span> · 早期 API bug / 监管介入 / 价格变化 / 秘密限制 任意一项都能让切换变事故。等不了 = 别切 · 不管模型多强</div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">1</div>
+            <div class="step-text"><strong>核心场景对口吗?</strong> · Fable 5 强项 = 复杂代码 + 长时 Agentic + Vision · 我们聊天客服 = 不切 · 金融审核 / 长文档 = 评估</div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">2</div>
+            <div class="step-text"><strong>工程成本 vs 收益?</strong> · 切换 ≈ 1 个月工程 · 换来「客户感知不出来」 = 不切 · 换来「关键场景错误率减半」 = 评估</div>
+          </div>
+          <div class="step-row">
+            <div class="step-no">3</div>
+            <div class="step-text"><strong>时机对吗?</strong> · Fable 5 给了你最贵的示范 · <span class="em">等 4 周</span> · 让别家先踩坑</div>
+          </div>
+        </div>
+
+        <!-- CEO 标准答法 -->
+        <div class="fable-mini">
+          <span class="fable-mini-tag">CEO 标准答法 · 可直接抄</span>
+          <div class="fable-mini-title">六月十二号下架之后 · 你这样答 CEO ↓</div>
+          <div class="fable-mini-body">
+            <span class="em">「我建议 4 周后再评估 · 这次 Fable 5 三天下架是给我们的提醒 · 如果 Anthropic 解决了政府问题 · 且我们的金融审核模块错误率比 Opus 4.8 降 30 点 · 值得切 · 其他模块不切」</span>
+            <br><br>
+            CEO 听完会觉得 — 这 PM 决策能力够 · <span class="em">懂得敬畏</span> · 不被新模型 hype 带节奏<br>
+            ★ <span class="em">早一步切是赌博 · 等 4 周是专业</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 收尾金句 -->
+  <section class="golden fi">
+    <div class="golden-tag">KEY TAKE</div>
+    <h2 class="golden-h">
+      工程师懂<span class="em">技术</span><br>
+      PM 懂老板要的 · 客户要的 · 用户要的<br>
+      <span class="em">翻译</span> 是 PM 的事
+    </h2>
+    <div class="golden-sub">
+      这才是 AI PM 真正的核心壁垒<br>
+      也是为什么 PM 工资不能被工程师压价的原因
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta fi">
+    <div class="cta-tag">评论区扣【翻译】</div>
+    <h2 class="cta-h">私信送你 <span class="em">5 件事话术资料包</span></h2>
+    <div class="cta-list">
+      <div class="cta-row"><span class="ok">✓</span>老板汇报「为什么不用 OpenAI」3 句话术(直接背)</div>
+      <div class="cta-row"><span class="ok">✓</span>客户问「用什么模型」标准答法 4 句法</div>
+      <div class="cta-row"><span class="ok">✓</span>PRD「模型能力要求」章节填空模板</div>
+      <div class="cta-row"><span class="ok">✓</span>用户感受倒推模型决策矩阵(产品 sense 加分项)</div>
+      <div class="cta-row"><span class="ok">✓</span>新模型评估 3 问框架(下次再有新模型也能用)</div>
+    </div>
+    <div class="cta-keyword">
+      <span class="lab">CMD</span>
+      <span class="kw">翻译</span>
+      <span class="arrow">→</span>
+      <span style="font-family:var(--display-cn);font-size:14px;color:var(--peach-soft)">私信领取完整资料包</span>
+    </div>
+  </section>
+
+  <!-- 下期预告 -->
+  <section class="next-up fi">
+    <div class="next-up-tag">下一期 · 评论区告诉我</div>
+    <div class="next-up-h">你想听哪个</div>
+    <div class="next-list">
+      <div class="next-item"><span class="l">A</span>AI PM 简历「我做过 X」怎么写 · 6 个改写模板</div>
+      <div class="next-item"><span class="l">B</span>AI 产品上线第一周 · 7 张必看 dashboard</div>
+      <div class="next-item"><span class="l">C</span>AI PM 入职第 30 天最少要做的 5 件事</div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span class="author">NOVA</span>
+    Vol.36 · AI PM 不选模型 · 但你要懂的 5 件事<br>
+    Mia · 前卫 AI 产品经理 · 不被 demo 带节奏的实战派<br>
+    我们不讲 token · 我们讲翻译
+  </div>
+
+</div>
+
+<script>
+const io = new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+}, {threshold: .1, rootMargin: '0px 0px -50px 0px'});
+document.querySelectorAll('.fi').forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

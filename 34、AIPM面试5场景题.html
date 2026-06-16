@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol.34 · AI 产品经理面试 5 道场景题 · 60 分 vs 90 分答法对照</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Archivo+Black&family=Bebas+Neue&family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@600;900&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#FEFCF5;--paper-2:#FFFEF0;--paper-3:#F5EFE0;--paper-4:#EDE5D0;
+  --ink:#1C1A18;--ink-2:#3D3833;--ink-3:#7A746B;--ink-4:#A8A096;
+  --yellow:#FFD93D;--yellow-deep:#F4B400;--yellow-light:#FFF0A8;--yellow-soft:#FFF7D1;
+  --coral:#FF5E5B;--coral-deep:#E03C39;--coral-light:#FFD4D2;--coral-soft:#FFE9E7;
+  --red:#D62828;--red-deep:#9D1818;--red-light:#FCC9C7;
+  --green:#3EA040;--green-deep:#247226;--green-light:#BFE3C0;--green-soft:#DEF1DE;
+  --blue:#3461A8;--blue-deep:#1E3F73;--blue-light:#C2D2EC;--blue-soft:#DFE7F4;
+  --purple:#6B4FA0;--purple-soft:#EBE2F4;
+  --orange:#FF8C42;--orange-soft:#FFEADD;
+  --sans:"Noto Sans SC","PingFang SC",sans-serif;
+  --serif:"Noto Serif SC","Songti SC",serif;
+  --display-en:"Archivo Black","Bebas Neue",sans-serif;
+  --display-cn:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono",monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.78;-webkit-font-smoothing:antialiased;font-weight:500;position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle, rgba(244,180,0,.05) 1.2px, transparent 1.5px);background-size:24px 24px}
+
+main{max-width:1000px;margin:0 auto;padding:60px 40px 80px;position:relative;z-index:2}
+
+/* ============ HERO ============ */
+.hero{margin-bottom:60px;position:relative}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.hero-vol{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;letter-spacing:3px;color:#fff;background:var(--coral);font-weight:700;padding:7px 14px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);border-radius:4px}
+.hero-vol::before{content:"NOVA";font-family:var(--display-en);letter-spacing:2px;border-right:1.5px solid rgba(255,255,255,.4);padding-right:8px}
+.hero-tag{font-family:var(--display-cn);font-size:12px;color:var(--ink);background:var(--yellow);padding:5px 11px;border:3px solid var(--ink);border-radius:4px;font-weight:900;letter-spacing:1px}
+
+.hero h1{font-family:var(--sans);font-size:62px;font-weight:900;line-height:1.08;letter-spacing:-2.5px;color:var(--ink);margin-bottom:26px}
+.hero h1 .hl{background:var(--yellow);padding:2px 16px;display:inline-block;box-shadow:8px 8px 0 var(--ink);border:5px solid var(--ink);border-radius:8px;transform:rotate(-1deg)}
+.hero-sub{font-family:var(--serif);font-size:19px;color:var(--ink-2);font-weight:600;line-height:1.85;margin-bottom:36px;max-width:780px;font-style:italic}
+.hero-sub strong{color:var(--coral-deep);font-weight:900;background:var(--yellow);padding:0 5px;border:2px solid var(--ink);border-radius:3px;font-style:normal}
+
+/* 数据卡 */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:30px}
+.stat-card{background:#fff;border:5px solid var(--ink);box-shadow:8px 8px 0 var(--ink);border-radius:14px;padding:24px 20px;text-align:center;transition:transform .2s}
+.stat-card:hover{transform:translate(-2px,-3px);box-shadow:10px 11px 0 var(--ink)}
+.stat-card.win{background:var(--yellow-light)}
+.stat-card .num{font-family:var(--display-en);font-size:62px;color:var(--ink);font-weight:900;line-height:1;letter-spacing:-2px;text-shadow:4px 4px 0 var(--yellow)}
+.stat-card.win .num{color:var(--green-deep)}
+.stat-card .num .unit{font-size:28px;color:var(--ink-2);margin-left:3px;text-shadow:none}
+.stat-card .lab{font-family:var(--display-cn);font-size:14px;color:var(--ink);font-weight:900;margin-top:10px;line-height:1.5}
+.stat-card .desc{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-top:6px;letter-spacing:.5px;font-weight:700}
+
+/* sec-title */
+.sec-title{font-family:var(--display-cn);font-size:34px;font-weight:900;color:var(--ink);margin-top:80px;margin-bottom:28px;padding-bottom:16px;border-bottom:5px solid var(--ink);display:flex;align-items:center;gap:16px;position:relative}
+.sec-title::after{content:"";position:absolute;bottom:-5px;left:0;width:100px;height:5px;background:var(--coral)}
+.sec-title .num-tag{background:var(--ink);color:var(--yellow);font-family:var(--mono);font-size:14px;padding:7px 13px;border-radius:5px;letter-spacing:1.5px;font-weight:700;box-shadow:4px 4px 0 var(--coral)}
+.sec-intro{font-family:var(--sans);font-size:15.5px;color:var(--ink-2);margin-bottom:30px;line-height:1.85;max-width:860px;font-weight:500}
+
+/* ============ 5 道题 ============ */
+.question{background:#fff;border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);border-radius:16px;overflow:hidden;margin-bottom:40px}
+.q-head{display:grid;grid-template-columns:80px 1fr auto;gap:18px;align-items:center;padding:22px 26px;border-bottom:5px solid var(--ink)}
+.question[data-q="1"] .q-head{background:var(--coral-soft)}
+.question[data-q="2"] .q-head{background:var(--yellow-light)}
+.question[data-q="3"] .q-head{background:var(--blue-soft)}
+.question[data-q="4"] .q-head{background:var(--green-soft)}
+.question[data-q="5"] .q-head{background:var(--purple-soft)}
+
+.q-no{font-family:var(--display-en);font-size:42px;font-weight:900;line-height:1;color:var(--ink);background:#fff;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);text-align:center;padding:14px 0;border-radius:10px;letter-spacing:-1px}
+.q-title-wrap{flex:1}
+.q-no-label{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:2px;font-weight:700;margin-bottom:4px}
+.q-no-label::before{content:"题 "}
+.q-title{font-family:var(--display-cn);font-size:23px;font-weight:900;line-height:1.3;color:var(--ink)}
+.q-title small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:700;margin-top:5px;letter-spacing:1.5px}
+.q-type{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--ink);color:#fff;padding:7px 12px;border-radius:6px;letter-spacing:1.5px;white-space:nowrap}
+
+.q-body{padding:24px 28px}
+
+/* 题面引述 */
+.q-prompt{background:var(--paper-3);border:3px solid var(--ink);border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:4px 4px 0 var(--ink)}
+.q-prompt .label{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:1.5px;font-weight:700;margin-bottom:6px}
+.q-prompt .label::before{content:"题面 · "}
+.q-prompt .text{font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:600;line-height:1.6;font-style:italic}
+.q-prompt .text::before{content:"「"}.q-prompt .text::after{content:"」"}
+
+/* 60 vs 90 对照 */
+.q-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
+.col{padding:20px 22px;border:4px solid var(--ink);border-radius:12px;position:relative}
+.col-60{background:var(--red-light);box-shadow:5px 5px 0 var(--red-deep)}
+.col-90{background:var(--green-soft);box-shadow:5px 5px 0 var(--green-deep)}
+.col-label{position:absolute;top:-15px;left:18px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:1.5px;padding:5px 12px;border:3px solid var(--ink);border-radius:4px;color:#fff;box-shadow:3px 3px 0 var(--ink)}
+.col-60 .col-label{background:var(--red)}
+.col-60 .col-label::before{content:"✗ 60 分 · "}
+.col-90 .col-label{background:var(--green-deep)}
+.col-90 .col-label::before{content:"✓ 90 分 · "}
+.col-quote{font-family:var(--serif);font-size:15px;color:var(--ink);font-weight:600;border-left:4px solid var(--ink);padding:6px 0 6px 14px;margin-bottom:12px;background:rgba(255,255,255,.4);font-style:italic;line-height:1.7}
+.col p{font-family:var(--sans);font-size:14px;color:var(--ink);font-weight:500;line-height:1.7;margin-bottom:6px}
+.col p:last-child{margin-bottom:0}
+.col strong{font-weight:900;background:rgba(255,255,255,.6);padding:0 4px;border:1.5px solid var(--ink);border-radius:2px}
+.col-60 strong{color:var(--red-deep)}
+.col-90 strong{color:var(--green-deep)}
+.col-tag{display:inline-block;font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:1.5px;font-weight:700;margin-top:10px;padding:4px 8px;background:rgba(255,255,255,.6);border:2px solid var(--ink);border-radius:4px}
+
+/* 开口公式 + 核心 */
+.q-formula{background:var(--ink);color:var(--paper);padding:18px 22px;border-radius:10px;font-family:var(--sans);font-size:15px;font-weight:600;line-height:1.75;box-shadow:4px 4px 0 var(--coral);margin-bottom:12px}
+.q-formula .lab{font-family:var(--mono);font-size:11px;color:var(--yellow);letter-spacing:1.5px;font-weight:700;display:block;margin-bottom:6px}
+.q-formula .lab::before{content:"→ 开口公式 · "}
+.q-formula strong{color:var(--yellow);font-weight:900}
+
+.q-key{padding:14px 20px;background:var(--yellow);border-left:5px solid var(--ink);border-radius:0 8px 8px 0;font-family:var(--sans);font-size:14.5px;color:var(--ink);font-weight:700;line-height:1.7}
+.q-key::before{content:"★ 核心 · ";font-family:var(--display-cn);color:var(--coral-deep);font-weight:900}
+
+/* ============ 共同 pattern ============ */
+.pattern-card{background:#fff;border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);border-radius:16px;padding:32px 36px}
+.pattern-list{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}
+.pat{background:var(--green-soft);border:3px solid var(--green-deep);border-radius:10px;padding:18px 22px;box-shadow:4px 4px 0 var(--green-deep)}
+.pat .pat-no{font-family:var(--display-en);font-size:32px;color:var(--green-deep);line-height:1;font-weight:900;letter-spacing:-1px}
+.pat .pat-title{font-family:var(--display-cn);font-size:16px;color:var(--ink);font-weight:900;margin:6px 0 8px;line-height:1.3}
+.pat .pat-desc{font-family:var(--sans);font-size:13.5px;color:var(--ink);font-weight:500;line-height:1.7}
+.pat .pat-desc strong{color:var(--green-deep);font-weight:900;background:#fff;padding:0 4px;border:1.5px solid var(--green-deep);border-radius:2px}
+
+/* ============ 金句 ============ */
+.golden{background:var(--ink);color:var(--paper);border:5px solid var(--ink);box-shadow:11px 11px 0 var(--coral);border-radius:18px;padding:46px 40px;margin:60px 0 40px;position:relative;text-align:center;overflow:hidden}
+.golden::before{content:"90";position:absolute;font-family:var(--display-en);font-size:280px;color:rgba(255,217,61,.06);font-weight:900;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;line-height:1;letter-spacing:-20px}
+.golden-tag{display:inline-block;background:var(--coral);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:2px;padding:6px 14px;border:3px solid var(--paper);border-radius:4px;margin-bottom:22px;box-shadow:3px 3px 0 var(--yellow);position:relative;z-index:2}
+.golden h3{font-family:var(--display-cn);font-size:34px;color:var(--yellow);font-weight:900;line-height:1.4;letter-spacing:1px;position:relative;z-index:2}
+.golden h3 strong{color:#fff;background:var(--coral);padding:2px 12px;border-radius:6px;font-weight:900;display:inline-block;margin:0 4px;transform:rotate(-1deg)}
+.golden .sub{font-family:var(--serif);font-size:16px;color:var(--paper-3);font-weight:600;margin-top:18px;font-style:italic;position:relative;z-index:2}
+
+/* CTA */
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px}
+.cta-card{background:var(--yellow);border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);padding:32px 26px;border-radius:16px;text-align:center;transition:all .25s;position:relative;overflow:hidden}
+.cta-card::before{content:"";position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:var(--coral);border-radius:50%;opacity:.15}
+.cta-card:nth-child(2){background:var(--blue-light)}
+.cta-card:nth-child(2)::before{background:var(--blue)}
+.cta-card:hover{transform:translate(-3px,-5px);box-shadow:12px 14px 0 var(--ink)}
+.cta-card .cta-tag{position:relative;z-index:2;display:inline-block;font-family:var(--mono);font-size:11px;color:#fff;background:var(--coral);padding:5px 12px;border:2px solid var(--ink);border-radius:4px;letter-spacing:1.5px;font-weight:700;margin-bottom:18px}
+.cta-card:nth-child(2) .cta-tag{background:var(--blue-deep)}
+.cta-card h4{position:relative;z-index:2;font-family:var(--display-cn);font-size:20px;color:var(--ink);font-weight:900;margin-bottom:12px;line-height:1.35}
+.cta-card p{position:relative;z-index:2;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);line-height:1.75;margin-bottom:20px;font-weight:500}
+.cta-btn{position:relative;z-index:2;display:inline-flex;align-items:center;gap:10px;background:var(--coral);color:#fff;font-family:var(--display-cn);font-size:16px;font-weight:900;padding:12px 24px;border:3px solid var(--ink);border-radius:10px;cursor:pointer;transition:all .15s;letter-spacing:.8px;box-shadow:4px 4px 0 var(--ink)}
+.cta-card:nth-child(2) .cta-btn{background:var(--blue-deep)}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:5px 7px 0 var(--ink)}
+.cta-btn.copied{background:var(--green-deep);color:#fff;animation:bump .4s ease}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+.next-card{background:var(--blue);border:5px solid var(--ink);box-shadow:9px 9px 0 var(--blue-deep);padding:30px 32px;border-radius:16px;margin-top:36px;color:#fff;position:relative;overflow:hidden}
+.next-card::before{content:"";position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:var(--yellow);border-radius:50%;opacity:.12}
+.next-card .next-q{position:relative;z-index:2;font-family:var(--display-cn);font-size:19px;color:var(--yellow);font-weight:900;margin-bottom:18px;letter-spacing:.5px}
+.next-card .next-q::before{content:"Q · 下一期想聊什么?评论区告诉我 · "}
+.next-list{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px}
+.next-item{background:#fff;border:3px solid var(--ink);padding:13px 18px;border-radius:10px;font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:14px;box-shadow:3px 3px 0 var(--blue-deep);cursor:pointer;transition:all .2s}
+.next-item:hover{transform:translateX(8px);box-shadow:6px 3px 0 var(--blue-deep)}
+.next-item .tag{background:var(--blue-deep);color:var(--yellow);font-family:var(--display-en);font-size:14px;padding:4px 11px;border-radius:5px;font-weight:900;border:2px solid var(--ink)}
+
+.outro{margin-top:60px;padding:42px 30px;background:var(--yellow);border:5px solid var(--ink);box-shadow:10px 10px 0 var(--coral);border-radius:16px;text-align:center;position:relative;overflow:hidden}
+.outro::before{content:"NOVA";position:absolute;font-family:var(--display-en);font-size:240px;color:rgba(28,26,24,.04);font-weight:900;letter-spacing:30px;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none}
+.outro p{position:relative;z-index:2;font-family:var(--display-cn);font-size:18px;font-weight:900;margin-bottom:8px;letter-spacing:.5px;color:var(--ink)}
+.outro .nova{position:relative;z-index:2;font-family:var(--display-en);font-size:42px;color:var(--coral);letter-spacing:8px;font-weight:900;margin-top:20px;text-shadow:5px 5px 0 var(--ink);display:inline-block}
+.outro .nova::before,.outro .nova::after{content:"★";color:var(--coral-deep);font-size:22px;margin:0 12px;vertical-align:middle}
+.outro .small{position:relative;z-index:2;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);font-weight:500;margin-top:12px}
+
+.fade-in{opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+.fade-in.in{opacity:1;transform:translateY(0)}
+
+@media (max-width:760px){
+  .hero h1{font-size:38px}
+  .stats-row{grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .stat-card .num{font-size:36px}
+  .q-head{grid-template-columns:60px 1fr;gap:12px;padding:18px}
+  .q-no{font-size:30px;padding:10px 0}
+  .q-type{display:none}
+  .q-compare{grid-template-columns:1fr;gap:14px}
+  .pattern-list{grid-template-columns:1fr;gap:14px}
+  .cta-grid{grid-template-columns:1fr}
+  main{padding:30px 16px 60px}
+  .sec-title{font-size:24px}
+  .golden h3{font-size:22px}
+  .outro .nova{font-size:30px;letter-spacing:5px}
+  .outro::before{font-size:140px;letter-spacing:18px}
+}
+</style>
+</head>
+<body>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-meta">
+      <span class="hero-vol">VOL.34</span>
+      <span class="hero-tag">AI PM 面试 · 场景题</span>
+    </div>
+
+    <h1>AI PM 面试 · 5 道场景题<br><span class="hl">60 分 vs 90 分</span></h1>
+    <p class="hero-sub">接 Vol.31「候选人 Y」那期讲 —— 这次换面试官视角。
+      5 道我最常考的场景题,<strong>3 道答到 90 分 = 80% Hire 率</strong>。</p>
+
+    <!-- 统计数据 -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="num"><span data-count="67">0</span></div>
+        <div class="lab">面过的候选人</div>
+        <div class="desc">PAST 12 MONTHS</div>
+      </div>
+      <div class="stat-card win">
+        <div class="num"><span data-count="3">0</span><span class="unit">/5</span></div>
+        <div class="lab">答到 90 分的题数</div>
+        <div class="desc">★ HIRE 临界点</div>
+      </div>
+      <div class="stat-card">
+        <div class="num"><span data-count="80">0</span><span class="unit">%</span></div>
+        <div class="lab">达 ★ 后的 Hire 率</div>
+        <div class="desc">3 道 90 分 → 8/10 Hire</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 道题 -->
+  <section class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">5 SCENARIOS</span>5 道场景题 · 拆给你看</h2>
+    <p class="sec-intro">每道题:面试官原话 + 60 分常见错点 + 90 分开口公式 + 我们想听的核心。</p>
+
+    <!-- 题 1 -->
+    <article class="question fade-in" data-q="1">
+      <div class="q-head">
+        <div class="q-no">01</div>
+        <div class="q-title-wrap">
+          <div class="q-no-label">设计题<small>PRODUCT DESIGN · 不预设方案 · 先界定空间</small></div>
+          <div class="q-title">教育答疑产品 · 设计 AI 助手帮老师批改作业</div>
+        </div>
+        <div class="q-type">DESIGN</div>
+      </div>
+      <div class="q-body">
+        <div class="q-prompt">
+          <div class="label"></div>
+          <div class="text">假设我们做教育答疑产品。让你设计一个 AI 助手帮老师批改学生作业并给反馈,你会怎么设计?</div>
+        </div>
+        <div class="q-compare">
+          <div class="col col-60">
+            <div class="col-label"></div>
+            <div class="col-quote">用户画像 / 用户旅程 / 产品架构图 · OCR 识别 + LLM 生成反馈 + Function Call 调学生数据</div>
+            <p>讲完一套像 PPT 范本的方案 · <strong>不是设计 · 是抄 PRD 模板</strong></p>
+            <div class="col-tag">面试官内心:这人没经过思考</div>
+          </div>
+          <div class="col col-90">
+            <div class="col-label"></div>
+            <div class="col-quote">我先问 3 个边界:这产品是<strong>给老师减负、给学生提升、还是给家长安心</strong>?3 个方向 AI 设计完全不一样。</div>
+            <p>给老师减负 → 批改提速优先 · 反馈接受 80 分</p>
+            <p>给学生提升 → 反馈深度优先 · 批改可以慢但要解释为什么错</p>
+            <div class="col-tag">面试官内心:这人有产品 sense</div>
+          </div>
+        </div>
+        <div class="q-formula">
+          <span class="lab"></span>
+          「我先问 3 个边界问题:<strong>X 是 Y 还是 Z</strong>?然后基于这个判断,讲后面的设计。」
+        </div>
+        <div class="q-key">不预设方案 · 先界定决策空间 · 哪怕你说错 · 面试官会跟你聊 · 你直接跳进方案 · 面试官觉得你没思考</div>
+      </div>
+    </article>
+
+    <!-- 题 2 -->
+    <article class="question fade-in" data-q="2">
+      <div class="q-head">
+        <div class="q-no">02</div>
+        <div class="q-title-wrap">
+          <div class="q-no-label">决策题<small>DECISION · 不是方案多 · 是诊断流程清</small></div>
+          <div class="q-title">RAG 系统准确率到 78% 上不去 · 你会怎么做?</div>
+        </div>
+        <div class="q-type">DECISION</div>
+      </div>
+      <div class="q-body">
+        <div class="q-prompt">
+          <div class="label"></div>
+          <div class="text">你的 RAG 系统上线后准确率到 78 就上不去了。接下来你会怎么做?</div>
+        </div>
+        <div class="q-compare">
+          <div class="col col-60">
+            <div class="col-label"></div>
+            <div class="col-quote">列方案 → 调 chunk 大小 / 换 embedding 模型 / 加 re-ranker / 调温度 / 改 prompt / 加 few-shot</div>
+            <p>方案没错 · 但 <strong>是杂货摊 · 没说先动哪个</strong></p>
+            <div class="col-tag">面试官内心:你怎么决定先调哪个?</div>
+          </div>
+          <div class="col col-90">
+            <div class="col-label"></div>
+            <div class="col-quote">我会先看 bad case 分布。拉过去一周准确率没达标的 query 100 条人工 audit · 分 3 类。</div>
+            <p>① <strong>检索没召回对</strong>(70% → 动 chunk + embedding)</p>
+            <p>② <strong>召回对但模型理解错</strong>(70% → 动 prompt + few-shot)</p>
+            <p>③ <strong>用户预期错</strong>(70% → 动产品引导,不动模型)</p>
+            <div class="col-tag">面试官内心:这人有诊断思维</div>
+          </div>
+        </div>
+        <div class="q-formula">
+          <span class="lab"></span>
+          「我会先做诊断,把问题拆成 <strong>X / Y / Z 类</strong>,根据分布决定<strong>先动哪一块</strong>。」
+        </div>
+        <div class="q-key">60 分给方案多 · 90 分给诊断框架 · 区别就在「先动哪个」这一步</div>
+      </div>
+    </article>
+
+    <!-- 题 3 -->
+    <article class="question fade-in" data-q="3">
+      <div class="q-head">
+        <div class="q-no">03</div>
+        <div class="q-title-wrap">
+          <div class="q-no-label">复盘题<small>POSTMORTEM · 复盘不是归因 · 是下次防住</small></div>
+          <div class="q-title">AI 客服上线 P0 事故 · 复盘报告怎么写?</div>
+        </div>
+        <div class="q-type">POSTMORTEM</div>
+      </div>
+      <div class="q-body">
+        <div class="q-prompt">
+          <div class="label"></div>
+          <div class="text">假设你的 AI 客服上线后出了一次 P0 事故,要你写复盘报告,会怎么写?</div>
+        </div>
+        <div class="q-compare">
+          <div class="col col-60">
+            <div class="col-label"></div>
+            <div class="col-quote">经典结构:时间线 / 影响范围 / 根因分析 / 改进措施 / 责任人</div>
+            <p>无可挑剔 · 但平庸 · <strong>哪个 PM 都会写</strong></p>
+            <div class="col-tag">面试官内心:还有别的吗</div>
+          </div>
+          <div class="col col-90">
+            <div class="col-label"></div>
+            <div class="col-quote">报告最前面加一节:「<strong>如果时间回到事故前一周,我们最早能在哪发现征兆?</strong>」</div>
+            <p>把这个时间点 + 具体动作写清楚 · 这叫 <strong>leading indicator(先行指标)</strong></p>
+            <p>事后复盘容易 · 事前预警难 · 90 分的报告把「先行指标」作为最重要产出</p>
+            <div class="col-tag">面试官内心:这人在系统里防事故,不只是写报告</div>
+          </div>
+        </div>
+        <div class="q-formula">
+          <span class="lab"></span>
+          「我的复盘会有一节专门写<strong>先行指标</strong>:倒推到事故前 X 天,我们最早能在哪发现征兆。」
+        </div>
+        <div class="q-key">复盘不是为了归因 · 是为了下次防住 · 90 分把「下次怎么提前发现」作为核心产出</div>
+      </div>
+    </article>
+
+    <!-- 题 4 -->
+    <article class="question fade-in" data-q="4">
+      <div class="q-head">
+        <div class="q-no">04</div>
+        <div class="q-title-wrap">
+          <div class="q-no-label">沟通题<small>COMMUNICATE · 翻译技术成钱和时间</small></div>
+          <div class="q-title">给 CEO 5 分钟讲清楚 AI Agent · 该不该投</div>
+        </div>
+        <div class="q-type">COMMUNICATE</div>
+      </div>
+      <div class="q-body">
+        <div class="q-prompt">
+          <div class="label"></div>
+          <div class="text">让你给 CEO 用 5 分钟讲清楚什么是 AI Agent,以及为什么我们应该投入做。</div>
+        </div>
+        <div class="q-compare">
+          <div class="col col-60">
+            <div class="col-label"></div>
+            <div class="col-quote">Agent 是能调工具的 LLM,跟 ChatGPT 区别是会真执行操作,跟传统自动化区别是自然语言理解</div>
+            <p>讲技术对 · 但 <strong>CEO 听完不会投钱</strong></p>
+            <div class="col-tag">面试官内心:CEO 听完一脸懵</div>
+          </div>
+          <div class="col col-90">
+            <div class="col-label"></div>
+            <div class="col-quote">CEO 您手下 <strong>10 个销售总监</strong> · 每周花 <strong>5 小时</strong>整理 Salesforce 写周报。</div>
+            <p>Agent 能让他说一句「给我看华东上周进展」<strong>自动出周报</strong></p>
+            <p>一年省 <strong>2600 小时 = 78 万</strong> · 投入 <strong>3 工程师 2 月 = 60 万</strong> · <strong>ROI > 10×</strong> · 建议投</p>
+            <div class="col-tag">面试官内心:CEO 决策已经倾向投</div>
+          </div>
+        </div>
+        <div class="q-formula">
+          <span class="lab"></span>
+          「CEO 您手下 <strong>X 团队每周 Y 小时做 Z</strong>,Agent 自动化省 N 小时 = M 万 · 投入 P 万 · <strong>ROI K×</strong> · 建议投。」
+        </div>
+        <div class="q-key">跟非技术决策人讲技术 · 要把技术翻译成<strong>钱和时间</strong></div>
+      </div>
+    </article>
+
+    <!-- 题 5 -->
+    <article class="question fade-in" data-q="5">
+      <div class="q-head">
+        <div class="q-no">05</div>
+        <div class="q-title-wrap">
+          <div class="q-no-label">取舍题<small>TRADE-OFF · 60 分看场景 · 90 分敢给立场</small></div>
+          <div class="q-title">准确率 / 延迟 / 成本 · 必须放弃一个 · 放弃哪个?</div>
+        </div>
+        <div class="q-type">TRADE-OFF</div>
+      </div>
+      <div class="q-body">
+        <div class="q-prompt">
+          <div class="label"></div>
+          <div class="text">准确率、延迟、成本,三个目标必须放弃一个,你会放弃哪个?</div>
+        </div>
+        <div class="q-compare">
+          <div class="col col-60">
+            <div class="col-label"></div>
+            <div class="col-quote">「看场景」</div>
+            <p>不算错 · 但 <strong>面试官没听到立场</strong></p>
+            <div class="col-tag">面试官内心:你有想法吗</div>
+          </div>
+          <div class="col col-90">
+            <div class="col-label"></div>
+            <div class="col-quote">我先反问:这是 <strong>C 端高频</strong> 还是 <strong>B 端低频</strong>?</div>
+            <p>如果是 C 端 · 我放弃<strong>准确率到一定阈值之上的边际提升</strong>,保延迟和成本。</p>
+            <p>理由:C 端用户对延迟 > 2s 的容忍度是 <strong>0</strong> · 而准确率从 85→90 的边际成本是 75→85 的 <strong>3 倍</strong> · 我在 85 停下 · 把那笔钱投到延迟和兜底体验。</p>
+            <div class="col-tag">面试官内心:这人不光会答 · 还能算账</div>
+          </div>
+        </div>
+        <div class="q-formula">
+          <span class="lab"></span>
+          「我先反问场景是 X 还是 Y · 如果 X · 放弃 Z 边际 · 保 A、B · 因为用户对 A 容忍度低于 X · Z 边际成本是 N 倍。」
+        </div>
+        <div class="q-key">60 分「看情况」· 90 分敢给立场 + 能算账</div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- 共同 pattern -->
+  <section class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">PATTERN</span>5 道题的共同 90 分 pattern</h2>
+    <p class="sec-intro">看完 5 道题 · 90 分答法有共同的 4 个特征 · 学这 4 个比记答案更重要。</p>
+
+    <div class="pattern-card">
+      <div class="pattern-list">
+        <div class="pat">
+          <div class="pat-no">01</div>
+          <div class="pat-title">不直接跳进方案</div>
+          <div class="pat-desc"><strong>先界定边界</strong>或<strong>反问场景</strong> · 哪怕只说一句:「我先问 X 还是 Y」</div>
+        </div>
+        <div class="pat">
+          <div class="pat-no">02</div>
+          <div class="pat-title">给框架 不给清单</div>
+          <div class="pat-desc">60 分列 5 个方案 · 90 分给 <strong>1 个决策框架</strong> · 用 X / Y / Z 类拆问题</div>
+        </div>
+        <div class="pat">
+          <div class="pat-no">03</div>
+          <div class="pat-title">抽象翻译成具体</div>
+          <div class="pat-desc">翻译成 <strong>钱、时间、用户感受、bad case 分布</strong> · 不停留在概念</div>
+        </div>
+        <div class="pat">
+          <div class="pat-no">04</div>
+          <div class="pat-title">敢给立场</div>
+          <div class="pat-desc">60 分「看情况」· 90 分 <strong>「我选 X · 因为 Y」</strong> · 能错 · 但要有立场</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 金句 -->
+  <section class="fade-in">
+    <div class="golden">
+      <span class="golden-tag">★ 一句话本期</span>
+      <h3>3 道 90 分<br><strong>= 80% Hire 率</strong></h3>
+      <p class="sub">把 5 道题打出来 · 关掉文档 · 开口答一遍<br>
+        用开口公式重答一遍 · 录音听两遍 · 你会知道差在哪</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">FREE</span>领模板 · 评论区扣关键词</h2>
+    <div class="cta-grid">
+      <div class="cta-card">
+        <span class="cta-tag">VOL.34 模板</span>
+        <h4>5 道场景题完整答题指南</h4>
+        <p>5 道题完整题面 + 60 分错点 + 90 分开口公式 + 我们想听的核心 + 每道配 20 道追问的备答模板 + 真实候选人答错 vs 答对录音转文字对照(脱敏)</p>
+        <button class="cta-btn" data-copy="场景题">扣【场景题】</button>
+      </div>
+      <div class="cta-card">
+        <span class="cta-tag">全栈系列</span>
+        <h4>AI PM 全栈知识地图 Vol.1-33</h4>
+        <p>Prompt / Context / RAG / MCP / Function Calling / Agent / Eval / 兜底链 / PRD / 立项 / 上线 / 面试 / 跳槽<br>14 个模块整理成一份 Word</p>
+        <button class="cta-btn" data-copy="知识地图">扣【知识地图】</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="fade-in">
+    <div class="next-card">
+      <div class="next-q">三个候选,告诉我你想听哪个</div>
+      <div class="next-list">
+        <div class="next-item"><span class="tag">A</span>AI PM 简历「我做过 X」那栏怎么写(接今天的场景题)</div>
+        <div class="next-item"><span class="tag">B</span>AI PM 入职第 30 天该做什么(接 Vol.31 候选人 Y)</div>
+        <div class="next-item"><span class="tag">C</span>AI PM 上岗 1 年才知道的 5 件事</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="outro fade-in">
+    <p>觉得有用的话 · 记得收藏</p>
+    <p>关注 Nova · 每天一个 AI PM 知识点</p>
+    <div class="nova">NOVA</div>
+    <div class="small">前卫 AI 产品经理 · 不被 Demo 带节奏的实战派</div>
+  </section>
+
+</main>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }});
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// 数字 count-up
+const numObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = parseInt(el.dataset.count, 10);
+      const dur = 1400, start = performance.now();
+      function tick(t) {
+        const p = Math.min((t - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      numObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('[data-count]').forEach(el => numObserver.observe(el));
+
+document.querySelectorAll('.cta-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.dataset.copy;
+    const fallback = () => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(err){}
+      ta.remove();
+    };
+    const showCopied = () => {
+      const o = btn.textContent.replace('已复制 '+text,'').replace('✓ ','');
+      btn.classList.add('copied');
+      btn.textContent = '已复制 ' + text;
+      setTimeout(() => { btn.classList.remove('copied'); btn.textContent = o; }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(()=>{ fallback(); showCopied(); });
+    } else { fallback(); showCopied(); }
+  });
+});
+
+document.querySelectorAll('.next-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const tag = item.querySelector('.tag').textContent.trim();
+    try {
+      navigator.clipboard.writeText(tag);
+      const orig = item.style.background;
+      item.style.background = '#FFD93D';
+      setTimeout(() => item.style.background = orig, 800);
+    } catch(e){}
+  });
+});
+
+// ★ 金句反弹
+const goldenObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animation = 'goldenIn 1.0s cubic-bezier(.68,-.55,.27,1.55) forwards';
+      goldenObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('.golden').forEach(el => goldenObs.observe(el));
+const goldenStyle = document.createElement('style');
+goldenStyle.textContent = `@keyframes goldenIn {0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}`;
+document.head.appendChild(goldenStyle);
+</script>
+
+</body>
+</html>

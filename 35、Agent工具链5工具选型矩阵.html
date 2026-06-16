@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol.35 · AI Agent 工具链 5 把刀 · 0 基础也能听懂的选型课</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Archivo+Black&family=Bebas+Neue&family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#FEFCF5;--paper-2:#FFFEF0;--paper-3:#F5EFE0;--paper-4:#EDE5D0;
+  --ink:#1C1A18;--ink-2:#3D3833;--ink-3:#7A746B;--ink-4:#A8A39A;
+  --yellow:#FFD93D;--yellow-deep:#F4B400;--yellow-light:#FFF0A8;--yellow-soft:#FFF8D6;
+  --coral:#FF5E5B;--coral-deep:#E03C39;--coral-light:#FFD4D2;--coral-soft:#FFE9E7;
+  --red:#D62828;--red-deep:#9D1818;--red-light:#FCC9C7;--red-soft:#FEE5E4;
+  --green:#3EA040;--green-deep:#247226;--green-light:#BFE3C0;--green-soft:#DEF1DE;
+  --blue:#3461A8;--blue-deep:#1E3F73;--blue-light:#C2D2EC;--blue-soft:#DFE7F4;
+  --purple:#6B4FA0;--purple-deep:#4A357A;--purple-soft:#EBE2F4;
+  --teal:#2A8A8A;--teal-deep:#155555;--teal-soft:#D4ECEC;
+  --orange:#E07823;--orange-deep:#B85A0A;--orange-soft:#FCE3CC;
+  --sans:"Noto Sans SC","PingFang SC",sans-serif;
+  --display-en:"Archivo Black","Bebas Neue",sans-serif;
+  --display-cn:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono","Cascadia Code",monospace;
+}
+
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.container{max-width:1080px;margin:0 auto;padding:48px 36px 80px;position:relative}
+
+.bg-tex{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(244,180,0,.07) 380px, transparent 600px),
+    radial-gradient(circle at 88% 22%, rgba(255,94,91,.06) 320px, transparent 520px),
+    radial-gradient(circle at 50% 78%, rgba(62,160,64,.05) 400px, transparent 600px);
+}
+
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 22px;background:var(--ink);color:var(--paper);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--coral);border-radius:14px;margin-bottom:36px}
+.brand-l{font-family:var(--display-en);font-size:16px;letter-spacing:4px;font-weight:900}
+.brand-l .vol{color:var(--yellow);font-family:var(--mono);font-size:11px;margin-left:10px;letter-spacing:2px}
+.brand-r{font-family:var(--display-cn);font-size:13px;color:var(--paper-3);letter-spacing:1px}
+
+.hero{position:relative;margin-bottom:56px}
+.kicker-row{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.kicker{display:inline-flex;align-items:center;gap:8px;background:var(--coral);color:#fff;padding:8px 18px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);font-family:var(--display-cn);font-size:14px;font-weight:900;letter-spacing:1px;transform:rotate(-1.5deg)}
+.kicker::before{content:"★";font-size:14px}
+.kicker.alt{background:var(--yellow);color:var(--ink);transform:rotate(1.5deg)}
+.kicker.alt::before{content:"●"}
+
+.h1{font-size:60px;font-weight:900;line-height:1.05;letter-spacing:-1.5px;margin-bottom:22px;color:var(--ink)}
+.h1 .y-hl{background:var(--yellow);padding:2px 18px;display:inline-block;box-shadow:7px 7px 0 var(--ink);border:5px solid var(--ink);border-radius:8px;transform:rotate(-1deg);margin:6px 0}
+.h1 .c-hl{color:var(--coral-deep)}
+
+.sub{font-family:var(--display-cn);font-size:20px;color:var(--ink-2);font-weight:900;margin-bottom:30px;letter-spacing:.5px;line-height:1.5}
+.sub .sep{color:var(--coral);margin:0 9px;font-weight:700}
+
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
+.h-stat{background:#fff;border:5px solid var(--ink);box-shadow:7px 7px 0 var(--ink);border-radius:14px;padding:24px 18px;text-align:center;position:relative;transition:transform .25s}
+.h-stat:nth-child(1){background:var(--yellow-soft);transform:rotate(-1.5deg)}
+.h-stat:nth-child(2){background:var(--coral-soft);transform:rotate(.8deg)}
+.h-stat:nth-child(3){background:var(--green-soft);transform:rotate(-.5deg)}
+.h-stat:hover{transform:rotate(0) translateY(-4px)}
+.h-stat .n{font-family:var(--display-en);font-size:62px;line-height:1;color:var(--ink);font-weight:900;letter-spacing:-2px;text-shadow:4px 4px 0 var(--yellow-deep);margin-bottom:8px}
+.h-stat:nth-child(2) .n{color:var(--coral-deep);text-shadow:4px 4px 0 var(--ink)}
+.h-stat:nth-child(3) .n{color:var(--green-deep);text-shadow:4px 4px 0 var(--ink)}
+.h-stat .n .u{font-size:24px;color:var(--ink-2);margin-left:2px;text-shadow:none}
+.h-stat .l{font-family:var(--display-cn);font-size:13px;color:var(--ink);font-weight:900;line-height:1.4}
+
+.sec{margin:80px 0 40px}
+.sec-tag{display:inline-block;background:var(--ink);color:var(--paper);padding:5px 14px;font-family:var(--mono);font-size:11px;letter-spacing:2.5px;font-weight:700;margin-bottom:14px;border-radius:4px}
+.sec-h2{font-size:38px;font-weight:900;line-height:1.15;color:var(--ink);margin-bottom:10px;letter-spacing:-.8px}
+.sec-h2 .em{background:var(--yellow);padding:1px 12px;display:inline-block;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);border-radius:6px;transform:rotate(-.8deg);margin:2px 4px}
+.sec-desc{font-size:15px;color:var(--ink-2);line-height:1.7;margin-top:14px;max-width:900px}
+.sec-desc .em{background:var(--yellow-light);padding:1px 6px;font-weight:700}
+
+/* ============ NEW · 3 产品画面 hero ============ */
+.story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.story-card{background:#fff;border:4px solid var(--ink);box-shadow:7px 7px 0 var(--ink);border-radius:16px;padding:24px 22px;position:relative;transition:transform .25s}
+.story-card:hover{transform:translateY(-5px)}
+.story-card.sc1{background:var(--blue-soft);transform:rotate(-1.5deg)}
+.story-card.sc2{background:var(--coral-soft);transform:rotate(.8deg)}
+.story-card.sc3{background:var(--purple-soft);transform:rotate(-.5deg)}
+.story-card:hover{transform:rotate(0) translateY(-5px)}
+.story-num{font-family:var(--display-en);font-size:32px;color:var(--ink);font-weight:900;line-height:1;margin-bottom:12px;letter-spacing:-1px;display:flex;align-items:center;gap:8px}
+.story-num .dot{display:inline-block;width:12px;height:12px;background:var(--coral);border:2px solid var(--ink);border-radius:50%}
+.story-product{font-family:var(--display-cn);font-size:20px;font-weight:900;color:var(--ink);margin-bottom:10px;line-height:1.3}
+.story-scene{background:rgba(255,255,255,.7);border:2px dashed var(--ink-3);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--ink-2);line-height:1.5;margin-bottom:14px;font-style:italic}
+.story-scene .em{background:var(--yellow);padding:1px 5px;font-style:normal;font-weight:700}
+.story-arrow{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:1.5px;font-weight:700;margin-bottom:6px}
+.story-tool{font-family:var(--display-cn);font-size:15px;color:var(--ink);font-weight:900;background:#fff;border:3px solid var(--ink);padding:7px 12px;border-radius:6px;display:inline-block;box-shadow:3px 3px 0 var(--ink)}
+
+.story-take{margin-top:30px;background:var(--ink);color:var(--paper);padding:22px 28px;border-radius:14px;border:5px solid var(--ink);box-shadow:7px 7px 0 var(--coral)}
+.story-take-tag{font-family:var(--mono);font-size:11px;color:var(--yellow);letter-spacing:2.5px;font-weight:700;margin-bottom:8px}
+.story-take-body{font-family:var(--display-cn);font-size:17px;font-weight:900;line-height:1.5;color:var(--paper)}
+.story-take-body .em{background:var(--yellow);color:var(--ink);padding:1px 9px;border-radius:5px;margin:0 2px}
+
+/* ============ 5 把刀 · 类比卡(重做)============ */
+.knife-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:30px}
+.knife-card{background:#fff;border:4px solid var(--ink);box-shadow:7px 7px 0 var(--ink);border-radius:14px;padding:20px 14px;text-align:center;position:relative;transition:transform .25s}
+.knife-card:hover{transform:translateY(-6px) rotate(0)}
+.knife-card.k1{background:var(--blue-soft);transform:rotate(-1.5deg)}
+.knife-card.k2{background:var(--coral-soft);transform:rotate(.8deg)}
+.knife-card.k3{background:var(--yellow-soft);transform:rotate(-.5deg)}
+.knife-card.k4{background:var(--purple-soft);transform:rotate(1.2deg)}
+.knife-card.k5{background:var(--teal-soft);transform:rotate(-1deg)}
+
+.knife-no{font-family:var(--display-en);font-size:13px;color:var(--ink-3);letter-spacing:2px;font-weight:900;margin-bottom:10px}
+
+.knife-emoji{font-family:var(--display-cn);font-size:28px;font-weight:900;color:var(--ink);margin-bottom:10px;line-height:1;background:#fff;border:3px solid var(--ink);padding:14px;border-radius:10px;box-shadow:3px 3px 0 var(--ink);display:inline-block}
+
+.knife-analogy{font-family:var(--display-cn);font-size:16px;font-weight:900;color:var(--ink);margin:12px 0 6px;line-height:1.3}
+
+.knife-tool-name{font-family:var(--display-cn);font-size:13px;color:var(--ink);background:var(--ink);color:var(--paper);padding:4px 10px;border-radius:5px;display:inline-block;font-weight:900;margin-bottom:8px}
+
+.knife-tech{font-size:11px;color:var(--ink-3);font-family:var(--mono);letter-spacing:1px;font-weight:700;margin-bottom:6px}
+
+.knife-star{font-family:var(--mono);font-size:10px;color:var(--coral-deep);letter-spacing:1.5px;font-weight:700;margin-bottom:10px}
+
+.knife-desc{font-size:11.5px;color:var(--ink-2);line-height:1.5;background:rgba(255,255,255,.6);padding:8px 10px;border-radius:6px;border:1px dashed var(--ink-3)}
+
+/* ============ 3 场景深讲 · 改用「日常对话」代替代码 ============ */
+.scene-list{display:flex;flex-direction:column;gap:36px;margin-top:30px}
+.scene-card{background:#fff;border:5px solid var(--ink);box-shadow:8px 8px 0 var(--ink);border-radius:18px;padding:32px;position:relative;overflow:hidden}
+.scene-card .scene-bg{position:absolute;top:0;right:0;width:140px;height:140px;font-family:var(--display-en);font-size:200px;color:rgba(28,26,24,.04);line-height:.8;font-weight:900;pointer-events:none;user-select:none}
+
+.scene-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:22px;border-bottom:3px dashed var(--ink-3);padding-bottom:18px}
+.scene-head-l{flex:1}
+.scene-no{display:inline-block;font-family:var(--display-en);font-size:14px;color:#fff;background:var(--ink);padding:4px 12px;border-radius:4px;letter-spacing:1.5px;margin-bottom:10px;font-weight:900}
+.scene-card.s1 .scene-no{background:var(--blue-deep)}
+.scene-card.s2 .scene-no{background:var(--coral-deep)}
+.scene-card.s3 .scene-no{background:var(--teal-deep)}
+.scene-title{font-family:var(--display-cn);font-size:24px;font-weight:900;color:var(--ink);line-height:1.3;margin-bottom:8px}
+.scene-feature{font-size:13px;color:var(--ink-2);font-style:italic}
+.scene-feature .em{background:var(--yellow-light);padding:1px 6px;font-style:normal;font-weight:700}
+
+.pick-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+.pick-cell{padding:18px;border:3px solid var(--ink);border-radius:10px;position:relative}
+.pick-yes{background:var(--green-soft);box-shadow:5px 5px 0 var(--ink);transform:rotate(-.5deg)}
+.pick-no{background:var(--red-soft);box-shadow:5px 5px 0 var(--ink);transform:rotate(.5deg)}
+.pick-tag{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:2px;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:9px;color:#fff}
+.pick-yes .pick-tag{background:var(--green-deep)}
+.pick-no .pick-tag{background:var(--red-deep)}
+.pick-tool{font-family:var(--display-cn);font-size:18px;font-weight:900;color:var(--ink);margin-bottom:6px;line-height:1.2}
+.pick-analogy{font-family:var(--display-cn);font-size:14px;color:var(--ink-2);margin-bottom:5px;font-style:italic}
+.pick-reason{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+
+/* NEW · 日常对话气泡(代替 code-compare)*/
+.chat-block{margin-top:18px;background:var(--paper-3);border:3px solid var(--ink);border-radius:12px;padding:18px 22px;box-shadow:5px 5px 0 var(--ink)}
+.chat-tag{font-family:var(--mono);font-size:11px;color:var(--coral-deep);letter-spacing:2.5px;font-weight:700;margin-bottom:12px}
+.chat-bubble{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.chat-avatar{flex-shrink:0;width:36px;height:36px;border-radius:50%;border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--display-cn);font-size:13px;font-weight:900;color:var(--ink)}
+.chat-avatar.user{background:var(--coral);color:#fff}
+.chat-avatar.ai{background:var(--yellow)}
+.chat-avatar.pm{background:var(--blue-light)}
+.chat-avatar.eng{background:var(--green-light)}
+.chat-text{flex:1;background:#fff;border:2px solid var(--ink);padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;color:var(--ink)}
+.chat-text .em{background:var(--yellow);padding:1px 5px;font-weight:700}
+.chat-text .label{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:1px;font-weight:700;display:block;margin-bottom:3px}
+
+/* NEW · 类比示意图(代替 code-compare)*/
+.analogy-block{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.analogy-side{background:#fff;border:3px solid var(--ink);border-radius:12px;padding:18px;box-shadow:5px 5px 0 var(--ink);position:relative}
+.analogy-side.bad{background:var(--red-soft)}
+.analogy-side.good{background:var(--green-soft)}
+.analogy-side-tag{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:2px;padding:3px 9px;border-radius:4px;display:inline-block;margin-bottom:12px;color:#fff}
+.analogy-side.bad .analogy-side-tag{background:var(--red-deep)}
+.analogy-side.good .analogy-side-tag{background:var(--green-deep)}
+.analogy-side-pic{font-family:var(--display-cn);font-size:14px;color:var(--ink);font-weight:900;line-height:1.5;background:rgba(255,255,255,.7);padding:10px 12px;border-radius:6px;border:1px dashed var(--ink-3);margin-bottom:10px}
+.analogy-side-num{font-family:var(--display-en);font-size:26px;color:var(--ink);font-weight:900;line-height:1;letter-spacing:-1px;margin-bottom:5px}
+.analogy-side.bad .analogy-side-num{color:var(--red-deep)}
+.analogy-side.good .analogy-side-num{color:var(--green-deep)}
+.analogy-side-lbl{font-family:var(--display-cn);font-size:12px;color:var(--ink-2);font-weight:700;line-height:1.3}
+
+.cost-block{background:var(--ink);color:var(--paper);padding:18px 22px;border-radius:10px;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--coral);margin-bottom:18px;position:relative}
+.cost-block-title{font-family:var(--mono);font-size:11px;color:var(--yellow);letter-spacing:2.5px;font-weight:700;margin-bottom:9px}
+.cost-block-body{font-family:var(--display-cn);font-size:15px;color:var(--paper);font-weight:700;line-height:1.6}
+.cost-block-body .em{background:var(--coral);color:#fff;padding:2px 8px;border-radius:4px;font-weight:900;margin:0 2px}
+.cost-block-body .em-y{background:var(--yellow);color:var(--ink);padding:2px 8px;border-radius:4px;font-weight:900;margin:0 2px}
+
+.case-block{background:var(--paper-3);padding:16px 20px;border-left:5px solid var(--coral);border-radius:0 10px 10px 0;margin-bottom:18px;font-size:13px;line-height:1.65;color:var(--ink-2)}
+.case-block .case-tag{font-family:var(--mono);font-size:10px;color:var(--coral-deep);font-weight:700;letter-spacing:2px;margin-bottom:5px;display:block}
+.case-block .em{background:var(--yellow);padding:1px 5px;font-weight:700}
+
+.formula{background:var(--yellow);padding:16px 22px;border:4px solid var(--ink);border-radius:10px;box-shadow:5px 5px 0 var(--ink);font-size:14px;line-height:1.55;color:var(--ink);font-weight:700}
+.formula .tag{font-family:var(--mono);font-size:11px;color:var(--coral-deep);letter-spacing:2px;font-weight:700;margin-right:6px}
+.formula .em{background:var(--ink);color:var(--yellow);padding:2px 8px;border-radius:4px;font-weight:900;margin:0 2px}
+
+/* NEW · 2 场景一句话扫 */
+.quick-scan{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+.quick-card{background:#fff;border:4px solid var(--ink);box-shadow:7px 7px 0 var(--ink);border-radius:14px;padding:24px;position:relative;transition:transform .25s}
+.quick-card.q1{background:var(--orange-soft);transform:rotate(-1deg)}
+.quick-card.q2{background:var(--purple-soft);transform:rotate(.8deg)}
+.quick-card:hover{transform:rotate(0) translateY(-4px)}
+.quick-no{font-family:var(--display-en);font-size:14px;color:var(--ink-3);letter-spacing:2px;font-weight:900;margin-bottom:8px}
+.quick-scene{font-family:var(--display-cn);font-size:18px;font-weight:900;color:var(--ink);margin-bottom:10px;line-height:1.3}
+.quick-tool{background:var(--ink);color:var(--paper);padding:6px 14px;border-radius:6px;display:inline-block;font-family:var(--display-cn);font-size:14px;font-weight:900;margin-bottom:12px}
+.quick-tool .em{background:var(--yellow);color:var(--ink);padding:1px 8px;border-radius:4px}
+.quick-why{font-size:12.5px;color:var(--ink-2);line-height:1.5;background:rgba(255,255,255,.65);padding:10px 12px;border-radius:7px;border:1px dashed var(--ink-3)}
+.quick-why .em{background:var(--yellow);padding:1px 5px;font-weight:700}
+
+.warn-strip{margin-top:22px;background:var(--red-soft);border:3px dashed var(--red);border-radius:12px;padding:16px 22px;font-size:13.5px;line-height:1.6;color:var(--ink)}
+.warn-strip .tag{font-family:var(--mono);font-size:11px;color:var(--red-deep);letter-spacing:2px;font-weight:700;margin-right:6px}
+.warn-strip .em{background:var(--yellow);padding:1px 7px;font-weight:700;border:1px solid var(--ink);border-radius:4px}
+
+/* ============ 3 大错(从 4 改 3)============ */
+.err-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.err-card{background:#fff;border:4px solid var(--ink);box-shadow:7px 7px 0 var(--red);border-radius:14px;padding:24px;position:relative;transition:transform .25s}
+.err-card:nth-child(1){background:var(--red-soft);transform:rotate(-1deg)}
+.err-card:nth-child(2){background:var(--orange-soft);transform:rotate(.8deg)}
+.err-card:nth-child(3){background:var(--coral-soft);transform:rotate(-.5deg)}
+.err-card:hover{transform:rotate(0) translateY(-5px)}
+.err-no{font-family:var(--display-en);font-size:46px;color:var(--red-deep);font-weight:900;line-height:1;letter-spacing:-2px;margin-bottom:10px;text-shadow:3px 3px 0 var(--ink)}
+.err-title{font-family:var(--display-cn);font-size:18px;font-weight:900;color:var(--ink);margin-bottom:9px;line-height:1.3}
+.err-desc{font-size:13px;color:var(--ink-2);line-height:1.6}
+.err-desc .em{background:#fff;padding:1px 6px;border:2px solid var(--ink);font-weight:700;border-radius:3px}
+
+/* ============ 混用 3 工具 ============ */
+.mix-sec{background:var(--ink);color:var(--paper);padding:42px 36px;border-radius:20px;border:6px solid var(--ink);box-shadow:10px 10px 0 var(--yellow);margin-top:48px;position:relative;overflow:hidden}
+.mix-sec::before{content:"";position:absolute;top:-30px;right:-30px;width:200px;height:200px;background:var(--coral);border-radius:50%;opacity:.18}
+.mix-sec::after{content:"";position:absolute;bottom:-40px;left:-40px;width:240px;height:240px;background:var(--yellow);border-radius:50%;opacity:.12}
+.mix-tag{font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--yellow);font-weight:700;margin-bottom:14px;position:relative;z-index:1}
+.mix-h{font-family:var(--display-cn);font-size:36px;font-weight:900;color:var(--paper);line-height:1.2;margin-bottom:22px;position:relative;z-index:1;letter-spacing:-.5px}
+.mix-h .em{background:var(--yellow);color:var(--ink);padding:1px 14px;border-radius:6px;margin:0 4px;display:inline-block;transform:rotate(-1deg)}
+.mix-h .em-c{background:var(--coral);color:#fff;padding:1px 14px;border-radius:6px;margin:0 4px;display:inline-block;transform:rotate(1deg)}
+.mix-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px;position:relative;z-index:1}
+.mix-node{background:var(--paper);color:var(--ink);border:4px solid var(--paper);border-radius:12px;padding:20px;text-align:center;position:relative}
+.mix-node-tag{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.mix-node-tool{font-family:var(--display-cn);font-size:18px;font-weight:900;color:var(--ink);margin-bottom:6px}
+.mix-node-tool .b{background:var(--yellow);padding:1px 8px;border-radius:4px}
+.mix-node-desc{font-size:11.5px;color:var(--ink-2);line-height:1.4}
+
+.mix-take{margin-top:32px;padding:20px 24px;background:rgba(255,217,61,.12);border:2px dashed var(--yellow);border-radius:10px;position:relative;z-index:1}
+.mix-take-tag{font-family:var(--mono);font-size:11px;color:var(--yellow);letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.mix-take-body{font-family:var(--display-cn);font-size:15px;color:var(--paper);font-weight:700;line-height:1.6}
+.mix-take-body .emc{background:var(--coral);color:#fff;padding:2px 8px;border-radius:4px}
+.mix-take-body .emy{background:var(--yellow);color:var(--ink);padding:2px 8px;border-radius:4px}
+
+/* 金句段 */
+.golden{background:linear-gradient(135deg,var(--yellow) 0%,var(--yellow-deep) 100%);color:var(--ink);padding:48px 40px;border:5px solid var(--ink);box-shadow:10px 10px 0 var(--ink);border-radius:18px;margin-top:60px;position:relative;overflow:hidden;text-align:center}
+.golden-tag{font-family:var(--mono);font-size:11px;color:var(--ink-2);letter-spacing:3px;font-weight:700;margin-bottom:14px}
+.golden-h{font-family:var(--display-cn);font-size:36px;font-weight:900;color:var(--ink);line-height:1.3;letter-spacing:-.5px}
+.golden-h .em{background:var(--ink);color:var(--yellow);padding:2px 14px;border-radius:6px;display:inline-block;margin:4px 4px}
+.golden-sub{font-size:14px;color:var(--ink);font-weight:700;margin-top:18px;line-height:1.6;opacity:.9}
+
+/* CTA */
+.cta{background:#fff;border:5px solid var(--ink);box-shadow:10px 10px 0 var(--coral);border-radius:18px;padding:38px;margin-top:48px}
+.cta-tag{font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--coral-deep);font-weight:700;margin-bottom:10px}
+.cta-h{font-family:var(--display-cn);font-size:30px;font-weight:900;color:var(--ink);line-height:1.3;margin-bottom:14px;letter-spacing:-.5px}
+.cta-h .em{background:var(--yellow);color:var(--ink);padding:2px 14px;border-radius:6px}
+.cta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+.cta-row{display:flex;align-items:flex-start;gap:9px;padding:12px 14px;background:var(--paper-3);border:2px solid var(--ink);border-radius:8px;font-size:13px;color:var(--ink);line-height:1.5}
+.cta-row .ok{color:var(--green-deep);font-family:var(--mono);font-weight:900;flex-shrink:0}
+.cta-keyword{margin-top:18px;display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--ink);color:var(--paper);border-radius:10px;border:3px solid var(--ink)}
+.cta-keyword .lab{font-family:var(--mono);font-size:11px;color:var(--yellow);letter-spacing:2px;font-weight:700}
+.cta-keyword .kw{font-family:var(--display-cn);font-size:18px;color:var(--yellow);font-weight:900;padding:3px 10px;background:rgba(255,217,61,.12);border-radius:4px}
+.cta-keyword .arrow{color:var(--coral);font-weight:900}
+
+.next-up{margin-top:36px;background:var(--paper-3);border:4px dashed var(--ink);border-radius:14px;padding:28px}
+.next-up-tag{font-family:var(--mono);font-size:11px;color:var(--coral-deep);letter-spacing:2.5px;font-weight:700;margin-bottom:8px}
+.next-up-h{font-family:var(--display-cn);font-size:22px;font-weight:900;color:var(--ink);margin-bottom:14px}
+.next-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.next-item{padding:12px 14px;background:#fff;border:2px solid var(--ink);border-radius:8px;font-size:12.5px;color:var(--ink);line-height:1.5;font-weight:700}
+.next-item .l{font-family:var(--display-en);color:var(--coral);font-size:14px;margin-right:5px;letter-spacing:1px}
+
+.footer{margin-top:56px;padding:24px 0;border-top:3px solid var(--ink);text-align:center;color:var(--ink-3);font-size:13px;font-family:var(--mono);letter-spacing:1.5px}
+.footer .author{color:var(--coral-deep);font-family:var(--display-en);font-size:16px;letter-spacing:5px;font-weight:900;margin-bottom:6px;display:block}
+
+.count{font-variant-numeric:tabular-nums}
+
+.fi{opacity:0;transform:translateY(28px);transition:opacity .8s ease, transform .8s ease}
+.fi.on{opacity:1;transform:translateY(0)}
+
+@keyframes pop{0%{opacity:0;transform:scale(.6) rotate(-8deg)}60%{transform:scale(1.05) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.pop{animation:pop .7s cubic-bezier(.34,1.56,.64,1) both}
+
+@media(max-width:780px){
+  .container{padding:24px 18px 60px}
+  .h1{font-size:38px}
+  .sub{font-size:16px}
+  .hero-stats,.story-grid,.knife-grid{grid-template-columns:1fr}
+  .knife-grid{grid-template-columns:repeat(2,1fr)}
+  .pick-row,.analogy-block,.quick-scan,.err-grid{grid-template-columns:1fr}
+  .mix-flow,.next-list,.cta-list{grid-template-columns:1fr}
+  .sec-h2,.mix-h,.golden-h{font-size:26px}
+  .scene-card{padding:22px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-tex"></div>
+
+<div class="container">
+
+  <!-- 顶栏 -->
+  <div class="brand-bar">
+    <div class="brand-l">NOVA · AI PM <span class="vol">VOL.35</span></div>
+    <div class="brand-r">Agent 工具链 · 0 基础选型课</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero fi">
+    <div class="kicker-row">
+      <span class="kicker">行业实战</span>
+      <span class="kicker alt">0 基础也能听懂</span>
+    </div>
+    <h1 class="h1">
+      AI Agent 工具链<br>
+      <span class="y-hl">5 把刀</span><br>
+      <span class="c-hl">90% PM 选错</span>
+    </h1>
+    <div class="sub">
+      按按钮<span class="sep">/</span>审批流程图<span class="sep">/</span>三人小组<span class="sep">/</span>圆桌讨论<span class="sep">/</span>自动答题机
+      <br>
+      <span style="font-size:15px;color:var(--ink-3)">5 把刀不是替代关系 · 是分工关系</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="h-stat fi">
+        <div class="n"><span class="count" data-target="12">0</span></div>
+        <div class="l">12 个月对接<br>Agent 项目数</div>
+      </div>
+      <div class="h-stat fi">
+        <div class="n"><span class="count" data-target="4">0</span><span class="u">×</span></div>
+        <div class="l">选错单次成本差<br>($0.003 → $0.012)</div>
+      </div>
+      <div class="h-stat fi">
+        <div class="n"><span class="count" data-target="9">0</span><span class="u">w</span></div>
+        <div class="l">选错半年<br>白烧 9 万</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 个产品画面 · hero ============ -->
+  <section class="sec fi">
+    <span class="sec-tag">PART 00 · 3 个画面</span>
+    <h2 class="sec-h2">先给你拍 <span class="em">3 个画面</span><br>3 种 AI 产品 · 3 种技术栈</h2>
+    <p class="sec-desc">每一种你都用过 · 但你不知道背后的技术栈完全不一样。这就是为什么 9 成 PM 默认推 LangGraph — 没分清场景。</p>
+
+    <div class="story-grid">
+
+      <div class="story-card sc1 fi">
+        <div class="story-num"><span class="dot"></span>01</div>
+        <div class="story-product">淘宝客服</div>
+        <div class="story-scene">你打「<span class="em">我想退款</span>」3 个字 · 它直接弹一个『退款查询』按钮给你 · 你点 · 就退款</div>
+        <div class="story-arrow">→ 技术栈</div>
+        <div class="story-tool">原生 Function Calling</div>
+      </div>
+
+      <div class="story-card sc2 fi">
+        <div class="story-num"><span class="dot"></span>02</div>
+        <div class="story-product">飞书智能助手</div>
+        <div class="story-scene">你说「<span class="em">华东上周销售</span>」· 它跑 SQL 出图 · 敏感数据还要主管点确认</div>
+        <div class="story-arrow">→ 技术栈</div>
+        <div class="story-tool">LangGraph</div>
+      </div>
+
+      <div class="story-card sc3 fi">
+        <div class="story-num"><span class="dot"></span>03</div>
+        <div class="story-product">Perplexity</div>
+        <div class="story-scene">你问个复杂问题 · 它启动几个 AI · 各自查不同角度 · 互相反驳 · 汇总给你</div>
+        <div class="story-arrow">→ 技术栈</div>
+        <div class="story-tool">AutoGen</div>
+      </div>
+
+    </div>
+
+    <div class="story-take">
+      <div class="story-take-tag">★ TAKEAWAY</div>
+      <div class="story-take-body">
+        这 3 个产品背后技术栈 <span class="em">完全不一样</span> · 但 9 成 PM 默认全推 LangGraph · 我对接 <span class="em">12 项目里 4 个就栽在这</span> · 月成本 3w → 12w · 9 万白烧 · 团队被裁
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Part 01 · 5 把刀 · 类比卡 ============ -->
+  <section class="sec fi">
+    <span class="sec-tag">PART 01 · 5 KNIVES · 用日常类比拍下来</span>
+    <h2 class="sec-h2">5 把刀 · <span class="em">用日常类比</span>拍下来</h2>
+    <p class="sec-desc">记住这 5 个类比 · 比记 5 个英文名重要 10 倍。后面所有选型逻辑都从这一句来。</p>
+
+    <div class="knife-grid">
+
+      <div class="knife-card k1 fi">
+        <div class="knife-no">KNIFE 01</div>
+        <div class="knife-emoji">按</div>
+        <div class="knife-analogy">按按钮</div>
+        <div class="knife-tool-name">原生 Function Calling</div>
+        <div class="knife-tech">FUNCTION CALLING</div>
+        <div class="knife-star">官方原生 · 0 学习成本</div>
+        <div class="knife-desc">微信里你点『发红包』那种 · 一来一回 · 完事 · 不要状态 · 不要回滚</div>
+      </div>
+
+      <div class="knife-card k2 fi">
+        <div class="knife-no">KNIFE 02</div>
+        <div class="knife-emoji">流</div>
+        <div class="knife-analogy">审批流程图</div>
+        <div class="knife-tool-name">LangGraph</div>
+        <div class="knife-tech">STATE MACHINE · 状态机</div>
+        <div class="knife-star">GitHub <span style="color:var(--coral-deep)">16K★</span></div>
+        <div class="knife-desc">办公室审批那种 · A 审完去 B · B 打回 A 也行 · 中间任何一步出错可以回滚</div>
+      </div>
+
+      <div class="knife-card k3 fi">
+        <div class="knife-no">KNIFE 03</div>
+        <div class="knife-emoji">组</div>
+        <div class="knife-analogy">三人小组</div>
+        <div class="knife-tool-name">CrewAI</div>
+        <div class="knife-tech">MULTI-AGENT · 多智能体协作</div>
+        <div class="knife-star">GitHub <span style="color:var(--coral-deep)">30K★</span></div>
+        <div class="knife-desc">雇 3 个员工 · 策划 + 写手 + 审核 · 流水线分工 · 各管一段</div>
+      </div>
+
+      <div class="knife-card k4 fi">
+        <div class="knife-no">KNIFE 04</div>
+        <div class="knife-emoji">桌</div>
+        <div class="knife-analogy">圆桌讨论</div>
+        <div class="knife-tool-name">AutoGen</div>
+        <div class="knife-tech">GROUP CHAT · 群组对话</div>
+        <div class="knife-star">GitHub <span style="color:var(--coral-deep)">39K★</span></div>
+        <div class="knife-desc">3 个角色围着一个问题各自发言 + 互相反驳 · 你随时可以插嘴</div>
+      </div>
+
+      <div class="knife-card k5 fi">
+        <div class="knife-no">KNIFE 05 · 彩蛋</div>
+        <div class="knife-emoji">练</div>
+        <div class="knife-analogy">自动答题机</div>
+        <div class="knife-tool-name">DSPy</div>
+        <div class="knife-tech">PROMPT 自动优化器</div>
+        <div class="knife-star">GitHub <span style="color:var(--coral-deep)">20K★</span></div>
+        <div class="knife-desc">给它 100 道题 + 答案 · 它自己试上百种问法 · 找最优固化下来 · 9 成 PM 没听过它</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ Part 02 · 3 场景深讲 ============ -->
+  <section class="sec fi">
+    <span class="sec-tag">PART 02 · 3 SCENARIOS · 深讲</span>
+    <h2 class="sec-h2"><span class="em">3 个场景</span>深讲<br>你的项目属于哪类 · 该用哪把刀</h2>
+    <p class="sec-desc">每个场景给:<span class="em">产品画面</span> · 该选 / 不该选 · 用 PM 能感受的方式拍代价 · 真实案例 · 你下次跟工程师对话直接用的开口公式。</p>
+
+    <div class="scene-list">
+
+      <!-- 场景 1 · 客服路由 -->
+      <article class="scene-card s1 fi">
+        <div class="scene-bg">01</div>
+        <div class="scene-head">
+          <div class="scene-head-l">
+            <span class="scene-no">SCENE 01 · 按按钮场景</span>
+            <div class="scene-title">客服意图路由(淘宝客服那种)</div>
+            <div class="scene-feature">用户一句话 → AI 判断意图 → 调一个工具 → 出结果 · <span class="em">一来一回 · 完事</span></div>
+          </div>
+        </div>
+
+        <div class="pick-row">
+          <div class="pick-cell pick-yes">
+            <span class="pick-tag">该选</span>
+            <div class="pick-tool">原生 Function Calling</div>
+            <div class="pick-analogy">→ 按按钮的工具</div>
+            <div class="pick-reason">能力 = 你需要的能力 · 没有任何多余开销 · 模型秒回 · 最便宜</div>
+          </div>
+          <div class="pick-cell pick-no">
+            <span class="pick-tag">不该选</span>
+            <div class="pick-tool">LangGraph</div>
+            <div class="pick-analogy">→ 审批流程图的工具</div>
+            <div class="pick-reason">你不需要审批、不需要回滚 · 多余的能力是有代价的</div>
+          </div>
+        </div>
+
+        <div class="analogy-block">
+          <div class="analogy-side good">
+            <span class="analogy-side-tag">按按钮</span>
+            <div class="analogy-side-pic">用户问 → AI 直接调工具 → 秒回</div>
+            <div class="analogy-side-num">200<span style="font-size:14px">ms</span></div>
+            <div class="analogy-side-lbl">单次响应 · 模型直出</div>
+          </div>
+          <div class="analogy-side bad">
+            <span class="analogy-side-tag">审批流程图</span>
+            <div class="analogy-side-pic">用户问 → 启动流程图引擎 → 决定走哪条路 → 调工具 → 整理状态 → 返</div>
+            <div class="analogy-side-num">500<span style="font-size:14px">ms</span></div>
+            <div class="analogy-side-lbl">+ 流程图启动 200-300ms</div>
+          </div>
+        </div>
+
+        <div class="cost-block" style="margin-top:18px">
+          <div class="cost-block-title">代价用 PM 能感受的话讲</div>
+          <div class="cost-block-body">
+            用户在客服打字等结果 · <span class="em-y">超过 0.3 秒</span>就不耐烦 · 那 200ms 就是<span class="em">用户下次不来了</span><br>
+            单次成本 <span class="em-y">$0.003 → $0.012</span> · 月成本 <span class="em">3 万涨到 12 万</span>
+          </div>
+        </div>
+
+        <div class="case-block">
+          <span class="case-tag">CASE · 真实项目</span>
+          某电商 SaaS · 本来用原生 · 月成本 <span class="em">3 万</span> · 技术总监「为未来留扩展」改用 LangGraph · 月成本涨到 <span class="em">12 万</span> · 半年后产品 PMF 没验出来 · 整套架构废弃 · <span class="em">9 万白烧</span> · 技术总监走了 · PM 留下来跟老板解释
+        </div>
+
+        <div class="formula">
+          <span class="tag">→ 你跟工程师开口公式</span>
+          「我们的任务是不是『<span class="em">用户问一句 · AI 调一个工具 · 给一个结果就完事</span>』?如果是 · 我们就用原生 Function Calling · 别想多」
+        </div>
+      </article>
+
+      <!-- 场景 2 · 数据分析助手 -->
+      <article class="scene-card s2 fi">
+        <div class="scene-bg">02</div>
+        <div class="scene-head">
+          <div class="scene-head-l">
+            <span class="scene-no">SCENE 02 · 审批流程图场景</span>
+            <div class="scene-title">数据分析助手(飞书智能助手那种)</div>
+            <div class="scene-feature">5-8 步任务 · 出错要回滚 · 敏感数据要<span class="em">主管审批</span> · 中间结果要传递</div>
+          </div>
+        </div>
+
+        <div class="pick-row">
+          <div class="pick-cell pick-yes">
+            <span class="pick-tag">该选</span>
+            <div class="pick-tool">LangGraph</div>
+            <div class="pick-analogy">→ 审批流程图的工具</div>
+            <div class="pick-reason">天生就是干这个的 · 「checkpoint = 游戏存档」<br>出错可以回到上一存档继续</div>
+          </div>
+          <div class="pick-cell pick-no">
+            <span class="pick-tag">不该选</span>
+            <div class="pick-tool">原生 Function Calling</div>
+            <div class="pick-analogy">→ 按按钮的工具</div>
+            <div class="pick-reason">没有「存档」能力 · 状态散在 20 个文件 · 加新节点要改一遍</div>
+          </div>
+        </div>
+
+        <div class="chat-block">
+          <div class="chat-tag">★ 关键术语 · 用日常话讲</div>
+          <div class="chat-bubble">
+            <div class="chat-avatar pm">PM</div>
+            <div class="chat-text"><span class="label">PM 问</span>「checkpoint 是啥?」</div>
+          </div>
+          <div class="chat-bubble">
+            <div class="chat-avatar eng">工程</div>
+            <div class="chat-text"><span class="label">工程师答</span>就是『<span class="em">游戏存档</span>』· 游戏打到一半你存个档 · 下次接着打 · LangGraph 每步都给你存档 · 出错回到上一存档继续 · <span class="em">不丢数据</span></div>
+          </div>
+        </div>
+
+        <div class="case-block" style="margin-top:18px">
+          <span class="case-tag">CASE · 真实项目</span>
+          某 BI 工具厂 · 一开始原生 · 前 3 个月看着没问题。第 6 个月业务方说『敏感数据加一个主管审批吧』· 工程师写了 <span class="em">1 个月</span> · 状态散在 20 个文件 · 加一个新节点要改一遍 · 最后整个 Agent <span class="em">重写</span>
+        </div>
+
+        <div class="formula">
+          <span class="tag">→ 你跟工程师开口公式</span>
+          「我们的任务是不是『<span class="em">多步 + 中间需要审批节点 + 出错要回滚不丢数据</span>』?如果是 · 我们上 LangGraph · 不要硬用原生写胶水代码」
+        </div>
+      </article>
+
+      <!-- 场景 3 · RAG 优化(本期彩蛋) -->
+      <article class="scene-card s3 fi">
+        <div class="scene-bg">03</div>
+        <div class="scene-head">
+          <div class="scene-head-l">
+            <span class="scene-no">SCENE 03 · 自动答题机 · 本期彩蛋</span>
+            <div class="scene-title">RAG 准确率卡 78 上不去</div>
+            <div class="scene-feature">企业内部知识库那种 · 用户问『北京产假多少天』· AI 查文档 + 答 · 但 <span class="em">准确率卡死</span></div>
+          </div>
+        </div>
+
+        <div class="chat-block">
+          <div class="chat-tag">★ 先解释 · 什么是 RAG</div>
+          <div class="chat-bubble">
+            <div class="chat-avatar ai">RAG</div>
+            <div class="chat-text">「<span class="em">你有一堆公司内部文档</span> · 用户来问问题 · AI 先去文档里检索相关段落 · 再基于这些段落回答你」<br>例 · 你问 HR『北京员工产假多少天』 · 它去公司政策文档检索 · 给你答案</div>
+          </div>
+        </div>
+
+        <div class="pick-row" style="margin-top:18px">
+          <div class="pick-cell pick-yes">
+            <span class="pick-tag">该选</span>
+            <div class="pick-tool">DSPy</div>
+            <div class="pick-analogy">→ 自动答题练习机</div>
+            <div class="pick-reason">给它数据 · 它自己试上百种问法 · 找最优固化下来 · 对 PM 是黑盒</div>
+          </div>
+          <div class="pick-cell pick-no">
+            <span class="pick-tag">不该选</span>
+            <div class="pick-tool">手工调 prompt</div>
+            <div class="pick-analogy">→ 工程师瞎试</div>
+            <div class="pick-reason">改一个词 ±1pt · 不知道为什么 · 每周占工程师 8h · 天花板 78%</div>
+          </div>
+        </div>
+
+        <div class="analogy-block">
+          <div class="analogy-side bad">
+            <span class="analogy-side-tag">手工调</span>
+            <div class="analogy-side-pic">
+              v1 「回答问题」 → 72%<br>
+              v2 「请回答」 → 73%<br>
+              v3 「精准回答」 → 71%<br>
+              v4 「请详细回答」 → 74%<br>
+              v5 「基于文档回答」 → 76%<br>
+              <span style="color:var(--red-deep);font-weight:900">改一个词 ±1pt · 不知道为啥</span>
+            </div>
+            <div class="analogy-side-num">8<span style="font-size:14px">h/周</span></div>
+            <div class="analogy-side-lbl">2 工程师 / 3 个月 / 卡 78</div>
+          </div>
+          <div class="analogy-side good">
+            <span class="analogy-side-tag">DSPy</span>
+            <div class="analogy-side-pic">
+              你给它 100 道题 + 正确答案<br>
+              DSPy 自己试 100 种问法<br>
+              选准确率最高那种固化<br>
+              <span style="color:var(--green-deep);font-weight:900">PM 不用调 prompt · 给数据就行</span>
+            </div>
+            <div class="analogy-side-num">2<span style="font-size:14px">h/周</span></div>
+            <div class="analogy-side-lbl">1 周 78 → 84 · 之后自动</div>
+          </div>
+        </div>
+
+        <div class="case-block" style="margin-top:18px">
+          <span class="case-tag">CASE · 真实项目</span>
+          某企业知识库厂 · RAG 准确率卡 72 · 2 工程师每周 <span class="em">16 小时</span>手工调 prompt · 持续 3 个月 · 准确率到 78 · <span class="em">卡死</span> · 切 DSPy 后 1 周 78 → 84 · 之后每周自动优化 2 小时
+        </div>
+
+        <div class="formula">
+          <span class="tag">→ 你跟工程师开口公式</span>
+          「我们的 RAG 准确率是不是<span class="em">卡住了</span>?是不是<span class="em">手工调 prompt</span>?如果是 · 试一下 DSPy · 9 成 PM 没听过它 · 这是降维打击」
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ Part 02.5 · 另外 2 个场景一句话扫 ============ -->
+  <section class="sec fi">
+    <span class="sec-tag">PART 02.5 · 2 SCENARIOS · 一句话扫</span>
+    <h2 class="sec-h2">另外 <span class="em">2 个场景</span><br>一句话扫</h2>
+
+    <div class="quick-scan">
+
+      <div class="quick-card q1 fi">
+        <div class="quick-no">QUICK 01</div>
+        <div class="quick-scene">内容创作流水线<br><span style="font-size:12.5px;color:var(--ink-3);font-weight:700;font-style:italic">AI 写文章 · 策划 / 写手 / 审核 3 角色分工</span></div>
+        <div class="quick-tool">该用 <span class="em">CrewAI</span></div>
+        <div class="quick-why">三人小组分工 · 各管一段 · 流水线流转。<span class="em">硬用 LangGraph 写要 200 行 · CrewAI 60 行</span> · 新人改 prompt 多花 1 周</div>
+      </div>
+
+      <div class="quick-card q2 fi">
+        <div class="quick-no">QUICK 02</div>
+        <div class="quick-scene">多视角研究助手<br><span style="font-size:12.5px;color:var(--ink-3);font-weight:700;font-style:italic">投研报告 · 技术派 / 商业派 / 团队派讨论</span></div>
+        <div class="quick-tool">该用 <span class="em">AutoGen</span></div>
+        <div class="quick-why">不是流水线 · 是<span class="em">圆桌讨论</span> · 多角色互相反驳 + 用户随时插嘴。<span class="em">CrewAI 没有对话循环 · 手搓要 1 个月</span></div>
+      </div>
+
+    </div>
+
+    <div class="warn-strip">
+      <span class="tag">⚠ 易混淆</span>
+      <span class="em">CrewAI vs AutoGen 一定要分清</span> · CrewAI 是流水线(A 做完交 B)· AutoGen 是讨论(A 和 B 互相反驳)· 搞错代价 = 手搓对话循环 1 个月
+    </div>
+  </section>
+
+  <!-- ============ Part 03 · 3 大常见错 ============ -->
+  <section class="sec fi">
+    <span class="sec-tag">PART 03 · 3 COMMON MISTAKES</span>
+    <h2 class="sec-h2">PM 选型 <span class="em">3 大常见错</span></h2>
+    <p class="sec-desc">立项前自检 · 一条不踩 = 你不在 90% 选错的人里。</p>
+
+    <div class="err-grid">
+
+      <div class="err-card fi">
+        <div class="err-no">01</div>
+        <div class="err-title">品牌效应</div>
+        <div class="err-desc">看 <span class="em">LangChain 火</span>就推 LangGraph · 用<span class="em">名气替代决策</span> · PM 最常见的偷懒</div>
+      </div>
+
+      <div class="err-card fi">
+        <div class="err-no">02</div>
+        <div class="err-title">过度设计</div>
+        <div class="err-desc">单 agent 任务硬写 3 角色 · 3 个角色 prompt 写得<span class="em">差不多</span>其实是同一个人 · 给自己挖坑</div>
+      </div>
+
+      <div class="err-card fi">
+        <div class="err-no">03</div>
+        <div class="err-title">混用恐惧</div>
+        <div class="err-desc">坚持<span class="em">「一个项目一个框架」</span>· 听起来稳 · 真实代价是每个场景都做不好</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ Part 04 · 工业级答案 · 混用 3 工具 ============ -->
+  <section class="mix-sec fi">
+    <div class="mix-tag">★ 工业级答案 · 反认知收尾</div>
+    <h2 class="mix-h">不是选<span class="em">一个最强</span>的工具<br>是 1 项目<span class="em-c">混用 3 把刀</span></h2>
+
+    <div class="mix-flow">
+      <div class="mix-node">
+        <div class="mix-node-tag">CUSTOMER ROUTING</div>
+        <div class="mix-node-tool"><span class="b">按按钮</span></div>
+        <div class="mix-node-desc">客服路由<br>原生 Function Calling</div>
+      </div>
+      <div class="mix-node">
+        <div class="mix-node-tag">DATA ANALYSIS</div>
+        <div class="mix-node-tool"><span class="b">审批流程图</span></div>
+        <div class="mix-node-desc">数据分析模块<br>LangGraph</div>
+      </div>
+      <div class="mix-node">
+        <div class="mix-node-tag">CONTENT GEN</div>
+        <div class="mix-node-tool"><span class="b">三人小组</span></div>
+        <div class="mix-node-desc">内容生成模块<br>CrewAI</div>
+      </div>
+    </div>
+
+    <div class="mix-take">
+      <div class="mix-take-tag">★ 为什么没人这么做</div>
+      <div class="mix-take-body">
+        跟老板说<span class="emy">「我们用 LangGraph」</span> · 老板觉得是大厂背书 · 稳<br>
+        跟老板说<span class="emc">「我们三个工具混用」</span> · 老板皱眉头 · 觉得你管不住团队<br><br>
+        所以「稳」是表面的稳 · 代价是逼所有场景都迁就一个工具 · <span class="emy">每个场景都做不好</span><br><br>
+        我对接的 12 项目里 · 只有 <span class="emc">1 个混用</span>的项目 · 是 12 个里 <span class="emy">ROI 最高的那 1 个</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 金句段 -->
+  <section class="golden fi">
+    <div class="golden-tag">★ KEY TAKE</div>
+    <h2 class="golden-h">
+      选型不是<span class="em">技术总监</span>一个人的事<br>
+      是 PM 在<span class="em">立项那一刻</span>就要参与的事
+    </h2>
+    <div class="golden-sub">
+      立项让技术拍 · 半年后翻车 PM 背锅<br>
+      立项 PM 不参与 · 半年后没产品迭代 · 团队被裁
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta fi">
+    <div class="cta-tag">★ 评论区扣【选型】</div>
+    <h2 class="cta-h">私信送 <span class="em">完整资料包</span></h2>
+    <div class="cta-list">
+      <div class="cta-row"><span class="ok">+</span>5 把刀「日常类比 + 工程术语 + 真实数字」对照表</div>
+      <div class="cta-row"><span class="ok">+</span>5 个场景的真实项目案例(月成本 / 月份 / 翻车点全脱敏)</div>
+      <div class="cta-row"><span class="ok">+</span>PM 跟工程师对话时该问的 3 个关键问题</div>
+      <div class="cta-row"><span class="ok">+</span>立项 PRD「工具选型」章节填空模板</div>
+    </div>
+    <div class="cta-keyword">
+      <span class="lab">CMD</span>
+      <span class="kw">选型</span>
+      <span class="arrow">→</span>
+      <span style="font-family:var(--display-cn);font-size:14px;color:var(--paper-3)">私信领取完整资料包</span>
+    </div>
+  </section>
+
+  <!-- 下期预告 -->
+  <section class="next-up fi">
+    <div class="next-up-tag">★ 下一期 · 评论区告诉我</div>
+    <div class="next-up-h">你想听哪个 ↓</div>
+    <div class="next-list">
+      <div class="next-item"><span class="l">A</span>AI PM 简历「我做过 X」怎么写 · 6 个改写模板</div>
+      <div class="next-item"><span class="l">B</span>GPT-4 / Claude / Gemini 同 prompt 实测对比</div>
+      <div class="next-item"><span class="l">C</span>AI 产品月烧 100 万真实账本 · 5 层成本拆解</div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span class="author">NOVA</span>
+    Vol.35 · AI Agent 工具链 5 把刀 · 0 基础也能听懂的选型课<br>
+    Mia · 前卫 AI 产品经理 · 不被 demo 带节奏的实战派
+  </div>
+
+</div>
+
+<script>
+const io = new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+}, {threshold: .1, rootMargin: '0px 0px -50px 0px'});
+document.querySelectorAll('.fi').forEach(el=>io.observe(el));
+
+const cu = new IntersectionObserver((es)=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el = e.target; const target = parseFloat(el.dataset.target);
+    const dur = 1200; const start = performance.now();
+    const tick = (now)=>{
+      const p = Math.min((now - start)/dur, 1);
+      const ease = 1 - Math.pow(1-p, 3);
+      const v = target * ease;
+      el.textContent = (target % 1 === 0) ? Math.floor(v) : v.toFixed(1);
+      if(p < 1) requestAnimationFrame(tick); else el.textContent = target;
+    };
+    requestAnimationFrame(tick);
+    cu.unobserve(el);
+  });
+}, {threshold: .4});
+document.querySelectorAll('.count').forEach(el=>cu.observe(el));
+
+const popIO = new IntersectionObserver((es)=>{
+  es.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('pop'), i * 80);
+      popIO.unobserve(e.target);
+    }
+  });
+}, {threshold: .3});
+document.querySelectorAll('.knife-card, .story-card').forEach(el=>popIO.observe(el));
+</script>
+
+</body>
+</html>

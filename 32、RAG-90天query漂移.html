@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol.32 · RAG 上线 90 天必崩 · 3 个慢漂移信号</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Archivo+Black&family=Bebas+Neue&family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@600;900&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#FEFCF5;--paper-2:#FFFEF0;--paper-3:#F5EFE0;--paper-4:#EDE5D0;
+  --ink:#1C1A18;--ink-2:#3D3833;--ink-3:#7A746B;--ink-4:#A8A096;
+  --yellow:#FFD93D;--yellow-deep:#F4B400;--yellow-light:#FFF0A8;--yellow-soft:#FFF7D1;
+  --coral:#FF5E5B;--coral-deep:#E03C39;--coral-light:#FFD4D2;--coral-soft:#FFE9E7;
+  --red:#D62828;--red-deep:#9D1818;--red-bright:#F02C2C;--red-light:#FCC9C7;
+  --green:#3EA040;--green-deep:#247226;--green-light:#BFE3C0;--green-soft:#DEF1DE;
+  --blue:#3461A8;--blue-deep:#1E3F73;--blue-light:#C2D2EC;--blue-soft:#DFE7F4;
+  --purple:#6B4FA0;--purple-soft:#EBE2F4;
+  --orange:#FF8C42;--orange-deep:#D96523;--orange-soft:#FFEADD;
+  --teal:#2A8C8A;
+  --sans:"Noto Sans SC","PingFang SC",sans-serif;
+  --serif:"Noto Serif SC","Songti SC",serif;
+  --display-en:"Archivo Black","Bebas Neue",sans-serif;
+  --display-cn:"ZCOOL KuaiLe","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono",monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.78;-webkit-font-smoothing:antialiased;font-weight:500;position:relative}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle, rgba(52,97,168,.05) 1.2px, transparent 1.5px);
+  background-size:24px 24px;
+}
+
+.progress-bar{position:fixed;top:0;left:0;height:6px;background:linear-gradient(90deg,var(--green) 0%,var(--yellow-deep) 30%,var(--orange) 60%,var(--red) 100%);z-index:100;width:0%;transition:width .08s ease-out;box-shadow:0 2px 12px rgba(214,40,40,.4)}
+
+.toc-nav{position:sticky;top:0;background:var(--paper-3);color:var(--ink);z-index:50;padding:14px 30px;display:flex;gap:14px;align-items:center;overflow-x:auto;white-space:nowrap;border-bottom:4px solid var(--blue);box-shadow:0 6px 0 rgba(28,26,24,.06)}
+.toc-nav .toc-brand{font-family:var(--display-en);font-size:15px;letter-spacing:3px;color:var(--ink);font-weight:900;flex-shrink:0;display:flex;align-items:center;gap:8px}
+.toc-nav .toc-brand::before{
+  content:"";display:inline-block;width:10px;height:10px;
+  background:var(--red);border-radius:50%;
+  box-shadow:0 0 0 3px rgba(214,40,40,.2);
+  animation:alertPulse 1.5s ease-in-out infinite;
+}
+@keyframes alertPulse{0%,100%{box-shadow:0 0 0 3px rgba(214,40,40,.2)}50%{box-shadow:0 0 0 8px rgba(214,40,40,0)}}
+.toc-nav .toc-brand .vol{color:var(--blue);font-family:var(--mono);font-size:11px;margin-left:4px}
+.toc-nav .toc-link{font-family:var(--display-cn);font-size:13px;color:var(--ink-2);text-decoration:none;padding:6px 12px;border:2px solid transparent;border-radius:6px;font-weight:700;flex-shrink:0;transition:all .2s}
+.toc-nav .toc-link:hover{background:var(--yellow);color:var(--ink);border-color:var(--ink);transform:translateY(-2px)}
+.toc-nav .toc-link.active{background:var(--yellow);color:var(--ink);border-color:var(--ink);box-shadow:0 3px 0 var(--ink);transform:translateY(-2px)}
+
+main{max-width:1000px;margin:0 auto;padding:60px 40px 80px;position:relative;z-index:2}
+
+/* ============ HERO ============ */
+.hero{margin-bottom:60px}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.hero-vol{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;letter-spacing:3px;color:#fff;background:var(--blue);font-weight:700;padding:7px 14px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);border-radius:4px}
+.hero-vol::before{content:"NOVA";font-family:var(--display-en);letter-spacing:2px;border-right:1.5px solid rgba(255,255,255,.4);padding-right:8px}
+.hero-tag{font-family:var(--display-cn);font-size:12px;color:var(--ink);background:var(--yellow);padding:5px 11px;border:3px solid var(--ink);border-radius:4px;font-weight:900;letter-spacing:1px}
+.hero-tag.alert{background:var(--red);color:#fff;border-color:var(--ink)}
+
+.hero h1{font-family:var(--sans);font-size:56px;font-weight:900;line-height:1.1;letter-spacing:-2px;color:var(--ink);margin-bottom:26px}
+.hero h1 .hl{background:var(--red-light);padding:2px 14px;display:inline-block;box-shadow:6px 6px 0 var(--red);border:3px solid var(--ink);border-radius:6px;transform:rotate(-1deg)}
+.hero-sub{font-family:var(--serif);font-size:18px;color:var(--ink-2);font-weight:600;line-height:1.85;margin-bottom:36px;max-width:780px;font-style:italic}
+.hero-sub .em{background:var(--yellow);padding:1px 7px;border:2px solid var(--ink);border-radius:3px;font-weight:900;color:var(--ink);font-style:normal}
+
+/* 故事开场卡 */
+.story-card{background:#fff;border:5px solid var(--ink);box-shadow:10px 10px 0 var(--ink);border-radius:16px;padding:34px 36px;margin-bottom:36px;position:relative}
+.story-card::before{content:"📍 真实复盘 · 6 个月前 / B 端 AI 客服";position:absolute;top:-19px;left:28px;background:var(--ink);color:var(--yellow);font-family:var(--mono);font-size:12px;font-weight:700;padding:6px 16px;border:3px solid var(--ink);border-radius:4px;letter-spacing:1.5px;box-shadow:4px 4px 0 var(--red)}
+.story-card p{font-family:var(--serif);font-size:17px;line-height:1.95;color:var(--ink);font-weight:600;margin-bottom:14px}
+.story-card p:last-child{margin-bottom:0}
+.story-card .boss-quote{
+  background:var(--coral-soft);padding:14px 18px;
+  border-left:5px solid var(--coral);border-radius:0 8px 8px 0;
+  font-family:var(--sans);font-size:16px;color:var(--ink);font-weight:600;
+  font-style:italic;margin:14px 0;
+}
+.story-card strong{color:var(--red-deep);font-weight:900;background:var(--yellow);padding:0 5px;border:1.5px solid var(--ink);border-radius:2px;font-style:normal}
+.story-card .punchline{
+  font-family:var(--display-cn);font-size:22px;color:var(--red-deep);font-weight:900;text-align:center;
+  margin-top:14px;padding-top:18px;border-top:3px dashed var(--ink-3);
+  font-style:normal;
+}
+
+/* ============ Hit Rate 趋势折线图 (SVG) ============ */
+.trend-section{margin-top:60px;margin-bottom:60px}
+.trend-card{background:#fff;border:5px solid var(--ink);box-shadow:10px 10px 0 var(--ink);border-radius:16px;padding:32px 34px;position:relative}
+.trend-card::before{content:"📉 客户的 90 天 HIT RATE 滚动";position:absolute;top:-19px;left:28px;background:var(--blue-deep);color:var(--yellow);font-family:var(--mono);font-size:11px;font-weight:700;padding:6px 16px;border:3px solid var(--ink);border-radius:4px;letter-spacing:1.5px;box-shadow:4px 4px 0 var(--ink)}
+
+.trend-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:12px;border-bottom:3px dashed var(--ink-3);flex-wrap:wrap;gap:12px}
+.trend-stat{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:1.5px;font-weight:700}
+.trend-stat strong{color:var(--ink);font-family:var(--display-en);font-size:16px;letter-spacing:1px}
+
+.trend-svg{width:100%;height:280px;background:linear-gradient(180deg,var(--paper-2) 0%,#fff 100%);border:2px solid var(--ink);border-radius:8px;padding:14px;overflow:visible}
+.trend-line{fill:none;stroke:var(--coral);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(2px 2px 0 var(--ink))}
+.trend-area{fill:url(#fadeArea);opacity:.4}
+.trend-dot{fill:#fff;stroke:var(--coral-deep);stroke-width:3}
+.trend-dot.alert{fill:var(--red);stroke:var(--ink);stroke-width:2;animation:dotAlert 1.2s ease-in-out infinite}
+@keyframes dotAlert{0%,100%{r:6}50%{r:10}}
+.trend-label{font-family:var(--mono);font-size:11px;font-weight:700;fill:var(--ink-2);letter-spacing:.5px}
+.trend-label.x{text-anchor:middle}
+.trend-label.y{text-anchor:end}
+.trend-gridline{stroke:var(--ink-4);stroke-dasharray:3 4;stroke-width:1;opacity:.5}
+.trend-num{font-family:var(--display-en);font-size:14px;font-weight:900;fill:var(--ink);letter-spacing:.5px}
+
+.trend-tail{margin-top:18px;padding:14px 18px;background:var(--red-light);border:3px solid var(--red);border-radius:10px;box-shadow:4px 4px 0 var(--red-deep);font-family:var(--sans);font-size:15px;color:var(--ink);font-weight:600;line-height:1.65}
+.trend-tail::before{content:"💡 ";font-size:20px}
+.trend-tail strong{color:var(--red-deep);font-weight:900;background:#fff;padding:1px 6px;border:1.5px solid var(--ink);border-radius:3px}
+
+/* ============ sec-title ============ */
+.sec-title{font-family:var(--display-cn);font-size:34px;font-weight:900;color:var(--ink);margin-top:80px;margin-bottom:28px;padding-bottom:16px;border-bottom:5px solid var(--ink);display:flex;align-items:center;gap:16px;position:relative}
+.sec-title::after{content:"";position:absolute;bottom:-5px;left:0;width:100px;height:5px;background:var(--red)}
+.sec-title .num-tag{background:var(--ink);color:var(--yellow);font-family:var(--mono);font-size:14px;padding:7px 13px;border-radius:5px;letter-spacing:1.5px;font-weight:700;box-shadow:4px 4px 0 var(--red)}
+.sec-intro{font-family:var(--sans);font-size:15.5px;color:var(--ink-2);margin-bottom:30px;line-height:1.85;max-width:860px;font-weight:500}
+
+/* ============ 3 个信号卡 ============ */
+.signal{
+  background:#fff;border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);
+  border-radius:16px;overflow:hidden;margin-bottom:36px;
+}
+.signal-head{
+  display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;
+  padding:24px 28px;border-bottom:5px solid var(--ink);
+}
+.signal.s1 .signal-head{background:var(--coral-soft)}
+.signal.s2 .signal-head{background:var(--orange-soft)}
+.signal.s3 .signal-head{background:var(--yellow-soft)}
+
+.signal-no{
+  font-family:var(--display-en);font-size:42px;font-weight:900;line-height:1;
+  background:#fff;border:4px solid var(--ink);box-shadow:4px 4px 0 var(--ink);
+  text-align:center;padding:14px 0;border-radius:10px;letter-spacing:-1px;color:var(--ink);
+  position:relative;
+}
+.signal-no::after{
+  content:"⚠";position:absolute;top:-12px;right:-12px;
+  background:var(--red);color:var(--yellow);font-size:14px;font-weight:900;
+  width:24px;height:24px;border-radius:50%;border:2.5px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:2px 2px 0 var(--ink);
+  animation:warnSpin 3s linear infinite;
+}
+@keyframes warnSpin{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(10deg)}}
+
+.signal-title-wrap{flex:1}
+.signal-no-label{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:2px;font-weight:700;margin-bottom:4px}
+.signal-no-label::before{content:"SIGNAL · "}
+.signal-title{font-family:var(--display-cn);font-size:24px;font-weight:900;line-height:1.3;color:var(--ink)}
+.signal-title small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:700;margin-top:5px;letter-spacing:1.5px}
+
+.signal-impact{
+  font-family:var(--display-en);font-size:13px;font-weight:900;letter-spacing:2px;
+  background:var(--ink);color:var(--yellow);
+  padding:8px 12px;border:3px solid var(--ink);border-radius:6px;
+  box-shadow:3px 3px 0 var(--red);text-align:center;white-space:nowrap;
+}
+
+.signal-body{padding:24px 28px}
+
+/* 信号内迷你折线 / 条 */
+.mini-chart{
+  background:var(--paper-3);border:3px solid var(--ink);
+  padding:16px 18px;border-radius:10px;
+  margin:16px 0;box-shadow:4px 4px 0 var(--ink);
+}
+.mini-chart-title{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:1.5px;font-weight:700;margin-bottom:10px}
+.mini-chart-svg{width:100%;height:90px;display:block}
+.mini-bar-row{display:grid;grid-template-columns:60px 1fr 50px;gap:10px;align-items:center;margin:6px 0;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink)}
+.mini-bar-row .bb{height:18px;background:var(--paper-4);border:2px solid var(--ink);border-radius:4px;position:relative;overflow:hidden}
+.mini-bar-row .bb-fill{height:100%;border-right:2px solid var(--ink);transition:width 1.4s cubic-bezier(.4,0,.2,1);width:0}
+.mini-bar-row.start .bb-fill{background:var(--green);}
+.mini-bar-row.now .bb-fill{background:var(--red);}
+.mini-bar-row .num{font-family:var(--display-en);font-size:14px;text-align:right}
+
+.signal-body p{font-family:var(--sans);font-size:15.5px;line-height:1.9;color:var(--ink);font-weight:500;margin-bottom:14px}
+.signal-body p strong{color:var(--red-deep);font-weight:900;background:var(--yellow);padding:0 4px;border:1.5px solid var(--ink);border-radius:2px}
+.signal-body code{font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--yellow);padding:1px 7px;border-radius:4px;font-weight:700}
+
+.signal-why{background:var(--paper-3);border-left:4px solid var(--ink);padding:14px 18px;margin:14px 0;font-family:var(--sans);font-size:14.5px;color:var(--ink);font-weight:600;border-radius:0 8px 8px 0}
+.signal-why::before{content:"❓ 为什么没察觉 · ";font-family:var(--display-cn);color:var(--coral-deep);font-weight:900}
+
+.signal-fix{
+  background:var(--green-soft);border:3px solid var(--green-deep);
+  border-radius:10px;padding:18px 22px;margin-top:16px;
+  box-shadow:4px 4px 0 var(--green-deep);
+}
+.signal-fix-title{font-family:var(--display-cn);font-size:15px;color:var(--green-deep);font-weight:900;margin-bottom:10px;letter-spacing:.5px}
+.signal-fix-title::before{content:"✓ 正确做法 · "}
+.signal-fix ul{list-style:none;padding-left:0}
+.signal-fix li{font-family:var(--sans);font-size:14.5px;color:var(--ink);font-weight:600;line-height:1.8;padding-left:24px;position:relative;margin-bottom:6px}
+.signal-fix li::before{content:"✓";position:absolute;left:0;color:var(--green-deep);font-weight:900;font-size:18px}
+.signal-fix li strong{color:var(--green-deep);font-weight:900;background:#fff;padding:0 4px;border:1.5px solid var(--green-deep);border-radius:2px}
+
+/* ============ 为什么 PM 漏 · 慢病 vs 断崖对比 ============ */
+.disease-card{
+  background:#fff;border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);
+  border-radius:16px;padding:34px 36px;margin-top:14px;position:relative;
+}
+.disease-row{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center}
+.disease-side{padding:22px 24px;border:4px solid var(--ink);border-radius:14px;text-align:center}
+.disease-side.bad{background:var(--green-soft);box-shadow:5px 5px 0 var(--green-deep)}
+.disease-side.good{background:var(--red-light);box-shadow:5px 5px 0 var(--red)}
+.disease-side .who{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.disease-side .what{font-family:var(--display-cn);font-size:22px;color:var(--ink);font-weight:900;line-height:1.4;margin-bottom:10px}
+.disease-side .what strong{display:block;margin-top:4px}
+.disease-side.bad .what strong{color:var(--green-deep)}
+.disease-side.good .what strong{color:var(--red-deep)}
+.disease-side .detail{font-family:var(--sans);font-size:13.5px;color:var(--ink);font-weight:500;line-height:1.6}
+.disease-vs{font-family:var(--display-en);font-size:32px;color:var(--ink);font-weight:900;letter-spacing:2px;text-shadow:3px 3px 0 var(--yellow);transform:rotate(-8deg)}
+.disease-tail{margin-top:24px;padding-top:18px;border-top:3px dashed var(--ink-3);font-family:var(--sans);font-size:16px;color:var(--ink);font-weight:600;text-align:center;line-height:1.85}
+.disease-tail strong{color:var(--red-deep);font-weight:900;background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:3px}
+
+/* ============ 金句卡 ============ */
+.golden{
+  background:var(--ink);color:var(--paper);
+  border:5px solid var(--ink);box-shadow:11px 11px 0 var(--red);
+  border-radius:18px;padding:46px 40px;
+  margin:60px 0 40px;position:relative;text-align:center;overflow:hidden;
+}
+.golden::before{
+  content:"RAG";position:absolute;font-family:var(--display-en);font-size:280px;
+  color:rgba(214,40,40,.08);font-weight:900;top:50%;left:50%;
+  transform:translate(-50%,-50%);pointer-events:none;line-height:1;letter-spacing:30px;
+}
+.golden-tag{
+  display:inline-block;background:var(--red);color:#fff;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:2px;
+  padding:6px 14px;border:3px solid var(--paper);border-radius:4px;
+  margin-bottom:22px;box-shadow:3px 3px 0 var(--yellow);position:relative;z-index:2;
+}
+.golden h3{font-family:var(--display-cn);font-size:30px;color:var(--yellow);font-weight:900;line-height:1.5;letter-spacing:1px;position:relative;z-index:2}
+.golden h3 strong{color:#fff;background:var(--red);padding:2px 10px;border-radius:6px;font-weight:900;display:inline-block;margin:0 3px;transform:rotate(-1deg)}
+.golden .sub{font-family:var(--serif);font-size:16px;color:var(--paper-3);font-weight:600;margin-top:18px;font-style:italic;position:relative;z-index:2}
+
+/* ============ CTA ============ */
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px}
+.cta-card{background:var(--red-light);border:5px solid var(--ink);box-shadow:9px 9px 0 var(--ink);padding:32px 26px;border-radius:16px;text-align:center;transition:all .25s;position:relative;overflow:hidden}
+.cta-card::before{content:"";position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:var(--red);border-radius:50%;opacity:.15}
+.cta-card:nth-child(2){background:var(--blue-light)}
+.cta-card:nth-child(2)::before{background:var(--blue)}
+.cta-card:hover{transform:translate(-3px,-5px);box-shadow:12px 14px 0 var(--ink)}
+.cta-card .cta-tag{position:relative;z-index:2;display:inline-block;font-family:var(--mono);font-size:11px;color:#fff;background:var(--red-deep);padding:5px 12px;border:2px solid var(--ink);border-radius:4px;letter-spacing:1.5px;font-weight:700;margin-bottom:18px}
+.cta-card:nth-child(2) .cta-tag{background:var(--blue-deep)}
+.cta-card h4{position:relative;z-index:2;font-family:var(--display-cn);font-size:20px;color:var(--ink);font-weight:900;margin-bottom:12px;line-height:1.35}
+.cta-card p{position:relative;z-index:2;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);line-height:1.75;margin-bottom:20px;font-weight:500}
+.cta-btn{position:relative;z-index:2;display:inline-flex;align-items:center;gap:10px;background:var(--red-deep);color:#fff;font-family:var(--display-cn);font-size:16px;font-weight:900;padding:12px 24px;border:3px solid var(--ink);border-radius:10px;cursor:pointer;transition:all .15s;letter-spacing:.8px;box-shadow:4px 4px 0 var(--ink);overflow:hidden}
+.cta-card:nth-child(2) .cta-btn{background:var(--blue-deep)}
+.cta-btn::before{content:"📋 "}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:5px 7px 0 var(--ink)}
+.cta-btn.copied{background:var(--green-deep);color:#fff;animation:bump .4s ease}
+.cta-btn.copied::before{content:"✓ "}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+.next-card{background:var(--blue);border:5px solid var(--ink);box-shadow:9px 9px 0 var(--blue-deep);padding:30px 32px;border-radius:16px;margin-top:36px;color:#fff;position:relative;overflow:hidden}
+.next-card::before{content:"";position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:var(--yellow);border-radius:50%;opacity:.12}
+.next-card .next-q{position:relative;z-index:2;font-family:var(--display-cn);font-size:19px;color:var(--yellow);font-weight:900;margin-bottom:18px;letter-spacing:.5px}
+.next-card .next-q::before{content:"🔮 下一期想讲什么?评论区告诉我 · "}
+.next-list{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px}
+.next-item{background:#fff;border:3px solid var(--ink);padding:13px 18px;border-radius:10px;font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:14px;box-shadow:3px 3px 0 var(--blue-deep);cursor:pointer;transition:all .2s}
+.next-item:hover{transform:translateX(8px);box-shadow:6px 3px 0 var(--blue-deep)}
+.next-item .tag{background:var(--blue-deep);color:var(--yellow);font-family:var(--display-en);font-size:14px;padding:4px 11px;border-radius:5px;font-weight:900;border:2px solid var(--ink)}
+
+.ask-back{background:var(--coral-soft);border:5px solid var(--ink);box-shadow:10px 10px 0 var(--coral-deep);border-radius:16px;padding:32px 30px;margin-top:40px;text-align:center;position:relative}
+.ask-back::before{content:"💬";position:absolute;font-size:120px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.06}
+.ask-back .lead{font-family:var(--display-cn);font-size:22px;color:var(--coral-deep);font-weight:900;margin-bottom:14px;position:relative;z-index:2}
+.ask-back .q{font-family:var(--serif);font-size:18px;color:var(--ink);font-weight:600;font-style:italic;line-height:1.8;position:relative;z-index:2}
+.ask-back .q strong{color:var(--coral-deep);font-weight:900;background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:3px;font-style:normal}
+
+.outro{margin-top:60px;padding:42px 30px;background:var(--red-light);border:5px solid var(--ink);box-shadow:10px 10px 0 var(--red);border-radius:16px;text-align:center;position:relative;overflow:hidden}
+.outro::before{content:"NOVA";position:absolute;font-family:var(--display-en);font-size:240px;color:rgba(28,26,24,.04);font-weight:900;letter-spacing:30px;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none}
+.outro p{position:relative;z-index:2;font-family:var(--display-cn);font-size:18px;font-weight:900;margin-bottom:8px;letter-spacing:.5px;color:var(--ink)}
+.outro .nova{position:relative;z-index:2;font-family:var(--display-en);font-size:42px;color:var(--red-deep);letter-spacing:8px;font-weight:900;margin-top:20px;text-shadow:5px 5px 0 var(--ink);display:inline-block}
+.outro .nova::before,.outro .nova::after{content:"●";color:var(--red);font-size:24px;margin:0 12px;vertical-align:middle}
+.outro .small{position:relative;z-index:2;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);font-weight:500;margin-top:12px}
+
+.fade-in{opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+.fade-in.in{opacity:1;transform:translateY(0)}
+
+@media (max-width:760px){
+  .hero h1{font-size:36px}
+  .signal-head{grid-template-columns:60px 1fr;gap:12px;padding:18px}
+  .signal-no{font-size:30px;padding:10px 0}
+  .signal-impact{display:none}
+  .disease-row{grid-template-columns:1fr;gap:14px}
+  .disease-vs{transform:none}
+  .trend-svg{height:200px}
+  .cta-grid{grid-template-columns:1fr}
+  main{padding:30px 16px 60px}
+  .toc-nav{padding:10px 16px;gap:8px}
+  .sec-title{font-size:24px}
+  .golden h3{font-size:22px}
+  .outro .nova{font-size:30px;letter-spacing:5px}
+  .outro::before{font-size:140px;letter-spacing:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="bar"></div>
+
+<nav class="toc-nav">
+  <span class="toc-brand">AI PM <span class="vol">VOL.32</span></span>
+  <a class="toc-link" href="#hero">复盘</a>
+  <a class="toc-link" href="#trend">趋势</a>
+  <a class="toc-link" href="#s1">信号 1</a>
+  <a class="toc-link" href="#s2">信号 2</a>
+  <a class="toc-link" href="#s3">信号 3</a>
+  <a class="toc-link" href="#why">为什么漏</a>
+  <a class="toc-link" href="#cta">领模板</a>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-meta">
+      <span class="hero-vol">VOL.32</span>
+      <span class="hero-tag">AI PM · RAG 实战</span>
+      <span class="hero-tag alert">⚠ 慢病 NOT 断崖</span>
+    </div>
+
+    <h1>RAG 上线 90 天<br><span class="hl">必崩的 3 个慢信号</span></h1>
+    <p class="hero-sub">90% PM 上线第 1 周看完准确率就不看了。
+      <span class="em">第 60-90 天那天突然炸</span> —— 不是突然崩。是连续 60 天每周降 0.5pt 没人盯。</p>
+
+    <div class="story-card fade-in">
+      <p>去年帮一个朋友复盘他的 B 端 AI 客服项目(用的 RAG)。上线 90 天:</p>
+      <p>📉 客服满意度 <strong>4.3 → 3.6</strong>(断崖式)</p>
+      <p>📉 客户在续约时 <strong>push back</strong></p>
+      <div class="boss-quote">老板复盘第一句:「这怎么突然崩了?」</div>
+      <p class="punchline">不是突然崩的。</p>
+    </div>
+  </section>
+
+  <!-- Hit Rate 90 天趋势折线 -->
+  <section class="trend-section fade-in" id="trend">
+    <h2 class="sec-title"><span class="num-tag">DATA</span>把过去 90 天的指标拉出来看</h2>
+    <p class="sec-intro">每周降 0.5-1pt 不痛不痒,但 <strong>连续 60 天</strong> 加起来,就是断崖。</p>
+
+    <div class="trend-card">
+      <div class="trend-meta">
+        <div class="trend-stat">METRIC · <strong>Top-5 Hit Rate</strong></div>
+        <div class="trend-stat">PROJECT · <strong>B 端 AI 客服 / RAG</strong></div>
+        <div class="trend-stat">WINDOW · <strong>D0 → D90</strong></div>
+      </div>
+
+      <svg class="trend-svg" viewBox="0 0 700 240" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="fadeArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FF5E5B" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#FF5E5B" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- 网格线 -->
+        <line class="trend-gridline" x1="60" y1="40" x2="680" y2="40"/>
+        <line class="trend-gridline" x1="60" y1="90" x2="680" y2="90"/>
+        <line class="trend-gridline" x1="60" y1="140" x2="680" y2="140"/>
+        <line class="trend-gridline" x1="60" y1="190" x2="680" y2="190"/>
+        <!-- Y 轴标签 -->
+        <text class="trend-label y" x="52" y="44">90%</text>
+        <text class="trend-label y" x="52" y="94">85%</text>
+        <text class="trend-label y" x="52" y="144">80%</text>
+        <text class="trend-label y" x="52" y="194">75%</text>
+        <!-- X 轴标签 -->
+        <text class="trend-label x" x="70" y="220">D0</text>
+        <text class="trend-label x" x="225" y="220">D30</text>
+        <text class="trend-label x" x="380" y="220">D60</text>
+        <text class="trend-label x" x="535" y="220">D80</text>
+        <text class="trend-label x" x="650" y="220">D90 炸</text>
+        <!-- 面积 -->
+        <path class="trend-area"
+              d="M 70,60 L 225,80 L 380,110 L 535,150 L 650,180 L 650,200 L 70,200 Z"
+              id="trendArea"/>
+        <!-- 折线 -->
+        <path class="trend-line"
+              d="M 70,60 L 225,80 L 380,110 L 535,150 L 650,180"
+              id="trendLine"
+              pathLength="100"/>
+        <!-- 节点 -->
+        <circle class="trend-dot" cx="70" cy="60" r="6"/>
+        <circle class="trend-dot" cx="225" cy="80" r="6"/>
+        <circle class="trend-dot" cx="380" cy="110" r="6"/>
+        <circle class="trend-dot" cx="535" cy="150" r="6"/>
+        <circle class="trend-dot alert" cx="650" cy="180" r="6"/>
+        <!-- 数值 -->
+        <text class="trend-num" x="70" y="50" text-anchor="middle">87%</text>
+        <text class="trend-num" x="225" y="70" text-anchor="middle">85%</text>
+        <text class="trend-num" x="380" y="100" text-anchor="middle">82%</text>
+        <text class="trend-num" x="535" y="140" text-anchor="middle">78%</text>
+        <text class="trend-num" x="650" y="170" text-anchor="middle" style="fill:var(--red-deep);font-size:16px">炸</text>
+      </svg>
+
+      <div class="trend-tail">每周降 <strong>0.5-1pt</strong>,看着像 <strong>没事</strong>。但 78% 意思是 <strong>每 5 个用户 1 个拿不到答案</strong> · 乘以每天 5000 个 query = 每天 <strong>1000 个用户</strong> 体验差。</div>
+    </div>
+  </section>
+
+  <!-- 信号 1 · Hit Rate -->
+  <section class="fade-in" id="s1">
+    <h2 class="sec-title"><span class="num-tag">SIGNAL 1</span>Hit Rate 缓慢下降</h2>
+
+    <article class="signal s1">
+      <div class="signal-head">
+        <div class="signal-no">01</div>
+        <div class="signal-title-wrap">
+          <div class="signal-no-label">01</div>
+          <div class="signal-title">Top-5 检索命中率慢漂<small>HIT RATE · DRIFT</small></div>
+        </div>
+        <div class="signal-impact">87% → 78%</div>
+      </div>
+      <div class="signal-body">
+        <p>用户提的 query 跑你的向量库 → 前 5 个检索结果里有没有 <strong>真正相关的 chunk</strong>。</p>
+        <p>87 / 85 / 82 / 78 听着每周降 1-2pt 不痛不痒。<strong>但 78% 意思是每 5 个用户就有 1 个拿不到答案</strong>。</p>
+
+        <div class="signal-why">大多数项目 Hit Rate 只在上线那周做一次基准 Eval · 之后就不跑了 · 所以慢漂没人发现。</div>
+
+        <div class="signal-fix">
+          <div class="signal-fix-title">怎么修</div>
+          <ul>
+            <li>每周二 跑一次 Eval · Eval 集要 <strong>动态扩</strong>(包含上周新出现的 Top 30 query)</li>
+            <li>如果 Eval 集还停在 3 个月前那 <strong>200 条 happy path</strong>, Hit Rate 永远好看</li>
+            <li>阈值:周环比下降 <strong>&lt; -1pt</strong> 直接告警</li>
+            <li>连续 <strong>2 周下降不告警 = 自杀</strong></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 信号 2 · query 尾部加长 -->
+  <section class="fade-in" id="s2">
+    <h2 class="sec-title"><span class="num-tag">SIGNAL 2</span>query 分布尾部加长</h2>
+
+    <article class="signal s2">
+      <div class="signal-head">
+        <div class="signal-no">02</div>
+        <div class="signal-title-wrap">
+          <div class="signal-no-label">02</div>
+          <div class="signal-title">Top 50 query 覆盖率下降<small>LONG TAIL · QUERY DRIFT</small></div>
+        </div>
+        <div class="signal-impact">62% → 41%</div>
+      </div>
+      <div class="signal-body">
+        <p>最 <strong>隐蔽</strong> 但最准 —— 看 <strong>Top 50 query</strong> 在你总 query 量里的覆盖率。</p>
+
+        <div class="mini-chart">
+          <div class="mini-chart-title">📊 Top 50 query 覆盖率(上线 vs Day 60)</div>
+          <div class="mini-bar-row start">
+            <span>D0</span>
+            <div class="bb"><div class="bb-fill" data-w="62"></div></div>
+            <span class="num">62%</span>
+          </div>
+          <div class="mini-bar-row now">
+            <span>D60</span>
+            <div class="bb"><div class="bb-fill" data-w="41"></div></div>
+            <span class="num">41%</span>
+          </div>
+        </div>
+
+        <p>用户问的东西 <strong>越来越多元</strong> · 长尾在膨胀。但 PM 的 chunk 库还是上线时那 <code>200 篇</code> 文档。</p>
+        <p>产品在迭代、新功能在出,但 <strong>RAG 知识库没跟上</strong>。</p>
+
+        <div class="signal-why">最毒在哪 —— 它不会让总准确率掉太多 · 因为高频 query 还好 · 看准确率看不出来。</div>
+
+        <div class="signal-fix">
+          <div class="signal-fix-title">怎么修</div>
+          <ul>
+            <li>每周看 <strong>Top 50 query 占比</strong> 的趋势图</li>
+            <li>连续 4 周往下走 → audit 产品近期上线了哪些新功能</li>
+            <li>要做的不是 <strong>调 prompt</strong> · 是 <strong>补对应文档进 chunk 库</strong></li>
+            <li>chunk 库要跟产品迭代速度持平(每月至少 audit 一次)</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 信号 3 · 单 session query 数 -->
+  <section class="fade-in" id="s3">
+    <h2 class="sec-title"><span class="num-tag">SIGNAL 3</span>用户从问问题变「问追问」</h2>
+
+    <article class="signal s3">
+      <div class="signal-head">
+        <div class="signal-no">03</div>
+        <div class="signal-title-wrap">
+          <div class="signal-no-label">03</div>
+          <div class="signal-title">单 session 平均 query 数<small>USER BEHAVIOR · TRY-AND-ERROR</small></div>
+        </div>
+        <div class="signal-impact">1.4 → 2.7</div>
+      </div>
+      <div class="signal-body">
+        <p>这个信号最容易漏 —— 它在 <strong>用户行为侧</strong>,不在 Hit Rate 侧。</p>
+
+        <div class="mini-chart">
+          <div class="mini-chart-title">📊 单 session 平均 query 数(上线 vs Day 60)</div>
+          <div class="mini-bar-row start">
+            <span>D0</span>
+            <div class="bb"><div class="bb-fill" data-w="35"></div></div>
+            <span class="num">1.4</span>
+          </div>
+          <div class="mini-bar-row now">
+            <span>D60</span>
+            <div class="bb"><div class="bb-fill" data-w="68"></div></div>
+            <span class="num">2.7</span>
+          </div>
+        </div>
+
+        <p>用户在 <code>try and error</code> —— 不停换措辞试图让 AI 答对。</p>
+        <p>这是用户最 <strong>隐性的差评</strong>:没点踩、没投诉,<strong>只是默默多问几次</strong>。</p>
+
+        <div class="signal-why">每多问一次都是体验在掉。等他们终于受不了 · 不会发投诉 · 会 <strong>直接不用了 + 群里吐槽</strong> · 这时 DAU 已经在掉,但你不知道为什么。</div>
+
+        <div class="signal-fix">
+          <div class="signal-fix-title">怎么修</div>
+          <ul>
+            <li>监控 <strong>单 session 平均 query 数</strong>(8 周滚动)</li>
+            <li>监控 <strong>30 秒内对同一意图换表述比例</strong></li>
+            <li>任意一个连续 <strong>4 周往上走</strong> → RAG 在隐性掉</li>
+            <li>从 sample session 拉 50 条 → 人工 audit 用户卡在哪里</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 为什么 PM 漏 -->
+  <section class="fade-in" id="why">
+    <h2 class="sec-title"><span class="num-tag">WHY</span>为什么 90% PM 都漏</h2>
+    <p class="sec-intro">这 3 个都是 <strong>慢病</strong>。每个信号每周可能只动 0.3-0.5pt,看一周看不出。要看 ≥ 4 周趋势线才发现。</p>
+
+    <div class="disease-card">
+      <div class="disease-row">
+        <div class="disease-side bad">
+          <div class="who">大多数 PM 仪表盘</div>
+          <div class="what">只显示<br><strong>当前值</strong></div>
+          <div class="detail">每周二打开 · 看一眼数字没异常 · 关 · 漏</div>
+        </div>
+        <div class="disease-vs">VS</div>
+        <div class="disease-side good">
+          <div class="who">应该的仪表盘</div>
+          <div class="what">画<br><strong>8 周趋势线</strong></div>
+          <div class="detail">3 个信号每个画滚动曲线 · 慢漂一眼看到</div>
+        </div>
+      </div>
+      <div class="disease-tail">仪表盘要做 <strong>趋势曲线</strong> · 不是 <strong>当前值</strong></div>
+    </div>
+  </section>
+
+  <!-- 金句卡 -->
+  <section class="fade-in">
+    <div class="golden">
+      <span class="golden-tag">★ 一句话本期</span>
+      <h3>RAG 不是一锤子买卖<br><strong>它是个生物</strong></h3>
+      <p class="sub">它会随着用户 query 漂移、随着产品迭代、随着 chunk 库老化 · 慢慢变弱<br>你不养它,它就死。</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="fade-in">
+    <h2 class="sec-title"><span class="num-tag">FREE</span>领模板 · 评论区扣关键词</h2>
+    <div class="cta-grid">
+      <div class="cta-card">
+        <span class="cta-tag">VOL.32 SOP</span>
+        <h4>RAG 90 天监控 SOP + 修复手册</h4>
+        <p>3 信号 KPI 定义 + 告警阈值 + 8 周仪表盘配置 + 每个信号修复手册(动态 Eval / chunk audit / 用户行为分层)+ 真实复盘数据曲线</p>
+        <button class="cta-btn" data-copy="RAG 漂移">扣【RAG 漂移】</button>
+      </div>
+      <div class="cta-card">
+        <span class="cta-tag">全栈系列</span>
+        <h4>AI PM 全栈知识地图 Vol.1-31</h4>
+        <p>Prompt / Context / RAG / MCP / Agent / Eval / 兜底链 / PRD / 立项 / 上线 / 面试<br>12 个模块整理成一份 Word</p>
+        <button class="cta-btn" data-copy="知识地图">扣【知识地图】</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 留个问题 -->
+  <section class="fade-in">
+    <div class="ask-back">
+      <div class="lead">留个问题给你</div>
+      <p class="q">如果你的 RAG 已经上线 <strong>≥ 30 天</strong><br>把你现在的 <strong>Hit Rate 周环比</strong> 评论区告诉我<br>我看看你是不是已经在 <strong>漂移区</strong> 了</p>
+    </div>
+  </section>
+
+  <!-- 下期 -->
+  <section class="fade-in">
+    <div class="next-card">
+      <div class="next-q">三个候选,告诉我你想听哪个</div>
+      <div class="next-list">
+        <div class="next-item"><span class="tag">A</span>AI 产品定价 · 免费 / 订阅 / 按 Token / 分级 4 方案对比</div>
+        <div class="next-item"><span class="tag">B</span>AI Agent 工具链编排里的翻车诊断</div>
+        <div class="next-item"><span class="tag">C</span>PM vs 工程 · AI 项目里 10 个高频吵架点</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="outro fade-in">
+    <p>觉得有用的话 · 记得收藏</p>
+    <p>关注 Mia · 每天一个 AI PM 知识点</p>
+    <div class="nova">NOVA</div>
+    <div class="small">前卫 AI 产品经理 · 不被 Demo 带节奏的实战派</div>
+  </section>
+
+</main>
+
+<script>
+const bar = document.getElementById('bar');
+window.addEventListener('scroll', () => {
+  const sc = document.documentElement.scrollTop || document.body.scrollTop;
+  const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  bar.style.width = (sc / h * 100) + '%';
+}, {passive:true});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }});
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ★ 动效 1 · SVG 折线绘制(stroke-dasharray 动画)
+const trendObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const line = document.getElementById('trendLine');
+      const area = document.getElementById('trendArea');
+      if (line) {
+        const len = line.getTotalLength();
+        line.style.strokeDasharray = len;
+        line.style.strokeDashoffset = len;
+        line.style.transition = 'stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1)';
+        setTimeout(() => { line.style.strokeDashoffset = '0'; }, 200);
+      }
+      if (area) {
+        area.style.opacity = '0';
+        area.style.transition = 'opacity 1.5s ease 1.2s';
+        setTimeout(() => { area.style.opacity = '0.4'; }, 200);
+      }
+      // 节点逐个浮现
+      const dots = document.querySelectorAll('.trend-dot');
+      dots.forEach((d, i) => {
+        d.style.opacity = '0';
+        d.style.transition = 'opacity .4s ease';
+        setTimeout(() => { d.style.opacity = '1'; }, 600 + i * 380);
+      });
+      // 数值逐个浮现
+      const nums = document.querySelectorAll('.trend-num');
+      nums.forEach((n, i) => {
+        n.style.opacity = '0';
+        n.style.transition = 'opacity .4s ease';
+        setTimeout(() => { n.style.opacity = '1'; }, 700 + i * 380);
+      });
+      trendObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+const trendCard = document.querySelector('.trend-card');
+if (trendCard) trendObs.observe(trendCard);
+
+// ★ 动效 2 · 横条增长
+const bbObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const fill = e.target;
+      const w = parseInt(fill.dataset.w, 10) || 50;
+      setTimeout(() => { fill.style.width = w + '%'; }, 100);
+      bbObs.unobserve(fill);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.bb-fill[data-w]').forEach(el => bbObs.observe(el));
+
+// 锚点高亮
+const tocLinks = document.querySelectorAll('.toc-link');
+const sections = ['hero','trend','s1','s2','s3','why','cta'].map(id => document.getElementById(id)).filter(Boolean);
+window.addEventListener('scroll', () => {
+  let active = '';
+  const offset = 150;
+  sections.forEach(s => { if (s.getBoundingClientRect().top <= offset) active = s.id; });
+  tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + active));
+}, {passive:true});
+
+// CTA
+document.querySelectorAll('.cta-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.dataset.copy;
+    const fallback = () => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(err){}
+      ta.remove();
+    };
+    const showCopied = () => {
+      const o = btn.textContent.replace('已复制 '+text,'').replace('✓ ','');
+      btn.classList.add('copied');
+      btn.textContent = '已复制 ' + text;
+      setTimeout(() => { btn.classList.remove('copied'); btn.textContent = o; }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(()=>{ fallback(); showCopied(); });
+    } else { fallback(); showCopied(); }
+  });
+});
+
+document.querySelectorAll('.next-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const tag = item.querySelector('.tag').textContent.trim();
+    try {
+      navigator.clipboard.writeText(tag);
+      const orig = item.style.background;
+      item.style.background = '#FFD93D';
+      setTimeout(() => item.style.background = orig, 800);
+    } catch(e){}
+  });
+});
+
+// ★ 动效 3 · golden 弹入
+const goldenObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animation = 'goldenIn 1.0s cubic-bezier(.68,-.55,.27,1.55) forwards';
+      goldenObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('.golden').forEach(el => goldenObs.observe(el));
+
+const goldenStyle = document.createElement('style');
+goldenStyle.textContent = `@keyframes goldenIn {0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}`;
+document.head.appendChild(goldenStyle);
+</script>
+
+</body>
+</html>

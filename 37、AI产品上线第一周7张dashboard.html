@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol.37 · AI 产品经理实战篇 · AI 产品上线第一周 7 张必看 dashboard</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* 鲜亮少女糖果风 · v4 (回到高饱和 + 纯黑边 + 硬阴影) */
+  --cream:#FFF8F0;--cream-2:#FFF3E0;--cream-3:#FFEDC8;
+  /* 鲜亮蜜桃粉 */
+  --peach:#FFC2D0;--peach-deep:#FF8FA3;--peach-soft:#FFE0E8;--peach-light:#FFEEF1;
+  /* 樱桃红强调 */
+  --rose:#FF6B8A;--rose-deep:#FF3D6E;
+  --cherry:#FF3D6E;--cherry-deep:#E02060;
+  /* 鲜亮薰衣草 */
+  --lavender:#C8AFEE;--lavender-deep:#9C7BE0;--lavender-soft:#DDC8F5;--lavender-light:#F0E5FF;
+  /* 薄荷糖果绿 */
+  --mint:#87E0B5;--mint-deep:#3EC588;--mint-soft:#B8EBD0;--mint-light:#E0F5E8;
+  /* 鲜亮天蓝 */
+  --sky:#8FCFFF;--sky-deep:#3DA8FF;--sky-soft:#C2E5FF;--sky-light:#E0F0FF;
+  /* 鲜亮鹅黄 */
+  --butter:#FFD93D;--butter-deep:#FFA825;--butter-soft:#FFF0A8;--butter-light:#FFFBE6;
+  /* 纯黑 - NOVA 经典 */
+  --cocoa:#1C1A18;--cocoa-deep:#1C1A18;--cocoa-2:#3D3833;--cocoa-3:#7A746B;
+  --paper:#FFF8F0;
+  --sans:"Inter","Noto Sans SC","PingFang SC",sans-serif;
+  --display-en:"Inter","Noto Sans SC",sans-serif;
+  --display-cn:"Inter","Noto Sans SC","PingFang SC",sans-serif;
+}
+
+body{font-family:var(--sans);background:var(--paper);color:var(--cocoa-deep);line-height:1.8;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.container{max-width:860px;margin:0 auto;padding:56px 48px 100px;position:relative}
+
+.bg-tex{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,143,163,.15) 380px, transparent 620px),
+    radial-gradient(circle at 88% 22%, rgba(200,175,238,.13) 320px, transparent 540px),
+    radial-gradient(circle at 50% 78%, rgba(255,217,61,.10) 400px, transparent 620px),
+    radial-gradient(circle at 25% 95%, rgba(135,224,181,.08) 350px, transparent 550px);
+}
+
+/* 顶栏 */
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:var(--cocoa-deep);color:var(--cream);border:3px solid var(--cocoa-deep);box-shadow:5px 5px 0 var(--peach-deep);border-radius:22px;margin-bottom:48px}
+.brand-l{font-family:var(--display-en);font-size:14px;letter-spacing:3px;font-weight:700}
+.brand-l .vol{color:var(--butter);font-size:11px;margin-left:10px;letter-spacing:2px}
+.brand-r{font-family:var(--display-cn);font-size:13px;color:var(--peach-soft);letter-spacing:1px}
+
+/* HERO */
+.hero{position:relative;margin-bottom:60px}
+.kicker-row{display:flex;align-items:center;gap:12px;margin-bottom:26px;flex-wrap:wrap}
+.kicker{display:inline-flex;align-items:center;gap:8px;background:var(--cherry);color:#fff;padding:8px 18px;border:2px solid var(--cocoa-deep);box-shadow:3px 3px 0 var(--cocoa-deep);font-family:var(--display-cn);font-size:13px;font-weight:700;letter-spacing:.5px;border-radius:24px}
+.kicker.alt{background:var(--butter);color:var(--cocoa-deep)}
+.kicker.mint{background:var(--mint-deep);color:#fff}
+
+.h1{font-size:52px;font-weight:800;line-height:1.15;letter-spacing:-1.2px;margin-bottom:26px;color:var(--cocoa-deep)}
+.h1 .p-hl{background:var(--peach-deep);color:#fff;padding:0 16px;display:inline-block;border-radius:14px}
+.h1 .y-hl{background:var(--butter);color:var(--cocoa-deep);padding:0 14px;display:inline-block;border-radius:14px}
+
+.sub{font-family:var(--display-cn);font-size:18px;color:var(--cocoa-2);font-weight:500;margin-bottom:30px;letter-spacing:.3px;line-height:1.65}
+.sub .em{color:var(--cherry);font-weight:700}
+
+/* 3 个场景 hero cards */
+.scenes-hero{display:grid;grid-template-columns:1fr;gap:14px;margin-top:36px}
+.scene-hero{border:2px solid var(--cocoa-deep);border-radius:18px;padding:22px 26px;position:relative;transition:transform .25s}
+.scene-hero:nth-child(1){background:var(--peach-soft);box-shadow:4px 4px 0 var(--peach-deep)}
+.scene-hero:nth-child(2){background:var(--butter-light);box-shadow:4px 4px 0 var(--butter-deep)}
+.scene-hero:nth-child(3){background:var(--lavender-light);box-shadow:4px 4px 0 var(--lavender-deep)}
+.scene-hero:hover{transform:translateY(-3px)}
+.scene-hero-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--display-en);font-size:11px;color:var(--cocoa-2);letter-spacing:2px;font-weight:600;margin-bottom:10px;text-transform:uppercase}
+.scene-hero-tag::before{content:"♡"}
+.scene-hero-q{font-family:var(--display-cn);font-size:17px;color:var(--cocoa-deep);font-weight:700;line-height:1.5}
+.scene-hero-q .who{color:var(--cocoa-2);font-weight:600}
+.scene-hero-q .talk{background:#fff;border:1.5px solid var(--cocoa-2);border-radius:10px;padding:8px 12px;display:inline-block;margin:6px 0 6px;font-size:15px}
+.scene-hero-arrow{font-family:var(--display-cn);font-size:14px;color:var(--cherry);font-weight:700;margin-top:6px}
+
+/* 章节 */
+.sec{margin:90px 0 40px}
+.sec-tag{display:inline-block;background:var(--cocoa-deep);color:var(--cream);padding:5px 14px;font-family:var(--display-en);font-size:10px;letter-spacing:2.5px;font-weight:600;margin-bottom:16px;border-radius:12px;text-transform:uppercase}
+.sec-h2{font-size:34px;font-weight:800;line-height:1.25;color:var(--cocoa-deep);margin-bottom:10px;letter-spacing:-.4px}
+.sec-h2 .em{background:var(--butter);padding:0 10px;display:inline-block;border-radius:8px}
+.sec-h2 .em-p{background:var(--peach-deep);color:#fff;padding:0 10px;display:inline-block;border-radius:8px}
+.sec-desc{font-size:15px;color:var(--cocoa-2);line-height:1.85;margin-top:16px;max-width:760px}
+.sec-desc .em{background:var(--butter-soft);padding:1px 7px;font-weight:600;border-radius:4px}
+
+/* 反认知卡 */
+.anti-card{background:var(--lavender-light);border:2px solid var(--cocoa-deep);border-radius:22px;padding:32px 36px;box-shadow:5px 5px 0 var(--lavender-deep);margin-top:24px}
+.anti-tag{font-family:var(--display-en);font-size:11px;color:var(--lavender-deep);letter-spacing:2.5px;font-weight:700;margin-bottom:14px;text-transform:uppercase}
+.anti-tag::before{content:"⋆ "}
+.anti-h{font-family:var(--display-cn);font-size:22px;color:var(--cocoa-deep);font-weight:700;line-height:1.5;margin-bottom:18px}
+.anti-list{list-style:none}
+.anti-list li{padding-left:24px;position:relative;margin-bottom:10px;font-size:14px;color:var(--cocoa-deep);font-weight:500}
+.anti-list li::before{content:"✗";color:var(--cherry);font-weight:800;position:absolute;left:0;font-size:14px}
+.anti-take{margin-top:18px;padding:14px 18px;background:rgba(255,255,255,.6);border-radius:12px;border:1.5px dashed var(--cocoa-2);font-family:var(--display-cn);font-size:15px;color:var(--cocoa-deep);font-weight:700}
+.anti-take .em{background:var(--butter);padding:1px 8px;border-radius:5px}
+
+/* 7 张 dashboard */
+.dash-list{display:flex;flex-direction:column;gap:24px;margin-top:30px}
+.dash-card{background:#fff;border:2px solid var(--cocoa-deep);border-radius:22px;padding:30px;position:relative;overflow:hidden}
+.dash-card.d1{box-shadow:6px 6px 0 var(--peach-deep)}
+.dash-card.d2{box-shadow:6px 6px 0 var(--mint-deep)}
+.dash-card.d3{box-shadow:6px 6px 0 var(--lavender-deep)}
+.dash-card.d4{box-shadow:6px 6px 0 var(--butter-deep)}
+.dash-card.d5{box-shadow:6px 6px 0 var(--sky-deep)}
+.dash-card.d6{box-shadow:6px 6px 0 var(--rose-deep)}
+.dash-card.d7{box-shadow:6px 6px 0 var(--cocoa-deep)}
+
+.dash-head{display:flex;align-items:flex-start;gap:18px;border-bottom:2px dashed var(--cocoa-3);padding-bottom:18px;margin-bottom:18px}
+.dash-no{flex-shrink:0;font-family:var(--display-en);font-size:46px;font-weight:800;color:var(--cocoa-deep);line-height:1;letter-spacing:-2px}
+.dash-card.d1 .dash-no{color:var(--rose-deep)}
+.dash-card.d2 .dash-no{color:var(--mint-deep)}
+.dash-card.d3 .dash-no{color:var(--lavender-deep)}
+.dash-card.d4 .dash-no{color:var(--butter-deep)}
+.dash-card.d5 .dash-no{color:var(--sky-deep)}
+.dash-card.d6 .dash-no{color:var(--rose-deep)}
+.dash-card.d7 .dash-no{color:var(--cocoa-deep)}
+.dash-head-info{flex:1}
+.dash-title{font-family:var(--display-cn);font-size:22px;font-weight:700;color:var(--cocoa-deep);line-height:1.3;margin-bottom:6px;letter-spacing:-.2px}
+.dash-tag-row{display:flex;gap:8px;flex-wrap:wrap}
+.dash-tag{font-family:var(--display-en);font-size:11px;letter-spacing:1.5px;padding:3px 10px;border-radius:8px;font-weight:700;text-transform:uppercase}
+.dash-tag.exclusive{background:var(--cherry);color:#fff}
+.dash-tag.basic{background:var(--cream-2);color:var(--cocoa-2);border:1.5px solid var(--cocoa-3)}
+.dash-tag.cfo{background:var(--butter-deep);color:#fff}
+.dash-tag.critical{background:var(--cocoa-deep);color:var(--butter)}
+
+/* 看什么 */
+.dash-section{margin-bottom:16px}
+.dash-section-tag{font-family:var(--display-en);font-size:11px;letter-spacing:2px;color:var(--cherry);font-weight:700;margin-bottom:8px;text-transform:uppercase}
+.dash-section-tag::before{content:"● "}
+.dash-watch{font-size:14px;color:var(--cocoa-deep);line-height:1.7}
+.dash-watch .em{background:var(--butter-soft);padding:1px 6px;font-weight:700;border-radius:4px}
+
+/* PM 视角 */
+.dash-pm{background:var(--mint-light);padding:14px 18px;border-radius:12px;border:1.5px solid var(--mint-deep);margin-bottom:14px}
+.dash-pm-tag{font-family:var(--display-en);font-size:10px;letter-spacing:2px;color:var(--mint-deep);font-weight:700;margin-bottom:6px;text-transform:uppercase}
+.dash-pm-tag::before{content:"♡ "}
+.dash-pm-text{font-family:var(--display-cn);font-size:14px;color:var(--cocoa-deep);font-weight:700;line-height:1.6}
+
+/* 阈值告警 */
+.dash-alert{background:var(--peach-soft);padding:12px 18px;border-radius:12px;border:1.5px solid var(--cherry);margin-bottom:14px}
+.dash-alert-tag{font-family:var(--display-en);font-size:10px;letter-spacing:2px;color:var(--cherry);font-weight:700;margin-bottom:5px;text-transform:uppercase}
+.dash-alert-tag::before{content:"⚠ "}
+.dash-alert-text{font-size:13px;color:var(--cocoa-deep);line-height:1.6;font-weight:600}
+.dash-alert-text .em{background:var(--cherry);color:#fff;padding:1px 7px;border-radius:5px}
+
+/* 真实案例 */
+.dash-case{background:var(--cream-2);padding:14px 18px;border-left:4px solid var(--cocoa-2);border-radius:0 12px 12px 0;font-size:13px;color:var(--cocoa-deep);line-height:1.7;font-style:italic}
+.dash-case-tag{font-family:var(--display-en);font-size:10px;color:var(--cocoa-2);letter-spacing:2px;font-weight:700;margin-bottom:5px;display:block;font-style:normal;text-transform:uppercase}
+.dash-case-tag::before{content:"♢ "}
+.dash-case .em{background:var(--butter);padding:1px 6px;font-weight:700;border-radius:4px;font-style:normal}
+
+/* 工位决策卡 */
+.wall-card{background:var(--cocoa-deep);color:var(--cream);padding:42px 36px;border-radius:24px;border:3px solid var(--cocoa-deep);box-shadow:7px 7px 0 var(--butter-deep);margin-top:60px;position:relative;overflow:hidden}
+.wall-tag{font-family:var(--display-en);font-size:11px;letter-spacing:3px;color:var(--butter);font-weight:700;margin-bottom:14px;text-transform:uppercase}
+.wall-tag::before{content:"✿ "}
+.wall-h{font-family:var(--display-cn);font-size:28px;color:var(--cream);font-weight:700;line-height:1.4;margin-bottom:22px}
+.wall-h .em{background:var(--butter);color:var(--cocoa-deep);padding:0 12px;border-radius:8px}
+.wall-table{margin-top:18px;background:rgba(250,247,242,.05);border-radius:14px;overflow:hidden}
+.wall-row{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;padding:14px 20px;align-items:center;border-bottom:1px dashed rgba(250,247,242,.2)}
+.wall-row:last-child{border-bottom:none}
+.wall-q{font-family:var(--display-cn);font-size:14px;color:var(--cream);font-weight:600}
+.wall-q .who{color:var(--butter);font-weight:700}
+.wall-a{font-family:var(--display-en);font-size:13px;color:var(--butter);font-weight:700;letter-spacing:.5px}
+.wall-a .num{background:var(--butter);color:var(--cocoa-deep);padding:2px 9px;border-radius:6px;font-weight:700;margin:0 2px}
+
+/* 金句 */
+.golden{background:linear-gradient(135deg,var(--peach) 0%,var(--peach-deep) 100%);color:var(--cocoa-deep);padding:48px 40px;border:3px solid var(--cocoa-deep);box-shadow:6px 6px 0 var(--cocoa-deep);border-radius:24px;margin-top:60px;position:relative;overflow:hidden;text-align:center}
+.golden-tag{font-family:var(--display-en);font-size:11px;color:var(--cocoa-deep);letter-spacing:3px;font-weight:600;margin-bottom:14px;text-transform:uppercase}
+.golden-tag::before{content:"♡ "}
+.golden-h{font-family:var(--display-cn);font-size:28px;color:var(--cocoa-deep);font-weight:700;line-height:1.5;letter-spacing:-.3px}
+.golden-h .em{background:var(--cocoa-deep);color:var(--butter);padding:2px 12px;border-radius:8px;display:inline-block;margin:2px 4px}
+.golden-sub{font-size:14px;color:var(--cocoa-deep);font-weight:600;margin-top:20px;line-height:1.8;opacity:.85}
+
+/* CTA */
+.cta{background:#fff;border:3px solid var(--cocoa-deep);box-shadow:6px 6px 0 var(--mint-deep);border-radius:24px;padding:38px;margin-top:48px}
+.cta-tag{font-family:var(--display-en);font-size:12px;letter-spacing:3px;color:var(--mint-deep);font-weight:700;margin-bottom:10px;text-transform:uppercase}
+.cta-tag::before{content:"♡ "}
+.cta-h{font-family:var(--display-cn);font-size:24px;font-weight:700;color:var(--cocoa-deep);line-height:1.5;margin-bottom:14px;letter-spacing:-.2px}
+.cta-h .em{background:var(--butter);padding:0 12px;border-radius:8px}
+
+/* 下期预告 */
+.next-up{margin-top:36px;background:var(--cream-2);border:2px dashed var(--cocoa-deep);border-radius:18px;padding:28px}
+.next-up-tag{font-family:var(--display-en);font-size:11px;color:var(--cherry);letter-spacing:2.5px;font-weight:700;margin-bottom:8px;text-transform:uppercase}
+.next-up-tag::before{content:"⋆ "}
+.next-up-h{font-family:var(--display-cn);font-size:20px;font-weight:700;color:var(--cocoa-deep);margin-bottom:14px}
+.next-list{display:grid;grid-template-columns:1fr;gap:10px}
+.next-item{padding:14px 16px;background:#fff;border:1.5px solid var(--cocoa-deep);border-radius:12px;font-size:13.5px;color:var(--cocoa-deep);line-height:1.6;font-weight:500}
+.next-item .l{font-family:var(--display-en);color:var(--cherry);font-size:14px;margin-right:5px;letter-spacing:1px;font-weight:700}
+
+.footer{margin-top:56px;padding:24px 0;border-top:2px dashed var(--cocoa-3);text-align:center;color:var(--cocoa-2);font-size:12px;letter-spacing:1px}
+.footer .author{color:var(--cherry);font-family:var(--display-en);font-size:15px;letter-spacing:4px;font-weight:700;margin-bottom:6px;display:block;text-transform:uppercase}
+
+.fi{opacity:0;transform:translateY(28px);transition:opacity .8s ease, transform .8s ease}
+.fi.on{opacity:1;transform:translateY(0)}
+
+@media(max-width:780px){
+  .container{padding:24px 18px 60px}
+  .h1{font-size:32px}
+  .sub{font-size:15px}
+  .sec-h2,.golden-h,.cta-h,.wall-h{font-size:22px}
+  .dash-card{padding:22px}
+  .dash-no{font-size:36px}
+  .dash-title{font-size:18px}
+  .wall-row{grid-template-columns:1fr;gap:6px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-tex"></div>
+
+<div class="container">
+
+  <!-- 顶栏 -->
+  <div class="brand-bar">
+    <div class="brand-l">NOVA · AI PM <span class="vol">VOL.37</span></div>
+    <div class="brand-r">AI 产品经理实战篇 · 2026-06</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero fi">
+    <div class="kicker-row">
+      <span class="kicker">实战篇</span>
+      <span class="kicker alt">上线第一周</span>
+      <span class="kicker mint">7 张挂工位</span>
+    </div>
+    <h1 class="h1">
+      AI 产品上线第一周<br>
+      <span class="p-hl">7 张</span> 必看 <span class="y-hl">dashboard</span>
+    </h1>
+    <div class="sub">
+      老板问数据 · CFO 问烧多少 · 客户问准不准<br>
+      <span class="em">9 成 PM 慌的根子不是没数 · 是没体系</span>
+    </div>
+
+    <!-- 3 个真实场景 hero -->
+    <div class="scenes-hero">
+      <div class="scene-hero fi">
+        <div class="scene-hero-tag">场景 01 · 周二一早</div>
+        <div class="scene-hero-q">
+          <span class="who">老板冲你竖大拇指:</span><br>
+          <span class="talk">「昨天数据怎么样?」</span><br>
+          <span class="scene-hero-arrow">→ 你拉哪张图?</span>
+        </div>
+      </div>
+      <div class="scene-hero fi">
+        <div class="scene-hero-tag">场景 02 · 十分钟后</div>
+        <div class="scene-hero-q">
+          <span class="who">CFO 端着咖啡:</span><br>
+          <span class="talk">「这 AI 一天烧多少钱?月度预算扛得住吗?」</span><br>
+          <span class="scene-hero-arrow">→ 你五秒答得出来吗?</span>
+        </div>
+      </div>
+      <div class="scene-hero fi">
+        <div class="scene-hero-tag">场景 03 · 半小时后</div>
+        <div class="scene-hero-q">
+          <span class="who">大客户来电话:</span><br>
+          <span class="talk">「我们试了上午有几个不太准 · 你们准确率多少?」</span><br>
+          <span class="scene-hero-arrow">→ 你给的是承诺还是数据?</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 反认知 -->
+  <section class="sec fi">
+    <span class="sec-tag">反认知 · 传统 KPI 不够看</span>
+    <h2 class="sec-h2">传统 KPI <span class="em-p">看不到</span> AI 产品真问题</h2>
+    <div class="anti-card">
+      <div class="anti-tag">9 成 PM 上线第一周都错在这</div>
+      <div class="anti-h">老板要你拉数据 · 你打开的是 DAU + GMV</div>
+      <ul class="anti-list">
+        <li>DAU 涨 ≠ AI 在创造价值(可能是营销带来的)</li>
+        <li>GMV 涨 ≠ AI 比规则强(可能是季节性)</li>
+        <li>留存好 ≠ 用户满意(可能被押金锁住)</li>
+        <li>点 👍 多 ≠ AI 真有用(用户懒得点 👎)</li>
+      </ul>
+      <div class="anti-take">
+        <span class="em">AI 产品有自己的健康指标</span> · 不是传统 KPI 能盖住的<br>
+        → 7 张 dashboard 缺一不可
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 张 dashboard -->
+  <section class="sec fi">
+    <span class="sec-tag">7 Dashboards · 一张一张拆</span>
+    <h2 class="sec-h2"><span class="em">7 张 dashboard</span><br>看什么 · PM 视角 · 阈值 · 真实案例</h2>
+    <p class="sec-desc">每张给你 4 件事 — <span class="em">看什么指标</span>、<span class="em">PM 视角</span>(怎么解读)、<span class="em">告警阈值</span>、<span class="em">真实案例</span>(谁靠它救命 / 谁漏了它翻车)。</p>
+
+    <div class="dash-list">
+
+      <!-- D 01 -->
+      <article class="dash-card d1 fi">
+        <div class="dash-head">
+          <div class="dash-no">01</div>
+          <div class="dash-head-info">
+            <div class="dash-title">用户激活 + 留存 dashboard</div>
+            <div class="dash-tag-row">
+              <span class="dash-tag basic">基础款</span>
+              <span class="dash-tag basic">老板必问</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-section">
+          <div class="dash-section-tag">看什么</div>
+          <div class="dash-watch">DAU + 新用户激活率 + Onboarding 完成率 + <span class="em">Day 1 / Day 7 留存</span></div>
+        </div>
+        <div class="dash-pm">
+          <div class="dash-pm-tag">PM 视角</div>
+          <div class="dash-pm-text">DAU 涨 = 老板开心 · 但 Day 1 留存才是命。Onboarding 完成率低 = 用户进来没用上 AI 就走 — DAU 里算数 · 但他没拿到价值</div>
+        </div>
+        <div class="dash-alert">
+          <div class="dash-alert-tag">告警阈值</div>
+          <div class="dash-alert-text">Day 1 留存 <span class="em">< 40%</span> 立刻拉数据 · Onboarding 完成率 <span class="em">< 70%</span> 立刻拉 funnel 找流失</div>
+        </div>
+      </article>
+
+      <!-- D 02 -->
+      <article class="dash-card d2 fi">
+        <div class="dash-head">
+          <div class="dash-no">02</div>
+          <div class="dash-head-info">
+            <div class="dash-title">AI 任务完成率 dashboard</div>
+            <div class="dash-tag-row">
+              <span class="dash-tag exclusive">AI 专属</span>
+              <span class="dash-tag basic">传统产品没有</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-section">
+          <div class="dash-section-tag">看什么</div>
+          <div class="dash-watch">任务完成率(拿了答案且没换问法没找人工)+ 平均轮次 + <span class="em">Power user 占比</span></div>
+        </div>
+        <div class="dash-pm">
+          <div class="dash-pm-tag">PM 视角</div>
+          <div class="dash-pm-text">AI 答了 ≠ 用户满意 · <span style="background:#fff;padding:1px 5px;border-radius:4px">任务完成才算用户拿到价值</span></div>
+        </div>
+        <div class="dash-alert">
+          <div class="dash-alert-tag">告警阈值</div>
+          <div class="dash-alert-text">完成率 <span class="em">< 60%</span> = AI 在做表面文章 · 平均轮次 <span class="em">> 2.5</span> = 用户反复改问法体验差</div>
+        </div>
+        <div class="dash-case">
+          <span class="dash-case-tag">真实案例</span>
+          某企业知识库 DAU 涨得不错老板高兴 · 但任务完成率只有 <span class="em">42%</span> · 10 个用户 6 个用完啥也没拿到 · 问题不在 DAU 在「为啥用了不解决问题」
+        </div>
+      </article>
+
+      <!-- D 03 -->
+      <article class="dash-card d3 fi">
+        <div class="dash-head">
+          <div class="dash-no">03</div>
+          <div class="dash-head-info">
+            <div class="dash-title">AI 满意度 dashboard</div>
+            <div class="dash-tag-row">
+              <span class="dash-tag basic">客户必问</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-section">
+          <div class="dash-section-tag">看什么</div>
+          <div class="dash-watch">👍 / 👎 比例 + <span class="em">负面关键词</span>(「不准」「胡说」「不懂」)+ NPS</div>
+        </div>
+        <div class="dash-pm">
+          <div class="dash-pm-tag">PM 视角</div>
+          <div class="dash-pm-text">用户嘴上不说 · 但他用「行为」告诉你 — 点 👎 + 写评论</div>
+        </div>
+        <div class="dash-alert">
+          <div class="dash-alert-tag">告警阈值</div>
+          <div class="dash-alert-text">👎 <span class="em">> 5%</span> 立即排查 · <span class="em">> 10%</span> 进 emergency review</div>
+        </div>
+        <div class="dash-case">
+          <span class="dash-case-tag">真实案例</span>
+          某客服👎 一直 3% · 某天突然涨到 <span class="em">12%</span> · 一查发现前一天工程师悄悄换了模型版本 · 新版本对方言语义差 · 👎 dashboard 救了他们 — 否则用户大规模流失才发现
+        </div>
+      </article>
+
+      <!-- D 04 -->
+      <article class="dash-card d4 fi">
+        <div class="dash-head">
+          <div class="dash-no">04</div>
+          <div class="dash-head-info">
+            <div class="dash-title">兜底 + 求助率 dashboard</div>
+            <div class="dash-tag-row">
+              <span class="dash-tag exclusive">最容易漏</span>
+              <span class="dash-tag basic">隐性差评</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-section">
+          <div class="dash-section-tag">看什么</div>
+          <div class="dash-watch"><span class="em">30 秒内换问法占比</span> + 转人工点击率 + 人工工单类型(反推 AI 哪里没答上)</div>
+        </div>
+        <div class="dash-pm">
+          <div class="dash-pm-tag">PM 视角</div>
+          <div class="dash-pm-text">用户没点 👎 · 但用户「行为」告诉你 AI 没解决 — 这是隐性差评</div>
+        </div>
+        <div class="dash-alert">
+          <div class="dash-alert-tag">告警阈值</div>
+          <div class="dash-alert-text">换问法 <span class="em">> 30%</span> = AI 在装会答 · 转人工点击率涨 = 用户对 AI 失去信任</div>
+        </div>
+        <div class="dash-case">
+          <span class="dash-case-tag">真实案例</span>
+          某 SaaS 助手👍 看着 90% 老板满意 · 但换问法占 <span class="em">42%</span> — 表面 NPS 好看 · 底子已经裂了 · 没点 👎 不等于没差评 · 用户懒得点 · 但他用脚投票
+        </div>
+      </article>
+
+      <!-- D 05 -->
+      <article class="dash-card d5 fi">
+        <div class="dash-head">
+          <div class="dash-no">05</div>
+          <div class="dash-head-info">
+            <div class="dash-title">成本 dashboard</div>
+            <div class="dash-tag-row">
+              <span class="dash-tag cfo">CFO 命门</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-section">
+          <div class="dash-section-tag">看什么</div>
+          <div class="dash-watch">Token 月消耗 + 单用户日均成本 + <span class="em">月度预算燃尽率</span> + 单次调用成本(模型 / 检索 / embedding / 缓存 / 兜底分层)</div>
+        </div>
+        <div class="dash-pm">
+          <div class="dash-pm-tag">PM 视角</div>
+          <div class="dash-pm-text">CFO 一定问「一天烧多少」「这个月扛得住吗」「明年要多少预算」· 你能不能<span style="background:#fff;padding:1px 5px;border-radius:4px">5 秒答出</span>直接决定你这 PM 的专业度</div>
+        </div>
+        <div class="dash-alert">
+          <div class="dash-alert-tag">告警阈值</div>
+          <div class="dash-alert-text">月度燃尽 <span class="em">> 60%</span>(月中刚过)立即告警 · 单用户日均超阈值 = 查是不是有人在刷接口</div>
+        </div>
+        <div class="dash-case">
+          <span class="dash-case-tag">真实案例</span>
+          某 AI 客服预算月初定 50w · 月中 15 号燃尽率 <span class="em">72%</span> · PM 没盯 dashboard · 月底超支 <span class="em">82w</span> 被 CFO 拉去复盘 · 月中那天看见破 60% 立刻启动「降级 prompt + 缓存优化」完全来得及
+        </div>
+      </article>
+
+      <!-- D 06 -->
+      <article class="dash-card d6 fi">
+        <div class="dash-head">
+          <div class="dash-no">06</div>
+          <div class="dash-head-info">
+            <div class="dash-title">响应延迟 dashboard</div>
+            <div class="dash-tag-row">
+              <span class="dash-tag basic">C 端体验</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-section">
+          <div class="dash-section-tag">看什么</div>
+          <div class="dash-watch">P50(一半用户体验)+ <span class="em">P95</span>(95% 用户体验)+ P99(最慢 1%)+ 超时率</div>
+        </div>
+        <div class="dash-pm">
+          <div class="dash-pm-tag">PM 视角</div>
+          <div class="dash-pm-text">用户对 AI 延迟容忍 <span style="background:#fff;padding:1px 5px;border-radius:4px">2 秒上限</span> · 超 2s 开始烦 · 超 5s 直接走</div>
+        </div>
+        <div class="dash-alert">
+          <div class="dash-alert-tag">告警阈值</div>
+          <div class="dash-alert-text">P95 <span class="em">> 2s</span> 立即告警 · 超时率 <span class="em">> 0.5%</span> 立即告警</div>
+        </div>
+        <div class="dash-case">
+          <span class="dash-case-tag">真实案例</span>
+          某 C 端聊天产品 DAU 突然下跌 PM 找不到原因 · 一查 P95 <span class="em">从 1s 涨到 3.8s</span> · 后端为省成本切了便宜模型 · 用户用脚投票 · 延迟 dashboard 早盯能早一周发现
+        </div>
+      </article>
+
+      <!-- D 07 -->
+      <article class="dash-card d7 fi">
+        <div class="dash-head">
+          <div class="dash-no">07</div>
+          <div class="dash-head-info">
+            <div class="dash-title">异常 + 兜底链 dashboard</div>
+            <div class="dash-tag-row">
+              <span class="dash-tag critical">出大事前兆</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-section">
+          <div class="dash-section-tag">看什么</div>
+          <div class="dash-watch">报错率 + <span class="em">兜底链触发率</span> + 上游 API 错误率(OpenAI / Claude / Gemini 各家)+ 限流次数</div>
+        </div>
+        <div class="dash-pm">
+          <div class="dash-pm-tag">PM 视角</div>
+          <div class="dash-pm-text">每项单独看不严重 · 但<span style="background:#fff;padding:1px 5px;border-radius:4px">4 项同时动 = 产品快炸了</span></div>
+        </div>
+        <div class="dash-alert">
+          <div class="dash-alert-tag">告警阈值</div>
+          <div class="dash-alert-text">报错率 <span class="em">> 0.1%</span> 立即告警 · 上游 API 错误率 <span class="em">> 1%</span> 自动切多模型</div>
+        </div>
+        <div class="dash-case">
+          <span class="dash-case-tag">真实案例</span>
+          <span class="em">2026-06-12</span> Anthropic 全球下架 Fable 5 + Mythos 5 · 如果你那天用 Fable 5 · 产品瞬间瘫痪 · 怎么知道「自动切到 Opus 4.8 备用」?<span class="em">就看这张 dashboard</span> · 上游 API 错误率突破阈值 → 自动触发模型切换 → 用户无感
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 工位决策卡 -->
+  <section class="wall-card fi">
+    <div class="wall-tag">挂工位 · 5 秒拉对应那张</div>
+    <h2 class="wall-h">老板 / CFO / 客户 / SRE 问什么<br>你<span class="em">拉哪张</span></h2>
+    <div class="wall-table">
+      <div class="wall-row">
+        <div class="wall-q"><span class="who">老板</span>「数据怎么样」</div>
+        <div class="wall-a">→ <span class="num">01</span> 留存</div>
+      </div>
+      <div class="wall-row">
+        <div class="wall-q"><span class="who">老板</span>「AI 真有用吗」</div>
+        <div class="wall-a">→ <span class="num">02</span> + <span class="num">03</span></div>
+      </div>
+      <div class="wall-row">
+        <div class="wall-q"><span class="who">CFO</span>「烧多少钱」</div>
+        <div class="wall-a">→ <span class="num">05</span> 成本</div>
+      </div>
+      <div class="wall-row">
+        <div class="wall-q"><span class="who">客户</span>「准不准 / 快不快」</div>
+        <div class="wall-a">→ <span class="num">03</span> + <span class="num">06</span></div>
+      </div>
+      <div class="wall-row">
+        <div class="wall-q"><span class="who">SRE</span>「出大事了吗」</div>
+        <div class="wall-a">→ <span class="num">07</span> 异常</div>
+      </div>
+      <div class="wall-row">
+        <div class="wall-q"><span class="who">你</span>每周复盘</div>
+        <div class="wall-a">→ <span class="num">01-07</span> 全部轮</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 金句 -->
+  <section class="golden fi">
+    <div class="golden-tag">KEY TAKE</div>
+    <h2 class="golden-h">
+      工程师盯<span class="em">系统挂没挂</span><br>
+      PM 盯<span class="em">用户感受到没</span><br>
+      <span style="font-size:18px;display:block;margin-top:14px">这才是 AI PM 的核心价值</span>
+    </h2>
+    <div class="golden-sub">
+      同一个 P95 三秒 · 工程师觉得「能跑就行」<br>
+      PM 看到的是「50% 用户在等 3 秒 · 流失了」
+    </div>
+  </section>
+
+  <!-- CTA(轻 CTA 洗白账号期)-->
+  <section class="cta fi">
+    <div class="cta-tag">评论区告诉我</div>
+    <h2 class="cta-h">老板这周最常问你的是 <span class="em">哪一张</span>?<br><span style="font-size:16px;color:var(--cocoa-2);font-weight:500">我看完帮你判断是不是 dashboard 缺失</span></h2>
+  </section>
+
+  <!-- 下期预告 -->
+  <section class="next-up fi">
+    <div class="next-up-tag">下一期 · 评论区告诉我</div>
+    <div class="next-up-h">你想听哪个</div>
+    <div class="next-list">
+      <div class="next-item"><span class="l">A</span>AI PM 简历「我做过 X」6 个改写模板</div>
+      <div class="next-item"><span class="l">B</span>AI 产品兜底链 0 到 1 怎么搭(Vol.27 升级版)</div>
+      <div class="next-item"><span class="l">C</span>AI 产品上线 NoGo 红线 7 关(Vol.30 升级版)</div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span class="author">NOVA</span>
+    Vol.37 · AI 产品经理实战篇 · AI 产品上线第一周 7 张必看 dashboard<br>
+    Mia · 前卫 AI 产品经理 · 工位挂 7 张 · 老板问数据不再慌
+  </div>
+
+</div>
+
+<script>
+const io = new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+}, {threshold: .1, rootMargin: '0px 0px -50px 0px'});
+document.querySelectorAll('.fi').forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
