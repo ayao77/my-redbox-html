@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 从RAG到Agentic RAG · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#FEFCF5;background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:#2B2B2B;line-height:1.7}
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:3px solid #2B2B2B;margin-bottom:32px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:42px;height:42px;background:#2B2B2B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:20px}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px}
+.vol-badge{background:#2B2B2B;color:#FFE16B;border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.18em}
+.hero{margin-bottom:28px}
+.hero-tag{display:inline-block;font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:16px;color:#9B1B27;padding-left:38px;position:relative;margin-bottom:8px}
+.hero-tag::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:28px;height:3px;background:#E63946}
+.hero-title{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:46px;line-height:1.18}
+.hero-meta{margin-top:10px;font-family:"JetBrains Mono",monospace;font-size:13px;color:#666;letter-spacing:0.12em}
+.red-em{color:#E63946;position:relative;display:inline-block;font-weight:bold}
+.red-em::after{content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;height:6px;background:#E63946;opacity:0.35;z-index:-1}
+.yellow-hi{background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px}
+.hook-card{background:#2B2B2B;color:#fff;border:3px solid #2B2B2B;border-radius:18px;padding:24px 28px;box-shadow:none;margin:34px 0 44px;position:relative}
+.hook-card::before{content:"先抛结论";position:absolute;top:-14px;left:24px;background:#FFE16B;color:#2B2B2B;border:3px solid #2B2B2B;border-radius:50px;padding:3px 12px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em}
+.hook-card .h-line{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:24px;line-height:1.45}
+.hook-card .h-sub{margin-top:10px;font-size:14px;color:rgba(255,255,255,0.72)}
+.pill-row{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}
+.pill{flex:1;min-width:150px;background:#2B2B2B;color:#fff;border-radius:14px;padding:14px 16px;text-align:center;box-shadow:none}
+.pill .num{font-family:"Archivo Black",sans-serif;font-size:30px;color:#FFE16B;line-height:1}
+.pill .lab{font-size:12px;color:rgba(255,255,255,0.78);margin-top:6px}
+.section-h{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:30px;margin:52px 0 8px;display:flex;align-items:baseline;gap:12px}
+.section-h .idx{font-family:"Archivo Black",sans-serif;font-size:20px;color:#fff;background:#E63946;border:3px solid #2B2B2B;border-radius:10px;padding:2px 12px}
+.section-sub{color:#666;font-size:14px;margin-bottom:8px}
+/* 三个不够 */
+.gaps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:22px 0}
+.gap{background:#FFD9DC;border:3px solid #2B2B2B;border-radius:14px;box-shadow:none;padding:14px 15px}
+.gap .gt{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:19px;color:#9B1B27}
+.gap .gd{font-size:13px;color:#444;margin-top:4px}
+/* 闭环图 */
+.loop{background:#fff;border:3px solid #2B2B2B;border-radius:16px;box-shadow:none;padding:22px;margin:24px 0;text-align:center}
+.loop .lt{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:18px;margin-bottom:14px}
+.loop .steps2{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.loop .s{background:#A8E6CF;border:2.5px solid #2B2B2B;border-radius:50px;padding:9px 16px;font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:18px}
+.loop .s.eval{background:#FFE16B}
+.loop .ar{color:#E63946;font-family:"Archivo Black",sans-serif;font-size:18px}
+.loop .back{margin-top:10px;font-size:13px;color:#9B1B27;font-weight:700}
+/* 能力卡 */
+.cap{background:#fff;border:3px solid #2B2B2B;border-radius:16px;box-shadow:none;padding:20px 20px 16px;margin:34px 0;position:relative}
+.cap::before{content:attr(data-n);position:absolute;top:-15px;left:20px;background:#1B6B43;color:#fff;border:3px solid #2B2B2B;border-radius:50px;padding:3px 13px;font-family:"Archivo Black",sans-serif;font-size:12px}
+.cap .cn{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:20px}
+.cap .cd{font-size:13.5px;color:#333;margin-top:4px}
+.cap .cd b{color:#9B1B27}
+.fw{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.fw .chip{background:#2B2B2B;color:#FFE16B;border-radius:50px;padding:6px 14px;font-family:"JetBrains Mono",monospace;font-size:13px}
+.walk{display:flex;flex-direction:column;gap:10px;margin:18px 0}
+.wk{display:flex;gap:14px;align-items:flex-start;background:#fff;border:3px solid #2B2B2B;border-radius:14px;box-shadow:none;padding:13px 16px}
+.wk .wn{flex-shrink:0;width:38px;height:38px;background:#E63946;color:#fff;border-radius:9px;font-family:"Archivo Black",sans-serif;font-size:17px;display:flex;align-items:center;justify-content:center}
+.wk .wb{font-size:14px;line-height:1.5}.wk .wb b{color:#9B1B27}.wk .wb .tag{font-family:"JetBrains Mono",monospace;font-size:11px;background:#FFE16B;border-radius:50px;padding:1px 9px;margin-left:6px}
+.tech{background:#1f1f1f;color:#fff;border:3px solid #2B2B2B;border-radius:16px;box-shadow:none;padding:20px;margin:20px 0}
+.tech .tt{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:19px;color:#FFE16B;margin-bottom:12px}
+.tech .tl{font-size:13.5px;margin:7px 0;color:#ddd;padding-left:18px;position:relative}
+.tech .tl::before{content:"▸";position:absolute;left:0;color:#E63946}
+.tech .tl b{color:#A8E6CF}
+.tech .oneline{margin-top:12px;font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:16px;color:#FFE16B;border-top:1px dashed #555;padding-top:12px}
+.pm3{background:#FFFEF0;border:3px solid #2B2B2B;border-radius:14px;box-shadow:none;padding:14px 18px;margin:16px 0;font-size:14px}
+.pm3 b{color:#9B1B27}
+/* 该上别上 */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+.cc{border:3px solid #2B2B2B;border-radius:16px;box-shadow:none;padding:16px 16px 18px;position:relative}
+.cc::before{position:absolute;top:-15px;left:16px;font-family:"Archivo Black",sans-serif;font-size:12px;border:3px solid #2B2B2B;border-radius:50px;padding:3px 12px}
+.cc.good{background:#A8E6CF}.cc.good::before{content:"该上 ✓";background:#1B6B43;color:#fff}
+.cc.bad{background:#FFD9DC}.cc.bad::before{content:"别上 ✗";background:#9B1B27;color:#fff}
+.cc .l{font-size:13.5px;margin:7px 0;padding-left:18px;position:relative}
+.cc .l::before{content:"·";position:absolute;left:4px;top:-1px;font-weight:900}
+/* 案例条 */
+.case{background:#1f1f1f;border:3px solid #2B2B2B;border-radius:16px;box-shadow:none;padding:20px;margin:24px 0;color:#fff}
+.case .ct{font-family:"JetBrains Mono",monospace;font-size:12px;color:#9aa0a6;margin-bottom:14px}
+.case .bars{display:flex;flex-direction:column;gap:12px}
+.case .br{display:flex;align-items:center;gap:12px}
+.case .br .lab{width:120px;flex-shrink:0;font-size:14px}
+.case .br .track{flex:1;height:30px;background:#333;border-radius:6px;overflow:hidden}
+.case .br .fill{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-family:"Archivo Black",sans-serif;font-size:14px;color:#181818}
+.case .br .fill.a{width:65%;background:#FF9B9B}
+.case .br .fill.b{width:88%;background:#A8E6CF}
+.case .note{margin-top:14px;font-size:13px;color:#FFD24D}
+.metrics{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}
+.metric{flex:1;min-width:155px;background:#fff;border:3px solid #2B2B2B;border-radius:14px;box-shadow:none;padding:13px 15px}
+.metric .mt{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:17px}
+.metric .md{font-size:12.5px;color:#555;margin-top:3px}
+.metric.danger{background:#FFD9DC}.metric.danger .mt{color:#9B1B27}
+.block{background:#fff;border:3px solid #2B2B2B;border-radius:18px;padding:24px;margin:40px 0;box-shadow:none;position:relative}
+.block.dark{background:#2B2B2B;color:#fff}
+.block.dark::before{content:"面试金句";position:absolute;top:-16px;left:24px;background:#2B2B2B;color:#FFE16B;border:3px solid #FFE16B;border-radius:50px;padding:4px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.1em}
+.block.dark .q-head{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:20px;margin-bottom:14px;color:#FFE16B}
+.q-line{display:flex;gap:10px;margin:9px 0;font-size:14.5px;line-height:1.5}
+.q-line .qn{flex-shrink:0;font-family:"Archivo Black",sans-serif;color:#FFE16B;font-size:13px;background:rgba(255,255,255,0.1);border-radius:8px;padding:2px 9px;height:fit-content}
+.q-foot{margin-top:14px;font-size:13px;color:rgba(255,255,255,0.7);border-top:1px dashed #555;padding-top:12px}
+.closing{background:#FFFEF0;border:3px solid #2B2B2B;border-radius:18px;padding:28px;text-align:center;box-shadow:none;margin:48px 0 32px}
+.closing-h{display:inline-block;font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:26px;position:relative;margin-bottom:10px}
+.closing-h::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:8px;background:#E63946;opacity:0.35;z-index:-1}
+.cta{background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;box-shadow:none;flex-wrap:wrap}
+.cta-text{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:17px}
+.cta-text strong{color:#9B1B27}
+.cta-tag{background:#2B2B2B;color:#FFE16B;padding:6px 14px;border-radius:50px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.14em;flex-shrink:0}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s,transform .6s}
+.reveal.is-visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none!important}}
+@media (max-width:560px){.hero-title{font-size:36px}.gaps,.compare{grid-template-columns:1fr}}
+
+/* ====== 交互 & 动效增强 ====== */
+/* 顶部阅读进度条 */
+#progress{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,#E63946,#FFB703,#1B6B43);z-index:999;transition:width .12s ease-out}
+/* 卡片硬阴影 + 悬浮抬起 */
+.hook-card,.pill,.gap,.loop,.cap,.wk,.tech,.pm3,.cc,.case,.metric,.block,.closing,.cta{box-shadow:5px 5px 0 #2B2B2B;transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s}
+.pill:hover,.gap:hover,.cap:hover,.wk:hover,.metric:hover,.cc:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 #2B2B2B}
+.cap:hover{background:#FFFEF0}
+.gap:hover{background:#ffc9ce}
+/* 能力卡:可点击展开 + 左侧色条点亮(不挡顶部标签) */
+.cap{cursor:pointer}
+.cap::after{content:"";position:absolute;left:0;top:10px;bottom:10px;width:6px;border-radius:0 6px 6px 0;background:#1B6B43;transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.cap.open::after,.cap:hover::after{transform:scaleX(1)}
+.cap .hint{position:absolute;top:16px;right:18px;font-size:12px;font-weight:900;color:#9aa0a6}
+.cap.open .hint{color:#1B6B43}
+.capex{max-height:0;overflow:hidden;opacity:0;margin-top:0;font-size:13px;font-weight:700;color:#1B6B43;line-height:1.5;transition:max-height .35s ease,opacity .3s,margin-top .3s}
+.cap.open .capex{max-height:90px;opacity:1;margin-top:10px}
+/* 闭环互动 demo */
+.loop .s.n{transition:transform .25s,background .25s,color .25s,box-shadow .25s}
+.loop .s.n.active{background:#E63946;color:#fff;border-color:#2B2B2B;transform:translateY(-5px) scale(1.07);box-shadow:3px 4px 0 #2B2B2B}
+.ldemo-cap{margin-top:16px;min-height:50px;background:#FFFEF0;border:2.5px dashed #2B2B2B;border-radius:12px;padding:12px 16px;font-size:15px;font-weight:700;color:#2B2B2B;display:flex;align-items:center;justify-content:center;text-align:center;transition:background .25s}
+.ldemo-cap.ok{background:#A8E6CF}
+.ldemo-cap.bad{background:#FFD9DC;color:#9B1B27}
+.ldemo-btns{margin-top:14px;display:flex;gap:10px;justify-content:center}
+.ldemo-btn{font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:14px;border:3px solid #2B2B2B;border-radius:50px;padding:9px 24px;background:#fff;color:#2B2B2B;cursor:pointer;box-shadow:3px 3px 0 #2B2B2B;transition:transform .1s,box-shadow .1s}
+.ldemo-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #2B2B2B}
+.ldemo-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #2B2B2B}
+.ldemo-btn.primary{background:#FFE16B}
+/* chip 悬浮 */
+.fw .chip{transition:transform .15s,background .15s,color .15s;cursor:default}
+.fw .chip:hover{transform:translateY(-4px);background:#E63946;color:#fff}
+/* 章节序号悬浮 */
+.section-h .idx{transition:transform .2s}
+.section-h:hover .idx{transform:rotate(-5deg) scale(1.08)}
+/* 闭环箭头脉动 */
+.loop .ar{animation:pulse 1.5s ease-in-out infinite}
+.loop .ar:nth-child(4){animation-delay:.3s}
+.loop .ar:nth-child(6){animation-delay:.6s}
+@keyframes pulse{0%,100%{transform:translateX(0);opacity:.6}50%{transform:translateX(4px);opacity:1}}
+.loop .s{transition:transform .2s}
+.loop .s:hover{transform:translateY(-3px) rotate(-2deg)}
+/* 错位渐入(容器加 .stagger) */
+.reveal.stagger>*{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s cubic-bezier(.22,1,.36,1)}
+.reveal.stagger.is-visible>*{opacity:1;transform:none}
+.reveal.stagger.is-visible>*:nth-child(1){transition-delay:.04s}
+.reveal.stagger.is-visible>*:nth-child(2){transition-delay:.12s}
+.reveal.stagger.is-visible>*:nth-child(3){transition-delay:.20s}
+.reveal.stagger.is-visible>*:nth-child(4){transition-delay:.28s}
+.reveal.stagger.is-visible>*:nth-child(5){transition-delay:.36s}
+/* 柱状图:进场从 0 长出来 */
+.case .br .fill{width:0!important;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.case.is-visible .br .fill.a{width:65%!important}
+.case.is-visible .br .fill.b{width:88%!important}
+/* 数字 pill 悬浮发光 */
+.pill{cursor:default}
+.pill:hover .num{color:#FFD24D}
+@media (prefers-reduced-motion:reduce){.loop .ar{animation:none}#progress{transition:none}}
+
+/* ===== 更多展示形式 ===== */
+/* 进化时间线 */
+.timeline{display:flex;margin:26px 0 10px}
+.tl-item{flex:1;text-align:center;position:relative;padding-top:40px;cursor:default}
+.tl-item::before{content:"";position:absolute;top:15px;left:0;right:0;height:4px;background:#2B2B2B}
+.tl-item:first-child::before{left:50%}.tl-item:last-child::before{right:50%}
+.tl-dot{position:absolute;top:5px;left:50%;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid #2B2B2B;z-index:2;transition:transform .3s}
+.tl-item.hot .tl-dot{background:#E63946}
+.tl-item:hover .tl-dot{transform:translateX(-50%) scale(1.35)}
+.tl-yr{font-family:"Archivo Black",sans-serif;font-size:17px;color:#E63946}
+.tl-name{font-weight:900;font-size:15px;margin-top:3px}
+.tl-item.hot .tl-name{background:#FFE16B;display:inline-block;padding:1px 7px;border-radius:5px}
+.tl-desc{font-size:12px;color:#666;margin-top:4px;padding:0 8px;line-height:1.4}
+/* 拖动滑块:轮数 → 准确率/成本 */
+.tradeoff{background:#fff;border:3px solid #2B2B2B;border-radius:18px;box-shadow:5px 5px 0 #2B2B2B;padding:22px 24px;margin:24px 0}
+.tradeoff .th{font-weight:900;font-size:18px;margin-bottom:4px}
+.tradeoff .ts{font-size:13px;color:#666;margin-bottom:16px}
+.tradeoff input[type=range]{width:100%;height:8px;accent-color:#E63946;cursor:pointer}
+.to-val{text-align:center;font-size:14px;margin:14px 0 4px;font-weight:700}
+.to-val b{color:#E63946;font-family:"Archivo Black",sans-serif;font-size:24px;vertical-align:-2px}
+.to-bars{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.to-bar{display:flex;align-items:center;gap:12px}
+.to-bar .bl{width:92px;flex-shrink:0;font-size:13px;font-weight:700}
+.to-bar .bt{flex:1;height:28px;background:#eee;border:2px solid #2B2B2B;border-radius:7px;overflow:hidden}
+.to-bar .bf{height:100%;transition:width .4s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;justify-content:flex-end;padding-right:9px;font-family:"Archivo Black",sans-serif;font-size:12.5px;color:#1a1a1a;white-space:nowrap}
+.to-bar .bf.acc{background:#A8E6CF}.to-bar .bf.cost{background:#FF9B9B}
+.to-tip{margin-top:14px;font-size:13px;font-weight:700;color:#9B1B27;text-align:center}
+/* 雷达图 */
+.radar{display:flex;gap:24px;align-items:center;justify-content:center;background:#fff;border:3px solid #2B2B2B;border-radius:18px;box-shadow:5px 5px 0 #2B2B2B;padding:20px;margin:24px 0;flex-wrap:wrap}
+.radar-legend{font-size:13.5px}
+.radar-legend .lg{display:flex;align-items:center;gap:9px;margin:8px 0;font-weight:800}
+.radar-legend .sw{width:18px;height:18px;border:2px solid #2B2B2B;border-radius:5px}
+.radar polygon.poly{animation:rgrow 1.1s cubic-bezier(.22,1,.36,1) forwards;transform-origin:center;transform:scale(0)}
+@keyframes rgrow{to{transform:scale(1)}}
+/* 标签页:该上/别上 */
+.tabs{display:flex;gap:8px;margin:22px 0 0}
+.tab{flex:1;text-align:center;font-weight:900;font-size:16px;padding:13px;border:3px solid #2B2B2B;border-bottom:none;border-radius:14px 14px 0 0;background:#ECE5D6;color:#777;cursor:pointer;transition:background .2s,color .2s,transform .12s}
+.tab:active{transform:translateY(2px)}
+.tab.active.g{background:#A8E6CF;color:#1B6B43}
+.tab.active.b{background:#FFD9DC;color:#9B1B27}
+.tabpanel{border:3px solid #2B2B2B;border-radius:0 0 16px 16px;padding:18px 20px;display:none;animation:fadeup .35s ease}
+.tabpanel.active{display:block}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tabpanel .l{font-size:14.5px;margin:9px 0;padding-left:22px;position:relative;font-weight:600}
+.tabpanel.g .l::before{content:"✓";position:absolute;left:0;color:#1B6B43;font-weight:900}
+.tabpanel.b .l::before{content:"✗";position:absolute;left:0;color:#9B1B27;font-weight:900}
+/* 彩带 */
+.confetti{position:fixed;top:-20px;width:11px;height:16px;z-index:9999;pointer-events:none;border-radius:2px}
+/* hook 卡发光脉冲(不裁切标签) */
+.hook-card{animation:glowpulse 2.6s ease-in-out infinite}
+@keyframes glowpulse{0%,100%{box-shadow:5px 5px 0 #2B2B2B}50%{box-shadow:5px 5px 0 #2B2B2B,0 0 22px 2px rgba(230,57,70,.30)}}
+
+/* ===== 首屏抓眼球 ===== */
+.alert-badge{display:inline-flex;align-items:center;gap:8px;background:#E63946;color:#fff;font-weight:900;font-size:15px;padding:8px 18px;border:3px solid #2B2B2B;border-radius:50px;box-shadow:4px 4px 0 #2B2B2B;margin-bottom:14px;animation:wob 1.8s ease-in-out infinite}
+.alert-badge .dot{width:10px;height:10px;border-radius:50%;background:#FFE16B;animation:blink 1s steps(2) infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes blink{50%{opacity:.2}}
+.hero-title{animation:popin .7s cubic-bezier(.18,1.3,.4,1) both}
+.hero-title .line2{display:inline-block;animation:popin .7s .12s cubic-bezier(.18,1.3,.4,1) both}
+@keyframes popin{from{opacity:0;transform:translateY(26px) scale(.96)}to{opacity:1;transform:none}}
+/* Agentic RAG 流光描字 */
+.shine{background:linear-gradient(110deg,#E63946 0%,#FF8A3D 30%,#E63946 60%,#FF8A3D 100%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3s linear infinite;font-weight:900;white-space:nowrap}
+@keyframes shine{to{background-position:220% center}}
+/* 基础 vs Agentic 对比闪卡 */
+.vsflash{display:grid;grid-template-columns:1fr 64px 1fr;align-items:stretch;gap:0;margin:22px 0 8px}
+.vscard{border:3px solid #2B2B2B;border-radius:18px;padding:18px 18px;box-shadow:5px 5px 0 #2B2B2B}
+.vscard.old{background:#FFD9DC}
+.vscard.new{background:#A8E6CF}
+.vscard .vh{font-weight:900;font-size:20px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.vscard.old .vh{color:#9B1B27}.vscard.new .vh{color:#1B6B43}
+.vscard .vd{font-size:14px;font-weight:600;color:#2B2B2B;line-height:1.5}
+.vsmid{display:flex;align-items:center;justify-content:center}
+.vsmid span{font-family:"Archivo Black",sans-serif;font-size:22px;color:#fff;background:#2B2B2B;border:3px solid #2B2B2B;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px #FFE16B;animation:vspulse 1.6s ease-in-out infinite}
+@keyframes vspulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.vscard.new{position:relative;overflow:hidden}
+.vscard.new::after{content:"";position:absolute;top:-60%;left:-70%;width:55%;height:220%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:rotate(20deg);animation:sheen 3.8s ease-in-out infinite}
+@keyframes sheen{0%{left:-70%}55%,100%{left:150%}}
+.pill{animation:popin .6s both}
+.pill:nth-child(1){animation-delay:.05s}.pill:nth-child(2){animation-delay:.15s}.pill:nth-child(3){animation-delay:.25s}
+@media (max-width:560px){.vsflash{grid-template-columns:1fr;gap:10px}.vsmid{transform:rotate(90deg);height:40px}}
+/* 自绘 SVG 图标对齐(无 emoji) */
+.ic{flex-shrink:0;vertical-align:-3px}
+.th .ic{vertical-align:-4px;margin-right:4px}
+.capex .ic-bulb{vertical-align:-2px;margin-right:3px}
+.alert-badge .ic-fire{vertical-align:-3px}
+.tab .ic{vertical-align:-4px;margin-right:4px}
+/* 首屏:Nova 人脸抓眼 + 承诺气泡 */
+.hero-row{display:flex;gap:20px;align-items:center;margin-top:6px}
+.hero-row .hero-title{flex:1;margin:0}
+.hero-face{flex-shrink:0;position:relative;width:138px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.hero-ava{width:138px;height:138px;border-radius:50%;border:5px solid #2B2B2B;object-fit:cover;box-shadow:6px 6px 0 #FFE16B;background:#FFE6EC;display:block}
+.hero-bubble{position:absolute;bottom:-8px;right:-10px;background:#E63946;color:#fff;font-weight:900;font-size:14px;line-height:1.05;text-align:center;border:3px solid #2B2B2B;border-radius:13px;padding:6px 10px;box-shadow:3px 3px 0 #2B2B2B}
+@media (max-width:560px){.hero-row{gap:12px}.hero-face{width:96px}.hero-ava{width:96px;height:96px;box-shadow:4px 4px 0 #FFE16B}.hero-bubble{font-size:11px;padding:4px 7px}}
+@media (prefers-reduced-motion:reduce){.alert-badge,.hero-title,.hero-title .line2,.shine,.vsmid span,.vscard.new::after,.hook-card,.pill{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="page">
+  <div class="brand-bar">
+    <div class="brand"><div class="brand-mark">N</div><div class="brand-name">NOVA</div></div>
+    <div class="vol-badge">AI 产品新核心 · VOL.43</div>
+  </div>
+  <div class="hero">
+    <div class="hero-tag">AI 产品经理实战篇之</div>
+    <div class="alert-badge"><span class="dot"></span><svg class="ic-fire" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="#FFE16B" d="M12 2s5 4 5 9a5 5 0 0 1-10 0c0-1.6.6-2.9 1.5-4 .2 1.4 1 2 1.8 2 1 0 1.6-.9 1.3-2.4C11.1 5.7 11.6 3.6 12 2z"/></svg> 2026 大厂都偷偷换了</div>
+    <div class="hero-row">
+      <h1 class="hero-title">你那套 RAG <span class="red-em">过时了</span>?<br><span class="line2">2026 大厂都在上 <span class="shine">Agentic RAG</span></span></h1>
+      <div class="hero-face">
+        <img class="hero-ava" src="nova_avatar.png" alt="Nova">
+        <div class="hero-bubble">一篇<br>讲透</div>
+      </div>
+    </div>
+  </div>
+  <div class="vsflash reveal">
+    <div class="vscard old"><div class="vh"><svg class="ic" viewBox="0 0 20 20" width="22" height="22"><circle cx="10" cy="10" r="9" fill="#E63946"/><path d="M6.6 6.6l6.8 6.8M13.4 6.6l-6.8 6.8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg> 基础 RAG</div><div class="vd">只查一次,查错也不再查——多跳问题直接翻车</div></div>
+    <div class="vsmid"><span>VS</span></div>
+    <div class="vscard new"><div class="vh"><svg class="ic" viewBox="0 0 20 20" width="22" height="22"><circle cx="10" cy="10" r="9" fill="#1B6B43"/><path d="M5.6 10.4l2.9 2.9 6-6.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> Agentic RAG</div><div class="vd">自己判断够不够,查不到换问法再查——查到对为止</div></div>
+  </div>
+  <div class="hook-card">
+    <div class="h-line">你的 RAG 老答不准?90% 卡在同一件事——它只查一次,查错了也不会再查。</div>
+    <div class="h-sub">2026 大厂的 RAG 已经换代:Agentic RAG 让 AI 自己决定查几次、查不到换个问法再查。LlamaIndex 都喊"RAG 已死,Agentic 检索当立"。</div>
+  </div>
+  <div class="pill-row reveal stagger">
+    <div class="pill"><div class="num"><span data-count="65">0</span>→<span data-count="85">0</span>%</div><div class="lab">多跳问题准确率(案例)</div></div>
+    <div class="pill"><div class="num"><span data-count="3">0</span>-<span data-count="10">0</span>×</div><div class="lab">token 成本(比基础 RAG)</div></div>
+    <div class="pill"><div class="num"><span data-count="4">0</span> 个</div><div class="lab">Agentic 的新能力</div></div>
+  </div>
+
+  <div class="timeline reveal">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-yr">2020</div><div class="tl-name">朴素 RAG</div><div class="tl-desc">查一次,拼进 Prompt 直接答</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-yr">2023</div><div class="tl-name">进阶 RAG</div><div class="tl-desc">重排 / 多路召回,还是查一次</div></div>
+    <div class="tl-item hot"><div class="tl-dot"></div><div class="tl-yr">2026</div><div class="tl-name">Agentic RAG</div><div class="tl-desc">Agent 自己决定查几次、改写再查</div></div>
+  </div>
+
+  <div class="section-h reveal"><span class="idx">01</span>为什么需要:基础 RAG 三个不够</div>
+  <div class="section-sub">老 RAG 查一次就答,问题就出在这"一次"。</div>
+  <div class="gaps reveal stagger">
+    <div class="gap"><div class="gt">只查一次</div><div class="gd">这次没检索到对的资料,也照样硬塞硬编,翻车。</div></div>
+    <div class="gap"><div class="gt">不会改写</div><div class="gd">用户问得模糊/没搜到,它不会换个问法再搜。</div></div>
+    <div class="gap"><div class="gt">答不了多跳</div><div class="gd">"对比 A 和 B 的退款政策"要跨多段多库,单次拿不全。</div></div>
+  </div>
+
+  <div class="section-h reveal"><span class="idx">02</span>是什么:从"查一次"到一个闭环</div>
+  <div class="section-sub">基础 RAG = 照着翻到的那一页答;Agentic RAG = 会自己查资料的研究员。</div>
+  <div class="loop reveal" id="loopDemo">
+    <div class="lt">▶ 点「下一步」,看 Agent 自己查一遍</div>
+    <div class="steps2">
+      <span class="s n" data-n="0">用户问题</span><span class="ar">→</span><span class="s n" data-n="1">检索</span><span class="ar">→</span><span class="s eval n" data-n="2">评估够不够</span><span class="ar">↺</span><span class="s n" data-n="3">改写再查</span><span class="ar">→</span><span class="s n" data-n="4">答到对</span>
+    </div>
+    <div class="ldemo-cap" id="ldemoCap">问题:"对比 A、B 两款产品的退款政策" —— 点「下一步」开始 ↓</div>
+    <div class="ldemo-btns">
+      <button class="ldemo-btn primary" id="ldemoNext">下一步 ▶</button>
+      <button class="ldemo-btn" id="ldemoReset">重置</button>
+    </div>
+  </div>
+
+  <div class="section-h reveal"><span class="idx">03</span>4 个新能力(基础 RAG 没有)</div>
+  <div class="cap reveal" data-n="能力1"><span class="hint">＋ 举例</span><div class="cn">检索决策</div><div class="cd">Agent 先判断要不要查、查哪个库。<b>简单问题不查,直接答,省钱省延迟。</b></div><div class="capex"><svg class="ic-bulb" viewBox="0 0 24 24" width="15" height="15"><path d="M9.5 18.5h5M10.5 21h3" stroke="#1B6B43" stroke-width="1.8" stroke-linecap="round"/><path d="M12 3.3a5.6 5.6 0 0 1 3.7 9.8c-.6.5-.9 1-.9 1.7v.2H9.2v-.2c0-.7-.3-1.2-.9-1.7A5.6 5.6 0 0 1 12 3.3z" fill="#FFC93C" stroke="#1B6B43" stroke-width="1.5"/></svg>像"今天几号""你是谁"这种,Agent 判断根本不用查知识库,直接答——省下一次检索、省钱省延迟。</div></div>
+  <div class="cap reveal" data-n="能力2"><span class="hint">＋ 举例</span><div class="cn">查询改写</div><div class="cd">第一次没搜到好结果,自动改写成更好的搜索词再搜。例:"这个能退吗"→"X 产品七天无理由退货政策"。</div><div class="capex"><svg class="ic-bulb" viewBox="0 0 24 24" width="15" height="15"><path d="M9.5 18.5h5M10.5 21h3" stroke="#1B6B43" stroke-width="1.8" stroke-linecap="round"/><path d="M12 3.3a5.6 5.6 0 0 1 3.7 9.8c-.6.5-.9 1-.9 1.7v.2H9.2v-.2c0-.7-.3-1.2-.9-1.7A5.6 5.6 0 0 1 12 3.3z" fill="#FFC93C" stroke="#1B6B43" stroke-width="1.5"/></svg>用户原话"它咋退啊"指代不清、搜不到 → 改写成"X 产品 七天无理由退货 流程",再查一次就命中。</div></div>
+  <div class="cap reveal" data-n="能力3"><span class="hint">＋ 举例</span><div class="cn">相关性评估</div><div class="cd">给检索回来的每条打分,<b>低于阈值丢掉</b>;好的太少就触发"换问法再来一轮"。</div><div class="capex"><svg class="ic-bulb" viewBox="0 0 24 24" width="15" height="15"><path d="M9.5 18.5h5M10.5 21h3" stroke="#1B6B43" stroke-width="1.8" stroke-linecap="round"/><path d="M12 3.3a5.6 5.6 0 0 1 3.7 9.8c-.6.5-.9 1-.9 1.7v.2H9.2v-.2c0-.7-.3-1.2-.9-1.7A5.6 5.6 0 0 1 12 3.3z" fill="#FFC93C" stroke="#1B6B43" stroke-width="1.5"/></svg>搜回 10 条,7 条是别的产品 → 全丢;剩 3 条还不够,就触发"换个问法再来一轮"。</div></div>
+  <div class="cap reveal" data-n="能力4"><span class="hint">＋ 举例</span><div class="cn">多跳综合</div><div class="cd">跨多段、多库的复杂问题,分步检索、逐步把答案拼起来。</div><div class="capex"><svg class="ic-bulb" viewBox="0 0 24 24" width="15" height="15"><path d="M9.5 18.5h5M10.5 21h3" stroke="#1B6B43" stroke-width="1.8" stroke-linecap="round"/><path d="M12 3.3a5.6 5.6 0 0 1 3.7 9.8c-.6.5-.9 1-.9 1.7v.2H9.2v-.2c0-.7-.3-1.2-.9-1.7A5.6 5.6 0 0 1 12 3.3z" fill="#FFC93C" stroke="#1B6B43" stroke-width="1.5"/></svg>"A 和 B 哪个退款更快" → 先查 A 的时效、再查 B 的时效,最后把两段拼成对比结论。</div></div>
+  <div class="section-sub reveal" style="margin-top:18px;font-weight:700;color:#2B2B2B;font-size:15px">5 个落地模式(面试加分)</div>
+  <div class="fw reveal stagger">
+    <span class="chip">迭代检索</span><span class="chip">查询分解</span><span class="chip">假设驱动</span><span class="chip">跨库三角验证</span><span class="chip">证据加权综合</span>
+  </div>
+
+  <div class="section-h reveal"><span class="idx">04</span>怎么用:一个真实问题走一遍</div>
+  <div class="section-sub">问题:"对比 A 和 B 两款产品的退款政策有什么不同"(多跳)。</div>
+  <div class="walk reveal stagger">
+    <div class="wk"><div class="wn">1</div><div class="wb">Agent 先把复杂问题<b>拆成两个子问题</b>:A 的退款政策、B 的退款政策。<span class="tag">查询分解</span></div></div>
+    <div class="wk"><div class="wn">2</div><div class="wb">分别去查。A 搜到了;B 第一次没搜全,自动把"B 退款"<b>改写成"B 七天无理由退货条款"</b>再搜一次,搜到了。<span class="tag">查询改写</span></div></div>
+    <div class="wk"><div class="wn">3</div><div class="wb">给搜回来的每条<b>打分,扔掉不相关的</b>,确认 A、B 政策都齐了。<span class="tag">相关性评估</span></div></div>
+    <div class="wk"><div class="wn">4</div><div class="wb">够了,把两边<b>拼起来生成对比答案</b>。<span class="tag">多跳综合</span></div></div>
+  </div>
+  <div class="tech reveal">
+    <div class="tt">技术落在哪 · 用什么搭</div>
+    <div class="tl">它落在你原来 RAG 的 <b>"检索"和"生成"中间</b>,多包一层 Agent 编排。</div>
+    <div class="tl">编排:<b>LangGraph</b> 或 <b>LlamaIndex 的 agent 模块</b>。</div>
+    <div class="tl">底层不变:还是你那套 <b>向量库 + reranker</b>。</div>
+    <div class="tl">拆解 / 改写 / 打分这些判断:交给<b>一个大模型</b>来做。</div>
+    <div class="oneline">不用推翻原来的 RAG——是在它外面套一个"会思考"的壳。</div>
+  </div>
+  <div class="pm3 reveal">PM 该定的 3 件事:① 这个问题<b>要不要触发多轮</b> ② <b>最多查几轮</b>(防无限查烧钱) ③ <b>什么时候算"够了"</b>该停。这三件定不好,要么答不全,要么烧钱还慢。</div>
+
+  <div class="section-h reveal"><span class="idx">05</span>什么时候该上 / 别上(成本是关键)</div>
+  <div class="section-sub">Agentic RAG 不是默认更好——是用贵的能力解贵的问题。</div>
+  <div class="reveal">
+    <div class="tabs">
+      <div class="tab active g" data-tab="good"><svg class="ic" viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="9" fill="#1B6B43"/><path d="M5.6 10.4l2.9 2.9 6-6.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 该上 Agentic</div>
+      <div class="tab b" data-tab="bad"><svg class="ic" viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="9" fill="#9B1B27"/><line x1="5.2" y1="10" x2="14.8" y2="10" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg> 别上 · 基础够</div>
+    </div>
+    <div class="tabpanel g active" data-panel="good">
+      <div class="l">多跳 / 复杂综合问题</div>
+      <div class="l">高价值场景(法务 / 医疗 / 企业深问)</div>
+      <div class="l">答错代价高</div>
+      <div class="l">基础 RAG 卡在 70% 上不去</div>
+    </div>
+    <div class="tabpanel b" data-panel="bad">
+      <div class="l">简单单跳问答</div>
+      <div class="l">对延迟 / 成本极敏感</div>
+      <div class="l">量大但每条价值低</div>
+      <div class="l">基础 RAG 足矣,别浪费钱</div>
+    </div>
+  </div>
+  <div class="case reveal">
+    <div class="ct">某企业知识库深问 · 多跳问题准确率</div>
+    <div class="bars">
+      <div class="br"><div class="lab">基础 RAG</div><div class="track"><div class="fill a">65%</div></div></div>
+      <div class="br"><div class="lab">Agentic RAG</div><div class="track"><div class="fill b">85%+</div></div></div>
+    </div>
+    <div class="note">↑ 20 个点不是模型变强,是"会自己查"了——但 token 成本涨到约 4 倍、平均检索 2-3 轮。按场景选。</div>
+  </div>
+
+  <div class="tradeoff reveal">
+    <div class="th"><svg class="ic" viewBox="0 0 24 24" width="20" height="20"><line x1="3" y1="8" x2="21" y2="8" stroke="#2B2B2B" stroke-width="2.2"/><line x1="3" y1="16" x2="21" y2="16" stroke="#2B2B2B" stroke-width="2.2"/><circle cx="8" cy="8" r="3.4" fill="#E63946" stroke="#2B2B2B" stroke-width="2"/><circle cx="16" cy="16" r="3.4" fill="#FFC93C" stroke="#2B2B2B" stroke-width="2"/></svg> 拖一拖:多查几轮,准确率 &amp; 成本怎么变</div>
+    <div class="ts">Agentic RAG 的核心权衡——轮数越多越准,但 token 成本和延迟也跟着涨。</div>
+    <input type="range" id="toRange" min="1" max="5" value="1" step="1">
+    <div class="to-val">检索 <b id="toRounds">1</b> 轮</div>
+    <div class="to-bars">
+      <div class="to-bar"><span class="bl">多跳准确率</span><div class="bt"><div class="bf acc" id="toAcc" style="width:65%">65%</div></div></div>
+      <div class="to-bar"><span class="bl">token 成本</span><div class="bt"><div class="bf cost" id="toCost" style="width:10%">1×</div></div></div>
+    </div>
+    <div class="to-tip" id="toTip">1 轮 = 基础 RAG:便宜,但多跳问题答不全</div>
+  </div>
+
+  <div class="radar reveal">
+    <svg id="radarSvg" width="248" height="248" viewBox="0 0 248 248" aria-label="基础 RAG vs Agentic RAG 雷达对比"></svg>
+    <div class="radar-legend">
+      <div class="lg"><span class="sw" style="background:#A8E6CF"></span>Agentic RAG</div>
+      <div class="lg"><span class="sw" style="background:#FF9B9B"></span>基础 RAG</div>
+      <div style="font-size:12px;color:#666;margin-top:10px;max-width:170px;line-height:1.5;font-weight:600">越往外越强。Agentic 在准确 / 复杂 / 召回更大,但"省成本 / 低延迟"更小——这就是权衡。</div>
+    </div>
+  </div>
+
+  <div class="section-h reveal"><span class="idx">06</span>PM 盯这 5 个指标</div>
+  <div class="metrics reveal stagger">
+    <div class="metric danger"><div class="mt">① 多跳答案正确率</div><div class="md">Agentic 的价值就在这</div></div>
+    <div class="metric"><div class="mt">② 平均/最大检索轮数</div><div class="md">必设上限,防死循环烧钱</div></div>
+    <div class="metric"><div class="mt">③ 单次成本 / token</div><div class="md">对比基础 RAG 几倍</div></div>
+    <div class="metric"><div class="mt">④ 检索召回 / 相关性命中</div><div class="md">评估那步准不准</div></div>
+    <div class="metric"><div class="mt">⑤ 端到端延迟</div><div class="md">多轮更慢</div></div>
+  </div>
+
+  <div class="block dark reveal">
+    <div class="q-head">被问"你那套 RAG 不够用怎么办",按 4 句答:</div>
+    <div class="q-line"><span class="qn">1</span><span>先看是不是多跳——简单单跳,基础 RAG 就够,别上 Agentic。</span></div>
+    <div class="q-line"><span class="qn">2</span><span>再加 4 个能力——检索决策、查询改写、相关性评估、多跳综合。</span></div>
+    <div class="q-line"><span class="qn">3</span><span>必设护栏——最大检索轮数、成本上限,防它无限查。</span></div>
+    <div class="q-line"><span class="qn">4</span><span>按场景选——Agentic 贵 3-10 倍,只在高价值多跳场景上。</span></div>
+    <div class="q-foot">4 句答完,面试官知道你不是只会喊新名词,是懂什么时候该花这个钱的人。</div>
+  </div>
+
+  <div class="closing reveal">
+    <div class="closing-h">基础 RAG 查一次就答;Agentic RAG 查到对为止</div>
+    <p>RAG 没死,是升级了——从"翻一页"到"会自己查资料的研究员"。但它更贵,得用贵的能力,解贵的问题。能基础 RAG 解决的,别上 Agentic。</p>
+  </div>
+  <div class="cta">
+    <div class="cta-text">下期:<strong>《Agentic RAG 怎么防死循环、控成本》</strong><br>检索闭环的护栏怎么设。关注 NOVA。</div>
+    <div class="cta-tag">#AI产品经理 #AgenticRAG</div>
+  </div>
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');e.target.querySelectorAll&&e.target.querySelectorAll('[data-count]').forEach(animateNumber);io.unobserve(e.target);}});},{threshold:0.16,rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function animateNumber(el){if(el.dataset.done)return;el.dataset.done=1;const t=parseFloat(el.getAttribute('data-count')),s=el.getAttribute('data-suffix')||'',t0=performance.now();function tick(n){const p=Math.min(1,(n-t0)/1100);el.textContent=Math.round(t*(1-Math.pow(1-p,3)))+s;if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}
+/* 顶部阅读进度条 */
+const bar=document.getElementById('progress');
+function onScroll(){const h=document.documentElement,sc=h.scrollTop||document.body.scrollTop,max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(sc/max*100)+'%';}
+window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',onScroll);onScroll();
+
+/* 能力卡点击展开举例 */
+document.querySelectorAll('.cap').forEach(c=>{c.addEventListener('click',()=>{c.classList.toggle('open');const h=c.querySelector('.hint');if(h)h.textContent=c.classList.contains('open')?'－ 收起':'＋ 举例';});});
+
+/* 检索闭环:点击一步步走 */
+(function(){
+  const steps=[
+    {n:0,t:'① 用户问:"对比 A、B 两款产品的退款政策有什么不同"(多跳问题)',c:''},
+    {n:1,t:'② 第一次检索:A 的政策搜到了,B 的没搜全',c:''},
+    {n:2,t:'③ 评估:B 的资料不够 ✗ —— 不够,触发再查',c:'bad'},
+    {n:3,t:'④ 改写:把"B 退款"改成"B 七天无理由退货条款",再查一次',c:''},
+    {n:1,t:'⑤ 再检索:这次 B 也搜到了 ✓',c:''},
+    {n:2,t:'⑥ 评估:A、B 都齐了 ✓ —— 够了,可以答',c:'ok'},
+    {n:4,t:'⑦ 把两边拼起来,生成对比答案 —— 答到对!',c:'ok'}
+  ];
+  const cap=document.getElementById('ldemoCap'),next=document.getElementById('ldemoNext'),reset=document.getElementById('ldemoReset');
+  if(!cap)return;
+  const nodes=document.querySelectorAll('#loopDemo .s.n');
+  let i=-1;
+  function render(){
+    nodes.forEach(x=>x.classList.remove('active'));
+    if(i<0){cap.className='ldemo-cap';cap.textContent='问题:"对比 A、B 两款产品的退款政策" —— 点「下一步」开始 ↓';next.textContent='下一步 ▶';return;}
+    const s=steps[i];
+    nodes.forEach(x=>{if(+x.dataset.n===s.n)x.classList.add('active');});
+    cap.className='ldemo-cap'+(s.c?' '+s.c:'');
+    cap.textContent=s.t;
+    next.textContent=(i>=steps.length-1)?'再看一遍 ↺':'下一步 ▶';
+  }
+  next.addEventListener('click',()=>{i=(i>=steps.length-1)?0:i+1;render();if(i===steps.length-1)confetti();});
+  reset.addEventListener('click',()=>{i=-1;render();});
+  render();
+})();
+
+/* 标签页:该上 / 别上 */
+document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{const k=t.dataset.tab,wrap=t.closest('.reveal');wrap.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');wrap.querySelectorAll('.tabpanel').forEach(p=>p.classList.toggle('active',p.dataset.panel===k));});});
+
+/* 权衡滑块:轮数 → 准确率 / 成本 */
+(function(){const r=document.getElementById('toRange');if(!r)return;
+  const acc=[65,75,82,85,86],cost=[1,2,4,7,10];
+  const accEl=document.getElementById('toAcc'),costEl=document.getElementById('toCost'),roundsEl=document.getElementById('toRounds'),tip=document.getElementById('toTip');
+  const tips=['1 轮 = 基础 RAG:便宜,但多跳问题答不全','2 轮:开始改写再查,准确率往上走','3 轮:多跳准确率明显提升,成本约 4×','4 轮:接近收益上限,成本已 7×','5 轮:再加几乎不涨准确率,纯烧钱——该设上限了'];
+  function upd(){const i=+r.value-1;roundsEl.textContent=r.value;accEl.style.width=acc[i]+'%';accEl.textContent=acc[i]+'%';costEl.style.width=(cost[i]*10)+'%';costEl.textContent=cost[i]+'×';tip.textContent=tips[i];tip.style.color=i>=4?'#9B1B27':(i>=2?'#1B6B43':'#9B6B00');}
+  r.addEventListener('input',upd);upd();
+})();
+
+/* 雷达图:基础 RAG vs Agentic RAG */
+(function(){const svg=document.getElementById('radarSvg');if(!svg)return;
+  const cx=124,cy=122,R=82,N=5,max=5,NS='http://www.w3.org/2000/svg';
+  const axes=['多跳准确','复杂问题','召回完整','省成本','低延迟'],base=[3,2,3,5,5],agent=[5,5,5,2,2];
+  const pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/N;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  for(let g=1;g<=max;g++){let p=[];for(let i=0;i<N;i++){const[x,y]=pt(i,R*g/max);p.push(x.toFixed(1)+','+y.toFixed(1));}const el=document.createElementNS(NS,'polygon');el.setAttribute('points',p.join(' '));el.setAttribute('fill','none');el.setAttribute('stroke','#e6e0cf');el.setAttribute('stroke-width','1');svg.appendChild(el);}
+  for(let i=0;i<N;i++){const[x,y]=pt(i,R);const ln=document.createElementNS(NS,'line');ln.setAttribute('x1',cx);ln.setAttribute('y1',cy);ln.setAttribute('x2',x.toFixed(1));ln.setAttribute('y2',y.toFixed(1));ln.setAttribute('stroke','#d8d0bd');ln.setAttribute('stroke-width','1');svg.appendChild(ln);const[lx,ly]=pt(i,R+17);const t=document.createElementNS(NS,'text');t.setAttribute('x',lx.toFixed(1));t.setAttribute('y',ly.toFixed(1));t.setAttribute('font-size','11');t.setAttribute('font-weight','700');t.setAttribute('fill','#2B2B2B');t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');t.textContent=axes[i];svg.appendChild(t);}
+  function poly(data,fill,stroke,delay){let p=[];for(let i=0;i<N;i++){const[x,y]=pt(i,R*data[i]/max);p.push(x.toFixed(1)+','+y.toFixed(1));}const el=document.createElementNS(NS,'polygon');el.setAttribute('points',p.join(' '));el.setAttribute('fill',fill);el.setAttribute('stroke',stroke);el.setAttribute('stroke-width','3');el.setAttribute('class','poly');el.style.transformOrigin=cx+'px '+cy+'px';el.style.animationDelay=delay;svg.appendChild(el);}
+  poly(base,'rgba(255,155,155,.45)','#E63946','.1s');
+  poly(agent,'rgba(168,230,207,.55)','#1B6B43','.35s');
+})();
+
+/* 彩带 */
+function confetti(){const cs=['#E63946','#FFE16B','#1B6B43','#A8E6CF','#FF9B9B','#FFB703'];for(let i=0;i<48;i++){const c=document.createElement('div');c.className='confetti';c.style.background=cs[i%cs.length];c.style.left=(Math.random()*100)+'vw';document.body.appendChild(c);const dur=2200+Math.random()*1500,rot=Math.random()*720-360,xe=Math.random()*220-110,t0=performance.now();(function fall(t){const p=(t-t0)/dur;if(p>=1){c.remove();return;}c.style.transform='translate('+(xe*p)+'px,'+(p*window.innerHeight*1.12)+'px) rotate('+(rot*p)+'deg)';c.style.opacity=String(1-p*0.25);requestAnimationFrame(fall);})(t0);}}
+</script>
+</body>
+</html>

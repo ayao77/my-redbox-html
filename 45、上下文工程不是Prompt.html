@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 Prompt 过时了?大厂在卷上下文工程 · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FEFCF5;--ink:#2B2B2B;--red:#E63946;--dred:#C0392B;--gold:#FFE16B;--green:#1B8A3A;--mint:#A8E6CF;--lilac:#FFF4D6;--pinkbg:#FFE4E1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.7}
+.page{max-width:760px;margin:0 auto;padding:34px 24px 80px}
+#progress{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,var(--red),var(--gold));z-index:99;transition:width .12s}
+/* 顶栏 */
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:3px solid var(--ink);margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:11px}
+.bmark{width:40px;height:40px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:19px}
+.bname{font-family:"Archivo Black",sans-serif;font-size:21px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:.14em}
+/* 首屏 */
+.alert{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:900;font-size:14px;padding:7px 16px;border:3px solid var(--ink);border-radius:50px;box-shadow:4px 4px 0 var(--ink);margin-bottom:14px;animation:wob 2s ease-in-out infinite}
+.alert .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);animation:blink 1s steps(2) infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}@keyframes blink{50%{opacity:.2}}
+.hero{display:flex;gap:20px;align-items:center}
+.hero h1{flex:1;font-size:40px;font-weight:900;line-height:1.14;letter-spacing:-.01em}
+.hero h1 .hi{color:var(--red);position:relative}
+.hero h1 .hi::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:8px;background:var(--gold);z-index:-1}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:5px 5px 0 var(--gold);background:var(--lilac);display:block}
+.face .bub{position:absolute;bottom:-6px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.05;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 9px}
+/* hero 窗口对照 */
+.winwrap{display:flex;gap:14px;margin:24px 0 0;align-items:stretch}
+.win{flex:1;background:#fff;border:4px solid var(--ink);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.win.bad{box-shadow:6px 6px 0 var(--dred)}.win.good{box-shadow:6px 6px 0 var(--green)}
+.win .wh{display:flex;align-items:center;gap:7px;font-weight:900;font-size:14px;padding:9px 12px;border-bottom:3px solid var(--ink)}
+.win.bad .wh{background:var(--pinkbg)}.win.good .wh{background:var(--mint)}
+.win .wh .lights{margin-left:auto;display:flex;gap:4px}.win .wh .lights i{width:8px;height:8px;border-radius:50%;background:var(--ink);opacity:.3}
+.win .wb{padding:12px;flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;min-height:78px}
+.chip{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:5px;border:1.5px solid var(--ink)}
+.chip.noise{background:#efe9da;color:#a99;border-style:dashed}
+.chip.sig{background:var(--gold);color:var(--ink)}
+.win .wf{padding:9px 12px;border-top:2px dashed #ddd;font-size:12.5px;font-weight:900;text-align:center}
+.win.bad .wf{color:var(--dred)}.win.good .wf{color:var(--green)}
+.cap-line{font-weight:700;font-size:15px;color:#555;margin-top:18px;line-height:1.65;text-align:center}
+.cap-line b{color:var(--red)}
+/* 数据条 */
+.stat{display:flex;gap:10px;margin:24px 0}
+.stat .s{flex:1;background:var(--ink);color:#fff;border-radius:12px;padding:14px 10px;text-align:center}
+.stat .s .n{font-family:"Archivo Black",sans-serif;font-size:25px;color:var(--gold);line-height:1}
+.stat .s .l{font-size:11px;color:#cfc8b8;margin-top:6px;line-height:1.35}
+/* 章节分隔 */
+.div{text-align:center;margin:46px 0 22px;font-weight:900;font-size:21px;display:flex;align-items:center;justify-content:center;gap:14px}
+.div::before,.div::after{content:"";width:34px;height:3px;background:var(--ink);border-radius:2px}
+.div .em{color:var(--red)}
+.sub{text-align:center;color:#888;font-size:13.5px;margin:-12px 0 20px}
+/* Context Rot 滑块 */
+.rot{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:20px}
+.rot .lab{display:flex;justify-content:space-between;font-size:12.5px;font-weight:900;color:#888;margin-bottom:6px}
+.rot input[type=range]{width:100%;height:10px;-webkit-appearance:none;appearance:none;background:linear-gradient(90deg,var(--green),var(--gold),var(--dred));border:2.5px solid var(--ink);border-radius:50px;outline:none;cursor:pointer}
+.rot input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 0 0 2px var(--ink);cursor:grab}
+.rot input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--ink);border:3px solid #fff;cursor:grab}
+.rot .read{display:flex;align-items:baseline;gap:10px;margin:16px 0 4px}
+.rot .read .tk{font-family:"Archivo Black",sans-serif;font-size:23px}
+.rot .read .tk .u{font-size:13px;color:#999}
+.rot .read .tag{margin-left:auto;font-weight:900;font-size:13px;padding:5px 13px;border:2.5px solid var(--ink);border-radius:50px}
+.rot .bararea{margin-top:10px}
+.rot .bararea .blab{font-size:12px;font-weight:900;color:#888;margin-bottom:5px}
+.rot .track{height:22px;background:#eee5cf;border:2.5px solid var(--ink);border-radius:50px;overflow:hidden}
+.rot .fill{height:100%;background:var(--green);width:92%;transition:width .15s,background .15s;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;color:#fff;font-weight:900;font-size:12px}
+.rot .note{margin-top:13px;font-size:13px;font-weight:700;color:#555;text-align:center;min-height:20px}
+.rot .note b{color:var(--dred)}
+/* Prompt vs 上下文 对照 */
+.vs{display:flex;gap:12px;margin:18px 0}
+.vs .c{flex:1;border:3px solid var(--ink);border-radius:14px;padding:15px 16px}
+.vs .c.p{background:#fff}.vs .c.c2{background:var(--lilac)}
+.vs .c .t{font-weight:900;font-size:16px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+.vs .c.p .t span{color:#999}.vs .c.c2 .t span{color:var(--red)}
+.vs .c .d{font-size:13.5px;line-height:1.6;color:#444}
+.vs .c .d b{color:var(--ink)}
+/* 诊断卡(可点) */
+.diag{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.diag .d{background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:14px 15px;cursor:pointer;transition:transform .18s,box-shadow .18s}
+.diag .d:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.diag .d .dh{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.diag .d .ic{width:34px;height:34px;border-radius:9px;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--pinkbg)}
+.diag .d .nm{font-weight:900;font-size:16px}
+.diag .d .nm small{display:block;font-size:10.5px;color:#aaa;font-family:"JetBrains Mono",monospace;font-weight:700;letter-spacing:.03em}
+.diag .d .sym{font-size:13px;line-height:1.55;color:#555}
+.diag .d .fix{margin-top:9px;font-size:12.5px;font-weight:900;color:var(--green);background:var(--mint);border-radius:8px;padding:7px 10px;display:none;line-height:1.5}
+.diag .d.open .fix{display:block;animation:pop .25s}
+@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.diag .d .hint{font-size:11px;color:var(--red);font-weight:900;margin-top:8px}
+.diag .d.open .hint{display:none}
+/* 写选压隔 手法 */
+.fix4{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.fix4 .f{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:15px;transition:transform .2s}
+.fix4 .f:hover{transform:translateY(-3px)}
+.fix4 .f .fh{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fix4 .f .big{width:42px;height:42px;border-radius:11px;border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#fff;flex-shrink:0}
+.fix4 .f .fh .en{font-family:"JetBrains Mono",monospace;font-size:12px;color:#999;font-weight:700}
+.fix4 .f .fh .zh{font-weight:900;font-size:17px}
+.fix4 .f .fd{font-size:13px;line-height:1.6;color:#444}
+.fix4 .f .fd b{color:var(--ink)}
+.fix4 .f .ag{margin-top:8px;font-size:11.5px;font-weight:900;color:var(--dred)}
+/* 走一遍 flow */
+.flow{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin:4px 0 0}
+.flow .sc{font-size:14px;line-height:1.6;background:var(--pinkbg);border-left:4px solid var(--dred);border-radius:0 8px 8px 0;padding:10px 13px;margin-bottom:14px}
+.flow .sc b{color:var(--dred)}
+.flow .step{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1.5px dashed #ddd}
+.flow .step:last-of-type{border-bottom:none}
+.flow .step .mk{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--ink);color:#fff;font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center}
+.flow .step .tx{font-size:13.5px;line-height:1.55}.flow .step .tx b{color:var(--green)}
+.flow .res{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:14px;background:var(--ink);border-radius:12px;padding:13px;color:#fff}
+.flow .res .a{font-family:"Archivo Black",sans-serif;font-size:20px;color:#ff9b8a;text-decoration:line-through;text-decoration-color:var(--red)}
+.flow .res .ar{color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:18px}
+.flow .res .b{font-family:"Archivo Black",sans-serif;font-size:24px;color:var(--gold)}
+.flow .res .l{font-size:11px;color:#cfc8b8;display:block;text-align:center;margin-top:2px;font-family:"Noto Sans SC"}
+/* PM 预算默认值 */
+.card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin-bottom:18px}
+.card .hd{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.card .hd .qn{width:42px;height:42px;border-radius:11px;border:3px solid var(--ink);background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:19px;flex-shrink:0}
+.card .hd h3{font-size:18px;font-weight:900;line-height:1.2}
+.card .hd .hs{font-size:12px;color:#999;font-weight:700;margin-top:1px}
+.def{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.def .d{font-size:14px;line-height:1.5}
+.def .d .dt{font-weight:900}
+.def .d .dv{display:block;font-size:12.5px;font-weight:900;color:var(--dred);margin-top:2px}
+.tpl{background:var(--ink);color:#fff;border-radius:9px;padding:11px 14px;font-size:13.5px;line-height:1.65;margin-top:14px}
+.tpl .h{font-size:12px;color:var(--gold);font-weight:900;margin-bottom:5px;font-family:"JetBrains Mono",monospace}
+.tpl.code{font-family:"JetBrains Mono",monospace;white-space:pre-wrap;font-size:12.5px;color:#ececec}
+.tpl.code .k{color:var(--mint)}
+/* 心法 gono */
+.gono{display:flex;gap:12px;margin:18px 0}
+.gono .c{flex:1;border:3px solid var(--ink);border-radius:14px;padding:14px 16px}
+.gono .c.go{background:var(--mint)}.gono .c.no{background:var(--pinkbg)}
+.gono .c .h{font-weight:900;font-size:16px;margin-bottom:6px}
+.gono .c.go .h{color:var(--green)}.gono .c.no .h{color:var(--dred)}
+.gono .c .ln{font-size:13px;line-height:1.6;margin:3px 0}
+/* 深色锚点 */
+.dark{background:var(--ink);color:#fff;border:4px solid var(--gold);border-radius:16px;padding:20px 22px;margin:26px 0;position:relative}
+.dark .tag{position:absolute;top:-14px;left:20px;background:var(--gold);color:var(--ink);padding:4px 13px;border:3px solid var(--ink);font-size:12px;font-weight:900}
+.dark .gi{background:rgba(255,225,102,.1);border-left:3px solid var(--gold);padding:9px 12px;margin:8px 0;font-size:14px;line-height:1.6;color:var(--gold)}
+.dark .gi .n{color:var(--red);font-weight:900;margin-right:7px}
+.summary{background:var(--ink);color:var(--gold);border:4px solid var(--gold);border-radius:18px;padding:24px;margin:32px 0;text-align:center}
+.summary .big{font-size:19px;font-weight:900;line-height:1.5;margin-bottom:14px}
+.summary .big .r{color:var(--red)}
+.summary .lines{text-align:left;background:rgba(255,225,102,.1);padding:14px;border-radius:10px;border:2px dashed var(--gold)}
+.summary .lines .l{display:flex;gap:9px;padding:4px 0;font-size:13px;line-height:1.5}
+.summary .lines .l .k{color:var(--gold);font-weight:900;flex-shrink:0;width:58px}
+.cta{background:var(--gold);border:4px solid var(--ink);border-radius:20px;padding:18px 20px;text-align:center;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
+.cta .h{font-weight:900;font-size:16px;margin-bottom:8px}
+.cta .q{font-size:13.5px;line-height:1.6;margin-bottom:12px;font-weight:600}
+.cta .bonus{font-size:12px;color:#555;line-height:1.6;padding-top:11px;border-top:2px dashed var(--ink)}
+.cta .bonus b{color:var(--dred)}
+.next{background:#fff;border:3px dashed var(--ink);border-radius:14px;padding:13px;text-align:center;font-size:13.5px;color:#666;line-height:1.6}
+.next b{color:var(--red)}
+.tags{text-align:center;margin-top:22px;font-size:13px;color:#999}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.reveal.vis{opacity:1;transform:none}
+@media (max-width:560px){.hero h1{font-size:31px}.face{width:94px}.face img{width:94px;height:94px}.stat,.vs,.gono{flex-direction:column}.diag,.fix4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="page">
+  <div class="brand-bar"><div class="brand"><div class="bmark">N</div><div class="bname">NOVA</div></div><div class="vol">AI 实战 · VOL.45</div></div>
+
+  <div class="alert"><span class="dot"></span><svg viewBox="0 0 24 24" width="16" height="16"><path fill="#FFE16B" d="M3 13h6l2-9 2 16 2-7h6" stroke="#FFE16B" stroke-width="1.4" fill="none"/></svg> 2026 大厂共识:上下文 > Prompt</div>
+  <div class="hero">
+    <h1>还在卷 Prompt?<br>大厂早改卷<span class="hi">上下文工程</span>了</h1>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+
+  <div class="winwrap reveal">
+    <div class="win bad">
+      <div class="wh"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="#2B2B2B" stroke-width="2"/><path d="M3 9h18" stroke="#2B2B2B" stroke-width="2"/></svg> 全塞进去 <span class="lights"><i></i><i></i><i></i></span></div>
+      <div class="wb"><div class="chips">
+        <span class="chip noise">寒暄</span><span class="chip sig">真需求</span><span class="chip noise">旧历史</span><span class="chip noise">重复</span><span class="chip noise">无关工单</span><span class="chip noise">过期信息</span><span class="chip noise">试错过程</span><span class="chip noise">一句口误</span><span class="chip noise">别人的话</span><span class="chip noise">冗长文档</span>
+      </div></div>
+      <div class="wf">塞 3 万 token → 越塞越笨 ↓</div>
+    </div>
+    <div class="win good">
+      <div class="wh"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="#2B2B2B" stroke-width="2"/><path d="M8 12.5l2.5 2.5 5-5.5" stroke="#1B8A3A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 只留高信号 <span class="lights"><i></i><i></i><i></i></span></div>
+      <div class="wb"><div class="chips">
+        <span class="chip sig">真需求</span><span class="chip sig">用户事实</span><span class="chip sig">当前任务</span><span class="chip sig">最近 3 轮</span>
+      </div></div>
+      <div class="wf">6 千 token → 更准·更快·更省 ↑</div>
+    </div>
+  </div>
+  <div class="cap-line reveal">Prompt 管「你怎么说」,上下文工程管「<b>模型手里有什么</b>」<br>Anthropic 一句话:就是找到那「一小撮高信号 token」,把噪声删干净。</div>
+
+  <div class="stat reveal">
+    <div class="s"><div class="n"><span data-c="82">0</span>%</div><div class="l">技术负责人:光靠 Prompt 撑不起规模化</div></div>
+    <div class="s"><div class="n">第 <span data-c="1">0</span></div><div class="l">Agent 生产翻车主因 = 上下文,不是模型</div></div>
+    <div class="s"><div class="n"><span data-c="4">0</span>+<span data-c="4">0</span></div><div class="l">4 个失败模式 · 4 把手术刀</div></div>
+  </div>
+
+  <div class="div reveal">反常识 · 塞越多越<span class="em">笨</span></div>
+  <div class="sub reveal">Context Rot(上下文腐烂):token 一多,模型就开始掉链子 —— 哪怕窗口远没满。</div>
+  <div class="rot reveal" id="rot">
+    <div class="lab"><span>← 上下文塞得少</span><span>塞得多 →</span></div>
+    <input type="range" min="0" max="100" value="14" id="rotR">
+    <div class="read"><div class="tk"><span id="rotTk">6</span><span class="u">k token</span></div><div class="tag" id="rotTag">高信号</div></div>
+    <div class="bararea">
+      <div class="blab">模型答对率 / 召回质量</div>
+      <div class="track"><div class="fill" id="rotFill">92%</div></div>
+    </div>
+    <div class="note" id="rotNote">拖动滑块 —— 看「塞越多」准确率怎么掉 ↑</div>
+  </div>
+  <div class="cap-line reveal" style="margin-top:16px">实测在 <b>Claude Sonnet 4 / GPT-4.1 / Qwen3 / Gemini 2.5</b> 上都成立 —— 所以「能塞的都塞进去」是错的。PM 要管的是<b>信号纯度</b>,不是塞多少。</div>
+
+  <div class="div reveal">Prompt <span class="em">vs</span> 上下文工程</div>
+  <div class="vs reveal">
+    <div class="c p"><div class="t"><span>旧</span> Prompt 工程</div><div class="d">调的是<b>「怎么问」</b> —— 措辞、角色、示例、思维链。一次性的、对单轮提问有效。</div></div>
+    <div class="c c2"><div class="t"><span>新</span> 上下文工程</div><div class="d">设计的是<b>「模型生成时手里有什么信息」</b> —— 记忆、检索、工具、历史怎么进窗口、怎么取舍。是贯穿整段交互的架构活。</div></div>
+  </div>
+
+  <div class="div reveal">4 个失败模式 · <span class="em">诊断语言</span></div>
+  <div class="sub reveal">Agent 变笨别只会说「它抽风了」—— 点开卡片看是哪种病、用哪把刀。</div>
+  <div class="diag reveal">
+    <div class="d" data-fix="对策:压(摘要旧历史)+ 选(只取当前要的)">
+      <div class="dh"><div class="ic"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 16l-5 2.6 1-5.5-4-3.9 5.5-.8z" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linejoin="round"/></svg></div><div class="nm">中毒<small>POISONING</small></div></div>
+      <div class="sym">一句幻觉/错信息进了上下文,被后面反复当事实引用 → 错误滚雪球。</div>
+      <div class="hint">点我看对策 ▸</div><div class="fix"></div>
+    </div>
+    <div class="d" data-fix="对策:压(摘要)+ 写(把历史挪到外部)">
+      <div class="dh"><div class="ic"><svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="9" fill="none" stroke="#C0392B" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="nm">分心<small>DISTRACTION</small></div></div>
+      <div class="sym">历史/无关内容太长,盖过了当前任务 → 模型跑题、忘了你最初要干嘛。</div>
+      <div class="hint">点我看对策 ▸</div><div class="fix"></div>
+    </div>
+    <div class="d" data-fix="对策:选(JIT 按需取)+ 隔(子 Agent 各管一摊)">
+      <div class="dh"><div class="ic"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 7h14M5 12h14M5 17h9" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round"/><circle cx="18" cy="17" r="3" fill="none" stroke="#C0392B" stroke-width="1.8"/></svg></div><div class="nm">混淆<small>CONFUSION</small></div></div>
+      <div class="sym">无关信息/工具太多,干扰模型选对工具、抓对重点 → 答非所问、调错工具。</div>
+      <div class="hint">点我看对策 ▸</div><div class="fix"></div>
+    </div>
+    <div class="d" data-fix="对策:写(留单一事实源)+ 压(去掉失效信息)">
+      <div class="dh"><div class="ic"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 4v7M7 20v-5M17 4v5M17 20v-7" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round"/><path d="M5 11h4M15 9h4" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="nm">打架<small>CLASH</small></div></div>
+      <div class="sym">上下文里前后信息自相矛盾(改过又留着旧的)→ 模型摇摆、答案不稳。</div>
+      <div class="hint">点我看对策 ▸</div><div class="fix"></div>
+    </div>
+  </div>
+
+  <div class="div reveal">4 把手术刀 · 写 / 选 / 压 / <span class="em">隔</span></div>
+  <div class="sub reveal">LangChain 写选压隔 + Anthropic 选/压/排序/隔离/格式化 —— 一套就够用。</div>
+  <div class="fix4 reveal">
+    <div class="f"><div class="fh"><div class="big" style="background:var(--green)">写</div><div><div class="en">WRITE</div><div class="zh">写到外部</div></div></div><div class="fd">把信息<b>写到对话之外</b>(便签/文件/记忆库),别全堆在窗口里滚动。</div><div class="ag">↳ 治 分心 · 塞不下</div></div>
+    <div class="f"><div class="fh"><div class="big" style="background:var(--red)">选</div><div><div class="en">SELECT</div><div class="zh">用时再取</div></div></div><div class="fd">Just-in-Time:只存<b>轻量标识</b>(路径/ID/query),这一步需要才拉全文。</div><div class="ag">↳ 治 混淆 · 提信号纯度</div></div>
+    <div class="f"><div class="fh"><div class="big" style="background:var(--dred)">压</div><div><div class="en">COMPRESS</div><div class="zh">摘要压缩</div></div></div><div class="fd">累积的历史<b>压成一段摘要</b>,腾出注意力预算,只留最近几轮原文。</div><div class="ag">↳ 治 分心 · Context Rot</div></div>
+    <div class="f"><div class="fh"><div class="big" style="background:var(--ink)">隔</div><div><div class="en">ISOLATE</div><div class="zh">拆子 Agent</div></div></div><div class="fd">拆成多个<b>子 Agent</b>,各自一个干净窗口管窄任务 —— 实测比单体强。</div><div class="ag">↳ 治 混淆 · 打架</div></div>
+  </div>
+
+  <div class="div reveal">怎么用 · <span class="em">走一遍</span></div>
+  <div class="sub reveal">一个真实客服 Agent,聊到第 20 轮开始答非所问 —— 看四把刀怎么救。</div>
+  <div class="flow reveal">
+    <div class="sc"><b>症状:</b>客服 Agent 聊到第 20 轮,把<b>别的工单</b>信息串进来、忘了用户最初要退款、还在引用早期<b>一句错</b>地址。<br>诊断 = 分心 + 混淆 + 中毒 三连。</div>
+    <div class="step"><div class="mk">写</div><div class="tx">把已确认的工单事实(订单号、退款诉求)<b>写进外部记忆</b>,不再让它躺在对话里滚。</div></div>
+    <div class="step"><div class="mk">选</div><div class="tx">工具/知识不全量塞,按当前意图 <b>JIT 取</b> —— 这一轮要退款政策,才拉退款文档。</div></div>
+    <div class="step"><div class="mk">压</div><div class="tx">每 5 轮把前文<b>压成一段结论摘要</b>,只留最近 3 轮原文 + 摘要。</div></div>
+    <div class="step"><div class="mk">隔</div><div class="tx">把「查物流」「查退款」<b>拆成两个子 Agent</b>,各自干净窗口,主 Agent 只汇总。</div></div>
+    <div class="res"><span><span class="a">3 万</span><span class="l">原始 token</span></span><span class="ar">→</span><span><span class="b">6 千</span><span class="l">高信号 token</span></span></div>
+  </div>
+
+  <div class="card reveal" style="margin-top:24px">
+    <div class="hd"><div class="qn">PM</div><div><h3>上下文预算 · 拍板默认值</h3><div class="hs">给一套能直接抄去跟工程提的数</div></div></div>
+    <div class="def">
+      <div class="d"><span class="dt">① token 预算上限</span> —— 逼着取舍,不许无限塞。<span class="dv">默认:每个 Agent ≤ 8k;超 70%(≈5.6k)触发压缩</span></div>
+      <div class="d"><span class="dt">② 压缩策略</span> —— 旧历史摘要成 1 段。<span class="dv">默认:保留最近 3 轮原文 + 1 段状态摘要,其余压掉</span></div>
+      <div class="d"><span class="dt">③ 工具/检索结果</span> —— 用完即清。<span class="dv">默认:tool 结果读完即清出窗口;文档按需 JIT,不一次性灌</span></div>
+      <div class="d"><span class="dt">④ 子 Agent 上限</span> —— 别拆太碎。<span class="dv">默认:≤ 3 个,每个职责单一、窗口独立</span></div>
+    </div>
+    <div class="tpl code"><span class="h">⌨ 压缩 prompt(照抄改改就能用)</span>把以下对话历史压成一段<span class="k">状态摘要</span>,只保留:
+① 已确认的用户事实/偏好  ② 当前任务目标与已完成步骤  ③ 待办/未决问题。
+删掉:寒暄、重复、<span class="k">已失效信息</span>、试错过程。
+输出 ≤ 200 字,供下一轮当上下文。</div>
+  </div>
+
+  <div class="div reveal">什么时候<span class="em">最该做</span></div>
+  <div class="gono reveal">
+    <div class="c go"><div class="h"><svg viewBox="0 0 20 20" width="17" height="17" style="vertical-align:-3px"><circle cx="10" cy="10" r="9" fill="#1B8A3A"/><path d="M5.6 10.4l2.9 2.9 6-6.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 重点做</div><div class="ln">· 多轮长对话、Agent、工作流(越长越要管)</div><div class="ln">· 接了一堆工具/知识库,模型老选错</div><div class="ln">· 答案时好时坏、越聊越飘</div></div>
+    <div class="c no"><div class="h"><svg viewBox="0 0 20 20" width="17" height="17" style="vertical-align:-3px"><circle cx="10" cy="10" r="9" fill="#C0392B"/><line x1="5.2" y1="10" x2="14.8" y2="10" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg> 可先放</div><div class="ln">· 一次性单轮问答,上下文很短</div><div class="ln">· 没有多工具、没有长历史</div><div class="ln">· 先把 Prompt 调好就够用的简单场景</div></div>
+  </div>
+
+  <div class="dark reveal">
+    <div class="tag">5 句面试金句 · 当场说出口</div>
+    <div class="gi"><span class="n">1</span>Prompt 管「怎么说」,上下文工程管「给模型看什么」—— 后者决定上限。</div>
+    <div class="gi"><span class="n">2</span>不是塞得越多越聪明,是越多越笨(Context Rot)—— 要高信号,不要大体量。</div>
+    <div class="gi"><span class="n">3</span>Agent 变笨先查上下文,别先怪模型 —— 头号生产事故来自上下文。</div>
+    <div class="gi"><span class="n">4</span>四个失败模式:中毒、分心、混淆、打架;四把手术刀:写、选、压、隔。</div>
+    <div class="gi"><span class="n">5</span>上下文是有预算的 —— 预算上限 + 超阈压缩 + JIT 取,把 token 花在刀刃上。</div>
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">Prompt 教模型「怎么说」<br><span class="r">上下文工程决定它「看见什么」</span></div>
+    <div class="lines">
+      <div class="l"><span class="k">反常识</span><span>塞越多越笨(Context Rot),要信号纯度</span></div>
+      <div class="l"><span class="k">4 模式</span><span>中毒 / 分心 / 混淆 / 打架</span></div>
+      <div class="l"><span class="k">4 手术刀</span><span>写 / 选 / 压 / 隔</span></div>
+      <div class="l"><span class="k">PM 定</span><span>预算上限 8k · 超 70% 压缩 · JIT 取 · 子 Agent ≤3</span></div>
+    </div>
+  </div>
+
+  <div class="cta reveal">
+    <div class="h">▎ 来聊聊</div>
+    <div class="q">你的 Agent 越聊越笨,是中毒、分心、混淆还是打架?评论区说说你那个翻车现场。</div>
+    <div class="bonus">P.S. 完整《上下文工程落地速查表(4 失败模式 + 写选压隔手法 + 走一遍 + PM 预算默认值 + 可抄压缩 prompt + 面试 5 句)》—— 评论区扣【上下文】,我私你发📎</div>
+  </div>
+  <div class="next reveal"><b>下期预告 ▶</b> 上下文要「选得准」靠检索 —— 那 2026 该不该自己训模型 vs 直接调 API,选型账怎么算?</div>
+  <div class="tags reveal">#AI产品经理 #AIPM #上下文工程 #大模型 #Prompt #Agent #求职 #面试</div>
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll&&e.target.querySelectorAll('[data-c]').forEach(an);io.unobserve(e.target);}}),{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function an(el){if(el.dataset.d)return;el.dataset.d=1;const t=+el.getAttribute('data-c'),t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/900);el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);})(t0);}
+const bar=document.getElementById('progress');addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/((h.scrollHeight-h.clientHeight)||1)*100)+'%';},{passive:true});
+/* Context Rot 滑块 */
+(function(){const r=document.getElementById('rotR'),tk=document.getElementById('rotTk'),tag=document.getElementById('rotTag'),fill=document.getElementById('rotFill'),note=document.getElementById('rotNote');
+function u(){const v=+r.value;const tok=Math.round((4+v*1.96)*10)/10;tk.textContent=tok>=10?Math.round(tok):tok;
+// 准确率:塞越多越掉
+const acc=Math.round(93-Math.pow(v/100,1.25)*55);
+fill.style.width=Math.max(8,acc)+'%';fill.textContent=acc+'%';
+let t,c,n;
+if(v<28){t='高信号';c='var(--green)';n='这区间最稳 —— 只放真正要的,模型最聪明。';}
+else if(v<62){t='开始掉';c='var(--gold)';tag.style.color='var(--ink)';n='噪声变多,召回质量已经在<b>悄悄下滑</b>(窗口还没满呢)。';}
+else{t='明显变笨';c='var(--dred)';n='塞太多 → <b>Context Rot</b>:它开始忘、开始串、开始跑题。';}
+fill.style.background=c;tag.style.background=c;tag.style.color=(v>=28&&v<62)?'var(--ink)':'#fff';tag.textContent=t;note.innerHTML=n;}
+r.addEventListener('input',u);u();})();
+/* 诊断卡点击 */
+document.querySelectorAll('.diag .d').forEach(d=>{const f=d.querySelector('.fix');f.textContent=d.getAttribute('data-fix');d.addEventListener('click',()=>d.classList.toggle('open'));});
+</script>
+</body>
+</html>

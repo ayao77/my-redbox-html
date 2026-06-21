@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 电商多智能体编排翻车 · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#FEFCF5;background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:#2B2B2B;line-height:1.7}
+.page{max-width:780px;margin:0 auto;padding:36px 24px 80px}
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:3px solid #2B2B2B;margin-bottom:32px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:42px;height:42px;background:#2B2B2B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FFE16B;font-family:"Archivo Black",sans-serif;font-size:20px}
+.brand-name{font-family:"Archivo Black",sans-serif;font-size:22px}
+.vol-badge{background:#2B2B2B;color:#FFE16B;border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.18em;transform:rotate(-2deg)}
+.hero{margin-bottom:28px}
+.hero-tag{display:inline-block;font-family:"ZCOOL KuaiLe",sans-serif;font-size:16px;color:#9B1B27;padding-left:38px;position:relative;margin-bottom:8px}
+.hero-tag::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:28px;height:3px;background:#E63946}
+.hero-title{font-family:"ZCOOL KuaiLe",sans-serif;font-size:46px;line-height:1.18}
+.hero-meta{margin-top:10px;font-family:"JetBrains Mono",monospace;font-size:13px;color:#666;letter-spacing:0.12em}
+.red-em{color:#E63946;position:relative;display:inline-block;font-weight:bold}
+.red-em::after{content:"";position:absolute;left:-2px;right:-2px;bottom:-4px;height:6px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1}
+.yellow-hi{background:linear-gradient(180deg,transparent 55%,#FFE16B 55%,#FFE16B 92%,transparent 92%);padding:0 4px}
+
+.hook-card{background:#2B2B2B;color:#fff;border:3px solid #2B2B2B;border-radius:18px;padding:24px 28px;box-shadow:5px 5px 0 #E63946;margin-bottom:18px;position:relative}
+.hook-card::before{content:"反认知";position:absolute;top:-14px;left:24px;background:#FFE16B;color:#2B2B2B;border:3px solid #2B2B2B;border-radius:50px;padding:3px 12px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.15em}
+.hook-card .h-line{font-family:"ZCOOL KuaiLe",sans-serif;font-size:24px;line-height:1.45}
+.hook-card .h-sub{margin-top:10px;font-size:14px;color:rgba(255,255,255,0.72)}
+
+/* 多Agent各说各话舞台 */
+.crosstalk{background:#fff;border:3px solid #2B2B2B;border-radius:18px;padding:22px 22px 24px;box-shadow:5px 5px 0 #2B2B2B;margin-bottom:40px;position:relative}
+.crosstalk::before{content:"同一个用户·同一笔订单";position:absolute;top:-16px;left:22px;background:#FEFCF5;border:3px solid #2B2B2B;border-radius:50px;padding:3px 13px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.04em}
+.ct-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.ag-bub{border:2px solid #2B2B2B;border-radius:12px;padding:9px 12px;font-size:14px;position:relative}
+.ag-bub .who{display:block;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;opacity:0.7;margin-bottom:3px}
+.ag-bub.a{background:#A8E6CF}.ag-bub.b{background:#FFD9DC}.ag-bub.c{background:#FFE16B}.ag-bub.d{background:#EFEFEF}
+.ct-stamp{display:inline-block;background:#9B1B27;color:#fff;font-family:"Archivo Black",sans-serif;font-size:15px;letter-spacing:0.04em;padding:7px 16px;border:3px solid #2B2B2B;border-radius:10px;transform:rotate(-3deg);box-shadow:3px 3px 0 #2B2B2B}
+
+.pill-row{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}
+.pill{flex:1;min-width:150px;background:#2B2B2B;color:#fff;border-radius:14px;padding:14px 16px;text-align:center;box-shadow:5px 5px 0 #E63946}
+.pill .num{font-family:"Archivo Black",sans-serif;font-size:30px;color:#FFE16B;line-height:1}
+.pill .lab{font-size:12px;color:rgba(255,255,255,0.78);margin-top:6px}
+
+.section-h{font-family:"ZCOOL KuaiLe",sans-serif;font-size:30px;margin:52px 0 8px;display:flex;align-items:baseline;gap:12px}
+.section-h .idx{font-family:"Archivo Black",sans-serif;font-size:20px;color:#fff;background:#E63946;border:3px solid #2B2B2B;border-radius:10px;padding:2px 12px;transform:rotate(-3deg)}
+.section-sub{color:#666;font-size:14px;margin-bottom:8px}
+
+/* 阵容 roster */
+.roster{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.role{background:#fff;border:3px solid #2B2B2B;border-radius:14px;box-shadow:4px 4px 0 #2B2B2B;padding:12px 13px;transition:transform .18s,box-shadow .18s}
+.role:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #2B2B2B}
+.role .rn{font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px}
+.role .rd{font-size:12.5px;color:#555;margin-top:2px}
+.role .rt{display:inline-block;margin-top:7px;font-family:"JetBrains Mono",monospace;font-size:10.5px;background:#FFE16B;border:1.5px solid #2B2B2B;border-radius:50px;padding:1px 8px}
+
+/* 翻车卡 */
+.crash{background:#fff;border:3px solid #2B2B2B;border-radius:16px;box-shadow:5px 5px 0 #2B2B2B;padding:18px 20px 18px;margin:22px 0;position:relative;transition:transform .18s,box-shadow .18s}
+.crash:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #2B2B2B}
+.crash::before{content:attr(data-f);position:absolute;top:-15px;left:20px;background:#9B1B27;color:#fff;border:3px solid #2B2B2B;border-radius:50px;padding:3px 13px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.06em}
+.crash .ct{font-family:"ZCOOL KuaiLe",sans-serif;font-size:21px;color:#9B1B27;margin-bottom:5px}
+.crash .row{font-size:13.5px;margin:4px 0;padding-left:62px;position:relative}
+.crash .row .k{position:absolute;left:0;top:0;font-family:"JetBrains Mono",monospace;font-size:11px;color:#888}
+.crash .fix{margin-top:10px;background:#A8E6CF;border:2px solid #2B2B2B;border-radius:10px;padding:9px 12px;font-size:13.5px;padding-left:62px;position:relative}
+.crash .fix .k{position:absolute;left:12px;top:9px;font-family:"JetBrains Mono",monospace;font-size:11px;color:#1B6B43;font-weight:700}
+.crash .fix b{color:#1B6B43}
+
+/* 编排三步 */
+.steps{display:flex;flex-direction:column;gap:12px;margin:22px 0}
+.step{display:flex;gap:14px;align-items:flex-start;background:#fff;border:3px solid #2B2B2B;border-radius:14px;box-shadow:4px 4px 0 #2B2B2B;padding:14px 16px}
+.step .sn{flex-shrink:0;width:40px;height:40px;background:#2B2B2B;color:#FFE16B;border-radius:10px;font-family:"Archivo Black",sans-serif;font-size:20px;display:flex;align-items:center;justify-content:center}
+.step .sb .st{font-family:"ZCOOL KuaiLe",sans-serif;font-size:18px}
+.step .sb .sd{font-size:13.5px;color:#333;margin-top:2px}
+
+/* 范式四宫格 */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.pmode{background:#FFFEF0;border:3px solid #2B2B2B;border-radius:14px;box-shadow:4px 4px 0 #2B2B2B;padding:13px 15px}
+.pmode .pn{font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px}
+.pmode .pe{font-family:"JetBrains Mono",monospace;font-size:11px;color:#9B5E10}
+.pmode .pd{font-size:12.5px;color:#444;margin-top:4px}
+
+/* 对照:记忆孤岛 vs 单一事实源 */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+.cc{border:3px solid #2B2B2B;border-radius:16px;box-shadow:5px 5px 0 #2B2B2B;padding:16px 16px 18px;position:relative}
+.cc::before{position:absolute;top:-15px;left:16px;font-family:"Archivo Black",sans-serif;font-size:12px;border:3px solid #2B2B2B;border-radius:50px;padding:3px 12px}
+.cc.bad{background:#FFD9DC}.cc.bad::before{content:"记忆孤岛 ✗";background:#9B1B27;color:#fff}
+.cc.good{background:#A8E6CF}.cc.good::before{content:"共享上下文层 ✓";background:#1B6B43;color:#fff}
+.cc .l{font-size:13px;margin:7px 0;padding-left:18px;position:relative}
+.cc .l::before{content:"·";position:absolute;left:4px;top:-1px;font-weight:900}
+.cc .cap{font-size:12px;color:#555;margin-top:8px;font-family:"JetBrains Mono",monospace}
+
+/* 框架条 */
+.fw{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.fw .chip{background:#2B2B2B;color:#FFE16B;border-radius:50px;padding:6px 14px;font-family:"JetBrains Mono",monospace;font-size:13px}
+
+/* 指标 */
+.metrics{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}
+.metric{flex:1;min-width:155px;background:#fff;border:3px solid #2B2B2B;border-radius:14px;box-shadow:4px 4px 0 #2B2B2B;padding:13px 15px}
+.metric .mt{font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px}
+.metric .md{font-size:12.5px;color:#555;margin-top:3px}
+.metric.danger{background:#FFD9DC}.metric.danger .mt{color:#9B1B27}
+
+.block{background:#fff;border:3px solid #2B2B2B;border-radius:18px;padding:24px;margin:40px 0;box-shadow:5px 5px 0 #2B2B2B;position:relative}
+.block.dark{background:#2B2B2B;color:#fff}
+.block.dark::before{content:"面试金句";position:absolute;top:-16px;left:24px;background:#2B2B2B;color:#FFE16B;border:3px solid #FFE16B;border-radius:50px;padding:4px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:0.1em}
+.block.dark .q-head{font-family:"ZCOOL KuaiLe",sans-serif;font-size:20px;margin-bottom:14px;color:#FFE16B}
+.q-line{display:flex;gap:10px;margin:9px 0;font-size:14.5px;line-height:1.5}
+.q-line .qn{flex-shrink:0;font-family:"Archivo Black",sans-serif;color:#FFE16B;font-size:13px;background:rgba(255,255,255,0.1);border-radius:8px;padding:2px 9px;height:fit-content}
+.q-foot{margin-top:14px;font-size:13px;color:rgba(255,255,255,0.7);border-top:1px dashed #555;padding-top:12px}
+
+.closing{background:#FFFEF0;border:3px solid #2B2B2B;border-radius:18px;padding:28px;text-align:center;box-shadow:5px 5px 0 #2B2B2B;margin:48px 0 32px}
+.closing-h{display:inline-block;font-family:"ZCOOL KuaiLe",sans-serif;font-size:27px;position:relative;margin-bottom:10px}
+.closing-h::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:8px;background:#E63946;opacity:0.35;transform:skew(-2deg);z-index:-1}
+.cta{background:#A8E6CF;border:3px solid #2B2B2B;border-radius:18px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;box-shadow:5px 5px 0 #2B2B2B;flex-wrap:wrap}
+.cta-text{font-family:"ZCOOL KuaiLe",sans-serif;font-size:17px}
+.cta-text strong{color:#9B1B27}
+.cta-tag{background:#2B2B2B;color:#FFE16B;padding:6px 14px;border-radius:50px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:0.14em;flex-shrink:0}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.is-visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none!important}}
+@media (max-width:560px){.hero-title{font-size:36px}.roster,.modes,.compare,.ct-grid{grid-template-columns:1fr}.crash .row,.crash .fix{padding-left:16px}.crash .row .k{position:static;display:block}.crash .fix .k{position:static;display:block;margin-bottom:3px}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="brand"><div class="brand-mark">N</div><div class="brand-name">NOVA</div></div>
+    <div class="vol-badge">AI 产品新核心 · VOL.41</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-tag">AI 产品经理实战篇之</div>
+    <h1 class="hero-title">电商<span class="red-em">多智能体</span>编排翻车<br>不是越多越强 <span class="yellow-hi">是越多越各说各话</span></h1>
+    <div class="hero-meta">VOL.41 · 阅读时长 6 分钟 · @NOVA</div>
+  </div>
+
+  <div class="hook-card">
+    <div class="h-line">老板看完 demo——导购、客服、履约三个 Agent 配合天衣无缝。<br>拍桌:"明天上多智能体,全自动!"</div>
+    <div class="h-sub">你回去半年。多智能体试点六个月内四成挂掉。死因不是模型不够聪明,是它们记不住同一件事。</div>
+  </div>
+
+  <div class="crosstalk">
+    <div class="ct-grid">
+      <div class="ag-bub a"><span class="who">用户 → 导购 Agent</span>要 40 码、预算 300、不要赠品</div>
+      <div class="ag-bub c"><span class="who">导购 Agent</span>好的!这双有货,马上下单~</div>
+      <div class="ag-bub b"><span class="who">履约 Agent</span>抱歉,该商品无货</div>
+      <div class="ag-bub d"><span class="who">客服 Agent</span>您好,请问您要几码呢?</div>
+    </div>
+    <div class="ct-stamp">✗ 各说各话 · 记忆没共享</div>
+    <p style="margin-top:13px;font-size:13.5px;color:#555">同一个用户、同一笔订单,四个 Agent 像四个没拉群的同事。<strong>多智能体真正的核心不是 Agent,是它们之间的"共享上下文层"和"编排"。</strong></p>
+  </div>
+
+  <div class="pill-row reveal">
+    <div class="pill"><div class="num"><span data-count="40" data-suffix="%">0%</span></div><div class="lab">多智能体试点 6 个月内挂掉</div></div>
+    <div class="pill"><div class="num" style="font-size:22px">上下文不一致</div><div class="lab">头号死因(不是模型不够强)</div></div>
+    <div class="pill"><div class="num"><span data-count="5">0</span> 种</div><div class="lab">记忆孤岛失败类型</div></div>
+  </div>
+
+  <!-- Part 1 阵容 -->
+  <div class="section-h reveal"><span class="idx">01</span>先看阵容:电商多 Agent 怎么分工</div>
+  <div class="section-sub">先认清都有谁,才知道它们会在哪掐架。</div>
+  <div class="roster reveal">
+    <div class="role"><div class="rn">导购 Agent</div><div class="rd">理解需求、推荐商品</div><div class="rt">40码/预算300</div></div>
+    <div class="role"><div class="rn">客服 Agent</div><div class="rd">答疑、查单、改地址</div><div class="rt">售前售后</div></div>
+    <div class="role"><div class="rn">履约 Agent</div><div class="rd">下单、库存、物流、对账</div><div class="rt">订单中枢</div></div>
+    <div class="role"><div class="rn">售后 Agent</div><div class="rd">退款、退货、纠纷</div><div class="rt">退换</div></div>
+    <div class="role"><div class="rn">营销 Agent</div><div class="rd">发券、追加推荐</div><div class="rt">促转化</div></div>
+    <div class="role"><div class="rn">风控 Agent</div><div class="rd">异常、欺诈、限购</div><div class="rt">兜底</div></div>
+  </div>
+
+  <!-- Part 2 六翻车 -->
+  <div class="section-h reveal"><span class="idx">02</span>6 种死法:多 Agent 在哪翻车</div>
+  <div class="section-sub">这期的核心资产。每种都配 场景 → 根因 → 兜底。</div>
+
+  <div class="crash reveal" data-f="F1 头号">
+    <div class="ct">记忆孤岛 / 上下文不一致</div>
+    <div class="row"><span class="k">场景</span>用户跟导购说"40 码/预算 300/不要赠品",转客服全忘了重问;导购说"有货",履约一查没货。</div>
+    <div class="row"><span class="k">根因</span>每个 Agent 各存各的记忆,没有单一事实源。</div>
+    <div class="fix"><span class="k">兜底</span><b>共享上下文层(single source of truth)</b>——会话/用户档案/订单/库存,所有 Agent 读同一份。</div>
+  </div>
+  <div class="crash reveal" data-f="F2">
+    <div class="ct">边界冲突 / 踢皮球</div>
+    <div class="row"><span class="k">场景</span>退款请求,导购推客服、客服推售后,用户转一圈回原点;或客服改地址、营销又叠券,价格算错。</div>
+    <div class="row"><span class="k">根因</span>角色边界没定清,谁能做什么没白名单。</div>
+    <div class="fix"><span class="k">兜底</span><b>主管编排 + 角色权限白名单</b>(客服永不能改价)+ handoff 协议(交接带完整上下文)。</div>
+  </div>
+  <div class="crash reveal" data-f="F3">
+    <div class="ct">协作死锁 / 无限循环</div>
+    <div class="row"><span class="k">场景</span>导购等履约确认、履约又回头等导购澄清,互相等;或任务在两 Agent 间反复横跳不收敛。</div>
+    <div class="row"><span class="k">根因</span>没设最大跳数 / 步数上限,没循环检测。</div>
+    <div class="fix"><span class="k">兜底</span><b>最大跳数 + 循环检测 + 超时熔断</b>。</div>
+  </div>
+  <div class="crash reveal" data-f="F4">
+    <div class="ct">成本 / 延迟爆炸</div>
+    <div class="row"><span class="k">场景</span>一个"查订单 + 改地址",在四五个 Agent 间传十几次、每次都调大模型,用户等 3 分钟,月底账单爆。</div>
+    <div class="row"><span class="k">根因</span>能单 Agent 干的拆成了多 Agent,跳数 = 成本。</div>
+    <div class="fix"><span class="k">兜底</span><b>能单 Agent 别上多 Agent + 预算/跳数硬墙 + 缓存高频链路 + 简单任务不进多 Agent</b>。</div>
+  </div>
+  <div class="crash reveal" data-f="F5">
+    <div class="ct">错误级联放大</div>
+    <div class="row"><span class="k">场景</span>导购把"不要赠品"理解成"要赠品",下游履约照发、客服照确认、营销照追加——一个错放大成一串。</div>
+    <div class="row"><span class="k">根因</span>上游一错,下游全盘接受,没中途校验。</div>
+    <div class="fix"><span class="k">兜底</span><b>关键节点加审阅 Agent(Reviewer)+ 关键动作二次确认 + 失败隔离</b>,不让一个错扩散。</div>
+  </div>
+  <div class="crash reveal" data-f="F6">
+    <div class="ct">责任模糊 / 不可观测</div>
+    <div class="row"><span class="k">场景</span>订单出错,CTO 问"哪个 Agent 的锅",没人答得上,没日志没 trace,没法复盘。</div>
+    <div class="row"><span class="k">根因</span>没有全链路追踪,Agent 间输入输出没留痕。</div>
+    <div class="fix"><span class="k">兜底</span><b>全链路 trace + 责任归属日志 + 可观测面板</b>,定位到具体 Agent。</div>
+  </div>
+
+  <!-- Part 3 怎么搭 -->
+  <div class="section-h reveal"><span class="idx">03</span>怎么搭:编排三步 + 范式选型</div>
+  <div class="section-sub">先搭地基,再加 Agent。顺序错了全白搭。</div>
+
+  <div class="steps reveal">
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st">先问要不要多 Agent</div><div class="sd">能单 Agent + 工具调用解决就别上。多一个 Agent = 调用翻倍 + 故障面翻倍。</div></div></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st">先搭共享上下文层</div><div class="sd">单一事实源:会话 / 用户 / 订单 / 库存,所有 Agent 读写同一份。治记忆孤岛的根。</div></div></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st">定编排 + 边界 + 兜底</div><div class="sd">选范式 + 角色权限白名单 + 最大跳数 + 熔断 + 审阅 Agent + 全链路 trace。</div></div></div>
+  </div>
+
+  <div class="section-sub reveal" style="margin-top:24px;font-weight:700;color:#2B2B2B;font-size:15px">编排范式 4 选 1(按问题选,不要硬套)</div>
+  <div class="modes reveal">
+    <div class="pmode"><div class="pn">Supervisor 主管路由</div><div class="pe">orchestrator → 子Agent</div><div class="pd">一个主管决定调谁。适合客服分流。</div></div>
+    <div class="pmode"><div class="pn">Sequential 流水线</div><div class="pe">导购→下单→履约→通知</div><div class="pd">固定顺序,适合标准下单流程。</div></div>
+    <div class="pmode"><div class="pn">Parallel 并行</div><div class="pe">库存‖物流‖优惠</div><div class="pd">多源同时查,适合聚合查询。</div></div>
+    <div class="pmode"><div class="pn">Hierarchical 分层</div><div class="pe">Planner→Worker→Reviewer</div><div class="pd">复杂任务,规划者分派执行+审阅。</div></div>
+  </div>
+
+  <div class="section-sub reveal" style="margin-top:20px;font-weight:700;color:#2B2B2B;font-size:15px">主流框架(PM 要知道名字)</div>
+  <div class="fw reveal">
+    <span class="chip">LangGraph 图/状态机·可测</span>
+    <span class="chip">CrewAI 角色化crew</span>
+    <span class="chip">AutoGen 对话式</span>
+    <span class="chip">A2A 跨Agent协议</span>
+    <span class="chip">Google ADK</span>
+  </div>
+
+  <div class="section-sub reveal" style="margin-top:24px;font-weight:700;color:#2B2B2B;font-size:15px">地基对照:记忆孤岛 vs 共享上下文层</div>
+  <div class="compare reveal">
+    <div class="cc bad">
+      <div class="l">每个 Agent 各记一份会话</div>
+      <div class="l">导购的话客服不知道</div>
+      <div class="l">"有货"和"没货"并存</div>
+      <div class="cap">5 种记忆孤岛失败的根</div>
+    </div>
+    <div class="cc good">
+      <div class="l">所有 Agent 读同一份事实源</div>
+      <div class="l">会话 / 用户 / 订单 / 库存统一</div>
+      <div class="l">一处更新,处处一致</div>
+      <div class="cap">先有它,再加 Agent</div>
+    </div>
+  </div>
+
+  <div class="section-sub reveal" style="margin-top:26px;font-weight:700;color:#2B2B2B;font-size:15px">PM 盯这 7 个"协作级"指标(不是单 Agent 准确率)</div>
+  <div class="metrics reveal">
+    <div class="metric"><div class="mt">① 端到端完成率</div><div class="md">整条链跑通,不是单 Agent 答对</div></div>
+    <div class="metric"><div class="mt">② 转交成功率</div><div class="md">handoff 没丢上下文的比例</div></div>
+    <div class="metric danger"><div class="mt">③ 上下文一致性率</div><div class="md">跨 Agent 同一事实是否一致(对应 F1,最关键)</div></div>
+    <div class="metric"><div class="mt">④ 循环/死锁率·平均跳数</div><div class="md">对应 F3/F4</div></div>
+    <div class="metric"><div class="mt">⑤ 端到端延迟·单任务成本</div><div class="md">对应 F4</div></div>
+    <div class="metric"><div class="mt">⑥ 级联错误率</div><div class="md">一个错引发的连锁,对应 F5</div></div>
+    <div class="metric"><div class="mt">⑦ 可追溯率</div><div class="md">出错能否定位到具体 Agent,对应 F6</div></div>
+  </div>
+
+  <div class="block dark reveal">
+    <div class="q-head">被问"多智能体怎么落地",按 4 句答:</div>
+    <div class="q-line"><span class="qn">1</span><span>先问要不要——能单 Agent 别上,多 Agent 调用翻倍、故障面翻倍。</span></div>
+    <div class="q-line"><span class="qn">2</span><span>先搭共享上下文层——single source of truth,治记忆孤岛。</span></div>
+    <div class="q-line"><span class="qn">3</span><span>先定编排+边界——Supervisor 主管路由 + 角色白名单 + handoff 带上下文。</span></div>
+    <div class="q-line"><span class="qn">4</span><span>先设兜底——最大跳数 + 熔断 + 审阅 Agent + 全链路 trace。</span></div>
+    <div class="q-foot">4 句答完,面试官知道你不是被 demo 带节奏的小白。</div>
+  </div>
+
+  <div class="closing reveal">
+    <div class="closing-h">多智能体不是越多越强——是越多越容易各说各话</div>
+    <p>多 Agent 翻车,不是 Agent 不够聪明,是它们没共用一个脑子。Agent 数量是成本,协作质量才是产出。先搭共享上下文层,再加 Agent。</p>
+  </div>
+
+  <div class="cta">
+    <div class="cta-text">下期:<strong>《共享上下文层怎么设计》</strong><br>多 Agent 的记忆到底怎么存、怎么同步。关注 NOVA。</div>
+    <div class="cta-tag">#AI产品经理 #AIPM求职</div>
+  </div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');e.target.querySelectorAll&&e.target.querySelectorAll('[data-count]').forEach(animateNumber);io.unobserve(e.target);}});},{threshold:0.16,rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function animateNumber(el){if(el.dataset.done)return;el.dataset.done=1;const t=parseFloat(el.getAttribute('data-count')),s=el.getAttribute('data-suffix')||'',t0=performance.now();function tick(n){const p=Math.min(1,(n-t0)/1200);el.textContent=Math.round(t*(1-Math.pow(1-p,3)))+s;if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}
+</script>
+</body>
+</html>

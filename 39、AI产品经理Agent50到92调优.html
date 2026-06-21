@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI PM Agent 50→92 调优 · NOVA Vol.39</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Inter','Noto Sans SC',sans-serif;
+  background:#FFF8E7;
+  color:#2A2A2A;
+  line-height:1.7;
+  padding:32px 0;
+}
+.wrap{
+  width:860px;
+  margin:0 auto;
+  background:#FFFBEF;
+  padding:48px 44px;
+  border:3px solid #2A2A2A;
+  border-radius:24px;
+  box-shadow:10px 10px 0 #2A2A2A;
+}
+
+/* HEADER */
+.vol-tag{
+  display:inline-block;
+  background:#2A2A2A;
+  color:#FFE680;
+  padding:6px 16px;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:1px;
+  border-radius:20px;
+  margin-bottom:14px;
+}
+h1{
+  font-size:44px;
+  font-weight:900;
+  line-height:1.2;
+  letter-spacing:-0.5px;
+  margin-bottom:18px;
+}
+h1 .hl{
+  background:linear-gradient(180deg,transparent 60%,#FFD1DC 60%);
+  padding:0 6px;
+}
+.sub{
+  font-size:18px;
+  color:#5A5A5A;
+  font-weight:500;
+  margin-bottom:36px;
+}
+.by{
+  font-size:14px;
+  color:#9A9A9A;
+  margin-top:8px;
+}
+
+/* HOOK BOX */
+.hook{
+  background:#FFE5EC;
+  border:2.5px solid #2A2A2A;
+  border-radius:20px;
+  padding:28px 32px;
+  margin-bottom:38px;
+  box-shadow:6px 6px 0 #2A2A2A;
+}
+.hook .big{
+  font-size:26px;
+  font-weight:800;
+  line-height:1.4;
+  margin-bottom:14px;
+}
+.hook .small{
+  font-size:16px;
+  color:#5A5A5A;
+}
+.hook .small strong{
+  background:#FFD93D;
+  padding:2px 8px;
+  border-radius:4px;
+  font-weight:700;
+}
+
+/* TERM */
+.term{
+  display:inline-block;
+  background:#FFE680;
+  border:1.5px solid #2A2A2A;
+  border-radius:6px;
+  padding:1px 8px;
+  font-weight:700;
+  font-family:'Inter',monospace;
+  font-size:0.94em;
+  white-space:nowrap;
+}
+.term-explain{
+  display:inline-block;
+  background:#FFF;
+  border:1.5px dashed #2A2A2A;
+  border-radius:6px;
+  padding:1px 8px;
+  font-size:0.92em;
+  color:#5A5A5A;
+}
+
+/* SECTION HEADERS */
+.section-tag{
+  display:inline-block;
+  background:#2A2A2A;
+  color:#FFD93D;
+  padding:5px 14px;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  border-radius:14px;
+  margin-bottom:14px;
+}
+h2{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:-0.3px;
+  margin-bottom:18px;
+  line-height:1.3;
+}
+h2 .num{
+  display:inline-block;
+  background:#FF6B8A;
+  color:#FFF;
+  width:42px;
+  height:42px;
+  line-height:42px;
+  text-align:center;
+  border-radius:50%;
+  font-size:22px;
+  margin-right:12px;
+  vertical-align:middle;
+  border:2.5px solid #2A2A2A;
+  box-shadow:3px 3px 0 #2A2A2A;
+}
+
+/* WRONG CARD (打脸) */
+.wrong{
+  background:#FFF4E6;
+  border:2.5px solid #2A2A2A;
+  border-radius:18px;
+  padding:26px 28px;
+  margin-bottom:40px;
+  box-shadow:5px 5px 0 #2A2A2A;
+}
+.wrong-title{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:18px;
+}
+.wrong-title .x{
+  color:#E94560;
+  font-size:24px;
+  margin-right:6px;
+}
+.wrong-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:11px 0;
+  border-bottom:1.5px dashed #D4C9B4;
+  font-size:15.5px;
+}
+.wrong-item:last-child{border-bottom:none;}
+.wrong-item .left{flex:1;}
+.wrong-item .right{
+  background:#FFD93D;
+  padding:4px 14px;
+  border-radius:14px;
+  font-weight:700;
+  font-size:14px;
+  border:1.5px solid #2A2A2A;
+}
+.wrong-sum{
+  margin-top:18px;
+  padding:14px 18px;
+  background:#2A2A2A;
+  color:#FFF;
+  border-radius:12px;
+  font-weight:700;
+  font-size:16px;
+  text-align:center;
+}
+.wrong-sum .num{
+  color:#FFD93D;
+  font-size:22px;
+  font-weight:900;
+}
+
+/* METHOD CARD */
+.method{
+  background:#FFF;
+  border:2.5px solid #2A2A2A;
+  border-radius:20px;
+  padding:32px 34px;
+  margin-bottom:36px;
+  box-shadow:7px 7px 0 #2A2A2A;
+  position:relative;
+}
+.method:nth-child(odd){background:#FFF8F0;}
+.method:nth-child(even){background:#F0F8FF;}
+
+.explain-box{
+  background:#FFFBEF;
+  border:2px solid #2A2A2A;
+  border-radius:14px;
+  padding:18px 22px;
+  margin-bottom:20px;
+  font-size:16px;
+  line-height:1.8;
+}
+.explain-box .label{
+  display:inline-block;
+  background:#2A2A2A;
+  color:#FFD93D;
+  padding:2px 10px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1px;
+  margin-right:8px;
+  vertical-align:middle;
+}
+
+/* THREE-STEP */
+.three-step{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px;
+  margin-bottom:22px;
+}
+.step-card{
+  background:#FFF;
+  border:2px solid #2A2A2A;
+  border-radius:14px;
+  padding:18px 16px;
+  box-shadow:3px 3px 0 #2A2A2A;
+  transition:transform 0.3s;
+}
+.step-card:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 #2A2A2A;}
+.step-card .step-num{
+  display:inline-block;
+  background:#FF6B8A;
+  color:#FFF;
+  padding:3px 10px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:8px;
+  border:1.5px solid #2A2A2A;
+}
+.step-card .step-en{
+  font-size:15px;
+  font-weight:800;
+  margin-bottom:4px;
+  font-family:'Inter',monospace;
+}
+.step-card .step-cn{
+  font-size:14px;
+  color:#5A5A5A;
+  margin-bottom:8px;
+  font-weight:600;
+}
+.step-card .step-ex{
+  font-size:13px;
+  color:#7A7A7A;
+  line-height:1.5;
+}
+
+/* BENCH (data) */
+.bench{
+  background:#2A2A2A;
+  color:#FFF;
+  border-radius:14px;
+  padding:22px 24px;
+  margin:20px 0;
+}
+.bench-title{
+  font-size:13px;
+  letter-spacing:2px;
+  color:#FFD93D;
+  font-weight:700;
+  margin-bottom:14px;
+}
+.bench-row{
+  display:flex;
+  align-items:center;
+  margin-bottom:11px;
+  font-size:15px;
+}
+.bench-row .config{
+  width:240px;
+  font-weight:500;
+  color:#D0D0D0;
+}
+.bench-row .bar-wrap{
+  flex:1;
+  height:24px;
+  background:#3A3A3A;
+  border-radius:12px;
+  position:relative;
+  overflow:hidden;
+  margin:0 12px;
+}
+.bench-row .bar{
+  height:100%;
+  background:linear-gradient(90deg,#FF6B8A,#FFD93D);
+  border-radius:12px;
+  width:0;
+  transition:width 1.5s ease-out;
+}
+.bench-row.best .bar{
+  background:linear-gradient(90deg,#7FE5BC,#A5E5FF);
+}
+.bench-row .score{
+  width:60px;
+  text-align:right;
+  font-weight:800;
+  font-size:16px;
+  font-family:'Inter',monospace;
+}
+.bench-row.best .score{color:#FFD93D;font-size:18px;}
+
+.gain{
+  display:inline-block;
+  background:#FFD93D;
+  color:#2A2A2A;
+  padding:8px 18px;
+  border-radius:14px;
+  font-weight:800;
+  font-size:18px;
+  border:2px solid #2A2A2A;
+  box-shadow:3px 3px 0 #2A2A2A;
+  margin-top:8px;
+}
+
+/* CASE */
+.case{
+  background:#FFF4E6;
+  border:2px dashed #FF8C42;
+  border-radius:14px;
+  padding:16px 20px;
+  margin-top:18px;
+  font-size:14.5px;
+  line-height:1.7;
+}
+.case .case-tag{
+  display:inline-block;
+  background:#FF8C42;
+  color:#FFF;
+  padding:2px 10px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:700;
+  margin-right:8px;
+}
+.case strong{background:#FFD93D;padding:0 4px;}
+
+/* PM COMMAND */
+.pm-cmd{
+  background:#7B68EE;
+  color:#FFF;
+  border:2.5px solid #2A2A2A;
+  border-radius:14px;
+  padding:18px 22px;
+  margin-top:18px;
+  box-shadow:4px 4px 0 #2A2A2A;
+  font-size:15px;
+  line-height:1.7;
+}
+.pm-cmd .pm-tag{
+  display:inline-block;
+  background:#FFD93D;
+  color:#2A2A2A;
+  padding:3px 12px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:1px;
+  margin-bottom:10px;
+}
+.pm-cmd .cmd-quote{
+  background:rgba(0,0,0,0.25);
+  padding:10px 14px;
+  border-radius:8px;
+  font-family:'Inter',monospace;
+  font-size:14.5px;
+  margin-top:8px;
+}
+
+/* SAVE HINT */
+.save-hint{
+  background:#FFD93D;
+  border:2.5px solid #2A2A2A;
+  border-radius:14px;
+  padding:14px 22px;
+  margin-top:18px;
+  font-weight:700;
+  font-size:15.5px;
+  text-align:center;
+  box-shadow:4px 4px 0 #2A2A2A;
+  animation:shake 0.8s ease-in-out 1s;
+}
+
+/* STACK CHART */
+.stack{
+  background:#FFF;
+  border:3px solid #2A2A2A;
+  border-radius:20px;
+  padding:32px;
+  margin:40px 0;
+  box-shadow:8px 8px 0 #2A2A2A;
+}
+.stack-title{
+  text-align:center;
+  font-size:24px;
+  font-weight:900;
+  margin-bottom:24px;
+}
+.stack-row{
+  display:flex;
+  align-items:center;
+  margin-bottom:13px;
+  font-size:15px;
+}
+.stack-row .label{
+  width:220px;
+  font-weight:600;
+  color:#3A3A3A;
+}
+.stack-row .bar-wrap{
+  flex:1;
+  height:30px;
+  background:#F4EFE5;
+  border:2px solid #2A2A2A;
+  border-radius:14px;
+  overflow:hidden;
+  margin:0 14px;
+}
+.stack-row .bar{
+  height:100%;
+  background:linear-gradient(90deg,#FFE5EC,#FFD1DC);
+  border-radius:12px;
+  width:0;
+  transition:width 1.2s ease-out;
+}
+.stack-row.final .bar{background:linear-gradient(90deg,#FFD93D,#FF6B8A);}
+.stack-row .num{
+  width:60px;
+  text-align:right;
+  font-weight:800;
+  font-family:'Inter',monospace;
+}
+.stack-row.final .num{font-size:20px;color:#E94560;}
+
+.stack-conclude{
+  text-align:center;
+  margin-top:22px;
+  font-size:22px;
+  font-weight:900;
+}
+.stack-conclude .pop{
+  display:inline-block;
+  background:#FF6B8A;
+  color:#FFF;
+  padding:6px 18px;
+  border-radius:12px;
+  border:2.5px solid #2A2A2A;
+  box-shadow:3px 3px 0 #2A2A2A;
+  margin:0 4px;
+}
+
+/* CONCLUSION */
+.conclude{
+  background:#2A2A2A;
+  color:#FFF;
+  border-radius:24px;
+  padding:38px 36px;
+  margin:40px 0;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.conclude::before{
+  content:"";
+  position:absolute;
+  top:-40px;left:-40px;
+  width:120px;height:120px;
+  background:#FFD93D;
+  border-radius:50%;
+  opacity:0.15;
+}
+.conclude::after{
+  content:"";
+  position:absolute;
+  bottom:-40px;right:-40px;
+  width:160px;height:160px;
+  background:#FF6B8A;
+  border-radius:50%;
+  opacity:0.15;
+}
+.conclude h3{
+  font-size:30px;
+  font-weight:900;
+  margin-bottom:18px;
+  position:relative;
+}
+.conclude p{
+  font-size:17px;
+  line-height:1.8;
+  color:#D0D0D0;
+  position:relative;
+}
+.conclude .key{
+  background:#FFD93D;
+  color:#2A2A2A;
+  padding:2px 10px;
+  border-radius:6px;
+  font-weight:800;
+}
+
+/* FOOTER */
+.follow{
+  background:#FFD1DC;
+  border:2.5px solid #2A2A2A;
+  border-radius:20px;
+  padding:28px 32px;
+  margin-top:36px;
+  text-align:center;
+  box-shadow:6px 6px 0 #2A2A2A;
+}
+.follow-tag{
+  display:inline-block;
+  background:#2A2A2A;
+  color:#FFD1DC;
+  padding:5px 16px;
+  border-radius:14px;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  margin-bottom:12px;
+}
+.follow h3{
+  font-size:24px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+.follow p{font-size:15px;color:#5A5A5A;line-height:1.7;}
+.follow .triple{
+  display:inline-block;
+  background:#FFF;
+  border:2px solid #2A2A2A;
+  border-radius:12px;
+  padding:8px 18px;
+  margin-top:14px;
+  font-weight:700;
+  font-size:15px;
+}
+
+.comment{
+  background:#7FE5BC;
+  border:2.5px solid #2A2A2A;
+  border-radius:18px;
+  padding:22px 26px;
+  margin-top:24px;
+  text-align:center;
+  box-shadow:5px 5px 0 #2A2A2A;
+}
+.comment-q{
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+.comment-sub{font-size:14px;color:#3A3A3A;}
+
+.sig{
+  text-align:center;
+  margin-top:36px;
+  padding-top:24px;
+  border-top:2px dashed #2A2A2A;
+  font-size:13px;
+  color:#9A9A9A;
+  letter-spacing:1px;
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes popIn{
+  0%{transform:scale(0.8);opacity:0;}
+  60%{transform:scale(1.05);}
+  100%{transform:scale(1);opacity:1;}
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%,60%{transform:translateX(-4px) rotate(-1deg);}
+  40%,80%{transform:translateX(4px) rotate(1deg);}
+}
+@keyframes slideInLeft{
+  from{transform:translateX(-60px) rotate(-2deg);opacity:0;}
+  to{transform:translateX(0) rotate(0);opacity:1;}
+}
+@keyframes slideInRight{
+  from{transform:translateX(60px) rotate(2deg);opacity:0;}
+  to{transform:translateX(0) rotate(0);opacity:1;}
+}
+@keyframes slideInUp{
+  from{transform:translateY(40px);opacity:0;}
+  to{transform:translateY(0);opacity:1;}
+}
+@keyframes slideInDown{
+  from{transform:translateY(-40px);opacity:0;}
+  to{transform:translateY(0);opacity:1;}
+}
+@keyframes zoomIn{
+  from{transform:scale(0.7);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+@keyframes flipIn{
+  from{transform:perspective(800px) rotateY(-50deg);opacity:0;}
+  to{transform:perspective(800px) rotateY(0);opacity:1;}
+}
+@keyframes wiggle{
+  0%,100%{transform:rotate(0);}
+  25%{transform:rotate(-4deg);}
+  75%{transform:rotate(4deg);}
+}
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1);box-shadow:6px 6px 0 #2A2A2A;}
+  50%{transform:scale(1.02);box-shadow:8px 8px 0 #2A2A2A;}
+}
+@keyframes pop{
+  0%{transform:scale(0);opacity:0;}
+  70%{transform:scale(1.2);}
+  100%{transform:scale(1);opacity:1;}
+}
+@keyframes drawIn{
+  from{transform:scaleX(0);transform-origin:left;}
+  to{transform:scaleX(1);transform-origin:left;}
+}
+
+/* ============ SCROLL-TRIGGER INITIAL STATE ============ */
+/* 默认所有动画元素 invisible · IntersectionObserver 触发时显形 */
+.method, .stack, .conclude, .follow, .comment,
+.wrong, .hook, .explain-box{
+  opacity:0;
+}
+
+/* 触发后的状态 + 动画方向 */
+.in-view{opacity:1 !important;}
+
+.in-view.from-left{animation:slideInLeft 0.7s cubic-bezier(0.2,0.8,0.2,1) forwards;}
+.in-view.from-right{animation:slideInRight 0.7s cubic-bezier(0.2,0.8,0.2,1) forwards;}
+.in-view.from-up{animation:slideInUp 0.7s cubic-bezier(0.2,0.8,0.2,1) forwards;}
+.in-view.from-down{animation:slideInDown 0.7s cubic-bezier(0.2,0.8,0.2,1) forwards;}
+.in-view.zoom{animation:zoomIn 0.6s cubic-bezier(0.2,0.8,0.2,1) forwards;}
+.in-view.flip{animation:flipIn 0.8s cubic-bezier(0.2,0.8,0.2,1) forwards;}
+.in-view.pop-anim{animation:popIn 0.7s cubic-bezier(0.2,0.8,0.5,1.2) forwards;}
+
+/* hover 微互动 */
+.method:hover{transform:translateY(-3px);transition:transform 0.3s;}
+.bench:hover{box-shadow:0 0 0 3px #FFD93D;transition:box-shadow 0.3s;}
+
+/* 持续浮动的徽章 */
+.gain{animation:float 2.5s ease-in-out infinite;}
+.section-tag{animation:wiggle 0.6s ease-in-out 0.3s;}
+.save-hint{animation:pulse 2s ease-in-out infinite;}
+.follow-tag{animation:wiggle 0.8s ease-in-out;}
+
+/* 数字逐位跳出 */
+.score{transition:color 0.4s;}
+.bench-row.best:hover .score{color:#FFD93D;transform:scale(1.1);transition:transform 0.3s;}
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="vol-tag">★ NOVA · VOL.39</div>
+  <h1>AI PM <span class="hl">Agent 50→92</span> 调优</h1>
+  <div class="sub">5 个手法 · 真实测的数 · 错误率降 82% · 一周能跑</div>
+  <div class="by">作者:NOVA · AI 产品经理实战派 · 转过 12 个 Agent 项目反推</div>
+
+  <!-- HOOK -->
+  <div class="hook">
+    <div class="big">9 成做 Agent 的项目卡在 50-70 上不去</div>
+    <div class="small">
+      不是工程师不够强 · 是 <strong>产品经理没指方向</strong><br>
+      5 个手法 · 把 Agent 成功率从 <strong>50 → 92</strong> · 错误率从 11% 降到 2%
+    </div>
+  </div>
+
+  <!-- TERM TEACHING -->
+  <div class="explain-box">
+    <span class="label">先解释一下</span>
+    <span class="term">Agent</span> 翻译过来是「智能体」 · 也就是「能自动跑多步任务的 AI」 · 不只是回答问题 · 还能开浏览器查信息 / 调工具 / 执行流程 · 自己走完一条事<br>
+    <span class="term">成功率</span> · 也就是「100 个任务里 Agent 完整跑通几个」 · 这是 Agent 项目的核心指标
+  </div>
+
+  <!-- WRONG CARD -->
+  <div class="wrong">
+    <div class="wrong-title"><span class="x">✗</span>9 成产品经理在调这 3 件 · 全白调</div>
+
+    <div class="wrong-item">
+      <div class="left">改 <span class="term">Prompt</span> <span class="term-explain">给 AI 的指令</span></div>
+      <div class="right">+ 3 分</div>
+    </div>
+    <div class="wrong-item">
+      <div class="left">改 <span class="term">Temperature</span> <span class="term-explain">温度 · 答案随机程度</span></div>
+      <div class="right">+ 2 分</div>
+    </div>
+    <div class="wrong-item">
+      <div class="left">加重试次数</div>
+      <div class="right">+ 5 分</div>
+    </div>
+
+    <div class="wrong-sum">
+      加起来 <span class="num">10</span> 分 · 卡死在 60 · 推不动
+    </div>
+  </div>
+
+  <div class="explain-box">
+    <span class="label">真相</span>
+    真正能推到 92 的 5 个手法 · 全在 <span class="term">Tool Call</span> 这一层 · 翻译过来就是「工具调用」 · 也就是「Agent 调工具的那一步」 · 这是 Agent 的核心 · 但 9 成 PM 不知道这 5 个手法
+  </div>
+
+  <!-- METHOD 1 -->
+  <div class="method">
+    <div class="section-tag">METHOD 1 · TOOL DESCRIPTION</div>
+    <h2><span class="num">1</span>Tool Description · 工具说明书</h2>
+
+    <div class="explain-box">
+      <span class="term">Tool Description</span> 翻译过来「工具说明书」 · 也就是 — 你给 AI 用的每个工具 · 得写一段说明书告诉它「<b>这工具干啥 / 啥时候调 / 参数咋填</b>」<br>
+      9 成工程师默认随便写一行(比如就写「查询订单」)→ AI 看不懂啥时候该调 · 经常乱调
+    </div>
+
+    <div class="three-step">
+      <div class="step-card">
+        <div class="step-num">第 1 段</div>
+        <div class="step-en">What for</div>
+        <div class="step-cn">何时调</div>
+        <div class="step-ex">「用户问订单状态时调」</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">第 2 段</div>
+        <div class="step-en">When not</div>
+        <div class="step-cn">不调的边界</div>
+        <div class="step-ex">「用户闲聊不调」</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">第 3 段</div>
+        <div class="step-en">Example</div>
+        <div class="step-cn">参数示例</div>
+        <div class="step-ex">「order_id 是 8 位数字」</div>
+      </div>
+    </div>
+
+    <div class="bench">
+      <div class="bench-title">★ 真实测试数据(BENCHMARK)</div>
+      <div class="bench-row">
+        <div class="config">默认 1 行说明</div>
+        <div class="bar-wrap"><div class="bar" data-w="50"></div></div>
+        <div class="score">50%</div>
+      </div>
+      <div class="bench-row best">
+        <div class="config">三段式说明书 ★</div>
+        <div class="bar-wrap"><div class="bar" data-w="62"></div></div>
+        <div class="score">62%</div>
+      </div>
+    </div>
+
+    <div class="gain">+ 12 分 · 0 成本 · 只是改文字</div>
+
+    <div class="pm-cmd">
+      <div class="pm-tag">PM 一句话指令</div>
+      <div class="cmd-quote">「每个 Tool Description 改三段式 · 何时调 / 不调 / 参数示例 · 跑一周看成功率」</div>
+    </div>
+  </div>
+
+  <!-- METHOD 2 -->
+  <div class="method">
+    <div class="section-tag">METHOD 2 · REACT</div>
+    <h2><span class="num">2</span>ReAct · 让 AI 边想边干</h2>
+
+    <div class="explain-box">
+      <span class="term">ReAct</span> = <span class="term">Reasoning</span>(推理) + <span class="term">Acting</span>(行动) · 翻译过来「思考 + 行动」<br>
+      也就是 — 不是 <span class="term">LLM</span>(大语言模型 · ChatGPT 背后那种)直接调工具 · 而是 LLM 先写一段 <span class="term">Thought</span>(思考过程):「我要干啥 / 需要哪个工具 / 为啥选它 / 参数填啥」· 然后再调
+    </div>
+
+    <div class="bench">
+      <div class="bench-title">★ 真实测试数据</div>
+      <div class="bench-row">
+        <div class="config">直接调用 · 不思考</div>
+        <div class="bar-wrap"><div class="bar" data-w="62"></div></div>
+        <div class="score">62%</div>
+      </div>
+      <div class="bench-row best">
+        <div class="config">ReAct 边想边干 ★</div>
+        <div class="bar-wrap"><div class="bar" data-w="77"></div></div>
+        <div class="score">77%</div>
+      </div>
+    </div>
+
+    <div class="gain">+ 15 分 · 5 个手法里单点最猛</div>
+
+    <div class="case">
+      <span class="case-tag">真实案例</span>
+      某 <span class="term">BI</span>(商业智能 · 公司看数据的工具)Agent · 用户问「华东上周销售」 · 默认直接调 <span class="term">SQL</span>(跟数据库说话的语言)工具 · 经常 SQL 写错 · 加 ReAct 让 AI 先思考「需要哪几张表 / 怎么 join」 → <strong>SQL 一次写对率 89%</strong>
+    </div>
+
+    <div class="save-hint">
+      💡 ReAct 这一节工程师要看 3 遍 · 先截图保存
+    </div>
+  </div>
+
+  <!-- METHOD 3 -->
+  <div class="method">
+    <div class="section-tag">METHOD 3 · PRE-CALL VALIDATION</div>
+    <h2><span class="num">3</span>调用前校验 · 防上线事故</h2>
+
+    <div class="explain-box">
+      <span class="term">Pre-call Validation</span> 翻译过来「调用前校验」 · 也就是 — 调工具前 · 用规则或小模型先检查参数合不合理<br>
+      LLM 经常生成「看着对其实错」的参数:订单金额负数 / 转账目标账户为空 / 库存不够还下单
+    </div>
+
+    <div class="bench">
+      <div class="bench-title">★ 真实测试数据</div>
+      <div class="bench-row">
+        <div class="config">不校验直接调</div>
+        <div class="bar-wrap"><div class="bar" data-w="77"></div></div>
+        <div class="score">77%</div>
+      </div>
+      <div class="bench-row best">
+        <div class="config">加调用前校验 ★</div>
+        <div class="bar-wrap"><div class="bar" data-w="87"></div></div>
+        <div class="score">87%</div>
+      </div>
+    </div>
+
+    <div class="gain">+ 10 分 · 还防上线事故</div>
+
+    <div class="case">
+      <span class="case-tag">真实案例</span>
+      某电商 Agent 自动发优惠券 · 默认 LLM 生成的金额没限制 · 几次生成「1 万块的券」直接发出去赔几十万 · 加调用前校验「金额必须 &lt; 商品价 × 30%」→ <strong>事故归零</strong>
+    </div>
+
+    <div class="pm-cmd">
+      <div class="pm-tag">PM 一句话指令</div>
+      <div class="cmd-quote">「每个高风险工具加 Pre-call 规则层 · 列死硬约束(金额上限 / 必填字段 / 状态依赖)」</div>
+    </div>
+  </div>
+
+  <!-- METHOD 4 -->
+  <div class="method">
+    <div class="section-tag">METHOD 4 · MEMORY 分层</div>
+    <h2><span class="num">4</span>Memory · 短期 + 长期记忆</h2>
+
+    <div class="explain-box">
+      <span class="term">Memory</span> 翻译过来「记忆」 · Agent 记忆分两层<br>
+      · <span class="term">Short-term Memory</span> 短期记忆 · 也就是「当前对话内的上下文」(LLM 自带 <span class="term">Context Window</span>(上下文窗口 · LLM 一次能看多少字)自动管)<br>
+      · <span class="term">Long-term Memory</span> 长期记忆 · 也就是「跨对话保留的用户偏好 / 历史」<br>
+      9 成 Agent 只做短期 → 用户开新对话就忘 → 每次重新自我介绍 · 体验差
+    </div>
+
+    <div class="three-step" style="grid-template-columns:1fr 1fr;">
+      <div class="step-card">
+        <div class="step-num">短期</div>
+        <div class="step-en">Short-term</div>
+        <div class="step-cn">单次对话内</div>
+        <div class="step-ex">LLM Context Window 自动管 · 不用操心</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">长期</div>
+        <div class="step-en">Long-term</div>
+        <div class="step-cn">跨对话保留</div>
+        <div class="step-ex">存 <span class="term">Vector DB</span>(向量数据库 · 专门存数字化文本)· 用户开新对话 Agent 自动检索</div>
+      </div>
+    </div>
+
+    <div class="bench">
+      <div class="bench-title">★ 真实测试数据</div>
+      <div class="bench-row">
+        <div class="config">只有短期记忆</div>
+        <div class="bar-wrap"><div class="bar" data-w="87"></div></div>
+        <div class="score">87%</div>
+      </div>
+      <div class="bench-row best">
+        <div class="config">加长期记忆 ★</div>
+        <div class="bar-wrap"><div class="bar" data-w="89"></div></div>
+        <div class="score">89%</div>
+      </div>
+    </div>
+
+    <div class="gain">+ 2 分 · NPS 涨 15 点 · 体验质变</div>
+
+    <div class="case">
+      <span class="case-tag">真实案例</span>
+      用户上周跟 Agent 聊过「想买电动车」· 这周问「最近啥推荐」· 没长期记忆 Agent 只能泛推 · 有长期记忆 Agent 说「上周您聊过想买电动车 · 这几款您可以看看」· <strong>体验质变</strong> · <span class="term">NPS</span>(Net Promoter Score · 用户推荐意愿)涨 15 点
+    </div>
+
+    <div class="save-hint">
+      💾 这一节保存 · PRD 里直接抄
+    </div>
+  </div>
+
+  <!-- METHOD 5 -->
+  <div class="method">
+    <div class="section-tag">METHOD 5 · SELF-REFLECTION</div>
+    <h2><span class="num">5</span>Self-reflection · 让 AI 自检</h2>
+
+    <div class="explain-box">
+      <span class="term">Self-reflection</span> 翻译过来「自我反思」 · 也就是 — 任务做完后 · 让 Agent 自己再检查一遍「这做对了吗」· 发现错就回滚 · 重试<br>
+      做法:加一段 Prompt — 「请检查上一步是否满足用户需求 · 不满足说明哪里错」 · LLM 自检后自动重试 / 或标记「不确定」让人工接手
+    </div>
+
+    <div class="bench">
+      <div class="bench-title">★ 真实测试数据(关注「错误率」)</div>
+      <div class="bench-row">
+        <div class="config">不反思 · 成功率</div>
+        <div class="bar-wrap"><div class="bar" data-w="89"></div></div>
+        <div class="score">89%</div>
+      </div>
+      <div class="bench-row best">
+        <div class="config">加自我反思 · 成功率 ★</div>
+        <div class="bar-wrap"><div class="bar" data-w="92"></div></div>
+        <div class="score">92%</div>
+      </div>
+      <div class="bench-row" style="margin-top:18px;">
+        <div class="config" style="color:#FF6B8A;">不反思 · 错误率</div>
+        <div class="bar-wrap"><div class="bar" data-w="55" style="background:linear-gradient(90deg,#E94560,#FF6B8A);"></div></div>
+        <div class="score" style="color:#FF6B8A;">11%</div>
+      </div>
+      <div class="bench-row best">
+        <div class="config" style="color:#7FE5BC;">加自我反思 · 错误率 ★</div>
+        <div class="bar-wrap"><div class="bar" data-w="10" style="background:linear-gradient(90deg,#7FE5BC,#A5E5FF);"></div></div>
+        <div class="score" style="color:#7FE5BC;">2%</div>
+      </div>
+    </div>
+
+    <div class="gain">+ 3 分成功率 · 错误率降 82% · 这才是真价值</div>
+
+    <div class="case">
+      <span class="case-tag">真实案例</span>
+      某医疗预约 Agent · 给患者订诊所 · 加 Self-reflection 前预约时间冲突率 11% · 加了之后 Agent 订完自检「这个时间患者+医生都有空吗」 → <strong>冲突率降到 1.5% · 投诉归零</strong>
+    </div>
+
+    <div class="save-hint">
+      ⭐ Self-reflection 这一节必须收藏
+    </div>
+  </div>
+
+  <!-- STACK -->
+  <div class="stack">
+    <div class="stack-title">🔥 5 个手法叠加 · 50 → 92</div>
+
+    <div class="stack-row">
+      <div class="label">默认</div>
+      <div class="bar-wrap"><div class="bar" data-w="50"></div></div>
+      <div class="num">50%</div>
+    </div>
+    <div class="stack-row">
+      <div class="label">+ Tool 三段式</div>
+      <div class="bar-wrap"><div class="bar" data-w="62"></div></div>
+      <div class="num">62%</div>
+    </div>
+    <div class="stack-row">
+      <div class="label">+ ReAct</div>
+      <div class="bar-wrap"><div class="bar" data-w="77"></div></div>
+      <div class="num">77%</div>
+    </div>
+    <div class="stack-row">
+      <div class="label">+ 调用前校验</div>
+      <div class="bar-wrap"><div class="bar" data-w="87"></div></div>
+      <div class="num">87%</div>
+    </div>
+    <div class="stack-row">
+      <div class="label">+ Memory 分层</div>
+      <div class="bar-wrap"><div class="bar" data-w="89"></div></div>
+      <div class="num">89%</div>
+    </div>
+    <div class="stack-row final">
+      <div class="label">+ Self-reflection ★</div>
+      <div class="bar-wrap"><div class="bar" data-w="92"></div></div>
+      <div class="num">92%</div>
+    </div>
+
+    <div class="stack-conclude">
+      <span class="pop">+ 42 分</span> · 错误率降 <span class="pop">82%</span>
+    </div>
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="conclude">
+    <h3>不是工程师不够强 · 是 PM 没指方向</h3>
+    <p>
+      工程师调 Prompt + Temperature + 重试 = 救 10 分(白调)<br>
+      真相在「工具调用」一层 = 救 <span class="key">42 分</span><br><br>
+      PM 真正的活儿 — 不是写 <span class="term" style="font-size:0.85em;">PRD</span>(Product Requirements Document · 产品需求文档)<br>
+      是「<span class="key">知道项目卡哪 + 给工程师一句能干的指令</span>」<br><br>
+      「Tool 改三段式 + 加 ReAct + Memory 加长期层用 Vector DB · 一周后看成功率」<br>
+      → 这一句话工程师能立刻干 · 这就是 AI 产品经理不可替代的位置
+    </p>
+  </div>
+
+  <!-- FOLLOW -->
+  <div class="follow">
+    <div class="follow-tag">★ 关注 NOVA · 系列收官</div>
+    <h3>下期 · Eval 集 0→1 搭建</h3>
+    <p>
+      <span class="term">Eval</span> 翻译过来「评测」 · 也就是「测 AI 准不准的题库」<br>
+      Vol.40 讲企业怎么从 0 搭一套 200 道的 Eval 集 · 上线前测准 / 上线后监控
+    </p>
+    <div class="triple">RAG(Vol.38)+ Agent(Vol.39)+ Eval(Vol.40)= 企业 AI 三件套</div>
+  </div>
+
+  <!-- COMMENT -->
+  <div class="comment">
+    <div class="comment-q">💬 你的 Agent 成功率现在卡几分?</div>
+    <div class="comment-sub">评论区告诉我 · 我帮你看是哪一步漏了 · 前 2 小时必回</div>
+  </div>
+
+  <div class="sig">NOVA · AI 产品经理实战派 · 第 39 期</div>
+
+</div>
+
+<script>
+// ============ SCROLL-TRIGGER ANIMATION ============
+// 每个 method 卡 — 交替「从左滑入 / 从右滑入」 · 形成节奏
+const directions = ['from-left','from-right','from-up','flip','zoom','pop-anim','from-down'];
+
+document.querySelectorAll('.method').forEach((el,i)=>{
+  el.classList.add(directions[i % 4]); // 4 种方向轮换
+});
+
+document.querySelector('.hook')?.classList.add('zoom');
+document.querySelector('.wrong')?.classList.add('from-up');
+document.querySelectorAll('.explain-box').forEach(el=>el.classList.add('from-up'));
+document.querySelector('.stack')?.classList.add('pop-anim');
+document.querySelector('.conclude')?.classList.add('zoom');
+document.querySelector('.follow')?.classList.add('flip');
+document.querySelector('.comment')?.classList.add('from-up');
+
+// 内部 step-card 错位浮现
+document.querySelectorAll('.three-step').forEach(group=>{
+  const cards = group.querySelectorAll('.step-card');
+  cards.forEach((c,i)=>{
+    c.style.opacity='0';
+    c.dataset.idx = i;
+  });
+});
+
+// ============ OBSERVER ============
+const ob = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in-view');
+      // 触发进度条
+      e.target.querySelectorAll('.bar').forEach(b=>{
+        const w = b.dataset.w;
+        if(w){
+          setTimeout(()=>{ b.style.width = w + '%'; }, 200);
+        }
+      });
+      // 触发 step-card 错位
+      const stepCards = e.target.querySelectorAll('.step-card');
+      stepCards.forEach((c,i)=>{
+        setTimeout(()=>{
+          c.style.opacity='1';
+          c.style.animation = 'slideInUp 0.6s cubic-bezier(0.2,0.8,0.5,1.2) forwards';
+        }, 150 + i * 120);
+      });
+      // 触发 stack-row 逐行浮现
+      const stackRows = e.target.querySelectorAll('.stack-row');
+      stackRows.forEach((r,i)=>{
+        r.style.opacity='0';
+        setTimeout(()=>{
+          r.style.opacity='1';
+          r.style.animation = 'slideInRight 0.5s ease-out forwards';
+        }, 100 + i * 130);
+      });
+      ob.unobserve(e.target); // 触发一次即可
+    }
+  });
+},{threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+
+document.querySelectorAll('.method, .hook, .wrong, .explain-box, .stack, .conclude, .follow, .comment')
+  .forEach(el=> ob.observe(el));
+
+// ============ wrong-item 逐条划入 ============
+const wrongObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const items = e.target.querySelectorAll('.wrong-item');
+      items.forEach((it,i)=>{
+        it.style.opacity='0';
+        setTimeout(()=>{
+          it.style.opacity='1';
+          it.style.animation = 'slideInLeft 0.5s ease-out forwards';
+        }, 200 + i * 150);
+      });
+      wrongObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+const wrongBox = document.querySelector('.wrong');
+if(wrongBox) wrongObs.observe(wrongBox);
+
+// ============ 顶部 hero 直接进入 ============
+window.addEventListener('load',()=>{
+  // 顶部 header / title 直接显示动画
+  const head = document.querySelectorAll('.vol-tag, h1, .sub');
+  head.forEach((el,i)=>{
+    el.style.opacity='0';
+    setTimeout(()=>{
+      el.style.opacity='1';
+      el.style.animation = 'slideInDown 0.6s ease-out forwards';
+    }, i * 120);
+  });
+});
+</script>
+
+</body>
+</html>

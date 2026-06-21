@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 你的 Agent 为什么记不住你 · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FEFCF5;--ink:#2B2B2B;--red:#E63946;--dred:#C0392B;--gold:#FFE16B;--green:#1B8A3A;--mint:#A8E6CF;--lilac:#FFF4D6;--pinkbg:#FFE4E1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.7}
+.page{max-width:760px;margin:0 auto;padding:34px 24px 80px}
+#progress{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,var(--red),var(--gold));z-index:99;transition:width .12s}
+/* 顶栏 */
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:3px solid var(--ink);margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:11px}
+.bmark{width:40px;height:40px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:19px}
+.bname{font-family:"Archivo Black",sans-serif;font-size:21px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:.14em}
+/* 首屏 */
+.alert{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:900;font-size:14px;padding:7px 16px;border:3px solid var(--ink);border-radius:50px;box-shadow:4px 4px 0 var(--ink);margin-bottom:14px;animation:wob 2s ease-in-out infinite}
+.alert .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);animation:blink 1s steps(2) infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}@keyframes blink{50%{opacity:.2}}
+.hero{display:flex;gap:20px;align-items:center}
+.hero h1{flex:1;font-size:42px;font-weight:900;line-height:1.12;letter-spacing:-.01em}
+.hero h1 .hi{color:var(--red);position:relative}
+.hero h1 .hi::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:8px;background:var(--gold);z-index:-1}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:5px 5px 0 var(--gold);background:var(--lilac);display:block}
+.face .bub{position:absolute;bottom:-6px;right:-8px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.05;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 9px}
+/* 聊天 hero */
+.chat{margin:22px 0 0;background:#fff;border:4px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--red);padding:18px 20px;display:flex;flex-direction:column;gap:11px}
+.chat .ch{display:flex;align-items:center;gap:9px;border-bottom:2px solid #eee;padding-bottom:11px;font-weight:900;font-size:16px}
+.chat .ch .s{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:12px;color:#aaa}
+.crow{display:flex;align-items:flex-end;gap:8px}.crow.u{justify-content:flex-end}
+.cb{max-width:80%;font-size:16px;font-weight:700;line-height:1.4;padding:11px 15px;border:2.5px solid var(--ink);border-radius:15px}
+.cb.u{background:var(--lilac);border-bottom-right-radius:4px}
+.cb.bad{background:var(--pinkbg);border-bottom-left-radius:4px}.cb.good{background:var(--mint);border-bottom-left-radius:4px}
+.ct{flex-shrink:0;font-size:11px;font-weight:900;padding:4px 9px;border:2.5px solid var(--ink);border-radius:50px;white-space:nowrap}
+.ct.ok{background:var(--green);color:#fff}.ct.no{background:var(--dred);color:#fff}
+.cday{align-self:center;background:#f1ead6;color:#999;font-weight:700;font-size:12px;padding:4px 12px;border-radius:50px}
+.cdiv{display:flex;align-items:center;gap:9px;margin:1px 0}.cdiv .l{flex:1;height:2px;background:#eee}.cdiv .t{font-weight:900;font-size:13px;color:var(--red)}
+.cap-line{font-weight:700;font-size:15px;color:#555;margin-top:16px;line-height:1.6;text-align:center}
+.cap-line b{color:var(--red)}
+/* 数据条(深色锚点) */
+.stat{display:flex;gap:10px;margin:24px 0}
+.stat .s{flex:1;background:var(--ink);color:#fff;border-radius:12px;padding:14px 10px;text-align:center}
+.stat .s .n{font-family:"Archivo Black",sans-serif;font-size:26px;color:var(--gold);line-height:1}
+.stat .s .l{font-size:11px;color:#cfc8b8;margin-top:5px}
+/* 章节分隔(纯文字) */
+.div{text-align:center;margin:46px 0 22px;font-weight:900;font-size:21px;display:flex;align-items:center;justify-content:center;gap:14px}
+.div::before,.div::after{content:"";width:34px;height:3px;background:var(--ink);border-radius:2px}
+.div .em{color:var(--red)}
+.sub{text-align:center;color:#888;font-size:13.5px;margin:-12px 0 20px}
+/* 纯文字列表行 */
+.list{margin:18px 0}
+.li{display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-bottom:2px solid #eee5cf}
+.li .mk{flex-shrink:0;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:16px;border:2.5px solid var(--ink);background:#fff}
+.li .mk.x{color:var(--dred)}.li .mk.num{background:var(--ink);color:var(--gold)}
+.li .tt{font-weight:900;font-size:17px}
+.li .dd{font-size:13.5px;color:#666;margin-top:1px}
+.li .rt{margin-left:auto;flex-shrink:0;font-size:13px;font-weight:900;color:var(--dred);text-align:right}
+/* 统一内容卡 */
+.card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin-bottom:18px;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.card .hd{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.card .hd .qn{width:42px;height:42px;border-radius:11px;border:3px solid var(--ink);background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:19px;flex-shrink:0}
+.card .hd h3{font-size:18px;font-weight:900;line-height:1.2}
+.card .hd .hs{font-size:12px;color:#999;font-weight:700;margin-top:1px}
+.xy{font-size:14px;line-height:1.75;margin:8px 0}
+.xy .x{color:var(--dred);font-weight:900}.xy .v{color:var(--green);font-weight:900}
+.ask{background:var(--pinkbg);border-left:4px solid var(--dred);padding:9px 13px;border-radius:0 7px 7px 0;font-size:13.5px;line-height:1.6;margin:8px 0}
+.ask b{color:var(--dred)}
+.tpl{background:var(--ink);color:#fff;border-radius:9px;padding:11px 14px;font-size:13.5px;line-height:1.65;margin-top:8px}
+.tpl .h{font-size:12px;color:var(--gold);font-weight:900;margin-bottom:5px;font-family:"JetBrains Mono",monospace}
+.tpl em{font-style:normal;color:var(--gold);font-weight:900}
+.tpl.code{font-family:"JetBrains Mono",monospace;white-space:pre-wrap;font-size:12.5px;color:#ececec}
+.tpl.code .k{color:var(--mint)}
+.def{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.def .d{font-size:14px;line-height:1.5}
+.def .d .dt{font-weight:900}
+.def .d .dv{display:block;font-size:12.5px;font-weight:900;color:var(--dred);margin-top:2px}
+.pick{margin-top:6px}
+.pick .p{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1.5px dashed #ddd;font-size:13.5px}
+.pick .p:first-child{border-top:none}
+.pick .p .sc{flex:1;font-weight:700}
+.pick .p .ar{color:var(--red);font-family:"Archivo Black",sans-serif}
+.pick .p .pk{flex-shrink:0;background:var(--ink);color:var(--gold);font-weight:900;font-size:12.5px;padding:5px 11px;border-radius:50px;white-space:nowrap}
+.pick .p.no .pk{background:var(--dred);color:#fff}
+/* 闭环 demo(轻) */
+.demo{margin:10px 0 0}
+.demo .nodes{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap}
+.demo .nd{flex:1;text-align:center;font-weight:900;font-size:14px;color:var(--ink);background:var(--lilac);border:2.5px solid var(--ink);border-radius:11px;padding:11px 3px;transition:all .25s}
+.demo .nd.active{background:var(--red);color:#fff;transform:translateY(-4px)}
+.demo .ar{color:var(--red);font-family:"Archivo Black",sans-serif;font-size:15px;flex-shrink:0}
+.demo .cap{margin-top:13px;min-height:42px;background:var(--lilac);border:2px dashed var(--ink);border-radius:10px;padding:11px 14px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center}
+.demo .cap.ok{background:var(--mint)}.demo .cap.bad{background:var(--pinkbg);color:var(--dred)}
+.demo .btns{margin-top:11px;display:flex;gap:9px;justify-content:center}
+.demo button{font-family:inherit;font-weight:900;font-size:13px;border:2.5px solid var(--ink);border-radius:50px;padding:8px 20px;background:#fff;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.demo button.pri{background:var(--gold)}
+.demo button:active{transform:translate(2px,2px);box-shadow:none}
+/* 该上别上 */
+.gono{display:flex;gap:12px;margin:18px 0}
+.gono .c{flex:1;border:3px solid var(--ink);border-radius:14px;padding:14px 16px}
+.gono .c.go{background:var(--mint)}.gono .c.no{background:var(--pinkbg)}
+.gono .c .h{font-weight:900;font-size:16px;margin-bottom:6px}
+.gono .c.go .h{color:var(--green)}.gono .c.no .h{color:var(--dred)}
+.gono .c .ln{font-size:13px;line-height:1.6;margin:3px 0}
+/* 深色锚点框(金句/结论) */
+.dark{background:var(--ink);color:#fff;border:4px solid var(--gold);border-radius:16px;padding:20px 22px;margin:26px 0;position:relative}
+.dark .tag{position:absolute;top:-14px;left:20px;background:var(--gold);color:var(--ink);padding:4px 13px;border:3px solid var(--ink);font-size:12px;font-weight:900}
+.dark .gi{background:rgba(255,225,102,.1);border-left:3px solid var(--gold);padding:9px 12px;margin:8px 0;font-size:14px;line-height:1.6;color:var(--gold)}
+.dark .gi .n{color:var(--red);font-weight:900;margin-right:7px}
+.summary{background:var(--ink);color:var(--gold);border:4px solid var(--gold);border-radius:18px;padding:24px;margin:32px 0;text-align:center}
+.summary .big{font-size:19px;font-weight:900;line-height:1.5;margin-bottom:14px}
+.summary .big .r{color:var(--red)}
+.summary .lines{text-align:left;background:rgba(255,225,102,.1);padding:14px;border-radius:10px;border:2px dashed var(--gold)}
+.summary .lines .l{display:flex;gap:9px;padding:4px 0;font-size:13px;line-height:1.5}
+.summary .lines .l .k{color:var(--gold);font-weight:900;flex-shrink:0}
+.cta{background:var(--gold);border:4px solid var(--ink);border-radius:20px;padding:18px 20px;text-align:center;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
+.cta .h{font-weight:900;font-size:16px;margin-bottom:8px}
+.cta .q{font-size:13.5px;line-height:1.6;margin-bottom:12px;font-weight:600}
+.cta .bonus{font-size:12px;color:#555;line-height:1.6;padding-top:11px;border-top:2px dashed var(--ink)}
+.cta .bonus b{color:var(--dred)}
+.next{background:#fff;border:3px dashed var(--ink);border-radius:14px;padding:13px;text-align:center;font-size:13.5px;color:#666;line-height:1.6}
+.next b{color:var(--red)}
+.tags{text-align:center;margin-top:22px;font-size:13px;color:#999}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.reveal.vis{opacity:1;transform:none}
+@media (max-width:560px){.hero h1{font-size:32px}.face{width:92px}.face img{width:92px;height:92px}.gono,.stat{flex-direction:column}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="page">
+  <div class="brand-bar"><div class="brand"><div class="bmark">N</div><div class="bname">NOVA</div></div><div class="vol">AI 实战 · VOL.44</div></div>
+
+  <div class="alert"><span class="dot"></span><svg viewBox="0 0 24 24" width="16" height="16"><path fill="#FFE16B" d="M12 2s5 4 5 9a5 5 0 0 1-10 0c0-1.6.6-2.9 1.5-4 .2 1.4 1 2 1.8 2 1 0 1.6-.9 1.3-2.4C11.1 5.7 11.6 3.6 12 2z"/></svg> 2026 记忆 = Agent 一等组件</div>
+  <div class="hero">
+    <h1>你那个 AI 助理<br>为什么<span class="hi">记不住</span>你?</h1>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">一篇<br>讲透</div></div>
+  </div>
+
+  <div class="chat reveal">
+    <div class="ch"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 5h16v11H9l-4 4v-4H4z" fill="none" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/></svg> 和 AI 营养助理的对话 <span class="s">真实翻车</span></div>
+    <div class="crow u"><div class="cb u">我对花生过敏</div><div class="ct ok">已记下</div></div>
+    <div class="cday">…… 3 天后 ……</div>
+    <div class="crow u"><div class="cb u">给我推荐个零食</div></div>
+    <div class="crow"><div class="cb bad">好嘞!给你推荐花生酱~</div><div class="ct no">没记忆</div></div>
+    <div class="cdiv"><span class="l"></span><span class="t">换成「有记忆」的 ↓</span><span class="l"></span></div>
+    <div class="crow"><div class="cb good">你对花生过敏,给你推荐不含坚果的能量棒~</div><div class="ct ok">有记忆</div></div>
+  </div>
+  <div class="cap-line reveal">这就是 <b>上下文 ≠ 记忆</b><br>上下文是这轮塞进 Prompt 的,窗口满就丢;记忆是跨会话、能自己增删改的长期层。</div>
+
+  <div class="stat reveal">
+    <div class="s"><div class="n"><span data-c="3">0</span> 类</div><div class="l">记忆类型</div></div>
+    <div class="s"><div class="n"><span data-c="64">0</span><span style="font-size:15px">vs</span><span data-c="49">0</span></div><div class="l">基准 Zep vs Mem0(%)</div></div>
+    <div class="s"><div class="n"><span data-c="4">0</span> 件</div><div class="l">PM 要拍板</div></div>
+  </div>
+
+  <div class="div reveal">为什么<span class="em">需要</span></div>
+  <div class="sub reveal">大模型默认是金鱼,这一轮结束全忘 —— 三个痛点。</div>
+  <div class="list reveal">
+    <div class="li"><div class="mk x">✗</div><div><div class="tt">健忘</div><div class="dd">跨会话全忘,你说三次"对花生过敏",它还推花生酱。</div></div></div>
+    <div class="li"><div class="mk x">✗</div><div><div class="tt">塞不下</div><div class="dd">把历史全塞进 Prompt 硬撑 → 窗口溢出,token 随历史线性烧钱。</div></div></div>
+    <div class="li"><div class="mk x">✗</div><div><div class="tt">不个性化</div><div class="dd">记不住偏好/身份/上次结论,永远像新员工第一天。</div></div></div>
+  </div>
+
+  <div class="div reveal">是什么 · 给 AI 装个<span class="em">操作系统</span></div>
+  <div class="sub reveal">Letta(原 MemGPT)思路:像电脑一样分层管记忆。</div>
+  <div class="list reveal">
+    <div class="li"><div class="mk num">1</div><div><div class="tt">主上下文 · RAM</div><div class="dd">现在 Prompt 里的东西(短期/工作记忆)。</div></div></div>
+    <div class="li"><div class="mk num">2</div><div><div class="tt">近期对话区 · Recall</div><div class="dd">最近聊的几轮,能往回翻。</div></div></div>
+    <div class="li"><div class="mk num">3</div><div><div class="tt">档案库 · Archival</div><div class="dd">外部长期存储,要用时再检索回来。</div></div></div>
+  </div>
+
+  <div class="div reveal">记忆<span class="em">三类</span> · PM 必背</div>
+  <div class="list reveal">
+    <div class="li"><div class="mk num" style="background:var(--red)">情</div><div><div class="tt">情景记忆 episodic</div><div class="dd">记具体发生过的交互 —— 例:"上周三你帮我改过简历"。</div></div></div>
+    <div class="li"><div class="mk num" style="background:var(--dred)">语</div><div><div class="tt">语义记忆 semantic</div><div class="dd">记事实和偏好 —— 例:"用户对花生过敏""他是 PM"。</div></div></div>
+    <div class="li"><div class="mk num" style="background:var(--green)">程</div><div><div class="tt">程序记忆 procedural</div><div class="dd">记学到的行为/规则 —— 例:"回邮件用正式语气"。</div></div></div>
+  </div>
+
+  <div class="div reveal">核心 · 怎么<span class="em">用</span></div>
+  <div class="sub reveal">AI PM 看完要能去跟工程提需求 —— 选型 / 走一遍 / 默认值 / 落地。</div>
+
+  <div class="card reveal">
+    <div class="hd"><div class="qn">A</div><div><h3>存哪种 · 选哪个方案</h3><div class="hs">向量记忆 vs 图记忆</div></div></div>
+    <div class="xy"><span class="v">向量记忆:</span>按语义相似度捞,简单通用,多数场景够;<span class="x">弱在</span>实体关系/时序。<br><span class="v">图记忆:</span>按实体+关系+时间组织,能做时序推理(用户三个月前 vs 现在)。</div>
+    <div class="pick">
+      <div class="p"><span class="sc">个性化聊天/客服,关系简单</span><span class="ar">→</span><span class="pk">Mem0 · MVP 首选</span></div>
+      <div class="p"><span class="sc">要时间线/关系推理</span><span class="ar">→</span><span class="pk">Zep 图记忆 · 基准最高</span></div>
+      <div class="p"><span class="sc">长时自治 agent 自己管记忆</span><span class="ar">→</span><span class="pk">Letta / MemGPT</span></div>
+      <div class="p no"><span class="sc">实时对话、对延迟极敏感</span><span class="ar">→</span><span class="pk">别用 LangMem · 60 秒</span></div>
+    </div>
+  </div>
+
+  <div class="card reveal" id="demoCard">
+    <div class="hd"><div class="qn">B</div><div><h3>走一遍 · 一条记忆的一生</h3><div class="hs">点「下一步」,看"过敏"这条记忆怎么转</div></div></div>
+    <div class="demo">
+      <div class="nodes">
+        <span class="nd n" data-n="0">抽取</span><span class="ar">→</span><span class="nd n" data-n="1">写入</span><span class="ar">→</span><span class="nd n" data-n="2">召回</span><span class="ar">→</span><span class="nd n" data-n="3">生成</span><span class="ar">↺</span><span class="nd n" data-n="4">遗忘</span>
+      </div>
+      <div class="cap" id="dcap">点「下一步」开始 ↓</div>
+      <div class="btns"><button class="pri" id="dnext">下一步 ▶</button><button id="dreset">重置</button></div>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="hd"><div class="qn">C</div><div><h3>PM 必须拍板的 4 件事</h3><div class="hs">给一套能直接抄的默认值</div></div></div>
+    <div class="def">
+      <div class="d"><span class="dt">① 记什么</span> —— 只存语义记忆(事实/偏好)+ 关键决定,不存寒暄。<span class="dv">默认:小模型抽取,置信度 &lt; 0.6 不入库</span></div>
+      <div class="d"><span class="dt">② 何时写</span> —— 每轮抽 还是 任务结束抽。<span class="dv">默认:异步,每轮结束后台抽,不阻塞回复</span></div>
+      <div class="d"><span class="dt">③ 何时召回·多少</span> —— 太多稀释、太少漏。<span class="dv">默认:top-K = 3~5,相似度阈值 ≈ 0.7,拼进 system prompt</span></div>
+      <div class="d"><span class="dt">④ 何时遗忘/更新</span> —— 冲突、过期、隐私。<span class="dv">默认:带时间戳+有效期;安全类(过敏)永久最高优先;留"删除全部"接口</span></div>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="hd"><div class="qn">D</div><div><h3>第一版怎么落地(MVP 三步)</h3><div class="hs">别一上来就上图记忆+自治 agent</div></div></div>
+    <div class="xy"><span class="v">① </span>接 Mem0(或自建:向量库+一个抽取 prompt),只存语义记忆,召回 top-5 拼进 prompt。<br><span class="v">② </span>加"忘掉我"删除接口 —— 按用户彻底删记忆(隐私底线+合规)。<br><span class="v">③ </span>埋点命中率/p95 延迟/每会话条数,灰度对比"有记忆 vs 无记忆"的重复提问率。</div>
+    <div class="tpl code"><span class="h">⌨ 抽取 prompt(照抄改改就能用)</span>从对话抽取<span class="k">值得长期记住</span>的内容,输出 JSON 数组,
+每条 {content, type: 情景|语义|程序, confidence: 0~1}。
+只抽<span class="k">跨会话有用</span>的,忽略寒暄;&lt; 0.6 不入库。</div>
+  </div>
+
+  <div class="div reveal">什么时候<span class="em">该上 / 别上</span></div>
+  <div class="gono reveal">
+    <div class="c go"><div class="h"><svg viewBox="0 0 20 20" width="17" height="17" style="vertical-align:-3px"><circle cx="10" cy="10" r="9" fill="#1B8A3A"/><path d="M5.6 10.4l2.9 2.9 6-6.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 该上</div><div class="ln">· 多轮长对话、跨会话任务(简历陪跑/客服/陪伴)</div><div class="ln">· 个性化助理,要记住偏好</div><div class="ln">· "越用越懂你"是卖点</div></div>
+    <div class="c no"><div class="h"><svg viewBox="0 0 20 20" width="17" height="17" style="vertical-align:-3px"><circle cx="10" cy="10" r="9" fill="#C0392B"/><line x1="5.2" y1="10" x2="14.8" y2="10" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg> 别上</div><div class="ln">· 一次性问答,无需个性化</div><div class="ln">· 强隐私,不允许留存</div><div class="ln">· 极简任务,上记忆纯增复杂度</div></div>
+  </div>
+  <div class="cap-line reveal" style="margin-top:14px">基准 Zep <b>64%</b> vs Mem0 <b>49%</b>(差 15 分,差在图记忆时序);LangMem 准但检索 <b>60 秒</b> —— 存法决定上限。</div>
+
+  <div class="div reveal">PM 盯这 <span class="em">5 个指标</span></div>
+  <div class="list reveal">
+    <div class="li"><div class="mk num">1</div><div class="tt">记忆命中率 / 相关性</div><div class="rt">捞回来有没有用</div></div>
+    <div class="li"><div class="mk num">2</div><div class="tt">检索延迟(p95)</div><div class="rt">别像 LangMem 60 秒</div></div>
+    <div class="li"><div class="mk num">3</div><div class="tt">记忆体积 / 成本</div><div class="rt">存多少·查一次多少钱</div></div>
+    <div class="li"><div class="mk num">4</div><div class="tt">冲突 / 过期正确率</div><div class="rt">过敏 vs 坚果别搞错</div></div>
+    <div class="li"><div class="mk num">5</div><div class="tt">隐私可删</div><div class="rt">"忘掉我"能真删干净</div></div>
+  </div>
+
+  <div class="dark reveal">
+    <div class="tag">5 句面试金句 · 当场说出口</div>
+    <div class="gi"><span class="n">1</span>上下文不等于记忆 —— 上下文是这轮塞进 Prompt 的,记忆是跨会话能增删改的长期层。</div>
+    <div class="gi"><span class="n">2</span>记忆分三类:情景、语义、程序,别只会说"存历史"。</div>
+    <div class="gi"><span class="n">3</span>存法决定上限:向量做语义召回,图做时序关系,复杂场景结合。</div>
+    <div class="gi"><span class="n">4</span>PM 定四件事:记什么、何时写、何时召回、何时遗忘,还要能"忘掉我"。</div>
+    <div class="gi"><span class="n">5</span>top-K 三到五、阈值零点七、置信度零点六入库 —— 我提前定好了。</div>
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">没记忆的 AI 是金鱼<br><span class="r">有记忆的,越用越懂你</span></div>
+    <div class="lines">
+      <div class="l"><span class="k">是什么</span><span>上下文 ≠ 记忆,记忆是跨会话长期层</span></div>
+      <div class="l"><span class="k">三类</span><span>情景 / 语义 / 程序</span></div>
+      <div class="l"><span class="k">怎么存</span><span>向量做语义、图做时序,Mem0/Zep/Letta</span></div>
+      <div class="l"><span class="k">PM 定</span><span>记什么·何时写·何时召回·何时遗忘</span></div>
+    </div>
+  </div>
+
+  <div class="cta reveal">
+    <div class="h">▎ 来聊聊</div>
+    <div class="q">你做过的 Agent,是真有「记忆」,还是每次把聊天记录又塞回 Prompt 充数?</div>
+    <div class="bonus">P.S. 完整《Agent 记忆落地速查表(三类+OS三层+向量vs图+Mem0/Zep/Letta+PM 4 件事默认值+MVP+护栏+面试 4 句)》—— 评论区扣【记忆】,我私你发📎</div>
+  </div>
+  <div class="next reveal"><b>下期预告 ▶</b> Agent 记忆怎么防"记错、串味、隐私泄露" —— 记忆治理的护栏怎么设。</div>
+  <div class="tags reveal">#AI产品经理 #AIPM #Agent #大模型 #记忆 #求职 #面试</div>
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll&&e.target.querySelectorAll('[data-c]').forEach(an);io.unobserve(e.target);}}),{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function an(el){if(el.dataset.d)return;el.dataset.d=1;const t=+el.getAttribute('data-c'),t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/1000);el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);})(t0);}
+const bar=document.getElementById('progress');addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/((h.scrollHeight-h.clientHeight)||1)*100)+'%';},{passive:true});
+(function(){const steps=[{n:0,t:'① 抽取:不存整句,抽出一条语义记忆 —— {用户: 对花生过敏}',c:''},{n:1,t:'② 写入/更新:和旧记忆"爱坚果"冲突 → 过敏优先,盖掉旧的',c:'bad'},{n:2,t:'③ 召回:下次问"推荐零食",先按语义捞回"过敏/口味"',c:''},{n:3,t:'④ 生成:基于"记得他过敏",给不含花生的推荐',c:'ok'},{n:4,t:'⑤ 遗忘:哪天说"我脱敏了",再更新,旧记忆失效',c:''}];
+const cap=document.getElementById('dcap'),nx=document.getElementById('dnext'),rs=document.getElementById('dreset'),nodes=document.querySelectorAll('#demoCard .nd');let i=-1;
+function r(){nodes.forEach(x=>x.classList.remove('active'));if(i<0){cap.className='cap';cap.textContent='点「下一步」开始 ↓';nx.textContent='下一步 ▶';return;}const s=steps[i];nodes.forEach(x=>{if(+x.dataset.n===s.n)x.classList.add('active');});cap.className='cap'+(s.c?' '+s.c:'');cap.textContent=s.t;nx.textContent=i>=steps.length-1?'再看一遍 ↺':'下一步 ▶';}
+nx.onclick=()=>{i=i>=steps.length-1?0:i+1;r();};rs.onclick=()=>{i=-1;r();};r();})();
+</script>
+</body>
+</html>
