@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 从0搭AI知识库问答·踩平7个坑 · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FEFCF5;--ink:#2B2B2B;--red:#E63946;--dred:#C0392B;--gold:#FFE16B;--green:#1B8A3A;--mint:#A8E6CF;--lilac:#FFF4D6;--pinkbg:#FFE4E1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.7}
+.page{max-width:760px;margin:0 auto;padding:34px 24px 80px}
+#progress{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,var(--red),var(--green));z-index:99;transition:width .12s}
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:3px solid var(--ink);margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:11px}
+.bmark{width:40px;height:40px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:19px}
+.bname{font-family:"Archivo Black",sans-serif;font-size:21px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:.14em}
+.alert{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:900;font-size:14px;padding:7px 16px;border:3px solid var(--ink);border-radius:50px;box-shadow:4px 4px 0 var(--ink);margin-bottom:14px;animation:wob 2s ease-in-out infinite}
+.alert .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);animation:blink 1s steps(2) infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}@keyframes blink{50%{opacity:.2}}
+.hero{display:flex;gap:20px;align-items:center}
+.hero h1{flex:1;font-size:38px;font-weight:900;line-height:1.16;letter-spacing:-.01em}
+.hero h1 .hi{color:var(--red);position:relative}
+.hero h1 .hi::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:8px;background:var(--gold);z-index:-1}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:5px 5px 0 var(--gold);background:var(--lilac);display:block}
+.face .bub{position:absolute;bottom:-6px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.05;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 9px}
+/* 翻车 hero 进度 */
+.fix{margin:22px 0 0;background:#fff;border:4px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--red);padding:18px 20px;text-align:center}
+.fix .ttl{font-weight:900;font-size:15px;color:#777;margin-bottom:12px}
+.fix .nums{display:flex;align-items:center;justify-content:center;gap:18px}
+.fix .n{font-family:"Archivo Black",sans-serif;font-size:54px;line-height:1}
+.fix .n.bad{color:var(--dred)}.fix .n.good{color:var(--green)}
+.fix .ar{font-family:"Archivo Black",sans-serif;font-size:30px;color:var(--ink)}
+.fix .cap{font-size:13px;font-weight:700;margin-top:3px;color:#888}
+.fix .bar{height:16px;background:#f0e9d6;border:2.5px solid var(--ink);border-radius:50px;overflow:hidden;margin-top:14px}
+.fix .barf{height:100%;width:40%;background:linear-gradient(90deg,var(--red),var(--green));border-radius:50px}
+.fix .note{font-size:13px;font-weight:700;color:#555;margin-top:10px}
+.fix .note b{color:var(--green)}
+.cap-line{font-weight:700;font-size:15px;color:#555;margin-top:18px;line-height:1.65;text-align:center}
+.cap-line b{color:var(--red)}
+.stat{display:flex;gap:10px;margin:24px 0}
+.stat .s{flex:1;background:var(--ink);color:#fff;border-radius:12px;padding:14px 10px;text-align:center}
+.stat .s .n{font-family:"Archivo Black",sans-serif;font-size:24px;color:var(--gold);line-height:1}
+.stat .s .l{font-size:11px;color:#cfc8b8;margin-top:6px;line-height:1.35}
+.div{text-align:center;margin:44px 0 20px;font-weight:900;font-size:21px;display:flex;align-items:center;justify-content:center;gap:14px}
+.div::before,.div::after{content:"";width:34px;height:3px;background:var(--ink);border-radius:2px}
+.div .em{color:var(--red)}
+.sub{text-align:center;color:#888;font-size:13.5px;margin:-10px 0 18px}
+/* 7坑卡 */
+.pit{background:#fff;border:3px solid var(--ink);border-radius:15px;box-shadow:4px 4px 0 var(--ink);padding:15px 17px;margin-bottom:13px;cursor:pointer;transition:transform .16s,box-shadow .16s}
+.pit:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.pit .ph{display:flex;align-items:flex-start;gap:13px}
+.pit .pn{width:40px;height:40px;border-radius:10px;border:3px solid var(--ink);background:var(--dred);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:19px;flex-shrink:0}
+.pit .pt{font-weight:900;font-size:17px;line-height:1.25}
+.pit .pw{font-size:13px;color:#666;margin-top:2px;line-height:1.5}
+.pit .arw{margin-left:auto;flex-shrink:0;color:var(--red);font-weight:900;font-size:13px;align-self:center}
+.pit.open .arw{display:none}
+.pit .sol{display:none;margin-top:12px;background:var(--mint);border-left:4px solid var(--green);border-radius:0 9px 9px 0;padding:11px 13px;font-size:13.5px;line-height:1.65}
+.pit.open .sol{display:block;animation:pop .25s}
+@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.pit .sol b{color:var(--green)}
+.pit .sol .dv{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:800;color:var(--dred)}
+/* 走一遍 */
+.flow{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px}
+.flow .q{font-weight:900;font-size:15px;background:var(--lilac);border:2.5px solid var(--ink);border-radius:10px;padding:9px 13px;display:inline-block;margin-bottom:12px}
+.flow .step{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1.5px dashed #ddd}
+.flow .step:last-of-type{border-bottom:none}
+.flow .step .mk{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:var(--ink);color:var(--gold);font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center}
+.flow .step .tx{font-size:13.5px;line-height:1.55}.flow .step .tx b{color:var(--green)}
+.flow .ans{margin-top:12px;background:var(--mint);border:2.5px solid var(--ink);border-radius:10px;padding:11px 14px;font-size:13.5px;font-weight:700;line-height:1.55}
+/* PM 卡 */
+.card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin-bottom:18px}
+.card .hd{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.card .hd .qn{width:42px;height:42px;border-radius:11px;border:3px solid var(--ink);background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:16px;flex-shrink:0}
+.card .hd h3{font-size:18px;font-weight:900;line-height:1.2}
+.card .hd .hs{font-size:12px;color:#999;font-weight:700;margin-top:1px}
+.def{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.def .d{font-size:14px;line-height:1.5}.def .d .dt{font-weight:900}
+.def .d .dv{display:block;font-size:12.5px;font-weight:900;color:var(--dred);margin-top:2px;font-family:"JetBrains Mono",monospace}
+.dark{background:var(--ink);color:#fff;border:4px solid var(--gold);border-radius:16px;padding:20px 22px;margin:26px 0;position:relative}
+.dark .tag{position:absolute;top:-14px;left:20px;background:var(--gold);color:var(--ink);padding:4px 13px;border:3px solid var(--ink);font-size:12px;font-weight:900}
+.dark .gi{background:rgba(255,225,102,.1);border-left:3px solid var(--gold);padding:9px 12px;margin:8px 0;font-size:14px;line-height:1.6;color:var(--gold)}
+.dark .gi .n{color:var(--mint);font-weight:900;margin-right:7px}
+.summary{background:var(--ink);color:var(--gold);border:4px solid var(--gold);border-radius:18px;padding:24px;margin:32px 0;text-align:center}
+.summary .big{font-size:19px;font-weight:900;line-height:1.5;margin-bottom:14px}
+.summary .big .r{color:var(--mint)}
+.summary .lines{text-align:left;background:rgba(255,225,102,.1);padding:14px;border-radius:10px;border:2px dashed var(--gold)}
+.summary .lines .l{display:flex;gap:9px;padding:4px 0;font-size:13px;line-height:1.5}
+.summary .lines .l .k{color:var(--gold);font-weight:900;flex-shrink:0;width:60px}
+.cta{background:var(--gold);border:4px solid var(--ink);border-radius:20px;padding:18px 20px;text-align:center;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
+.cta .h{font-weight:900;font-size:16px;margin-bottom:8px}
+.cta .q{font-size:14px;line-height:1.6;font-weight:600}
+.next{background:#fff;border:3px dashed var(--ink);border-radius:14px;padding:13px;text-align:center;font-size:13.5px;color:#666;line-height:1.6}
+.next b{color:var(--red)}
+.tags{text-align:center;margin-top:22px;font-size:13px;color:#999}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.reveal.vis{opacity:1;transform:none}
+@media (max-width:560px){.hero h1{font-size:30px}.face{width:92px}.face img{width:92px;height:92px}.stat{flex-direction:column}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="page">
+  <div class="brand-bar"><div class="brand"><div class="bmark">N</div><div class="bname">NOVA</div></div><div class="vol">AI 实战 · VOL.49</div></div>
+
+  <div class="alert"><span class="dot"></span><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 3l9 16H3z" fill="none" stroke="#FFE16B" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v4M12 16.5v.5" stroke="#FFE16B" stroke-width="2" stroke-linecap="round"/></svg> 朴素 RAG 失败率高达 40%</div>
+  <div class="hero">
+    <h1>从 0 搭 AI 知识库问答<br>我踩平了这 <span class="hi">7 个坑</span></h1>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+
+  <div class="fix reveal">
+    <div class="ttl">我那套知识库问答 · 准确率</div>
+    <div class="nums"><div><div class="n bad">40%</div><div class="cap">第一版 · 被业务打回</div></div><div class="ar">→</div><div><div class="n good">90%</div><div class="cap">填完 7 个坑</div></div></div>
+    <div class="bar"><div class="barf"></div></div>
+    <div class="note">差距不在模型,在<b>这 7 个没做对的地方</b>。</div>
+  </div>
+  <div class="cap-line reveal">大多数知识库问答答不准,都怪模型笨 —— 其实是<b>分块、检索、重排、兜底</b>这几步漏了。</div>
+
+  <div class="stat reveal">
+    <div class="s"><div class="n"><span data-c="40">0</span>%</div><div class="l">朴素 RAG 的失败率</div></div>
+    <div class="s"><div class="n"><span data-c="7">0</span> 个</div><div class="l">从 0 搭必踩的坑</div></div>
+    <div class="s"><div class="n"><span data-c="4">0</span> 杠杆</div><div class="l">分块/检索/重排/取舍</div></div>
+  </div>
+
+  <div class="div reveal">7 个坑 · 点开看<span class="em">怎么填</span></div>
+  <div class="sub reveal">每个坑点一下,看症结 + 怎么填 + 能直接抄的默认参数。</div>
+
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">1</div><div><div class="pt">分块切错</div><div class="pw">切太大塞一堆噪声,切太小切断语义,召回的全是半句话。坏分块=必败,后面再强也救不回。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>用层级分块 —— 父块管上下文、子块管精准召回;或语义分块,相邻句相似度掉到阈值就切。<span class="dv">默认:父块 1500 / 子块 300 / 重叠 60 token</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">2</div><div><div class="pt">只用向量,不做混合检索</div><div class="pw">专有名词、编号、缩写,纯向量召不回 —— 用户搜"型号 A8-Pro",向量觉得它跟啥都不像。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>向量 + 关键词(BM25)混合检索,两路结果合并,各取所长。<span class="dv">默认:向量 + BM25 各召回 top-20 再合并</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">3</div><div><div class="pt">没加重排 rerank</div><div class="pw">召回一堆,真正相关的排在第 8、第 9,塞不进上下文,等于没召回。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>召回之后用 cross-encoder 重排一遍,把最相关的顶上来,只取前几条进上下文。<span class="dv">默认:rerank 后取 top 3–5</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">4</div><div><div class="pt">文档没清洗、解析烂</div><div class="pw">PDF 表格、扫描件直接解析成乱码,垃圾进、垃圾出 —— 再牛的检索也救不了脏数据。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>先做文档解析 + 清洗,表格、版面、页眉页脚要专门处理,别拿原始 PDF 直接灌。<span class="dv">默认:解析→去噪→结构化,再入库</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">5</div><div><div class="pt">检索不到也硬答</div><div class="pw">没引用、没兜底,知识库里没有它也给你编一个,这是幻觉最大的来源。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>强制带引用(答案标出处),检索分低于阈值就老实回"知识库里没有",不许编。<span class="dv">默认:强制引用 + 低分兜底回"未收录"</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">6</div><div><div class="pt">文档更新了,索引没更</div><div class="pw">最隐蔽的坑:文档早改了,向量库还是旧的,它一直自信地答着过时答案,你还查不出来。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>文档一变更就触发重新索引,给每条加时效字段,旧的标过期。<span class="dv">默认:变更触发重建 + 带 updated_at</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">7</div><div><div class="pt">没 Eval、没埋点</div><div class="pw">上线后准确率多少、漂没漂移,全靠猜 —— 等用户投诉才发现,就晚了。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>攒一个约 100 条的 golden set,测召回和答案质量;线上埋命中率,持续盯。<span class="dv">默认:100 条 golden set + recall@k + LLM 评分 + 引用忠实度</span></div>
+  </div>
+
+  <div class="div reveal">怎么用 · <span class="em">走一遍</span></div>
+  <div class="sub reveal">填完坑之后,一个问题是怎么被准确答对的。</div>
+  <div class="flow reveal">
+    <div class="q">用户问:退款多久到账?</div>
+    <div class="step"><div class="mk">1</div><div class="tx">混合检索:向量 + 关键词,把"退款政策"相关的几块都<b>捞回来</b>。</div></div>
+    <div class="step"><div class="mk">2</div><div class="tx">rerank 把最相关的<b>排到前 3</b>,拼进上下文。</div></div>
+    <div class="step"><div class="mk">3</div><div class="tx">生成时<b>强制带引用</b>,基于检索到的内容作答。</div></div>
+    <div class="ans">答:3–7 个工作日到账,依据《退款政策》第 4 条。<br>(检索不到?直接答"知识库里暂未收录",不编。)</div>
+  </div>
+
+  <div class="card reveal" style="margin-top:24px">
+    <div class="hd"><div class="qn">PM</div><div><h3>从 0 搭 · 拍板默认值(可抄)</h3><div class="hs">直接抄去跟工程对</div></div></div>
+    <div class="def">
+      <div class="d"><span class="dt">① 分块</span> —— 先用这套再调。<span class="dv">父 1500 / 子 300 / 重叠 60</span></div>
+      <div class="d"><span class="dt">② 检索</span> —— 别只用向量。<span class="dv">向量 + BM25 各 top-20,合并后 rerank 取前 5</span></div>
+      <div class="d"><span class="dt">③ 兜底</span> —— 反幻觉底线。<span class="dv">强制引用 + 检索分低于阈值回"未收录"</span></div>
+      <div class="d"><span class="dt">④ 更新</span> —— 别答过时。<span class="dv">文档变更触发重建索引 + 时效字段</span></div>
+      <div class="d"><span class="dt">⑤ Eval</span> —— 别裸奔。<span class="dv">100 条 golden set + recall@k + LLM 评分 + 引用忠实度</span></div>
+    </div>
+  </div>
+
+  <div class="dark reveal">
+    <div class="tag">5 句面试金句 · 当场说出口</div>
+    <div class="gi"><span class="n">1</span>朴素 RAG 失败率 40%,问题不在模型,在分块/检索/重排/兜底。</div>
+    <div class="gi"><span class="n">2</span>坏分块必败:分块切错,后面 embedding 再强、rerank 再贵也救不回。</div>
+    <div class="gi"><span class="n">3</span>只用向量会漏召回,专有名词靠混合检索 + 重排。</div>
+    <div class="gi"><span class="n">4</span>检索不到要敢说"没有",强制引用是反幻觉的底线。</div>
+    <div class="gi"><span class="n">5</span>没 Eval 就是裸奔:golden set + recall@k + 引用忠实度。</div>
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">知识库问答答不准<br><span class="r">九成不是模型,是这 7 个坑</span></div>
+    <div class="lines">
+      <div class="l"><span class="k">检索前</span><span>分块要对、文档要清洗</span></div>
+      <div class="l"><span class="k">检索中</span><span>混合检索 + 重排,别只用向量</span></div>
+      <div class="l"><span class="k">生成时</span><span>强制引用 + 检索不到敢说没有</span></div>
+      <div class="l"><span class="k">上线后</span><span>更新索引 + Eval 埋点别裸奔</span></div>
+    </div>
+  </div>
+
+  <div class="cta reveal">
+    <div class="h">▎ 来聊聊</div>
+    <div class="q">你搭知识库问答,踩过最坑的是哪一个?是分块、是召不回,还是它一本正经地编?评论区说说你的翻车现场。</div>
+  </div>
+  <div class="next reveal"><b>下期预告 ▶</b> 知识库搭好了,怎么让它在多轮对话里也不丢上下文、不答串?</div>
+  <div class="tags reveal">#AI产品经理 #AIPM #知识库 #RAG #AI问答 #大模型 #AI落地 #求职</div>
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll&&e.target.querySelectorAll('[data-c]').forEach(an);io.unobserve(e.target);}}),{threshold:.13,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function an(el){if(el.dataset.d)return;el.dataset.d=1;const t=+el.getAttribute('data-c'),t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/900);el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);})(t0);}
+const bar=document.getElementById('progress');addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/((h.scrollHeight-h.clientHeight)||1)*100)+'%';},{passive:true});
+document.querySelectorAll('.pit').forEach(p=>p.addEventListener('click',()=>p.classList.toggle('open')));
+</script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 AI问答聊两轮就答串·多轮对话5个坑 · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FEFCF5;--ink:#2B2B2B;--red:#E63946;--dred:#C0392B;--gold:#FFE16B;--green:#1B8A3A;--mint:#A8E6CF;--lilac:#FFF4D6;--pinkbg:#FFE4E1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.7}
+.page{max-width:760px;margin:0 auto;padding:34px 24px 80px}
+#progress{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,var(--red),var(--green));z-index:99;transition:width .12s}
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:3px solid var(--ink);margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:11px}
+.bmark{width:40px;height:40px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:19px}
+.bname{font-family:"Archivo Black",sans-serif;font-size:21px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:.14em}
+.alert{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:900;font-size:14px;padding:7px 16px;border:3px solid var(--ink);border-radius:50px;box-shadow:4px 4px 0 var(--ink);margin-bottom:14px;animation:wob 2s ease-in-out infinite}
+.alert .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);animation:blink 1s steps(2) infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}@keyframes blink{50%{opacity:.2}}
+.hero{display:flex;gap:20px;align-items:center}
+.hero h1{flex:1;font-size:38px;font-weight:900;line-height:1.16;letter-spacing:-.01em}
+.hero h1 .hi{color:var(--red);position:relative}
+.hero h1 .hi::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:8px;background:var(--gold);z-index:-1}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:5px 5px 0 var(--gold);background:var(--lilac);display:block}
+.face .bub{position:absolute;bottom:-6px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.05;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 9px}
+/* chat 翻车 hero */
+.chat{margin:22px 0 0;background:#fff;border:4px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--red);padding:18px 20px;display:flex;flex-direction:column;gap:11px}
+.chat .ch{display:flex;align-items:center;gap:9px;border-bottom:2px solid #eee;padding-bottom:11px;font-weight:900;font-size:15px}
+.chat .ch .s{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:12px;color:#aaa}
+.crow{display:flex;align-items:flex-end;gap:8px}.crow.u{justify-content:flex-end}
+.cb{max-width:82%;font-size:15px;font-weight:700;line-height:1.4;padding:10px 14px;border:2.5px solid var(--ink);border-radius:14px}
+.cb.u{background:var(--lilac);border-bottom-right-radius:4px}
+.cb.bad{background:var(--pinkbg);border-bottom-left-radius:4px}
+.ct{flex-shrink:0;font-size:11px;font-weight:900;padding:4px 9px;border:2.5px solid var(--ink);border-radius:50px;white-space:nowrap;background:var(--dred);color:#fff}
+.cap-line{font-weight:700;font-size:15px;color:#555;margin-top:18px;line-height:1.65;text-align:center}
+.cap-line b{color:var(--red)}
+.fixbar{margin-top:16px;background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:14px 18px;display:flex;align-items:center;justify-content:center;gap:16px}
+.fixbar .n{font-family:"Archivo Black",sans-serif;font-size:40px;line-height:1}
+.fixbar .n.g{color:var(--green)}.fixbar .n.b{color:var(--dred)}
+.fixbar .ar{font-family:"Archivo Black",sans-serif;font-size:24px;color:var(--ink)}
+.fixbar .c{font-size:12px;font-weight:700;color:#888;text-align:center;margin-top:2px}
+.stat{display:flex;gap:10px;margin:24px 0}
+.stat .s{flex:1;background:var(--ink);color:#fff;border-radius:12px;padding:14px 10px;text-align:center}
+.stat .s .n{font-family:"Archivo Black",sans-serif;font-size:24px;color:var(--gold);line-height:1}
+.stat .s .l{font-size:11px;color:#cfc8b8;margin-top:6px;line-height:1.35}
+.div{text-align:center;margin:44px 0 20px;font-weight:900;font-size:21px;display:flex;align-items:center;justify-content:center;gap:14px}
+.div::before,.div::after{content:"";width:34px;height:3px;background:var(--ink);border-radius:2px}
+.div .em{color:var(--red)}
+.sub{text-align:center;color:#888;font-size:13.5px;margin:-10px 0 18px}
+.pit{background:#fff;border:3px solid var(--ink);border-radius:15px;box-shadow:4px 4px 0 var(--ink);padding:15px 17px;margin-bottom:13px;cursor:pointer;transition:transform .16s,box-shadow .16s}
+.pit:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.pit .ph{display:flex;align-items:flex-start;gap:13px}
+.pit .pn{width:40px;height:40px;border-radius:10px;border:3px solid var(--ink);background:var(--dred);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:19px;flex-shrink:0}
+.pit .pt{font-weight:900;font-size:17px;line-height:1.25}
+.pit .pw{font-size:13px;color:#666;margin-top:2px;line-height:1.5}
+.pit .arw{margin-left:auto;flex-shrink:0;color:var(--red);font-weight:900;font-size:13px;align-self:center}
+.pit.open .arw{display:none}
+.pit .sol{display:none;margin-top:12px;background:var(--mint);border-left:4px solid var(--green);border-radius:0 9px 9px 0;padding:11px 13px;font-size:13.5px;line-height:1.65}
+.pit.open .sol{display:block;animation:pop .25s}
+@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.pit .sol b{color:var(--green)}
+.pit .sol .dv{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:800;color:var(--dred)}
+.flow{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px}
+.flow .q{font-weight:900;font-size:14.5px;background:var(--lilac);border:2.5px solid var(--ink);border-radius:10px;padding:9px 13px;margin-bottom:12px;line-height:1.5}
+.flow .step{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1.5px dashed #ddd}
+.flow .step:last-of-type{border-bottom:none}
+.flow .step .mk{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:var(--ink);color:var(--gold);font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center}
+.flow .step .tx{font-size:13.5px;line-height:1.55}.flow .step .tx b{color:var(--green)}
+.flow .ans{margin-top:12px;background:var(--mint);border:2.5px solid var(--ink);border-radius:10px;padding:11px 14px;font-size:13.5px;font-weight:700;line-height:1.55}
+.card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin-bottom:18px}
+.card .hd{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.card .hd .qn{width:42px;height:42px;border-radius:11px;border:3px solid var(--ink);background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:16px;flex-shrink:0}
+.card .hd h3{font-size:18px;font-weight:900;line-height:1.2}
+.card .hd .hs{font-size:12px;color:#999;font-weight:700;margin-top:1px}
+.def{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.def .d{font-size:14px;line-height:1.5}.def .d .dt{font-weight:900}
+.def .d .dv{display:block;font-size:12.5px;font-weight:900;color:var(--dred);margin-top:2px;font-family:"JetBrains Mono",monospace}
+.dark{background:var(--ink);color:#fff;border:4px solid var(--gold);border-radius:16px;padding:20px 22px;margin:26px 0;position:relative}
+.dark .tag{position:absolute;top:-14px;left:20px;background:var(--gold);color:var(--ink);padding:4px 13px;border:3px solid var(--ink);font-size:12px;font-weight:900}
+.dark .gi{background:rgba(255,225,102,.1);border-left:3px solid var(--gold);padding:9px 12px;margin:8px 0;font-size:14px;line-height:1.6;color:var(--gold)}
+.dark .gi .n{color:var(--mint);font-weight:900;margin-right:7px}
+.summary{background:var(--ink);color:var(--gold);border:4px solid var(--gold);border-radius:18px;padding:24px;margin:32px 0;text-align:center}
+.summary .big{font-size:19px;font-weight:900;line-height:1.5;margin-bottom:14px}
+.summary .big .r{color:var(--mint)}
+.summary .lines{text-align:left;background:rgba(255,225,102,.1);padding:14px;border-radius:10px;border:2px dashed var(--gold)}
+.summary .lines .l{display:flex;gap:9px;padding:4px 0;font-size:13px;line-height:1.5}
+.summary .lines .l .k{color:var(--gold);font-weight:900;flex-shrink:0;width:60px}
+.cta{background:var(--gold);border:4px solid var(--ink);border-radius:20px;padding:18px 20px;text-align:center;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
+.cta .h{font-weight:900;font-size:16px;margin-bottom:8px}
+.cta .q{font-size:14px;line-height:1.6;font-weight:600}
+.next{background:#fff;border:3px dashed var(--ink);border-radius:14px;padding:13px;text-align:center;font-size:13.5px;color:#666;line-height:1.6}
+.next b{color:var(--red)}
+.tags{text-align:center;margin-top:22px;font-size:13px;color:#999}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.reveal.vis{opacity:1;transform:none}
+@media (max-width:560px){.hero h1{font-size:30px}.face{width:92px}.face img{width:92px;height:92px}.stat{flex-direction:column}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="page">
+  <div class="brand-bar"><div class="brand"><div class="bmark">N</div><div class="bname">NOVA</div></div><div class="vol">AI 实战 · VOL.50</div></div>
+
+  <div class="alert"><span class="dot"></span><svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 5h16v11H9l-4 4v-4H4z" fill="none" stroke="#FFE16B" stroke-width="2" stroke-linejoin="round"/></svg> 60% 的追问都带"它、那个"</div>
+  <div class="hero">
+    <h1>AI 问答聊两轮<br>就<span class="hi">答串、丢上下文</span>?</h1>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+
+  <div class="chat reveal">
+    <div class="ch"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 5h16v11H9l-4 4v-4H4z" fill="none" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/></svg> 多轮对话翻车现场 <span class="s">第 2 轮</span></div>
+    <div class="crow u"><div class="cb u">这件冲锋衣多少钱?</div></div>
+    <div class="crow u"><div class="cb u">那<b>它</b>能退吗?</div></div>
+    <div class="crow"><div class="cb bad">您是指退订单吗?请提供订单号~(把"它"猜错了,没接住上一句的冲锋衣)</div><div class="ct">答串 ✗</div></div>
+  </div>
+  <div class="cap-line reveal">单轮挺准,一到多轮就翻 —— 因为它<b>没把"它"还原成"冲锋衣"</b>就去检索了。</div>
+
+  <div class="fixbar reveal">
+    <div><div class="n g">90%</div><div class="c">单轮准确率</div></div>
+    <div class="ar">→</div>
+    <div><div class="n b">50%</div><div class="c">一进多轮就崩</div></div>
+  </div>
+
+  <div class="stat reveal">
+    <div class="s"><div class="n"><span data-c="60">0</span>%</div><div class="l">追问带未消解的指代/省略</div></div>
+    <div class="s"><div class="n"><span data-c="5">0</span> 个</div><div class="l">多轮对话必踩的坑</div></div>
+    <div class="s"><div class="n">改写</div><div class="l">解法核心:检索前先改写</div></div>
+  </div>
+
+  <div class="div reveal">5 个坑 · 点开看<span class="em">怎么填</span></div>
+  <div class="sub reveal">每个坑点一下,看症结 + 怎么填 + 能直接抄的默认做法。</div>
+
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">1</div><div><div class="pt">指代没消解</div><div class="pw">第二句"它能退吗",你直接拿"它"去检索,啥也搜不到 —— 60% 的追问都有这种没还原的代词。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>检索前先做 query 改写,把"它、那个、这个"还原成上一轮的具体实体。<span class="dv">默认:改写"它能退吗"→"这件冲锋衣能退吗"再检索</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">2</div><div><div class="pt">省略没补全</div><div class="pw">用户说"那海外呢?",省了主语和动作,直接拿去检索,召回一片空白。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>改写时把省略的成分补回来,凑成一个独立完整的问题。<span class="dv">默认:"那海外呢"→"海外的退款政策是什么"</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">3</div><div><div class="pt">历史一股脑全塞去检索</div><div class="pw">把整段对话拼起来扔进检索,噪声淹没当前意图,反而比单轮还不准。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>别塞全历史。用历史去"改写"出一个独立完整的 query,只拿这条干净的 query 去检索。<span class="dv">默认:历史 → 改写一句 → 用改写句检索</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">4</div><div><div class="pt">答串、会话串味</div><div class="pw">把上一个用户、或者上一个话题的上下文,串进了这一次的回答里 —— 最尴尬的翻车。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>会话严格隔离,按 user + session 分开;再加话题切换检测,旧话题别往新问题里带。<span class="dv">默认:按 user+session 隔离 + 话题切换检测</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">5</div><div><div class="pt">意图漂移没跟上</div><div class="pw">用户聊着聊着换了话题,系统还抱着前面那摊旧上下文,答得驴唇不对马嘴。</div></div><div class="arw">填法 ▸</div></div>
+    <div class="sol"><b>怎么填:</b>检测到意图/话题切换,就重置或缩减历史,别让旧上下文拖累新问题。<span class="dv">默认:话题切换 → 重置/缩减历史窗口</span></div>
+  </div>
+
+  <div class="div reveal">单轮 vs 多轮 · <span class="em">差在哪</span></div>
+  <div class="sub reveal">同一套知识库,差别全在"检索之前怎么处理这句话"。</div>
+  <div class="card reveal" style="padding:0;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.5">
+      <tr style="background:var(--ink);color:#fff;font-weight:900"><td style="padding:11px 14px;width:26%">对比项</td><td style="padding:11px 14px">单轮(准)</td><td style="padding:11px 14px">多轮·没处理(崩)</td></tr>
+      <tr style="border-top:2px solid #eee5cf"><td style="padding:10px 14px;font-weight:900">检索输入</td><td style="padding:10px 14px">一句完整问题</td><td style="padding:10px 14px;color:var(--dred);font-weight:700">"那它能退吗"带代词的半句</td></tr>
+      <tr style="border-top:2px solid #eee5cf;background:#faf6ea"><td style="padding:10px 14px;font-weight:900">历史怎么用</td><td style="padding:10px 14px">不需要</td><td style="padding:10px 14px;color:var(--dred);font-weight:700">要么不用、要么全塞(都错)</td></tr>
+      <tr style="border-top:2px solid #eee5cf"><td style="padding:10px 14px;font-weight:900">会话边界</td><td style="padding:10px 14px">天然隔离</td><td style="padding:10px 14px;color:var(--dred);font-weight:700">容易串到别人/别的话题</td></tr>
+      <tr style="border-top:2px solid #eee5cf;background:#faf6ea"><td style="padding:10px 14px;font-weight:900">解法</td><td style="padding:10px 14px">直接检索</td><td style="padding:10px 14px;color:var(--green);font-weight:900">检索前先 query 改写</td></tr>
+    </table>
+  </div>
+
+  <div class="div reveal">怎么用 · <span class="em">走一遍</span></div>
+  <div class="sub reveal">同一段对话,加了 query 改写之后是怎么答对的。</div>
+  <div class="flow reveal">
+    <div class="q">第 1 轮:这件冲锋衣多少钱?　第 2 轮:那它能退吗?</div>
+    <div class="step"><div class="mk">1</div><div class="tx">改写:结合历史,把"它"<b>还原成"这件冲锋衣"</b> → "这件冲锋衣能退吗"。</div></div>
+    <div class="step"><div class="mk">2</div><div class="tx">用改写后的<b>独立完整 query</b> 去混合检索,命中"冲锋衣退货政策"。</div></div>
+    <div class="step"><div class="mk">3</div><div class="tx">生成时<b>带引用</b>,基于检索内容作答。</div></div>
+    <div class="ans">答:这件冲锋衣支持 7 天无理由退货,依据《退货政策》第 2 条。<br>(没接住上文?那就别猜,反问一句"您是指刚才的冲锋衣吗"。)</div>
+  </div>
+
+  <div class="div reveal">深一层 · 改写<span class="em">本身也会翻车</span></div>
+  <div class="sub reveal">改写是解药,但改写错了会放大错误 —— 这 3 个二级坑也得防。</div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">A</div><div><div class="pt">改写过度,把意思改歪了</div><div class="pw">用户问"那退货呢",改写器自作主张补成"那退货运费谁出",问题被换了。</div></div><div class="arw">怎么防 ▸</div></div>
+    <div class="sol"><b>怎么防:</b>只做"最小改写"——只还原代词、补省略,不许新增用户没说的限定。<span class="dv">原则:minimal rewrite,只补不改</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">B</div><div><div class="pt">改写丢了关键信息</div><div class="pw">把多轮压成一句时,把上文的"仅限会员"这种关键限定漏掉了,检索就偏了。</div></div><div class="arw">怎么防 ▸</div></div>
+    <div class="sol"><b>怎么防:</b>改写时保留上文里的限定词、实体、数字;拿不准就把原句也一起送检索做并集。<span class="dv">默认:改写句 + 原句 双路召回合并</span></div>
+  </div>
+  <div class="pit reveal">
+    <div class="ph"><div class="pn">C</div><div><div class="pt">改写置信低还硬上</div><div class="pw">指代有歧义("它"可能指两样东西),改写器瞎猜一个,直接错到底。</div></div><div class="arw">怎么防 ▸</div></div>
+    <div class="sol"><b>怎么防:</b>给改写打个置信度,低于阈值就回退用原句、或者直接反问用户"您是指 X 吗"。<span class="dv">默认:置信低 → 回退原句 / 反问澄清</span></div>
+  </div>
+
+  <div class="card reveal" style="margin-top:24px">
+    <div class="hd"><div class="qn">PM</div><div><h3>拍板默认值(可抄)</h3><div class="hs">直接抄去跟工程对</div></div></div>
+    <div class="def">
+      <div class="d"><span class="dt">① query 改写</span> —— 检索前必加。<span class="dv">指代消解 + 省略补全,用小模型改写</span></div>
+      <div class="d"><span class="dt">② 改写兜底</span> —— 改坏了别硬上。<span class="dv">改写置信低 / 跑偏就回退用原句</span></div>
+      <div class="d"><span class="dt">③ 会话隔离</span> —— 杜绝串味。<span class="dv">按 user + session 隔离上下文</span></div>
+      <div class="d"><span class="dt">④ 话题切换</span> —— 别抱旧上下文。<span class="dv">检测意图漂移 → 重置/缩减历史</span></div>
+      <div class="d"><span class="dt">⑤ 改写进 Eval</span> —— 它也会出错。<span class="dv">多轮 case 进 golden set,盯改写准确率</span></div>
+    </div>
+  </div>
+
+  <div class="dark reveal">
+    <div class="tag">5 句面试金句 · 当场说出口</div>
+    <div class="gi"><span class="n">1</span>多轮翻车根因:60% 追问带指代/省略,半句话检索必崩。</div>
+    <div class="gi"><span class="n">2</span>解法核心是检索前 query 改写:消解指代 + 补全省略。</div>
+    <div class="gi"><span class="n">3</span>别塞全历史去检索,要先改写成独立完整 query。</div>
+    <div class="gi"><span class="n">4</span>会话按 user+session 隔离防串味,话题切换要重置历史。</div>
+    <div class="gi"><span class="n">5</span>改写本身也会出错,要带兜底、还要进 Eval。</div>
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">单轮准 ≠ 多轮准<br><span class="r">关键在检索前把话"补完整"</span></div>
+    <div class="lines">
+      <div class="l"><span class="k">根因</span><span>60% 追问带"它/那个/那…呢"</span></div>
+      <div class="l"><span class="k">核心</span><span>检索前 query 改写:消解指代 + 补省略</span></div>
+      <div class="l"><span class="k">别踩</span><span>别塞全历史、别让会话串味</span></div>
+      <div class="l"><span class="k">PM 定</span><span>改写+兜底 · 会话隔离 · 话题切换重置 · 进 Eval</span></div>
+    </div>
+  </div>
+
+  <div class="cta reveal">
+    <div class="h">▎ 来聊聊</div>
+    <div class="q">你的 AI 问答,是单轮还行、一多轮就胡了吗?最崩的是答串、还是把"它"猜错?评论区说说你的翻车现场。</div>
+  </div>
+  <div class="next reveal"><b>下期预告 ▶</b> 知识库问答怎么做权限 —— 不同人问,只能看到自己该看的那部分。</div>
+  <div class="tags reveal">#AI产品经理 #AIPM #多轮对话 #知识库 #RAG #AI问答 #大模型 #求职</div>
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll&&e.target.querySelectorAll('[data-c]').forEach(an);io.unobserve(e.target);}}),{threshold:.13,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function an(el){if(el.dataset.d)return;el.dataset.d=1;const t=+el.getAttribute('data-c'),t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/900);el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);})(t0);}
+const bar=document.getElementById('progress');addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/((h.scrollHeight-h.clientHeight)||1)*100)+'%';},{passive:true});
+document.querySelectorAll('.pit').forEach(p=>p.addEventListener('click',()=>p.classList.toggle('open')));
+</script>
+</body>
+</html>

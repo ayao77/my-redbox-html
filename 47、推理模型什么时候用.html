@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 别乱用推理模型 · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FEFCF5;--ink:#2B2B2B;--red:#E63946;--dred:#C0392B;--gold:#FFE16B;--green:#1B8A3A;--mint:#A8E6CF;--lilac:#FFF4D6;--pinkbg:#FFE4E1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.7}
+.page{max-width:760px;margin:0 auto;padding:34px 24px 80px}
+#progress{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,var(--red),var(--gold));z-index:99;transition:width .12s}
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:3px solid var(--ink);margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:11px}
+.bmark{width:40px;height:40px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:19px}
+.bname{font-family:"Archivo Black",sans-serif;font-size:21px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:.14em}
+.alert{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:900;font-size:14px;padding:7px 16px;border:3px solid var(--ink);border-radius:50px;box-shadow:4px 4px 0 var(--ink);margin-bottom:14px;animation:wob 2s ease-in-out infinite}
+.alert .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);animation:blink 1s steps(2) infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}@keyframes blink{50%{opacity:.2}}
+.hero{display:flex;gap:20px;align-items:center}
+.hero h1{flex:1;font-size:40px;font-weight:900;line-height:1.14;letter-spacing:-.01em}
+.hero h1 .hi{color:var(--red);position:relative}
+.hero h1 .hi::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:8px;background:var(--gold);z-index:-1}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:5px 5px 0 var(--gold);background:var(--lilac);display:block}
+.face .bub{position:absolute;bottom:-6px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.05;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 9px}
+/* 翻车账单 hero */
+.bill{margin:22px 0 0;background:#fff;border:4px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--red);overflow:hidden}
+.bill .bh{display:flex;align-items:center;gap:9px;background:var(--ink);color:#fff;padding:11px 16px;font-weight:900;font-size:14px}
+.bill .bh .t{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:12px;color:#ff9b8a}
+.bill .bb{padding:14px 18px}
+.bill .r{display:flex;align-items:center;font-size:14px;padding:7px 0;border-bottom:1.5px dashed #e6ddc8}
+.bill .r .k{color:#777;font-weight:700}.bill .r .v{margin-left:auto;font-weight:900;font-family:"JetBrains Mono",monospace}
+.bill .r.hid .v{color:var(--dred)}
+.bill .r.hid .k{color:var(--dred)}
+.bill .tot{display:flex;align-items:center;margin-top:10px;background:var(--pinkbg);border:2.5px solid var(--ink);border-radius:12px;padding:10px 14px}
+.bill .tot .k{font-weight:900;font-size:14px}
+.bill .tot .big{margin-left:auto;font-family:"Archivo Black",sans-serif;font-size:30px;color:var(--dred);line-height:1}
+.cap-line{font-weight:700;font-size:15px;color:#555;margin-top:18px;line-height:1.65;text-align:center}
+.cap-line b{color:var(--red)}
+.stat{display:flex;gap:10px;margin:24px 0}
+.stat .s{flex:1;background:var(--ink);color:#fff;border-radius:12px;padding:14px 10px;text-align:center}
+.stat .s .n{font-family:"Archivo Black",sans-serif;font-size:24px;color:var(--gold);line-height:1}
+.stat .s .l{font-size:11px;color:#cfc8b8;margin-top:6px;line-height:1.35}
+.div{text-align:center;margin:46px 0 22px;font-weight:900;font-size:21px;display:flex;align-items:center;justify-content:center;gap:14px}
+.div::before,.div::after{content:"";width:34px;height:3px;background:var(--ink);border-radius:2px}
+.div .em{color:var(--red)}
+.sub{text-align:center;color:#888;font-size:13.5px;margin:-12px 0 20px}
+/* token 条 */
+.tok{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px}
+.tok .row{display:flex;align-items:center;gap:12px;margin:9px 0}
+.tok .row .lab{width:96px;flex-shrink:0;font-size:13px;font-weight:900}
+.tok .row .bar{height:24px;border:2.5px solid var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:800;color:#fff;min-width:34px}
+.tok .row.i .bar{background:var(--green)}.tok .row.o .bar{background:#7a8a99}.tok .row.t .bar{background:var(--dred)}
+.tok .note{margin-top:12px;font-size:13px;font-weight:700;text-align:center;color:#555}
+.tok .note b{color:var(--dred)}
+.list{margin:18px 0}
+.li{display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-bottom:2px solid #eee5cf}
+.li .mk{flex-shrink:0;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:15px;border:2.5px solid var(--ink);background:#fff;color:var(--dred)}
+.li .tt{font-weight:900;font-size:16px}
+.li .dd{font-size:13.5px;color:#666;margin-top:1px}
+/* 任务分诊器 */
+.triage{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px}
+.triage .hint{font-size:13px;color:#999;font-weight:700;margin-bottom:12px;text-align:center}
+.triage .chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+.triage .tk{font-family:inherit;font-weight:900;font-size:13.5px;border:2.5px solid var(--ink);border-radius:50px;padding:8px 15px;background:var(--lilac);cursor:pointer;transition:all .15s;box-shadow:2px 2px 0 var(--ink)}
+.triage .tk:active{transform:translate(2px,2px);box-shadow:none}
+.triage .tk.active{background:var(--gold)}
+.triage .verdict{margin-top:16px;border:2.5px dashed var(--ink);border-radius:12px;padding:14px 16px;min-height:78px;display:flex;flex-direction:column;justify-content:center}
+.triage .verdict .vh{display:flex;align-items:center;gap:9px;font-weight:900;font-size:17px}
+.triage .verdict .vh .tag{font-size:12px;font-weight:900;padding:4px 11px;border:2.5px solid var(--ink);border-radius:50px;color:#fff}
+.triage .verdict.yes{background:rgba(168,230,207,.35)}.triage .verdict.yes .tag{background:var(--green)}
+.triage .verdict.no{background:var(--pinkbg)}.triage .verdict.no .tag{background:var(--dred)}
+.triage .verdict .why{font-size:13.5px;line-height:1.6;color:#444;margin-top:7px}
+.triage .verdict.empty{background:#faf6ea;color:#999;font-weight:700;font-size:13.5px;text-align:center;align-items:center}
+/* 该用别用 */
+.gono{display:flex;gap:12px;margin:18px 0}
+.gono .c{flex:1;border:3px solid var(--ink);border-radius:14px;padding:14px 16px}
+.gono .c.go{background:var(--mint)}.gono .c.no{background:var(--pinkbg)}
+.gono .c .h{font-weight:900;font-size:16px;margin-bottom:6px}
+.gono .c.go .h{color:var(--green)}.gono .c.no .h{color:var(--dred)}
+.gono .c .ln{font-size:13px;line-height:1.6;margin:3px 0}
+/* 走一遍 */
+.flow{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin-bottom:18px}
+.flow .ft{font-weight:900;font-size:16px;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.flow.bad .ft{color:var(--dred)}.flow.good .ft{color:var(--green)}
+.flow .ln{font-size:13.5px;line-height:1.7}.flow .ln b{color:var(--ink)}
+.flow .res{margin-top:10px;font-family:"JetBrains Mono",monospace;font-weight:800;font-size:13px;padding:8px 12px;border-radius:8px}
+.flow.bad .res{background:var(--pinkbg);color:var(--dred)}.flow.good .res{background:var(--mint);color:var(--green)}
+/* PM 卡 */
+.card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin-bottom:18px}
+.card .hd{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.card .hd .qn{width:42px;height:42px;border-radius:11px;border:3px solid var(--ink);background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:17px;flex-shrink:0}
+.card .hd h3{font-size:18px;font-weight:900;line-height:1.2}
+.card .hd .hs{font-size:12px;color:#999;font-weight:700;margin-top:1px}
+.def{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.def .d{font-size:14px;line-height:1.5}
+.def .d .dt{font-weight:900}
+.def .d .dv{display:block;font-size:12.5px;font-weight:900;color:var(--dred);margin-top:2px}
+.tpl{background:var(--ink);color:#fff;border-radius:9px;padding:11px 14px;font-size:13.5px;line-height:1.65;margin-top:14px}
+.tpl .h{font-size:12px;color:var(--gold);font-weight:900;margin-bottom:5px;font-family:"JetBrains Mono",monospace}
+.dark{background:var(--ink);color:#fff;border:4px solid var(--gold);border-radius:16px;padding:20px 22px;margin:26px 0;position:relative}
+.dark .tag{position:absolute;top:-14px;left:20px;background:var(--gold);color:var(--ink);padding:4px 13px;border:3px solid var(--ink);font-size:12px;font-weight:900}
+.dark .gi{background:rgba(255,225,102,.1);border-left:3px solid var(--gold);padding:9px 12px;margin:8px 0;font-size:14px;line-height:1.6;color:var(--gold)}
+.dark .gi .n{color:var(--red);font-weight:900;margin-right:7px}
+.summary{background:var(--ink);color:var(--gold);border:4px solid var(--gold);border-radius:18px;padding:24px;margin:32px 0;text-align:center}
+.summary .big{font-size:19px;font-weight:900;line-height:1.5;margin-bottom:14px}
+.summary .big .r{color:var(--red)}
+.summary .lines{text-align:left;background:rgba(255,225,102,.1);padding:14px;border-radius:10px;border:2px dashed var(--gold)}
+.summary .lines .l{display:flex;gap:9px;padding:4px 0;font-size:13px;line-height:1.5}
+.summary .lines .l .k{color:var(--gold);font-weight:900;flex-shrink:0;width:62px}
+.cta{background:var(--gold);border:4px solid var(--ink);border-radius:20px;padding:18px 20px;text-align:center;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
+.cta .h{font-weight:900;font-size:16px;margin-bottom:8px}
+.cta .q{font-size:14px;line-height:1.6;font-weight:600}
+.next{background:#fff;border:3px dashed var(--ink);border-radius:14px;padding:13px;text-align:center;font-size:13.5px;color:#666;line-height:1.6}
+.next b{color:var(--red)}
+.tags{text-align:center;margin-top:22px;font-size:13px;color:#999}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.reveal.vis{opacity:1;transform:none}
+@media (max-width:560px){.hero h1{font-size:31px}.face{width:94px}.face img{width:94px;height:94px}.stat,.gono{flex-direction:column}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="page">
+  <div class="brand-bar"><div class="brand"><div class="bmark">N</div><div class="bname">NOVA</div></div><div class="vol">AI 实战 · VOL.47</div></div>
+
+  <div class="alert"><span class="dot"></span><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 3a5 5 0 00-5 5c0 2 1 3 1 5h8c0-2 1-3 1-5a5 5 0 00-5-5z" fill="none" stroke="#FFE16B" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 21h5M10 18.5h4" stroke="#FFE16B" stroke-width="2" stroke-linecap="round"/></svg> 推理模型 ≠ 更高级的默认</div>
+  <div class="hero">
+    <h1>别乱用<span class="hi">推理模型</span><br>简单活上它,贵 30 倍</h1>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+
+  <div class="bill reveal">
+    <div class="bh"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M9 8h6M9 12h6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg> 一个简单任务的真实账单 <span class="t">把 40 字符分类</span></div>
+    <div class="bb">
+      <div class="r"><span class="k">输入</span><span class="v">30 token</span></div>
+      <div class="r"><span class="k">看得见的输出</span><span class="v">18 token</span></div>
+      <div class="r hid"><span class="k">看不见的"思考"</span><span class="v">1200 token ⚠</span></div>
+      <div class="r"><span class="k">你以为花</span><span class="v">$0.001</span></div>
+      <div class="tot"><span class="k">实际扣你</span><span class="big">$0.030 · 贵 30×</span></div>
+    </div>
+  </div>
+  <div class="cap-line reveal">推理模型那段"想一会儿"<b>看不见,但照样按输出价收费</b>。<br>它不是更高级的默认,用错地方就是纯烧钱。</div>
+
+  <div class="stat reveal">
+    <div class="s"><div class="n"><span data-c="30">0</span>×</div><div class="l">简单活上推理,成本翻几十倍</div></div>
+    <div class="s"><div class="n"><span data-c="6">0</span>倍</div><div class="l">o 系大约比普通模型贵</div></div>
+    <div class="s"><div class="n">1/3</div><div class="l">任务用 CoT 没提升,甚至更差</div></div>
+  </div>
+
+  <div class="div reveal">反认知 · 思考<span class="em">看不见也烧钱</span></div>
+  <div class="sub reveal">你只看到 18 个输出,却为 1218 个 token 付了钱。</div>
+  <div class="tok reveal">
+    <div class="row i"><span class="lab">输入</span><span class="bar" style="width:7%">30</span></div>
+    <div class="row o"><span class="lab">可见输出</span><span class="bar" style="width:5%">18</span></div>
+    <div class="row t"><span class="lab">隐藏思考</span><span class="bar" style="width:97%">1200</span></div>
+    <div class="note">头条单价会<b>低估真实成本 5 到 30 倍</b> —— 思考 token 看不见,但每一个都按输出价计费。</div>
+  </div>
+
+  <div class="div reveal">反认知 2 · 推理<span class="em">不等于更准</span></div>
+  <div class="list reveal">
+    <div class="li"><div class="mk">✗</div><div><div class="tt">三分之一的任务,想了也白想</div><div class="dd">Wharton 研究:1/3 的任务-模型组合,加思维链没有统计显著提升。</div></div></div>
+    <div class="li"><div class="mk">✗</div><div><div class="tt">有的反而更差</div><div class="dd">某模型加了 CoT,满分率掉了 17.2% —— 简单题让它"想",反而想岔。</div></div></div>
+    <div class="li"><div class="mk">✗</div><div><div class="tt">还更慢</div><div class="dd">推理首答慢 10–150 秒,硬任务如 o3-pro 能到 5 分钟,是后台批处理、不是实时对话。</div></div></div>
+  </div>
+
+  <div class="div reveal">核心 · 这活<span class="em">该不该上推理</span></div>
+  <div class="sub reveal">点一个任务,看它该走推理还是标准模型,以及为什么。</div>
+  <div class="triage reveal" id="triage">
+    <div class="hint">↓ 点任务试试 ↓</div>
+    <div class="chips">
+      <button class="tk" data-i="0">把用户消息分类</button>
+      <button class="tk" data-i="1">抽取 JSON 字段</button>
+      <button class="tk" data-i="2">翻译一段话</button>
+      <button class="tk" data-i="3">客服闲聊问答</button>
+      <button class="tk" data-i="4">写一段复杂代码</button>
+      <button class="tk" data-i="5">多步行程规划</button>
+      <button class="tk" data-i="6">解数学/逻辑题</button>
+      <button class="tk" data-i="7">法律合同分析</button>
+    </div>
+    <div class="verdict empty" id="verdict">点上面任一个任务，给你判断 ↑</div>
+  </div>
+
+  <div class="div reveal">一句话<span class="em">分界</span></div>
+  <div class="gono reveal">
+    <div class="c go"><div class="h"><svg viewBox="0 0 20 20" width="17" height="17" style="vertical-align:-3px"><circle cx="10" cy="10" r="9" fill="#1B8A3A"/><path d="M5.6 10.4l2.9 2.9 6-6.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 该用推理</div><div class="ln">· 多步数学、写代码</div><div class="ln">· 复杂规划、Agent 工作流(一步错滚雪球)</div><div class="ln">· 法律/科学/金融的严谨推理</div></div>
+    <div class="c no"><div class="h"><svg viewBox="0 0 20 20" width="17" height="17" style="vertical-align:-3px"><circle cx="10" cy="10" r="9" fill="#C0392B"/><line x1="5.2" y1="10" x2="14.8" y2="10" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg> 别用(标准/小模型)</div><div class="ln">· 查找、摘要、分类、翻译</div><div class="ln">· 抽 JSON、简单 RAG、闲聊</div><div class="ln">· 高频高量、要秒回的</div></div>
+  </div>
+
+  <div class="div reveal">怎么用 · <span class="em">走一遍</span></div>
+  <div class="flow bad reveal">
+    <div class="ft"><svg viewBox="0 0 20 20" width="17" height="17"><circle cx="10" cy="10" r="9" fill="#C0392B"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg> 用错:把"消息分类"丢给推理模型</div>
+    <div class="ln">一个分类小活,它偷偷想了 <b>1200 个 token</b> → 贵 30 倍、慢十几秒,还偶尔想岔。换个标准小模型:几乎零思考、便宜、秒回、一样准。</div>
+    <div class="res">推理:$0.030 / 12s　vs　标准:$0.001 / 0.4s</div>
+  </div>
+  <div class="flow good reveal">
+    <div class="ft"><svg viewBox="0 0 20 20" width="17" height="17"><circle cx="10" cy="10" r="9" fill="#1B8A3A"/><path d="M5.6 10.4l2.9 2.9 6-6.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 用对:多步行程规划</div>
+    <div class="ln">"三天行程、卡预算、还要顺路"——标准模型容易漏步、算错;推理模型<b>一步步推、相互校验</b>,这才是它值这个钱的地方。</div>
+    <div class="res">复杂多步 + 一步错就废 = 推理的主场</div>
+  </div>
+
+  <div class="card reveal" style="margin-top:24px">
+    <div class="hd"><div class="qn">PM</div><div><h3>拍板默认值(可抄)</h3><div class="hs">能直接抄去跟工程提</div></div></div>
+    <div class="def">
+      <div class="d"><span class="dt">① 默认用标准模型</span> —— 只有"多步 + 一步错就废"才升级推理。<span class="dv">默认:标准模型打底,推理是例外不是默认</span></div>
+      <div class="d"><span class="dt">② 给推理设上限</span> —— 别让思考无限烧。<span class="dv">默认:设 thinking token 上限 / reasoning effort 档位(低中高)</span></div>
+      <div class="d"><span class="dt">③ 延迟敏感别上</span> —— 用户面对话要秒回。<span class="dv">默认:实时对话用标准;推理放后台批处理</span></div>
+      <div class="d"><span class="dt">④ 上线前先测</span> —— 别假设推理更准。<span class="dv">默认:用自己的 eval 对比,有提升才用</span></div>
+    </div>
+    <div class="tpl"><span class="h">⌨ MVP · 按任务路由(省钱关键)</span>① 全用标准模型跑通,埋点每类任务的成本/延迟/质量 → ② 挑出真正"多步、易错、高价值"的少数任务切到推理 → ③ 加个路由:按任务类型分发,推理只接它该接的活,简单活走便宜模型(能便宜 15–50 倍)。</div>
+  </div>
+
+  <div class="dark reveal">
+    <div class="tag">5 句面试金句 · 当场说出口</div>
+    <div class="gi"><span class="n">1</span>推理模型不是更高级的默认,是 special-purpose 工具。</div>
+    <div class="gi"><span class="n">2</span>看不见的 thinking token 照样烧钱,真实成本翻几十倍。</div>
+    <div class="gi"><span class="n">3</span>CoT 不等于更准,简单题反而想岔。</div>
+    <div class="gi"><span class="n">4</span>该用是多步、一步错就废的任务;别用是查找/摘要/分类/抽取。</div>
+    <div class="gi"><span class="n">5</span>成熟打法是按任务路由,不是一个模型走天下。</div>
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">推理模型不是越用越聪明<br><span class="r">是用对地方才值钱</span></div>
+    <div class="lines">
+      <div class="l"><span class="k">反认知</span><span>思考看不见也烧钱,贵 5–30 倍</span></div>
+      <div class="l"><span class="k">该用</span><span>多步 / 代码 / 规划 / 一步错就废</span></div>
+      <div class="l"><span class="k">别用</span><span>查找 / 摘要 / 分类 / 抽取 / 闲聊</span></div>
+      <div class="l"><span class="k">PM 定</span><span>标准打底 · 设思考上限 · 按任务路由 · 先测再用</span></div>
+    </div>
+  </div>
+
+  <div class="cta reveal">
+    <div class="h">▎ 来聊聊</div>
+    <div class="q">你踩过推理模型"又贵又慢、还不如普通模型"的坑吗?是哪个场景?评论区说说,我看看帮你判断该不该上。</div>
+  </div>
+  <div class="next reveal"><b>下期预告 ▶</b> 既然要"按任务路由" —— 这套省钱的路由到底怎么搭起来?</div>
+  <div class="tags reveal">#AI产品经理 #AIPM #推理模型 #大模型 #模型选型 #AI干货 #求职 #面试</div>
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll&&e.target.querySelectorAll('[data-c]').forEach(an);io.unobserve(e.target);}}),{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function an(el){if(el.dataset.d)return;el.dataset.d=1;const t=+el.getAttribute('data-c'),t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/900);el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);})(t0);}
+const bar=document.getElementById('progress');addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/((h.scrollHeight-h.clientHeight)||1)*100)+'%';},{passive:true});
+/* 任务分诊器 */
+(function(){const data=[
+{v:'no',w:'简单分类,标准/小模型秒回又便宜,上推理纯烧钱。'},
+{v:'no',w:'已知 schema 抽字段,不需要"想",小模型更稳更快。'},
+{v:'no',w:'直答任务,推理没增益,还更慢更贵。'},
+{v:'no',w:'要秒回,推理 10–150 秒延迟,用户直接走。'},
+{v:'yes',w:'多步、边界多、易错,推理能想清楚,值这个钱。'},
+{v:'yes',w:'一步错就滚雪球,推理逐步推、相互校验,主场。'},
+{v:'yes',w:'顺序推理、中间步骤相互依赖,推理强项。'},
+{v:'yes',w:'大量模糊信息里做判断,推理更稳更靠谱。'}];
+const tks=document.querySelectorAll('#triage .tk'),vd=document.getElementById('verdict');
+tks.forEach(b=>b.addEventListener('click',()=>{
+ tks.forEach(x=>x.classList.remove('active'));b.classList.add('active');
+ const d=data[+b.dataset.i],yes=d.v==='yes';
+ vd.className='verdict '+(yes?'yes':'no');
+ vd.innerHTML='<div class="vh"><span class="tag">'+(yes?'✓ 该上推理':'✗ 别上 用标准')+'</span>'+b.textContent+'</div><div class="why">'+d.w+'</div>';
+}));})();
+</script>
+</body>
+</html>

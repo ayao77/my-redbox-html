@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 AI 太烧钱?5 招砍掉 80% 成本 · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FEFCF5;--ink:#2B2B2B;--red:#E63946;--dred:#C0392B;--gold:#FFE16B;--green:#1B8A3A;--mint:#A8E6CF;--lilac:#FFF4D6;--pinkbg:#FFE4E1;--lime:#EAF6DD}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.7}
+.page{max-width:760px;margin:0 auto;padding:34px 24px 80px}
+#progress{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,var(--green),var(--gold));z-index:99;transition:width .12s}
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:3px solid var(--ink);margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:11px}
+.bmark{width:40px;height:40px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:19px}
+.bname{font-family:"Archivo Black",sans-serif;font-size:21px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:.14em}
+.alert{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;font-weight:900;font-size:14px;padding:7px 16px;border:3px solid var(--ink);border-radius:50px;box-shadow:4px 4px 0 var(--ink);margin-bottom:14px;animation:wob 2s ease-in-out infinite}
+.alert .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);animation:blink 1s steps(2) infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}@keyframes blink{50%{opacity:.2}}
+.hero{display:flex;gap:20px;align-items:center}
+.hero h1{flex:1;font-size:40px;font-weight:900;line-height:1.14;letter-spacing:-.01em}
+.hero h1 .hi{color:var(--green);position:relative}
+.hero h1 .hi::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:8px;background:var(--gold);z-index:-1}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:5px 5px 0 var(--gold);background:var(--lilac);display:block}
+.face .bub{position:absolute;bottom:-6px;right:-10px;background:var(--green);color:#fff;font-weight:900;font-size:13px;line-height:1.05;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 9px}
+.cap-line{font-weight:700;font-size:15px;color:#555;margin-top:18px;line-height:1.65;text-align:center}
+.cap-line b{color:var(--green)}
+.stat{display:flex;gap:10px;margin:24px 0}
+.stat .s{flex:1;background:var(--ink);color:#fff;border-radius:12px;padding:14px 10px;text-align:center}
+.stat .s .n{font-family:"Archivo Black",sans-serif;font-size:24px;color:var(--gold);line-height:1}
+.stat .s .l{font-size:11px;color:#cfc8b8;margin-top:6px;line-height:1.35}
+.div{text-align:center;margin:46px 0 22px;font-weight:900;font-size:21px;display:flex;align-items:center;justify-content:center;gap:14px}
+.div::before,.div::after{content:"";width:34px;height:3px;background:var(--ink);border-radius:2px}
+.div .em{color:var(--green)}
+.sub{text-align:center;color:#888;font-size:13.5px;margin:-12px 0 20px}
+.list{margin:18px 0}
+.li{display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-bottom:2px solid #eee5cf}
+.li .mk{flex-shrink:0;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:15px;border:2.5px solid var(--ink);background:#fff;color:var(--dred)}
+.li .tt{font-weight:900;font-size:16px}
+.li .dd{font-size:13.5px;color:#666;margin-top:1px}
+/* 省钱阶梯 */
+.ladder{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:20px}
+.ladder .lt{text-align:center;font-weight:900;font-size:14px;color:#888;margin-bottom:12px}
+.ladder .save{text-align:center;margin:2px 0 10px}
+.ladder .save .pct{font-family:"Archivo Black",sans-serif;font-size:64px;color:var(--green);line-height:.9;-webkit-text-stroke:2px var(--ink)}
+.ladder .save small{display:block;font-size:13px;font-weight:900;color:var(--ink);margin-top:2px}
+.ladder .track{height:34px;background:#f0e9d6;border:3px solid var(--ink);border-radius:10px;overflow:hidden;margin-bottom:14px}
+.ladder .fill{height:100%;width:100%;background:var(--dred);display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:900;font-size:13px;transition:width .4s cubic-bezier(.3,1.2,.5,1),background .4s;font-family:"JetBrains Mono",monospace}
+.ladder .toggles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.ladder .toggles button{font-family:inherit;font-weight:900;font-size:14px;border:2.5px solid var(--ink);border-radius:11px;padding:11px 6px;background:#fff;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:all .12s}
+.ladder .toggles button small{display:block;font-size:11px;color:#999;font-weight:700;margin-top:2px}
+.ladder .toggles button.on{background:var(--mint);transform:translate(1px,1px);box-shadow:2px 2px 0 var(--ink)}
+.ladder .toggles button.on small{color:var(--green)}
+.ladder .hint{text-align:center;font-size:12.5px;color:#aaa;margin-top:10px;font-weight:700}
+/* 五招卡 */
+.five{display:flex;flex-direction:column;gap:14px;margin:18px 0}
+.fz{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:16px 18px;transition:transform .18s}
+.fz:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.fz .fh{display:flex;align-items:center;gap:13px;margin-bottom:8px}
+.fz .fn{width:44px;height:44px;border-radius:12px;border:3px solid var(--ink);background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:21px;flex-shrink:0}
+.fz .ft{font-weight:900;font-size:18px}
+.fz .ft small{display:block;font-size:12px;color:#999;font-weight:700}
+.fz .save-tag{margin-left:auto;flex-shrink:0;background:var(--gold);color:var(--ink);font-weight:900;font-size:14px;padding:6px 13px;border:2.5px solid var(--ink);border-radius:50px}
+.fz .fb{font-size:13.5px;line-height:1.65;color:#444}.fz .fb b{color:var(--ink)}
+.fz .ex{margin-top:8px;font-size:13px;line-height:1.6;color:#4a5a48;background:var(--lime);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:8px 12px}
+.fz .ex b{color:var(--green)}
+.fz .dv{margin-top:8px;font-size:12.5px;font-weight:900;color:var(--dred);background:var(--pinkbg);border-radius:8px;padding:7px 11px}
+/* 优先级阶梯图 */
+.order{display:flex;flex-direction:column;gap:0;margin:18px 0}
+.order .ostep{display:flex;align-items:center;gap:13px;background:var(--lime);border:2.5px solid var(--ink);border-radius:12px;padding:11px 15px;box-shadow:3px 3px 0 var(--ink);margin-bottom:9px}
+.order .ostep .on{width:30px;height:30px;border-radius:8px;background:var(--ink);color:var(--gold);font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.order .ostep .ot{font-weight:900;font-size:15px}
+.order .ostep .od{margin-left:auto;font-size:12px;font-weight:900;color:var(--green)}
+.order .ostep:nth-child(1){margin-left:0}.order .ostep:nth-child(2){margin-left:16px}.order .ostep:nth-child(3){margin-left:32px}.order .ostep:nth-child(4){margin-left:48px}.order .ostep:nth-child(5){margin-left:64px}
+/* 走一遍 */
+.flow{background:var(--ink);color:#fff;border:4px solid var(--gold);border-radius:16px;padding:20px 22px;margin:18px 0}
+.flow .ft{font-weight:900;font-size:16px;color:var(--gold);margin-bottom:12px}
+.flow .frow{display:flex;align-items:center;gap:14px;margin:11px 0;font-size:14px}
+.flow .frow .a{font-family:"Archivo Black",sans-serif;font-size:22px;color:#ff9b8a;text-decoration:line-through;text-decoration-color:var(--red)}
+.flow .frow .ar{color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:18px}
+.flow .frow .b{font-family:"Archivo Black",sans-serif;font-size:24px;color:var(--mint)}
+.flow .frow .lab{margin-left:auto;font-size:12px;color:#cfc8b8;text-align:right}
+.card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin-bottom:18px}
+.card .hd{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.card .hd .qn{width:42px;height:42px;border-radius:11px;border:3px solid var(--ink);background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:17px;flex-shrink:0}
+.card .hd h3{font-size:18px;font-weight:900;line-height:1.2}
+.card .hd .hs{font-size:12px;color:#999;font-weight:700;margin-top:1px}
+.def{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.def .d{font-size:14px;line-height:1.5}.def .d .dt{font-weight:900}
+.def .d .dv{display:block;font-size:12.5px;font-weight:900;color:var(--dred);margin-top:2px}
+.warn{display:flex;gap:11px;align-items:flex-start;padding:10px 2px;border-bottom:1.5px dashed #ddd;font-size:13.5px;line-height:1.55}
+.warn:last-child{border-bottom:none}
+.warn .x{flex-shrink:0;color:var(--dred);font-weight:900}
+.dark{background:var(--ink);color:#fff;border:4px solid var(--gold);border-radius:16px;padding:20px 22px;margin:26px 0;position:relative}
+.dark .tag{position:absolute;top:-14px;left:20px;background:var(--gold);color:var(--ink);padding:4px 13px;border:3px solid var(--ink);font-size:12px;font-weight:900}
+.dark .gi{background:rgba(255,225,102,.1);border-left:3px solid var(--gold);padding:9px 12px;margin:8px 0;font-size:14px;line-height:1.6;color:var(--gold)}
+.dark .gi .n{color:var(--mint);font-weight:900;margin-right:7px}
+.summary{background:var(--ink);color:var(--gold);border:4px solid var(--gold);border-radius:18px;padding:24px;margin:32px 0;text-align:center}
+.summary .big{font-size:19px;font-weight:900;line-height:1.5;margin-bottom:14px}
+.summary .big .r{color:var(--mint)}
+.summary .lines{text-align:left;background:rgba(255,225,102,.1);padding:14px;border-radius:10px;border:2px dashed var(--gold)}
+.summary .lines .l{display:flex;gap:9px;padding:4px 0;font-size:13px;line-height:1.5}
+.summary .lines .l .k{color:var(--gold);font-weight:900;flex-shrink:0;width:64px}
+.cta{background:var(--gold);border:4px solid var(--ink);border-radius:20px;padding:18px 20px;text-align:center;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
+.cta .h{font-weight:900;font-size:16px;margin-bottom:8px}
+.cta .q{font-size:14px;line-height:1.6;font-weight:600}
+.next{background:#fff;border:3px dashed var(--ink);border-radius:14px;padding:13px;text-align:center;font-size:13.5px;color:#666;line-height:1.6}
+.next b{color:var(--green)}
+.tags{text-align:center;margin-top:22px;font-size:13px;color:#999}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.reveal.vis{opacity:1;transform:none}
+@media (max-width:560px){.hero h1{font-size:31px}.face{width:94px}.face img{width:94px;height:94px}.stat{flex-direction:column}.ladder .toggles{grid-template-columns:1fr 1fr}.order .ostep{margin-left:0 !important}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="page">
+  <div class="brand-bar"><div class="brand"><div class="bmark">N</div><div class="bname">NOVA</div></div><div class="vol">AI 实战 · VOL.48</div></div>
+
+  <div class="alert"><span class="dot"></span><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2v20M7 5h7a3 3 0 010 6H8a3 3 0 000 6h8" fill="none" stroke="#FFE16B" stroke-width="2" stroke-linecap="round"/></svg> 降本 = 性价比最高的活</div>
+  <div class="hero">
+    <h1>AI 成本太高?<br>九成其实是<span class="hi">浪费</span>掉的</h1>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+  <div class="cap-line reveal">大多数 AI 产品的账单,九成是浪费掉的。<br>好消息:一套组合拳能砍 <b>70–85%</b>,基本不影响效果。</div>
+
+  <div class="stat reveal">
+    <div class="s"><div class="n"><span data-c="80">0</span>%</div><div class="l">五招叠加能砍掉的成本</div></div>
+    <div class="s"><div class="n"><span data-c="5">0</span> 招</div><div class="l">按上手难易排好的降本组合</div></div>
+    <div class="s"><div class="n"><span data-c="90">0</span>%</div><div class="l">缓存命中,重复部分能省</div></div>
+  </div>
+
+  <div class="div reveal">反认知 · 最省钱的<span class="em">不是换模型</span></div>
+  <div class="sub reveal">一喊降本就想"换便宜模型/自己训一个"?方向错了。</div>
+  <div class="list reveal">
+    <div class="li"><div class="mk">1</div><div><div class="tt">别重复付费</div><div class="dd">同样的问题反复算 → 缓存它,别每次都花一次钱。</div></div></div>
+    <div class="li"><div class="mk">2</div><div><div class="tt">别为简单活付贵价</div><div class="dd">分类、摘要这种小活用旗舰模型 → 杀鸡用牛刀,贵几十倍。</div></div></div>
+    <div class="li"><div class="mk">3</div><div><div class="tt">别传没用的 token</div><div class="dd">把一堆冗余历史、长文档全塞进去 → 每个 token 都在烧钱。</div></div></div>
+  </div>
+  <div class="cap-line reveal" style="margin-top:14px">大头在<b>缓存 / 路由 / 压缩</b>,不在自训。自训自托管是最重、最容易亏的那一步。</div>
+
+  <div class="div reveal">点一点 · <span class="em">省钱阶梯</span></div>
+  <div class="sub reveal">点亮每一招,看你的账单怎么往下掉(可叠加)。</div>
+  <div class="ladder reveal" id="ladder">
+    <div class="save"><span class="pct" id="savePct">0%</span><small>已省</small></div>
+    <div class="track"><div class="fill" id="costFill">成本 100%</div></div>
+    <div class="toggles">
+      <button data-f="0.6">① 缓存<small>省40%</small></button>
+      <button data-f="0.6">② 路由<small>省40%</small></button>
+      <button data-f="0.75">③ 压缩<small>省25%</small></button>
+      <button data-f="0.8">④ 批处理<small>省20%</small></button>
+      <button data-f="0.7">⑤ 蒸馏<small>省30%</small></button>
+    </div>
+    <div class="hint">五招全点亮 → 砍到原来的一两成</div>
+  </div>
+
+  <div class="div reveal">降本<span class="em">五板斧</span> · 按优先级</div>
+  <div class="five reveal">
+    <div class="fz"><div class="fh"><div class="fn">1</div><div class="ft">缓存<small>最高回报 · 最该先上</small></div><div class="save-tag">省 50–90%</div></div><div class="fb">相同/相似的请求别重复算。三层:<b>精确缓存</b>(完全相同直接返回)、<b>语义缓存</b>(意思相近也命中)、<b>Prompt 缓存</b>(复用长系统提示/文档,命中省最高 90%)。</div><div class="ex"><b>例:</b>100 个用户问同一个退款问题 —— 没缓存就算 100 次、付 100 次钱;加缓存真正只算几次,其余直接返回。</div><div class="dv">默认:语义缓存相似度阈值 ≈ 0.9,TTL 5 分钟起</div></div>
+    <div class="fz"><div class="fh"><div class="fn">2</div><div class="ft">模型路由<small>简单走便宜的</small></div><div class="save-tag">省 40–70%</div></div><div class="fb">简单任务走便宜/小模型(<b>便宜 15–50 倍</b>),难任务才上旗舰。六到八成请求是常规活,路由后整体大降。</div><div class="ex"><b>例:</b>把“消息分类/打标”丢给小模型 —— 几乎零成本、秒回,还跟旗舰一样准;拿旗舰做纯浪费。</div><div class="dv">默认:按任务难度分三档(简单/中/难)</div></div>
+    <div class="fz"><div class="fh"><div class="fn">3</div><div class="ft">Prompt / 上下文压缩<small>砍冗余 token</small></div><div class="save-tag">省 30–70%</div></div><div class="fb">同样输出,压一压能<b>少 30–50% token</b>;对话历史做摘要压缩能省 <b>50–70%</b>、还零幻觉。</div><div class="ex"><b>例:</b>聊了 20 轮的客服对话 —— 不用全塞,留最近 3 轮原文 + 1 段把前面浓缩好的摘要,token 直接砍一半、效果不掉。</div><div class="dv">默认:只留最近 3 轮原文 + 1 段摘要</div></div>
+    <div class="fz"><div class="fh"><div class="fn">4</div><div class="ft">批处理 Batch<small>非实时的活</small></div><div class="save-tag">直接 5 折</div></div><div class="fb">报表、批量打标、离线评测这种<b>不要秒回</b>的,走 Batch API <b>直接 5 折</b>。这类通常占你总花费的 20–40%。</div><div class="ex"><b>例:</b>每天夜里给一批数据打标、跑离线评测 —— 攒成一批半夜批量跑,5 折拿下,几乎不用动代码。</div><div class="dv">默认:非实时任务统统进 Batch 队列</div></div>
+    <div class="fz"><div class="fh"><div class="fn">5</div><div class="ft">蒸馏 / 自托管<small>量大才上</small></div><div class="save-tag">5–30 倍</div></div><div class="fb">把大模型蒸馏成小模型,<b>5–30 倍</b>降本、4 倍快,还保住 95–97% 效果;但工程重,<b>量真的大、任务稳定</b>才划算。量化更温和(约省 29%)。</div><div class="ex"><b>例:</b>“意图识别”这类活每天跑几千万次、又很稳定 —— 蒸馏成专用小模型才划算;量不大千万别碰。</div><div class="dv">默认:别一上来就做,前四招榨干再说</div></div>
+  </div>
+
+  <div class="div reveal">上的<span class="em">顺序</span> · 别一上来搞最重的</div>
+  <div class="order reveal">
+    <div class="ostep"><div class="on">1</div><div class="ot">缓存</div><div class="od">最省力</div></div>
+    <div class="ostep"><div class="on">2</div><div class="ot">模型路由</div><div class="od">↓</div></div>
+    <div class="ostep"><div class="on">3</div><div class="ot">压缩</div><div class="od">↓</div></div>
+    <div class="ostep"><div class="on">4</div><div class="ot">批处理</div><div class="od">↓</div></div>
+    <div class="ostep"><div class="on">5</div><div class="ot">蒸馏 / 自托管</div><div class="od">最后才碰</div></div>
+  </div>
+  <div class="cap-line reveal" style="margin-top:6px">前三招工程量很小,就能砍掉 <b>40–60%</b>。</div>
+
+  <div class="div reveal">怎么用 · <span class="em">走一遍</span></div>
+  <div class="flow reveal">
+    <div class="ft">同一套东西,叠加五招前后</div>
+    <div class="frow"><span class="a">6 元</span><span class="ar">→</span><span class="b">1 元上下</span><span class="lab">每次 Agent 会话<br>产出不变</span></div>
+    <div class="frow"><span class="a">60 / 月</span><span class="ar">→</span><span class="b">6 / 月</span><span class="lab">一个常驻系统提示<br>加 80% 缓存命中</span></div>
+  </div>
+
+  <div class="card reveal" style="margin-top:24px">
+    <div class="hd"><div class="qn">PM</div><div><h3>拍板默认值(可抄)</h3><div class="hs">能直接抄去跟工程提</div></div></div>
+    <div class="def">
+      <div class="d"><span class="dt">① 缓存</span> —— 先上,回报最高。<span class="dv">默认:语义相似度阈值 ≈ 0.9,TTL 5 分钟起;带时效的查询短 TTL 或不缓存</span></div>
+      <div class="d"><span class="dt">② 路由</span> —— 按难度分流。<span class="dv">默认:简单/中/难三档,简单走小模型</span></div>
+      <div class="d"><span class="dt">③ 批处理</span> —— 非实时进队列。<span class="dv">默认:报表/打标/评测走 Batch,5 折</span></div>
+      <div class="d"><span class="dt">④ 成本看板</span> —— 看得见才省得动。<span class="dv">默认:每功能设预算 + 日成本告警;改任何一招上线前 eval 确认效果没掉</span></div>
+    </div>
+  </div>
+
+  <div class="div reveal">别踩的<span class="em">坑</span></div>
+  <div class="list reveal" style="background:var(--pinkbg);border:3px solid var(--ink);border-radius:14px;padding:6px 16px 12px">
+    <div class="warn"><span class="x">✗</span><div>别为省钱牺牲质量还<b>不测</b> —— 每招上线前都 A/B,确认效果没掉再全量。</div></div>
+    <div class="warn"><span class="x">✗</span><div>别一上来就<b>自训 / 自托管</b> —— 最重、最容易亏,前四招榨干再考虑。</div></div>
+    <div class="warn"><span class="x">✗</span><div>缓存别把<b>该变的</b>也缓存了 —— 带时效的查询(库存、价格、实时数据)要短 TTL 或不缓存。</div></div>
+  </div>
+
+  <div class="dark reveal">
+    <div class="tag">5 句面试金句 · 当场说出口</div>
+    <div class="gi"><span class="n">1</span>降本性价比最高,组合拳能砍 70–85%,还基本不掉效果。</div>
+    <div class="gi"><span class="n">2</span>最省钱的不是换模型,是别重复付费 —— 缓存优先级最高。</div>
+    <div class="gi"><span class="n">3</span>简单活走小模型,能便宜 15–50 倍。</div>
+    <div class="gi"><span class="n">4</span>非实时的活走 Batch,直接 5 折。</div>
+    <div class="gi"><span class="n">5</span>上的顺序:缓存 → 路由 → 压缩 → 批处理 → 最后才蒸馏自托管。</div>
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">降本不是"换个便宜的"<br><span class="r">是别重复付、别杀鸡用牛刀</span></div>
+    <div class="lines">
+      <div class="l"><span class="k">反认知</span><span>九成的钱是白烧的,大头在缓存/路由/压缩</span></div>
+      <div class="l"><span class="k">五招</span><span>缓存 / 路由 / 压缩 / 批处理 / 蒸馏</span></div>
+      <div class="l"><span class="k">顺序</span><span>先缓存最省力,蒸馏自托管最后碰</span></div>
+      <div class="l"><span class="k">PM 定</span><span>阈值 0.9 · 三档路由 · 非实时进 Batch · 成本告警</span></div>
+    </div>
+  </div>
+
+  <div class="cta reveal">
+    <div class="h">▎ 来聊聊</div>
+    <div class="q">你们的 AI 账单,最大头花在哪?评论区说说你的场景,我帮你看先砍哪一刀最划算。</div>
+  </div>
+  <div class="next reveal"><b>下期预告 ▶</b> 这套省钱规则,怎么搭成一个自动路由,真正落到系统里?</div>
+  <div class="tags reveal">#AI产品经理 #AIPM #大模型 #AI成本 #降本 #模型选型 #AI干货 #求职</div>
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll&&e.target.querySelectorAll('[data-c]').forEach(an);io.unobserve(e.target);}}),{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function an(el){if(el.dataset.d)return;el.dataset.d=1;const t=+el.getAttribute('data-c'),t0=performance.now();const suf=el.parentNode.textContent.indexOf('%')>-1?'':'';(function f(n){const p=Math.min(1,(n-t0)/900);el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);})(t0);}
+const bar=document.getElementById('progress');addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/((h.scrollHeight-h.clientHeight)||1)*100)+'%';},{passive:true});
+/* 省钱阶梯 */
+(function(){const btns=document.querySelectorAll('#ladder .toggles button'),fill=document.getElementById('costFill'),pct=document.getElementById('savePct');
+function upd(){let cost=1;btns.forEach(b=>{if(b.classList.contains('on'))cost*=+b.dataset.f;});const c=Math.round(cost*100),sv=100-c;
+fill.style.width=Math.max(8,c)+'%';fill.textContent='成本 '+c+'%';
+fill.style.background=sv>=70?'#1B8A3A':sv>=40?'#E0A500':'#C0392B';
+pct.textContent=sv+'%';}
+btns.forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('on');upd();}));upd();})();
+</script>
+</body>
+</html>

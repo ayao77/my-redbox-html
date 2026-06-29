@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品经理实战之 上线就完事了?90%死在上线之后 · NOVA</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FEFCF5;--ink:#2B2B2B;--red:#E63946;--dred:#C0392B;--gold:#FFE16B;--green:#1B8A3A;--mint:#A8E6CF;--lilac:#FFF4D6;--pinkbg:#FFE4E1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.04) 1px,transparent 0);background-size:24px 24px;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.7}
+.page{max-width:760px;margin:0 auto;padding:34px 24px 80px}
+#progress{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,var(--red),var(--gold));z-index:99;transition:width .12s}
+.brand-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:3px solid var(--ink);margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:11px}
+.bmark{width:40px;height:40px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black",sans-serif;font-size:19px}
+.bname{font-family:"Archivo Black",sans-serif;font-size:21px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 14px;font-family:"Archivo Black",sans-serif;font-size:12px;letter-spacing:.14em}
+.alert{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:900;font-size:14px;padding:7px 16px;border:3px solid var(--ink);border-radius:50px;box-shadow:4px 4px 0 var(--ink);margin-bottom:14px;animation:wob 2s ease-in-out infinite}
+.alert .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);animation:blink 1s steps(2) infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}@keyframes blink{50%{opacity:.2}}
+.hero{display:flex;gap:20px;align-items:center}
+.hero h1{flex:1;font-size:40px;font-weight:900;line-height:1.14;letter-spacing:-.01em}
+.hero h1 .hi{color:var(--red);position:relative}
+.hero h1 .hi::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:8px;background:var(--gold);z-index:-1}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:5px 5px 0 var(--gold);background:var(--lilac);display:block}
+.face .bub{position:absolute;bottom:-6px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.05;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 9px}
+/* 仪表盘 hero */
+.dash{margin:22px 0 0;background:#fff;border:4px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--red);overflow:hidden}
+.dash .dh{display:flex;align-items:center;gap:9px;background:var(--ink);color:#fff;padding:11px 16px;font-weight:900;font-size:14px}
+.dash .dh .live{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--mint)}
+.dash .dh .live i{width:8px;height:8px;border-radius:50%;background:var(--mint);animation:blink 1.2s steps(2) infinite}
+.dash .dbody{display:flex;align-items:stretch}
+.dash .panel{flex:1.15;padding:12px 14px;border-right:2px solid #eee}
+.dash .panel .pl{font-size:11px;color:#999;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.dash .panel .pl .dr{color:var(--red);font-weight:900;display:inline-flex;align-items:center;gap:4px}
+.dash .panel>svg{width:100%;height:88px;display:block;margin-top:6px}
+.dash .db{flex:1;display:flex;flex-direction:column}
+.dash .tile{padding:0 14px;border-bottom:2px solid #eee;flex:1;display:flex;align-items:center;gap:8px}
+.dash .tile:last-child{border-bottom:none}
+.dash .tile .tl{font-size:11px;color:#999;font-weight:700;width:40px;flex-shrink:0}
+.dash .tile .tv{font-family:"Archivo Black",sans-serif;font-size:21px;line-height:1}
+.dash .tile .td{font-size:10.5px;font-weight:900;margin-left:auto;text-align:right;color:#aaa}
+.dash .tile.q .tv{color:var(--dred)}.dash .tile.c .tv{color:var(--dred)}.dash .tile.a .tv{color:var(--red)}
+.cap-line{font-weight:700;font-size:15px;color:#555;margin-top:18px;line-height:1.65;text-align:center}
+.cap-line b{color:var(--red)}
+.stat{display:flex;gap:10px;margin:24px 0}
+.stat .s{flex:1;background:var(--ink);color:#fff;border-radius:12px;padding:14px 10px;text-align:center}
+.stat .s .n{font-family:"Archivo Black",sans-serif;font-size:24px;color:var(--gold);line-height:1}
+.stat .s .l{font-size:11px;color:#cfc8b8;margin-top:6px;line-height:1.35}
+.div{text-align:center;margin:46px 0 22px;font-weight:900;font-size:21px;display:flex;align-items:center;justify-content:center;gap:14px}
+.div::before,.div::after{content:"";width:34px;height:3px;background:var(--ink);border-radius:2px}
+.div .em{color:var(--red)}
+.sub{text-align:center;color:#888;font-size:13.5px;margin:-12px 0 20px}
+/* 折线图 */
+.chart{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px}
+.chart .ct{display:flex;align-items:center;gap:8px;font-weight:900;font-size:15px;margin-bottom:6px}
+.chart .ct .leg{margin-left:auto;display:flex;gap:12px;font-size:11px;font-weight:700}
+.chart .ct .leg span{display:inline-flex;align-items:center;gap:5px;color:#777}
+.chart .ct .leg i{width:14px;height:4px;border-radius:2px;display:inline-block}
+.chart svg{width:100%;height:auto;display:block;margin-top:4px}
+.chart .qpath{fill:none;stroke:var(--green);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;transition:none}
+.chart .cpath{fill:none;stroke:var(--dred);stroke-width:3;stroke-dasharray:5 5;stroke-linecap:round;opacity:.85}
+.chart .adot{opacity:0;transition:opacity .3s}
+.chart .alab{font-family:"JetBrains Mono",monospace;font-weight:800;font-size:11px;fill:var(--dred);opacity:0;transition:opacity .3s}
+.chart .btns{margin-top:13px;display:flex;gap:9px;align-items:center}
+.chart button{font-family:inherit;font-weight:900;font-size:13px;border:2.5px solid var(--ink);border-radius:50px;padding:8px 18px;background:var(--gold);cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.chart button:active{transform:translate(2px,2px);box-shadow:none}
+.chart .cap{font-size:13px;font-weight:700;color:#555}
+.chart .cap b{color:var(--dred)}
+.list{margin:18px 0}
+.li{display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-bottom:2px solid #eee5cf}
+.li .mk{flex-shrink:0;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:15px;border:2.5px solid var(--ink);background:var(--ink);color:var(--gold)}
+.li .tt{font-weight:900;font-size:17px}
+.li .dd{font-size:13.5px;color:#666;margin-top:1px}
+.li .rt{margin-left:auto;flex-shrink:0;font-size:13px;font-weight:900;color:var(--dred);text-align:right}
+/* 4 类监控网格 */
+.mon{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.mon .m{background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:14px 15px;transition:transform .18s}
+.mon .m:hover{transform:translate(-2px,-2px)}
+.mon .m .mh{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.mon .m .ic{width:34px;height:34px;border-radius:9px;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mon .m.q .ic{background:var(--pinkbg)}.mon .m.p .ic{background:var(--lilac)}.mon .m.c .ic{background:var(--mint)}.mon .m.s .ic{background:var(--gold)}
+.mon .m .nm{font-weight:900;font-size:16px}
+.mon .m .it{font-size:12.5px;line-height:1.55;color:#555}
+.mon .m .it b{color:var(--ink)}
+/* 统一内容卡 */
+.card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin-bottom:18px}
+.card .hd{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.card .hd .qn{width:42px;height:42px;border-radius:11px;border:3px solid var(--ink);background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black",sans-serif;font-size:17px;flex-shrink:0}
+.card .hd h3{font-size:18px;font-weight:900;line-height:1.2}
+.card .hd .hs{font-size:12px;color:#999;font-weight:700;margin-top:1px}
+.card .bd{font-size:14px;line-height:1.7}.card .bd b{color:var(--dred)}
+.def{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.def .d{font-size:14px;line-height:1.5}
+.def .d .dt{font-weight:900}
+.def .d .dv{display:block;font-size:12.5px;font-weight:900;color:var(--dred);margin-top:2px}
+.tpl{background:var(--ink);color:#fff;border-radius:9px;padding:11px 14px;font-size:13.5px;line-height:1.65;margin-top:8px}
+.tpl .h{font-size:12px;color:var(--gold);font-weight:900;margin-bottom:5px;font-family:"JetBrains Mono",monospace}
+/* 走一遍 flow */
+.flow{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px}
+.flow .sc{font-size:14px;line-height:1.6;background:var(--pinkbg);border-left:4px solid var(--dred);border-radius:0 8px 8px 0;padding:10px 13px;margin-bottom:14px}
+.flow .sc b{color:var(--dred)}
+.flow .step{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1.5px dashed #ddd}
+.flow .step:last-of-type{border-bottom:none}
+.flow .step .mk{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--ink);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center}
+.flow .step .tx{font-size:13.5px;line-height:1.55}.flow .step .tx b{color:var(--green)}
+/* gono */
+.gono{display:flex;gap:12px;margin:18px 0}
+.gono .c{flex:1;border:3px solid var(--ink);border-radius:14px;padding:14px 16px}
+.gono .c.go{background:var(--mint)}.gono .c.no{background:var(--pinkbg)}
+.gono .c .h{font-weight:900;font-size:16px;margin-bottom:6px}
+.gono .c.go .h{color:var(--green)}.gono .c.no .h{color:var(--dred)}
+.gono .c .ln{font-size:13px;line-height:1.6;margin:3px 0}
+.dark{background:var(--ink);color:#fff;border:4px solid var(--gold);border-radius:16px;padding:20px 22px;margin:26px 0;position:relative}
+.dark .tag{position:absolute;top:-14px;left:20px;background:var(--gold);color:var(--ink);padding:4px 13px;border:3px solid var(--ink);font-size:12px;font-weight:900}
+.dark .gi{background:rgba(255,225,102,.1);border-left:3px solid var(--gold);padding:9px 12px;margin:8px 0;font-size:14px;line-height:1.6;color:var(--gold)}
+.dark .gi .n{color:var(--red);font-weight:900;margin-right:7px}
+.summary{background:var(--ink);color:var(--gold);border:4px solid var(--gold);border-radius:18px;padding:24px;margin:32px 0;text-align:center}
+.summary .big{font-size:19px;font-weight:900;line-height:1.5;margin-bottom:14px}
+.summary .big .r{color:var(--red)}
+.summary .lines{text-align:left;background:rgba(255,225,102,.1);padding:14px;border-radius:10px;border:2px dashed var(--gold)}
+.summary .lines .l{display:flex;gap:9px;padding:4px 0;font-size:13px;line-height:1.5}
+.summary .lines .l .k{color:var(--gold);font-weight:900;flex-shrink:0;width:62px}
+.cta{background:var(--gold);border:4px solid var(--ink);border-radius:20px;padding:18px 20px;text-align:center;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
+.cta .h{font-weight:900;font-size:16px;margin-bottom:8px}
+.cta .q{font-size:13.5px;line-height:1.6;margin-bottom:12px;font-weight:600}
+.cta .bonus{font-size:12px;color:#555;line-height:1.6;padding-top:11px;border-top:2px dashed var(--ink)}
+.cta .bonus b{color:var(--dred)}
+.next{background:#fff;border:3px dashed var(--ink);border-radius:14px;padding:13px;text-align:center;font-size:13.5px;color:#666;line-height:1.6}
+.next b{color:var(--red)}
+.tags{text-align:center;margin-top:22px;font-size:13px;color:#999}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.reveal.vis{opacity:1;transform:none}
+@media (max-width:560px){.hero h1{font-size:31px}.face{width:94px}.face img{width:94px;height:94px}.stat,.gono{flex-direction:column}.mon{grid-template-columns:1fr}.dash .db{flex-wrap:wrap}.dash .tile{flex:1 1 33%;border-bottom:2px solid #eee}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="page">
+  <div class="brand-bar"><div class="brand"><div class="bmark">N</div><div class="bname">NOVA</div></div><div class="vol">AI 实战 · VOL.46</div></div>
+
+  <div class="alert"><span class="dot"></span><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 3l9 16H3z" fill="none" stroke="#FFE16B" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 16.5v.5" stroke="#FFE16B" stroke-width="2" stroke-linecap="round"/></svg> 上线只是开始 · 不是结束</div>
+  <div class="hero">
+    <h1>AI 产品上线就完事了?<br>90% <span class="hi">死在上线之后</span></h1>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+
+  <div class="dash reveal">
+    <div class="dh"><svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="4" width="18" height="14" rx="2" fill="none" stroke="#fff" stroke-width="2"/><path d="M6 14l3-3 2 2 4-5 3 4" fill="none" stroke="#A8E6CF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 实时监控大盘 · 上线第 30 天 <span class="live"><i></i>LIVE</span></div>
+    <div class="dbody">
+      <div class="panel">
+        <div class="pl"><span>质量分 · 近 30 天</span><span class="dr"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 4l8 14H4z" fill="none" stroke="#E63946" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 9v4M12 15.5v.5" stroke="#E63946" stroke-width="2.4" stroke-linecap="round"/></svg>DRIFT</span></div>
+        <svg viewBox="0 0 230 92">
+          <line x1="22" y1="10" x2="22" y2="78" stroke="#eee" stroke-width="1.5"/>
+          <line x1="22" y1="78" x2="220" y2="78" stroke="#eee" stroke-width="1.5"/>
+          <text x="2" y="28" font-size="9" fill="#bbb" font-family="JetBrains Mono">92</text>
+          <text x="2" y="74" font-size="9" fill="#bbb" font-family="JetBrains Mono">60</text>
+          <polyline points="22,25 128,28 175,46 220,62" fill="none" stroke="#1B8A3A" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="220" cy="62" r="5" fill="#E63946" stroke="#fff" stroke-width="2"/>
+          <text x="188" y="56" font-size="10" fill="#C0392B" font-family="JetBrains Mono" font-weight="700">78</text>
+        </svg>
+      </div>
+      <div class="db">
+        <div class="tile q"><span class="tl">质量分</span><span class="tv">78↓</span><span class="td">基线 92</span></div>
+        <div class="tile c"><span class="tl">日成本</span><span class="tv">+63%</span><span class="td">悄悄飙</span></div>
+        <div class="tile a"><span class="tl">告警</span><span class="tv">DRIFT</span><span class="td">已触发</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="cap-line reveal">你 prompt 没改、代码没动 —— 它却<b>自己变烂了</b>。<br>让它上线后不崩的那套功夫,叫 <b>LLMOps</b>。</div>
+
+  <div class="stat reveal">
+    <div class="s"><div class="n"><span data-c="90">0</span>%</div><div class="l">AI 产品死在上线之后</div></div>
+    <div class="s"><div class="n"><span data-c="15">0</span>–<span data-c="52">0</span>%</div><div class="l">2026 大模型幻觉率仍在此区间</div></div>
+    <div class="s"><div class="n"><span data-c="4">0</span> 类</div><div class="l">上线后必盯的监控</div></div>
+  </div>
+
+  <div class="div reveal">反认知 · 上线后会<span class="em">自己变烂</span></div>
+  <div class="sub reveal">漂移 Drift:你什么都没动,质量也会悄悄往下掉 —— 点按钮看真实走势。</div>
+  <div class="chart reveal" id="chart">
+    <div class="ct">上线后 30 天 · 质量分走势<span class="leg"><span><i style="background:var(--green)"></i>质量</span><span><i style="background:var(--dred)"></i>成本</span></span></div>
+    <svg viewBox="0 0 320 160" id="csvg">
+      <line x1="34" y1="20" x2="34" y2="128" stroke="#ddd" stroke-width="1.5"/>
+      <line x1="34" y1="128" x2="306" y2="128" stroke="#ddd" stroke-width="1.5"/>
+      <text x="8" y="44" font-size="9" fill="#bbb" font-family="JetBrains Mono">92</text>
+      <text x="8" y="124" font-size="9" fill="#bbb" font-family="JetBrains Mono">60</text>
+      <text x="30" y="142" font-size="9" fill="#bbb" font-family="JetBrains Mono">D1</text>
+      <text x="280" y="142" font-size="9" fill="#bbb" font-family="JetBrains Mono">D30</text>
+      <polyline class="cpath" id="cpath" points="34,118 306,118"></polyline>
+      <polyline class="qpath" id="qpath" points="34,40 306,40"></polyline>
+      <circle class="adot" id="adot" cx="306" cy="92" r="6" fill="#E63946" stroke="#fff" stroke-width="2"></circle>
+      <text class="alab" id="alab" x="240" y="84">DRIFT ↓78</text>
+    </svg>
+    <div class="btns"><button id="cbtn">上线后真实走势 ▶</button><span class="cap" id="ccap">你以为:上线就稳了,一条直线。</span></div>
+  </div>
+
+  <div class="div reveal">上线第一天就要盯的 <span class="em">4 类</span></div>
+  <div class="mon reveal">
+    <div class="m q"><div class="mh"><div class="ic"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 13l4 4L19 7" fill="none" stroke="#C0392B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="nm">质量</div></div><div class="it">幻觉率、答得对不对。用 <b>LLM 当裁判</b>在线抽样打分 + 语义相似度。</div></div>
+    <div class="m p"><div class="mh"><div class="ic"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M13 3L4 14h7l-1 7 9-11h-7z" fill="none" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="nm">性能</div></div><div class="it">首字延迟 <b>TTFT</b>、p95、失败率。参考线:好的模型 TTFT &lt; 600ms。</div></div>
+    <div class="m c"><div class="mh"><div class="ic"><svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="8" fill="none" stroke="#1B8A3A" stroke-width="2"/><path d="M12 8v8M9.5 10h3.5a1.6 1.6 0 010 3H10a1.6 1.6 0 000 3h3.5" fill="none" stroke="#1B8A3A" stroke-width="1.7" stroke-linecap="round"/></svg></div><div class="nm">成本</div></div><div class="it">每请求/每用户/每功能的 token 和钱。<b>输出 token 比输入贵 3–5 倍</b>。</div></div>
+    <div class="m s"><div class="mh"><div class="ic"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z" fill="none" stroke="#9B7A00" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="nm">安全</div></div><div class="it">护栏拦截率、毒性、越界、<b>PII 泄露</b>。出事先于用户发现。</div></div>
+  </div>
+
+  <div class="div reveal">核心 · 3 个上线后的<span class="em">硬功夫</span></div>
+  <div class="card reveal">
+    <div class="hd"><div class="qn">A</div><div><h3>生产 Eval(别只上线前测)</h3><div class="hs">线上真实流量也要打分</div></div></div>
+    <div class="bd">对线上真实流量<b>抽样打分</b> + 维护一个<b>回归集</b>(攒翻车 case)。分数跌破阈值就告警。研究说提前抓回归能拿 30%+ 准确率提升。</div>
+  </div>
+  <div class="card reveal">
+    <div class="hd"><div class="qn">B</div><div><h3>Prompt 当代码管</h3><div class="hs">版本化 · 能回滚 · 先过回归</div></div></div>
+    <div class="bd">改 prompt 不是直接上 —— 要<b>版本化、能回滚</b>,改完<b>先过回归 Eval 再发</b>。有个研究就叫"更好的 prompt 反而把效果改坏了",别凭感觉改。</div>
+  </div>
+  <div class="card reveal">
+    <div class="hd"><div class="qn">C</div><div><h3>链路追踪 Tracing</h3><div class="hs">出问题能查到哪一步</div></div></div>
+    <div class="bd">多步 / Agent 用 <b>correlation ID</b> 把每一步串起来。出幻觉、上下文丢了、变慢了,顺着 trace 就能定位是检索、还是某次工具调用出的问题。</div>
+  </div>
+
+  <div class="div reveal">怎么用 · <span class="em">走一遍</span></div>
+  <div class="sub reveal">一次最常见的上线后翻车 —— 你什么都没做,它却崩了。</div>
+  <div class="flow reveal">
+    <div class="sc"><b>第 7 天:</b>供应商把模型从 4o 悄悄升到新版,你<b>没动任何代码</b>。</div>
+    <div class="step"><div class="mk">1</div><div class="tx">质量分悄悄从 <b>92 掉到 78</b>(漂移),用户开始说"它变蠢了"。</div></div>
+    <div class="step"><div class="mk">2</div><div class="tx">drift 告警触发(质量分跌破基线 5 分)→ 推到 <b>Slack / PagerDuty</b>。</div></div>
+    <div class="step"><div class="mk">3</div><div class="tx">先止血:<b>回滚到锁定的模型版本</b>,质量分拉回 92。</div></div>
+    <div class="step"><div class="mk">4</div><div class="tx">把新版加进<b>回归集</b>重测,定位掉分原因,修好再灰度上。</div></div>
+  </div>
+
+  <div class="card reveal" style="margin-top:24px">
+    <div class="hd"><div class="qn">PM</div><div><h3>上线运维 · 拍板默认值</h3><div class="hs">能直接抄去跟工程提</div></div></div>
+    <div class="def">
+      <div class="d"><span class="dt">① 在线打分抽样率</span> —— 全量太贵,抽样够用。<span class="dv">默认:5%–10% 真实流量在线打分</span></div>
+      <div class="d"><span class="dt">② 告警阈值</span> —— 别等用户投诉。<span class="dv">默认:质量分跌破基线 5 分 / 成本超日预算 → 告警</span></div>
+      <div class="d"><span class="dt">③ 回归集</span> —— 持续养。<span class="dv">默认:先攒 50–100 条真实 case,翻车样本随时加</span></div>
+      <div class="d"><span class="dt">④ 模型版本</span> —— 别随供应商飘。<span class="dv">默认:锁定版本,不自动升级;升级先过回归</span></div>
+    </div>
+    <div class="tpl"><span class="h">⌨ MVP 三步(周一就能开干)</span>① 接 Langfuse(开源)埋 trace + token 成本 → ② 攒回归集 + 在线抽样让 LLM 当裁判打分 → ③ 配"质量/成本跌破阈值 → Slack 告警"。先把「看得见 + 会报警」跑起来。</div>
+  </div>
+
+  <div class="div reveal">什么<span class="em">第一天就要</span> / 可后补</div>
+  <div class="gono reveal">
+    <div class="c go"><div class="h"><svg viewBox="0 0 20 20" width="17" height="17" style="vertical-align:-3px"><circle cx="10" cy="10" r="9" fill="#1B8A3A"/><path d="M5.6 10.4l2.9 2.9 6-6.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 第一天就要</div><div class="ln">· trace + 成本埋点(看得见)</div><div class="ln">· 质量/成本告警(会报警)</div><div class="ln">· 一个回归集(改东西能测)</div></div>
+    <div class="c no"><div class="h"><svg viewBox="0 0 20 20" width="17" height="17" style="vertical-align:-3px"><circle cx="10" cy="10" r="9" fill="#C0392B"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg> 可后补</div><div class="ln">· 全自动评测大盘(先抽样)</div><div class="ln">· 复杂 A/B 灰度框架</div><div class="ln">· 多模型路由(下一期讲)</div></div>
+  </div>
+
+  <div class="dark reveal">
+    <div class="tag">5 句面试金句 · 当场说出口</div>
+    <div class="gi"><span class="n">1</span>上线是开始不是结束 —— 90% 的 AI 产品死在上线之后。</div>
+    <div class="gi"><span class="n">2</span>不动代码也会"漂移"变烂:供应商升级、输入变、检索库更新都会拉低质量。</div>
+    <div class="gi"><span class="n">3</span>上线后盯 4 类:质量、性能、成本、安全。</div>
+    <div class="gi"><span class="n">4</span>Prompt 要当代码:版本化 + 回滚 + 改了先过回归 Eval。</div>
+    <div class="gi"><span class="n">5</span>质量分跌破阈值自动告警 —— 你要第一个知道,不是用户。</div>
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">上线不是终点<br><span class="r">是你开始"盯"它的起点</span></div>
+    <div class="lines">
+      <div class="l"><span class="k">反认知</span><span>不动代码也会漂移变烂</span></div>
+      <div class="l"><span class="k">盯 4 类</span><span>质量 / 性能 / 成本 / 安全</span></div>
+      <div class="l"><span class="k">3 硬功夫</span><span>生产 Eval / Prompt 当代码 / Tracing</span></div>
+      <div class="l"><span class="k">PM 定</span><span>抽样 10% · 跌 5 分告警 · 锁版本 · 攒回归集</span></div>
+    </div>
+  </div>
+
+  <div class="cta reveal">
+    <div class="h">▎ 来聊聊</div>
+    <div class="q">你的 AI 产品上线后,踩过哪种"它自己变烂"的坑?是漂移、还是成本偷偷飙?评论区说说。</div>
+    <div class="bonus">P.S. 完整《AI 产品上线后运维(LLMOps)速查表(4 类监控 + 3 硬功夫 + 走一遍 + PM 默认值 + MVP + 面试 5 句)》—— 评论区扣【上线】,我私你发📎</div>
+  </div>
+  <div class="next reveal"><b>下期预告 ▶</b> 监控发现成本在飙 —— AI 产品怎么系统性降本(缓存 / 路由 / 小模型 / 降级)?</div>
+  <div class="tags reveal">#AI产品经理 #AIPM #LLMOps #大模型 #AI产品 #上线 #求职 #面试</div>
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll&&e.target.querySelectorAll('[data-c]').forEach(an);io.unobserve(e.target);}}),{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function an(el){if(el.dataset.d)return;el.dataset.d=1;const t=+el.getAttribute('data-c'),t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/900);el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);})(t0);}
+const bar=document.getElementById('progress');addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/((h.scrollHeight-h.clientHeight)||1)*100)+'%';},{passive:true});
+/* 折线图:理想直线 <-> 真实漂移下跌 */
+(function(){const q=document.getElementById('qpath'),c=document.getElementById('cpath'),dot=document.getElementById('adot'),lab=document.getElementById('alab'),btn=document.getElementById('cbtn'),cap=document.getElementById('ccap');
+const flatQ='34,40 306,40',flatC='34,118 306,118';
+const dropQ='34,40 150,42 200,58 250,78 306,92',riseC='34,118 150,114 200,98 250,80 306,66';
+let real=false;
+function set(){if(real){q.setAttribute('points',dropQ);c.setAttribute('points',riseC);dot.style.opacity=1;lab.style.opacity=1;cap.innerHTML='现实:第 7 天供应商升级模型 → 质量<b>悄悄掉到 78</b>,成本反而涨。';btn.textContent='看「你以为」的 ▶';}else{q.setAttribute('points',flatQ);c.setAttribute('points',flatC);dot.style.opacity=0;lab.style.opacity=0;cap.innerHTML='你以为:上线就稳了,一条直线。';btn.textContent='上线后真实走势 ▶';}}
+btn.addEventListener('click',()=>{real=!real;set();});set();})();
+</script>
+</body>
+</html>
