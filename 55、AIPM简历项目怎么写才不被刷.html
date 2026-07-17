@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>55 · AI 产品经理简历这样写才不被刷</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F4F0E6;--ink:#241F18;--red:#E14B3B;--dred:#9B1B27;--gold:#FFD24C;--green:#1B7A4B;--mint:#B9E6CC;--pink:#FFD9DC;--panel:#FFFFFF;--steel:#2C6E7F}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.045) 1px,transparent 0);background-size:24px 24px}
+.page{max-width:780px;margin:0 auto;padding:30px 22px 80px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.brand-mark{display:flex;align-items:center;gap:11px}
+.bm{width:44px;height:44px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:22px}
+.bn{font-family:"Archivo Black";font-size:24px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:7px 16px;font-family:"Archivo Black";font-size:14px}
+.hero{display:flex;gap:22px;align-items:center;margin-top:26px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:15px;letter-spacing:.02em}
+.hero-title{margin-top:10px;font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:44px;line-height:1.2;font-weight:900;letter-spacing:-.01em}
+.red{color:var(--red)}.green{color:var(--green)}
+.yellow-hi{background:linear-gradient(180deg,transparent 55%,var(--gold) 55%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.face{flex-shrink:0;position:relative;width:132px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:132px;height:132px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-6px;right:-12px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.08;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:96px}.face img{width:96px;height:96px}.hero-title{font-size:34px}}
+.hook-card{margin-top:26px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:18px;padding:24px;box-shadow:6px 6px 0 var(--red);position:relative}
+.hook-card .k{font-family:"Archivo Black";font-size:12px;color:var(--gold);letter-spacing:.14em}
+.hook-card p{margin-top:9px;font-size:20px;font-weight:800;line-height:1.5}
+.hook-card b{color:var(--gold)}
+.sec-title{margin:52px 0 6px;font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:27px;font-weight:900;letter-spacing:-.01em;display:flex;align-items:baseline;gap:12px}
+.sec-title .no{font-family:"Archivo Black";font-size:17px;color:#fff;background:var(--ink);border-radius:9px;padding:3px 11px}
+.sec-sub{color:#6a6055;font-weight:600;font-size:15px;margin-bottom:8px}
+.block{background:var(--panel);border:3px solid var(--ink);border-radius:18px;padding:22px;margin:26px 0;box-shadow:5px 5px 0 var(--ink);position:relative;transition:transform .18s,box-shadow .18s}
+.block:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.block.do{background:var(--mint)}.block.warn{background:var(--pink)}.block.dark{background:var(--ink);color:#fff}
+.block::before{position:absolute;top:-16px;left:22px;font-family:"Archivo Black";font-size:12px;background:var(--bg);border:3px solid var(--ink);border-radius:50px;padding:3px 13px;letter-spacing:.1em}
+.block.do::before{content:"兜底";background:var(--green);color:#fff;border-color:var(--green)}
+.block.warn::before{content:"翻车";background:var(--dred);color:#fff;border-color:var(--dred)}
+.block.dark::before{content:"面试金句";background:var(--ink);color:var(--gold)}
+/* resume compare */
+.rcmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
+@media(max-width:560px){.rcmp{grid-template-columns:1fr}}
+.rc{border:3px solid var(--ink);border-radius:16px;padding:16px 18px;box-shadow:5px 5px 0 var(--ink)}
+.rc .tag{display:inline-flex;align-items:center;gap:8px;font-family:"Archivo Black";font-size:12px;border-radius:50px;padding:3px 12px;letter-spacing:.06em}
+.rc .badge{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:900;color:#fff;flex-shrink:0}
+.rc .line{margin-top:12px;font-size:16px;font-weight:800;line-height:1.4}
+.rc.bad{background:#FBEEEE}.rc.bad .tag{background:var(--dred);color:#fff}.rc.bad .line{color:#8a7a72}
+.rc.good{background:#EAF6EC}.rc.good .tag{background:var(--green);color:#fff}
+.rc.good .line b{color:var(--green);font-family:"JetBrains Mono"}
+/* formula */
+.formula{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:20px 0;justify-content:center}
+.fchip{border:3px solid var(--ink);border-radius:14px;padding:12px 16px;font-weight:900;font-size:17px;box-shadow:4px 4px 0 var(--ink);text-align:center}
+.fchip small{display:block;font-size:12.5px;font-weight:700;color:#6a6055;margin-top:3px}
+.fchip.v{background:var(--gold)}.fchip.w{background:#fff}.fchip.m{background:var(--mint)}
+.plus{font-family:"Archivo Black";font-size:24px;color:var(--red)}
+/* diff rows */
+.diff{border:3px solid var(--ink);border-radius:14px;overflow:hidden;box-shadow:5px 5px 0 var(--ink);margin:14px 0;background:#fff}
+.diff .r{display:flex;gap:12px;padding:12px 15px;align-items:flex-start;font-size:15px;font-weight:700}
+.diff .r.b{background:#FBEEEE;border-bottom:2px dashed #e3cccc}
+.diff .r.g{background:#EAF6EC}
+.diff .ic{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px}
+.diff .r.b .ic{background:var(--dred)}.diff .r.g .ic{background:var(--green)}
+.diff .r.g b{color:var(--green);font-family:"JetBrains Mono"}
+/* pit list */
+.pits{margin:20px 0;display:flex;flex-direction:column;gap:12px}
+.pit{display:flex;gap:14px;align-items:flex-start;border:3px solid var(--ink);border-radius:14px;padding:14px 16px;box-shadow:4px 4px 0 var(--ink);background:#fff}
+.pit .n{width:40px;height:40px;border-radius:50%;background:var(--gold);border:3px solid var(--ink);font-family:"Archivo Black";display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.pit .t{font-size:15.5px;font-weight:700}.pit .t b{font-weight:900}
+.pit .t .fix{color:var(--green);font-weight:800}
+.pills{display:flex;flex-wrap:wrap;gap:11px;margin:20px 0}
+.pill{background:var(--ink);color:#fff;border-radius:50px;padding:9px 16px;font-weight:800;font-size:15px}
+.pill b{color:var(--gold);font-family:"JetBrains Mono";font-size:19px}
+ul.clean{list-style:none;margin-top:8px}
+ul.clean li{padding-left:22px;position:relative;margin-bottom:7px;font-size:15.5px}
+ul.clean li::before{content:"→";position:absolute;left:0;color:var(--red);font-weight:900}
+.closing{margin-top:34px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:5px 5px 0 var(--ink)}
+.closing .big{font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:22px;font-weight:900;line-height:1.45}
+.cta{margin-top:20px;background:var(--ink);color:#fff;border-radius:18px;padding:20px 22px;box-shadow:5px 5px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:14px}
+.cta p{margin-top:10px;font-size:15px}.cta b{color:var(--gold)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.is-visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal,.block,.diff,.pit{opacity:1!important;transform:none!important;transition:none!important}.face{animation:none}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="brand-mark"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.55</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇之 · 简历怎么写</div>
+      <h1 class="hero-title">AI 产品经理简历<br>这样写才<span class="red">不被刷</span></h1>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+
+  <div class="hook-card reveal">
+    <div class="k">REALITY CHECK</div>
+    <p>简历被刷，九成不是因为你项目不行。<br>是你把"做过"写成了"参与过"——<b>没量化、没规模、没归因。</b>简历是你的第一个产品，"负责某项目"就像详情页只写"这是个包"，没人会点。</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 class="sec-title reveal"><span class="no">VS</span>两份简历，同一个项目</h2>
+  <div class="sec-sub">招聘方 6 秒扫一屏，看的是"可量化的结果"，不是"职责描述"。</div>
+  <div class="rcmp">
+    <div class="rc bad reveal"><span class="tag"><span class="badge" style="background:var(--dred)">✗</span>被秒刷</span><div class="line">"负责 AI 客服项目，参与 RAG 方案设计与落地。"</div><div class="line" style="font-weight:700;font-size:14px;color:#a08">→ 做了啥？到什么程度？你负责哪块？全靠脑补。</div></div>
+    <div class="rc good reveal"><span class="tag"><span class="badge" style="background:var(--green)">✓</span>进了面</span><div class="line">"主导客服知识库 RAG 落地，答案准确率 <b>60→92</b>，人工工单量 <b>降 4 成</b>，覆盖 <b>8 个业务线</b>。"</div><div class="line" style="font-weight:700;font-size:14px;color:var(--green)">→ 做了什么、到什么程度、负责哪块、多大规模，全说清了。</div></div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2 class="sec-title reveal"><span class="no">01</span>第一件 · 一条好经历的公式</h2>
+  <div class="sec-sub">记住一个公式：动词 + 做了什么 + 量化结果 + 归因，缺一个这条经历就活不了。</div>
+  <div class="formula reveal">
+    <div class="fchip v">动词<small>主导/落地/上线</small></div>
+    <span class="plus">+</span>
+    <div class="fchip w">做了什么<small>具体方案/动作</small></div>
+    <span class="plus">+</span>
+    <div class="fchip m">量化结果<small>基线→目标/规模</small></div>
+    <span class="plus">+</span>
+    <div class="fchip v">归因<small>你负责哪块</small></div>
+  </div>
+  <p style="font-size:15.5px">动词别用"负责""参与"（没动作）；归因要讲清你负责哪块，别把团队成果全揽——面试官最烦"什么都是我干的"。</p>
+  <div class="reveal" style="background:var(--mint);border:3px solid var(--ink);border-radius:18px;padding:20px 22px;margin:24px 0;box-shadow:5px 5px 0 var(--ink)">
+    <p style="font-weight:900;font-size:16px;color:var(--green)">没有亮眼数字？量化不止准确率 ↓</p>
+    <ul class="clean" style="margin-top:8px">
+      <li>覆盖范围：覆盖了几个业务线、几类工单</li>
+      <li>处理量：每天扛多少次调用（比如每天 1 万次）</li>
+      <li>效率变化：评审时间从多久缩到多久、人工工单降多少</li>
+      <li>上线节奏：几周从 0 到上线</li>
+    </ul>
+    <p style="margin-top:8px;font-size:14.5px">实在挤不出数，就把你解决的具体问题 + 它的规模写清楚，也比一句"负责"强十倍。</p>
+  </div>
+  <!-- SECTION 02 三条改写 -->
+  <h2 class="sec-title reveal"><span class="no">02</span>第二件 · 三条烂写法，逐条改</h2>
+  <div class="sec-sub">同一段经历，换个写法，从被秒刷到被约面。</div>
+  <div class="diff reveal">
+    <div class="r b"><span class="ic">✗</span><div>"负责 AI 客服项目，参与 RAG 落地。"</div></div>
+    <div class="r g"><span class="ic">✓</span><div>"主导客服 RAG 落地，准确率 <b>60→92</b>，人工工单降 <b>4 成</b>。"</div></div>
+  </div>
+  <div class="diff reveal">
+    <div class="r b"><span class="ic">✗</span><div>"参与提升模型效果。"</div></div>
+    <div class="r g"><span class="ic">✓</span><div>"通过 query 改写 + 重排，多轮命中率从 <b>52 提到 88</b>，覆盖 <b>8 业务线</b>。"</div></div>
+  </div>
+  <div class="diff reveal">
+    <div class="r b"><span class="ic">✗</span><div>"熟悉 RAG、Agent、Prompt 工程。"（技能干堆一排）</div></div>
+    <div class="r g"><span class="ic">✓</span><div>"用 RAG + 兜底链把答非所问率从 <b>12% 压到 2%</b>。"（技能揉进成果）</div></div>
+  </div>
+  <p style="font-size:16px;font-weight:900;margin:18px 0;color:var(--dred)">心法：别让读者脑补，把结果直接摆上桌。</p>
+
+  <!-- SECTION 03 -->
+  <h2 class="sec-title reveal"><span class="no">03</span>第三件 · AI 筛简历的三个隐形坑</h2>
+  <div class="sec-sub">简历现在先过机器（约 92% 招聘方用 AI 筛）再过人，两关都要照顾。</div>
+  <div class="pits">
+    <div class="pit reveal"><span class="n">1</span><div class="t"><b>关键词不命中。</b>ATS 扫 RAG / 微调 / Eval / 向量库这些词，你写"AI 相关"就被机器过滤，人还没看到。<br><span class="fix">兜底：如实埋 JD 关键词，用你真做过的词。</span></div></div>
+    <div class="pit reveal"><span class="n">2</span><div class="t"><b>链接点不开。</b>GitHub 404 / 私有 / 点进去只有一个空 README。<br><span class="fix">兜底：交之前自己点一遍每个链接，确保能打开、有东西。</span></div></div>
+    <div class="pit reveal"><span class="n">3</span><div class="t"><b>讲不清。</b>约 30% 的候选人初面讲不清自己简历里的项目，这是最简单的专业度过滤器。<br><span class="fix">兜底：每条经历都能按"背景-做法-结果-你的角色"讲 2 分钟，写的和能讲的一致。</span></div></div>
+    <div class="pit reveal"><span class="n">＋</span><div class="t"><b>简历/求职信一眼 AI 味。</b>有招聘经理测 100 封求职信，95% 是明显 ChatGPT 原文，反而像群发 spam、没诚意。<br><span class="fix">兜底：按 JD 定制，引用招聘信息里 1-2 个具体点，让人看出你真研究过这家、这个岗。</span></div></div>
+  </div>
+  <div class="pills reveal">
+    <div class="pill">约 <b>92</b>% 招聘方用 AI 筛</div>
+    <div class="pill"><b>30</b>% 讲不清自己简历</div>
+    <div class="pill">6 秒 扫一屏</div>
+  </div>
+
+  <!-- 面试金句 -->
+  <div class="block dark reveal">
+    <p style="font-size:16px;line-height:1.7">交简历前，按这 <strong style="color:var(--gold)">4 句自检</strong>：</p>
+    <ul class="clean" style="margin-top:12px">
+      <li>每条经历有没有动词 + 做了什么 + 量化结果？</li>
+      <li>数字有没有基线和目标（60→92），不是空话"提升了"？</li>
+      <li>你负责哪一块讲清了没，有没有把团队成果全揽？</li>
+      <li>每个链接点得开吗、每条经历能讲 2 分钟吗？</li>
+    </ul>
+    <p style="margin-top:12px;color:#cbb;font-size:14px">4 条都过，你的简历才算能上桌。</p>
+  </div>
+
+  <div class="closing reveal">
+    <div class="big">简历是你的第一个产品，面试官是用户。<br>别让用户做阅读理解。</div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">评论区扣【简历】</span>
+    <p>我把这份 <b>《AI PM 简历量化改写清单》</b>（好经历公式 + 20 条烂写法→好写法对照 + 关键词埋点 + 项目自证话术）私信发你。</p>
+    <p style="margin-top:8px">下条讲：面试必问的<b>"你们怎么评估 AI 效果"</b>——90% 的人一张嘴就答错，教你怎么答、给能背的模板。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target);}})},{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

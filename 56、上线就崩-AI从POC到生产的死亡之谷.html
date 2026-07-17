@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>56 · AI 产品从 POC 到生产的死亡之谷</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F1ECE0;--ink:#20242E;--red:#E14B3B;--dred:#9B1B27;--gold:#FFD24C;--green:#1B7A4B;--mint:#B9E6CC;--pink:#FFDDE0;--panel:#FFFFFF;--steel:#2C6E7F;--purple:#5B4B8A}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.05) 1px,transparent 0);background-size:26px 26px}
+.page{max-width:780px;margin:0 auto;padding:30px 22px 80px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.brand-mark{display:flex;align-items:center;gap:11px}
+.bm{width:44px;height:44px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:22px}
+.bn{font-family:"Archivo Black";font-size:24px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:7px 16px;font-family:"Archivo Black";font-size:14px}
+.hero{display:flex;gap:22px;align-items:center;margin-top:26px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:15px;letter-spacing:.02em}
+.hero-title{margin-top:10px;font-size:40px;line-height:1.2;font-weight:900;letter-spacing:-.01em}
+.red{color:var(--red)}
+.yellow-hi{background:linear-gradient(180deg,transparent 55%,var(--gold) 55%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.face{flex-shrink:0;position:relative;width:132px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:132px;height:132px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-6px;right:-12px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.08;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:96px}.face img{width:96px;height:96px}.hero-title{font-size:30px}}
+/* stat strip */
+.stats{margin-top:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
+.st{border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:4px 4px 0 var(--ink);padding:12px 10px;text-align:center}
+.st .n{font-family:"Archivo Black";font-size:30px;color:var(--dred);line-height:1}
+.st .l{font-size:12.5px;font-weight:700;margin-top:6px;color:#4a4a4a;line-height:1.3}
+.hook-card{margin-top:24px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:18px;padding:24px;box-shadow:6px 6px 0 var(--red);position:relative}
+.hook-card .k{font-family:"Archivo Black";font-size:12px;color:var(--gold);letter-spacing:.14em}
+.hook-card p{margin-top:9px;font-size:19px;font-weight:800;line-height:1.5}
+.hook-card b{color:var(--gold)}
+.vsline{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap}
+.vsline .t{flex:1;min-width:200px;border-radius:12px;padding:10px 14px;font-weight:800;font-size:14px;line-height:1.4}
+.vsline .demo{background:#33384a;color:#cfe6ff}.vsline .prod{background:var(--dred);color:#fff}
+.sec-title{margin:48px 0 6px;font-size:25px;font-weight:900;letter-spacing:-.01em;display:flex;align-items:center;gap:12px;line-height:1.25}
+.sec-title .no{font-family:"Archivo Black";font-size:15px;color:#fff;background:var(--dred);border:2px solid var(--ink);border-radius:9px;padding:2px 10px;flex-shrink:0}
+.sec-sub{color:#6a6055;font-weight:600;font-size:15px;margin-bottom:10px}
+/* case callout */
+.case{border:3px solid var(--ink);border-radius:16px;background:var(--pink);box-shadow:5px 5px 0 var(--ink);padding:16px 18px;margin:16px 0}
+.case .lb{font-family:"Archivo Black";font-size:11px;color:var(--dred);letter-spacing:.08em}
+.case p{margin-top:8px;font-size:15px;font-weight:600;line-height:1.55}
+.case b{color:var(--dred);font-weight:900}
+.case ul{list-style:none;margin-top:8px}
+.case ul li{position:relative;padding-left:18px;margin-bottom:7px;font-size:14.5px;font-weight:600;line-height:1.5}
+.case ul li::before{content:"✗";position:absolute;left:0;color:var(--dred);font-weight:900}
+/* stat inline */
+.bignum{border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:4px 4px 0 var(--gold);padding:14px 16px;margin:16px 0;font-size:15px;font-weight:700;line-height:1.55}
+.bignum b{font-family:"Archivo Black";color:var(--dred);font-size:18px}
+/* 60 vs 90 */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+@media(max-width:560px){.vs{grid-template-columns:1fr}}
+.vc{border:3px solid var(--ink);border-radius:14px;padding:14px;box-shadow:4px 4px 0 var(--ink);font-size:14.5px;font-weight:700;line-height:1.5}
+.vc .h{font-family:"Archivo Black";font-size:13px;border-radius:8px;padding:3px 11px;display:inline-block;margin-bottom:9px}
+.vc.bad{background:#fff}.vc.bad .h{background:#d7d2c8;color:#5a544a}
+.vc.good{background:var(--mint)}.vc.good .h{background:var(--green);color:#fff}
+.saybar{background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:12px;padding:12px 16px;margin:14px 0;font-weight:800;font-size:15px;box-shadow:4px 4px 0 var(--gold)}
+.saybar .k{font-family:"Archivo Black";font-size:11px;color:var(--gold);letter-spacing:.1em;display:block;margin-bottom:4px}
+.block{background:var(--panel);border:3px solid var(--ink);border-radius:18px;padding:24px 22px;margin:26px 0;box-shadow:5px 5px 0 var(--ink);position:relative}
+.block.dark{background:var(--ink);color:#fff;box-shadow:5px 5px 0 var(--gold)}
+.block.dark::before{content:"上线前逐条过";position:absolute;top:-16px;left:22px;font-family:"Archivo Black";font-size:12px;background:var(--gold);color:var(--ink);border:3px solid var(--ink);border-radius:50px;padding:3px 13px}
+.block.q::before{content:"追问预案";position:absolute;top:-16px;left:22px;font-family:"Archivo Black";font-size:12px;background:var(--dred);color:#fff;border:3px solid var(--ink);border-radius:50px;padding:3px 13px}
+ul.clean{list-style:none;margin-top:8px}
+ul.clean li{padding-left:30px;position:relative;margin-bottom:11px;font-size:15.5px;line-height:1.5}
+ul.clean li::before{content:attr(data-n);position:absolute;left:0;color:var(--ink);background:var(--gold);font-family:"Archivo Black";font-size:12px;border-radius:6px;padding:1px 7px}
+.qlist .qi{margin-bottom:13px;font-size:15px;line-height:1.55}
+.qlist .qi b{color:var(--dred)}
+.closing{margin-top:34px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:5px 5px 0 var(--ink)}
+.closing .big{font-size:21px;font-weight:900;line-height:1.5}
+.cta{margin-top:20px;background:var(--ink);color:#fff;border-radius:18px;padding:20px 22px;box-shadow:5px 5px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:14px}
+.cta p{margin-top:10px;font-size:15px}.cta b{color:var(--gold)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.is-visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal,.case,.vc,.st{opacity:1!important;transform:none!important;transition:none!important}.face{animation:none}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="brand-mark"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.56</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇 · 从 POC 到生产</div>
+      <h1 class="hero-title">你那个惊艳的 AI demo<br><span class="yellow-hi">90% 上不了线</span></h1>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">死在<br>5个坑</div></div>
+  </div>
+
+  <div class="stats reveal">
+    <div class="st"><div class="n">95%</div><div class="l">GenAI 项目没跑出可衡量收益<small>（MIT 2025）</small></div></div>
+    <div class="st"><div class="n">88%</div><div class="l">AI pilot 走不到生产<small>（S&P Global）</small></div></div>
+    <div class="st"><div class="n">85%</div><div class="l">失败项目根因＝数据质量差</div></div>
+    <div class="st"><div class="n">77%</div><div class="l">失败是组织性、不是技术性</div></div>
+  </div>
+
+  <div class="hook-card reveal">
+    <div class="k">一句话戳穿</div>
+    <p>死掉的九成五，根子多半不在模型不行——是那个在会议室惊艳全场的 <b>demo，没能活着走到线上</b>。</p>
+    <div class="vsline">
+      <div class="t demo">demo＝一部「最佳情况」的演示片：挑好的数据、不捣乱的观众、只跑一次。</div>
+      <div class="t prod">生产＝一场「最坏情况」的持续跑：脏数据、会攻击你的真实用户、每天几万次峰值、没人兜底。</div>
+    </div>
+  </div>
+
+  <!-- 01 -->
+  <h2 class="sec-title reveal"><span class="no">坑 01</span>数据：demo 喂干净样例，生产撞真实脏数据</h2>
+  <div class="sec-sub">你 demo 惊艳，是因为你挑了最干净的几条去演。</div>
+  <div class="bignum reveal"><b>85%</b> 失败的 AI 项目把「数据质量差」列为根因；而真正拥有「AI-ready」干净数据的组织，只有 <b>12%</b>。这个差距，就是死亡之谷的第一道口子。</div>
+  <div class="vs">
+    <div class="vc bad reveal"><span class="h">60 分</span>拿几条漂亮 case 演示成功了，就跟老板报「这事成了」。</div>
+    <div class="vc good reveal"><span class="h">90 分</span>POC 阶段就主动要一批线上最烂的真实输入，先在脏数据/长尾上证明它不崩。</div>
+  </div>
+  <div class="saybar reveal"><span class="k">给工程师/给自己一句话</span>别拿挑好的样例糊弄我，给我一批真实最脏的线上输入，先在这上面跑通，再谈上线。</div>
+
+  <!-- 02 -->
+  <h2 class="sec-title reveal"><span class="no">坑 02</span>边界与越狱：demo 没坏人，生产全是想玩坏你的人</h2>
+  <div class="sec-sub">三个上过新闻的真名真姓案例，全是护栏缺失。</div>
+  <div class="case reveal">
+    <div class="lb">真实翻车 · 客服型 AI 被玩坏</div>
+    <ul>
+      <li><b>雪佛兰经销商 bot</b>：被用户几句话诱导，同意「1 美元卖一台 2024 Chevy Tahoe」，截图传疯（prompt 注入）。</li>
+      <li><b>DPD 快递 bot</b>：系统一更新就被越狱，当场骂客户、写诗吐槽自家公司。</li>
+      <li><b>加拿大航空 bot</b>：自己编了不存在的「丧亲退票」政策，用户信了照做，<b>仲裁判航司必须兑现</b>——公司为 AI 的每句话负法律责任。</li>
+    </ul>
+  </div>
+  <div class="vs">
+    <div class="vc bad reveal"><span class="h">60 分</span>功能能跑通就能上。</div>
+    <div class="vc good reveal"><span class="h">90 分</span>上线前拉红队专门想办法把它玩坏 + 给输出套护栏 + 备兜底话术。</div>
+  </div>
+  <div class="saybar reveal"><span class="k">一句话</span>让三个同事花半小时变着法儿把它整崩，崩不了，你再上。</div>
+
+  <!-- 03 -->
+  <h2 class="sec-title reveal"><span class="no">坑 03</span>规模下的成本与延迟：demo 跑一次好看，生产按量炸</h2>
+  <div class="sec-sub">最隐蔽的坑——它在 demo 阶段完全看不见。</div>
+  <div class="case reveal">
+    <div class="lb">真实翻车 · token 账单失控</div>
+    <p>某大型医疗企业 token 月消耗环比涨 <b>8-10%</b>，听着不多，复利滚半年累计约 <b>1 万亿 token</b>，折年化 <b>超 600 万美元</b>计划外成本——财务事后才反应过来。</p>
+  </div>
+  <div class="bignum reveal">做 Agent/多步流程记一个铁律：每步 90% 可靠，<b>5 步串起来 ≠ 90%</b>，是 0.9⁵ ≈ <b>59%</b>。因为第二步在第一步的错误结果上继续推，误差滚雪球。</div>
+  <div class="vs">
+    <div class="vc bad reveal"><span class="h">60 分</span>账都不算，demo 好就直接上。</div>
+    <div class="vc good reveal"><span class="h">90 分</span>POC 就建成本模型（单次多少 token/多少钱）+ 延迟基准 + 用量监控。</div>
+  </div>
+  <div class="saybar reveal"><span class="k">一句话</span>上线前先算：单次成本 × 预估日调用量，这个数报给老板，老板认了再上。</div>
+
+  <!-- 04 -->
+  <h2 class="sec-title reveal"><span class="no">坑 04</span>没定义过「完成」：scope 失控、没人说什么算达标</h2>
+  <div class="sec-sub">最容易被忽略——demo 一成功，需求就失控，谁都来加一点。</div>
+  <div class="bignum reveal">更要命的是很多团队全程用干净测试数据、<b>根本没碰过生产级真实数据</b>，等于闭着眼睛开发。</div>
+  <div class="vs">
+    <div class="vc bad reveal"><span class="h">60 分</span>觉得 demo 好看＝快成了，项目永远卡在「差不多快好了」。</div>
+    <div class="vc good reveal"><span class="h">90 分</span>立项第一天就把上线标准定成一句能验收的话，且从头用 production-like data。</div>
+  </div>
+  <div class="saybar reveal"><span class="k">验收线长这样</span>在 200 条真实样本上，某个具体指标 ≥ 多少，才算完成，不达到不许上。</div>
+
+  <!-- 05 -->
+  <h2 class="sec-title reveal"><span class="no">坑 05</span>组织与集成：notebook 跑通 ≠ 能上线</h2>
+  <div class="sec-sub">最反直觉——77% 的失败是组织性的，不是技术性的。</div>
+  <div class="bignum reveal">数据科学家能在 Jupyter notebook 里把模型跑得漂亮，但从 notebook 到稳定对外的生产 API，中间是服务化/监控/持续更新，是另一整套工程活。<br>买 vs 自建：向专业供应商买/合作成功率约 <b>67%</b>，自己从头造只有它的 <b>约 1/3</b>。别啥都想自研。</div>
+  <div class="vs">
+    <div class="vc bad reveal"><span class="h">60 分</span>一个数据科学家在 notebook 里跑通，就宣布赢了。</div>
+    <div class="vc good reveal"><span class="h">90 分</span>早拉工程团队 + 接真实业务流程，能买就别硬自研。</div>
+  </div>
+  <div class="saybar reveal"><span class="k">一句话</span>上线后谁值班、崩了谁修、多久迭代一次——答不上来，就先别上。</div>
+
+  <!-- 自检清单 -->
+  <div class="block dark reveal">
+    <p style="font-size:16px;font-weight:900;color:var(--gold)">上线前逐条过的 5 关自检清单：</p>
+    <ul class="clean" style="margin-top:14px">
+      <li data-n="1">数据关：在生产级脏数据/长尾上证明它不崩，别拿挑好的 demo case 报成。</li>
+      <li data-n="2">边界关：红队攻击 + 护栏 + 兜底，无聊用户 5 分钟越狱不了才算过。</li>
+      <li data-n="3">成本关：单次成本 × 预估用量，把账单和延迟算清楚，老板认了再上。</li>
+      <li data-n="4">完成关：立项就定一句能验收的达标线，别让 demo 好看＝能上线。</li>
+      <li data-n="5">组织关：谁值班、崩了谁修、能买就别自研，答不上就先别上。</li>
+    </ul>
+    <p style="margin-top:12px;color:#cbb;font-size:14px">5 关过完，你就不在那死掉的 95% 里了。</p>
+  </div>
+
+  <!-- 追问 -->
+  <div class="block q reveal">
+    <div class="qlist" style="margin-top:6px">
+      <div class="qi"><b>Q：怎么判断一个 demo 到底能不能上线？</b><br>A：看它在最坏情况下还成不成——脏数据、恶意用户、峰值流量、长尾问题，四个都扛住再说。demo 只证明了最好情况。</div>
+      <div class="qi"><b>Q：POC 阶段最该埋的一件事？</b><br>A：production-like data + 成本/延迟基准。别用干净样例，从第一天就记单次成本和 P95 延迟。</div>
+      <div class="qi"><b>Q：老板催着上，你怎么挡？</b><br>A：拿数据挡——MIT 说 95% 的 pilot 上不了线，我不想做那 95%；给我两周在真实脏数据 + 红队测试上过一遍，过了立刻上。</div>
+    </div>
+  </div>
+
+  <div class="closing reveal">
+    <div class="big">能上线的 PM 差别就 3 条：<br>盯「最坏情况崩不崩」不盯 demo 好看；从第一天用生产级脏数据；早早想清成本、护栏、谁维护。</div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">上线前照着过</span>
+    <p>这 5 关的<b>上线自检清单 + 3 个追问答法</b>，我整理成一张检查表放主页了，手里有 AI 项目要上线的，去主页翻一下、逐条过一遍。</p>
+    <p style="margin-top:8px">评论区聊聊<b>你见过哪个 AI 产品 demo 惊艳、上线就崩、死在了哪一关</b>。下条讲更前置的一题：AI 需求该不该做、什么该上 AI。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target);}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

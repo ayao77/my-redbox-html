@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL.58 · 工程说要上 Pinecone，PM 该算的 4 笔账</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#FEFCF5;--ink:#26241F;--red:#E63946;--dred:#9B1B27;--gold:#FFE16B;--green:#1F9257;--mint:#BFEAD0;--pink:#FFDDE0;--indigo:#5B4B8A;--panel:#fff}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(38,36,31,.05) 1.2px,transparent 0);background-size:22px 22px}
+.page{max-width:760px;margin:0 auto;padding:28px 20px 70px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.bmk{display:flex;align-items:center;gap:10px}
+.bm{width:42px;height:42px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:21px}
+.bn{font-family:"Archivo Black";font-size:23px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 15px;font-family:"Archivo Black";font-size:13px}
+.hero{display:flex;gap:20px;align-items:center;margin-top:22px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:14px}
+.hero-title{margin-top:9px;font-size:34px;line-height:1.2;font-weight:900;letter-spacing:-.01em}
+.hero-title .hl{background:linear-gradient(180deg,transparent 56%,var(--gold) 56%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.hero-sub{margin-top:10px;font-size:14.5px;color:#6a6455;font-weight:600}
+.hero-sub b{color:var(--dred)}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-8px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.1;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:92px}.face img{width:92px;height:92px}.hero-title{font-size:27px}}
+.hook{margin-top:24px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:7px 7px 0 var(--red);position:relative}
+.hook .k{position:absolute;top:-13px;left:20px;background:var(--red);color:#fff;font-family:"Archivo Black";font-size:11px;letter-spacing:.1em;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.hook p{margin-top:6px;font-size:17px;font-weight:800;line-height:1.55}
+.hook b{color:var(--gold)}
+.verdict{margin-top:16px;background:var(--gold);border:3px solid var(--ink);border-radius:14px;padding:15px 18px;box-shadow:5px 5px 0 var(--ink);font-size:15px;font-weight:800;line-height:1.55}
+.verdict .k{display:block;font-family:"Archivo Black";font-size:11px;color:var(--dred);letter-spacing:.08em;margin-bottom:5px}
+.verdict b{color:var(--dred)}
+.divider{display:flex;align-items:center;gap:14px;margin:36px 0 18px}
+.divider .ln{flex:1;height:3px;background:var(--ink);border-radius:2px}
+.divider .t{font-family:"Archivo Black";font-size:18px;background:var(--ink);color:var(--gold);border-radius:10px;padding:6px 16px;text-align:center}
+.qcard{background:var(--panel);border:3px solid var(--ink);border-radius:16px;padding:20px 20px 18px;box-shadow:6px 6px 0 var(--ink);margin-bottom:18px}
+.qcard .top{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.qcard .no{font-family:"Archivo Black";font-size:15px;color:#fff;background:var(--indigo);border-radius:10px;padding:5px 13px;flex-shrink:0}
+.qcard h3{font-size:18px;font-weight:900;line-height:1.25}
+.qcard h3 .red{color:var(--dred)}
+.qcard .data{background:#FBF7EA;border:2px solid var(--ink);border-radius:10px;padding:11px 13px;font-size:13.5px;font-weight:600;line-height:1.65;margin-bottom:12px}
+.qcard .data b{color:var(--dred);font-weight:900;background:var(--gold);padding:0 3px;border:1px solid var(--dred)}
+.qcard .ask{background:#F3F1F8;border:2px solid var(--indigo);border-radius:10px;padding:10px 13px;font-size:13.5px;font-weight:700;line-height:1.6;margin-bottom:12px}
+.qcard .ask .lb{font-family:"Archivo Black";font-size:11px;color:var(--indigo);display:block;margin-bottom:3px}
+.qcard .ask .lb::before{content:'▎ PM 该拍的：'}
+.qcard .ask b{color:var(--dred)}
+.eg{background:var(--pink);border:2px dashed var(--dred);border-radius:10px;padding:11px 13px;font-size:13px;font-weight:600;line-height:1.6;margin-bottom:12px}
+.eg .lb{font-family:"Archivo Black";font-size:11px;color:var(--dred);display:block;margin-bottom:4px}
+.eg .lb::before{content:'▎ 真实白烧案例：'}
+.eg b{color:var(--dred);font-weight:900}
+.grade{display:flex;gap:10px}
+.grade .s{flex:1;border:2.5px solid var(--ink);border-radius:10px;padding:10px 12px;font-size:12.5px;font-weight:700;line-height:1.5}
+.grade .s .lb{display:block;font-family:"Archivo Black";font-size:12px;margin-bottom:4px}
+.grade .s.bad{background:#fff}.grade .s.bad .lb{color:#8a7a72}.grade .s.bad .lb::before{content:'✗ 60分'}
+.grade .s.good{background:var(--mint)}.grade .s.good .lb{color:var(--green)}.grade .s.good .lb::before{content:'✓ 90分'}
+.fix{background:var(--panel);border:3px solid var(--green);border-radius:16px;padding:20px;box-shadow:6px 6px 0 var(--ink);margin-top:34px;margin-bottom:16px;position:relative}
+.fix .k{position:absolute;top:-13px;left:20px;background:var(--green);color:#fff;font-family:"Archivo Black";font-size:11px;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.fix h3{font-size:16px;font-weight:900;color:var(--green);margin-top:5px;margin-bottom:9px}
+.fix p{font-size:13.5px;font-weight:600;line-height:1.7}
+.fix p strong{color:var(--dred);background:var(--gold);padding:0 4px;border:1px solid var(--dred);font-weight:900}
+.summary{margin-top:30px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:6px 6px 0 var(--ink)}
+.summary .big{font-size:20px;font-weight:900;line-height:1.45;margin-bottom:14px}
+.summary .big .red{color:var(--dred)}
+.summary .line{display:flex;gap:9px;padding:5px 0;font-size:13.5px;line-height:1.5;font-weight:600}
+.summary .line .dot{color:var(--red);font-family:"Archivo Black";flex-shrink:0}
+.summary .line .key{color:var(--dred);font-weight:900}
+.summary .final{margin-top:14px;padding-top:12px;border-top:2px dashed var(--ink);font-size:14px;font-weight:900}
+.summary .final .red{color:var(--dred)}
+.cta{margin-top:18px;background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px;box-shadow:6px 6px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:13px}
+.cta .ask2{margin-top:11px;font-size:15px;font-weight:700}.cta .ask2 b{color:var(--gold)}
+.cta .bonus{margin-top:10px;font-size:13px;color:#cfc7b6;line-height:1.6}
+.hashtags{text-align:center;margin-top:18px;font-size:12.5px;color:#9a927f}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
+.reveal.on{opacity:1;transform:none}
+@media(max-width:560px){.grade{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="bmk"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.58</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇 · 选型会</div>
+      <h1 class="hero-title">工程说"得上 Pinecone"<br><span class="hl">PM 该算的 4 笔账</span></h1>
+      <div class="hero-sub">你不用懂技术，但算错这 4 笔账，<b>白烧 5-10 倍</b>钱</div>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">拆给<br>你看</div></div>
+  </div>
+
+  <div class="hook reveal">
+    <span class="k">选型会现场</span>
+    <p>工程一拍板：「我们得上 Pinecone / Milvus」。你作为 PM，是只能<b>点头</b>，还是接得住？向量库选哪个是工程的活，但背后有 <b>4 笔账是业务决策、只有你能拍</b>——算错了白烧 5-10 倍的钱，甚至丢一单生意。</p>
+  </div>
+
+  <div class="verdict reveal">
+    <span class="k">核心立场</span>
+    PM 在技术选型里的价值，从来不是懂技术本身，是把工程的技术选择，翻译成<b>成本、合规、体验、时间</b>这 4 笔业务账。工程管"哪个能跑"，你管"哪个划算、能做成生意"。
+  </div>
+
+  <div class="divider reveal"><span class="ln"></span><span class="t">PM 该算的 4 笔账</span><span class="ln"></span></div>
+
+  <!-- 账1 成本 -->
+  <div class="qcard reveal">
+    <div class="top"><span class="no">账 1</span><h3>成本账：<span class="red">自建 vs 托管</span></h3></div>
+    <div class="data">企业规模下，自建开源库比买托管（Pinecone）<b>便宜 5-10 倍</b>。但早期人手紧、时间比钱贵，托管省下的人力和时间可能更值。</div>
+    <div class="ask"><span class="lb"></span>我们现在是<b>省钱重要</b>，还是<b>省人省时间重要</b>？规模没起来就上最贵托管＝提前烧钱。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>觉得是技术、我不懂，工程说啥是啥。</div>
+      <div class="s good"><span class="lb"></span>按当前阶段拍：早期图快用托管，规模起来算这笔账。</div>
+    </div>
+  </div>
+
+  <!-- 账2 规模 -->
+  <div class="qcard reveal">
+    <div class="top"><span class="no">账 2</span><h3>规模账：<span class="red">现在多少量、一年后多少</span></h3></div>
+    <div class="data">真相：很多团队数据量根本不到 <b>1000 万</b>条。这种量级，用现有数据库自带的向量能力（pgvector）就够，不用多养一套系统、多招人运维。</div>
+    <div class="eg"><span class="lb"></span>某团队做内部知识库，数据才几十万条，工程图省事上了 Pinecone，一年账单大几万。PM 一算——公司本就在用 Postgres，换 pgvector 几乎<b>零成本、效果一点不差</b>。那几万纯属白烧。</div>
+    <div class="ask"><span class="lb"></span>我们是不是<b>为一个还没到的规模</b>提前花钱、多养系统？按"现在+一年内"真实量决策。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>按幻想中的十亿级来选，先上重家伙。</div>
+      <div class="s good"><span class="lb"></span>先问真实量：不到 1000 万，pgvector 就够。</div>
+    </div>
+  </div>
+
+  <!-- 账3 合规 -->
+  <div class="qcard reveal">
+    <div class="top"><span class="no">账 3</span><h3>合规账：<span class="red">能不能签下这个客户</span></h3></div>
+    <div class="data">托管服务（如 Pinecone）自带 <b>SOC2 / HIPAA</b> 等合规认证。做医疗、金融、政企客户，合规资质往往是"能不能投标、能不能签合同"的硬门槛。</div>
+    <div class="ask"><span class="lb"></span>我们的目标客户/行业<b>需不需要合规资质</b>？需要就不是省不省钱，是能不能做这单生意——该花的钱得花。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>只盯着哪个便宜，忽略合规。</div>
+      <div class="s good"><span class="lb"></span>先看客户要不要资质，要就把合规当签单前提。</div>
+    </div>
+  </div>
+
+  <!-- 账4 延迟 -->
+  <div class="qcard reveal">
+    <div class="top"><span class="no">账 4</span><h3>延迟账：<span class="red">影不影响用户</span></h3></div>
+    <div class="data">检索延迟直接变成用户等待时间。但要分场景：<b>实时问答</b>对延迟敏感（慢一秒就烦），<b>后台分析</b>根本不敏感（慢几秒没人 care）。</div>
+    <div class="ask"><span class="lb"></span>我们的场景是<b>用户实时等结果</b>还是<b>后台慢慢跑</b>？敏感就把延迟写进验收标准；不敏感就别为低延迟多付钱。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>一律追求最低延迟，为用不上的性能付钱。</div>
+      <div class="s good"><span class="lb"></span>按场景定：敏感写进验收，不敏感把预算花刀刃上。</div>
+    </div>
+  </div>
+
+  <!-- 选型会怎么用 -->
+  <div class="fix reveal">
+    <span class="k">选型会上怎么用</span>
+    <h3>4 笔账摆桌上，和工程一起过一遍</h3>
+    <p>别急着点头，把「现在多少量 / 要不要合规 / 延迟敏不敏感 / 成本占预算多少」摆出来。你会发现——很多时候光"真实数据量 + 合规需求"一算，结论立马变：<strong>根本不用上 Pinecone，pgvector 或自建就够</strong>。账不对就 push 工程重选：量小却上最贵托管、成本占比失控、客户要合规却选了没认证的库。</p>
+  </div>
+
+  <!-- 总结 -->
+  <div class="summary reveal">
+    <div class="big">选型会上，60 分只会点头，<span class="red">90 分拿 4 笔账反问</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">成本</span>　省钱 vs 省时间；早期托管，规模起来算账</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">规模</span>　别为没到的量提前花钱，&lt;1000万 pgvector 就够</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">合规</span>　客户要资质＝能不能签单；<span class="key">延迟</span>　按场景定，写进验收</span></div>
+    <div class="final">把技术选择翻译成 4 笔业务账，<span class="red">这一层工程替代不了你。</span></div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">开会前对着过</span>
+    <p class="ask2">你在技术选型会上，是<b>能说得上话</b>，还是只能跟着工程点头？</p>
+    <p class="bonus">这 4 笔账 + 在选型会上怎么反问，整理成一份清单放主页了，下次开选型会前拿出来对着过一遍。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+  <div class="hashtags">#AI产品经理 #AIPM #产品经理 #AI选型 #技术选型 #向量数据库 #RAG #职场 #ROI #AI实战 #产品经理进阶 #知识库 #转行产品经理</div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

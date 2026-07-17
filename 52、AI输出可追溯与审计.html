@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>52 · AI 答错了算谁的：可追溯与审计</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F4F0E6;--ink:#241F18;--red:#E14B3B;--dred:#9B1B27;--gold:#FFD24C;--green:#1B7A4B;--mint:#B9E6CC;--pink:#FFD9DC;--panel:#FFFFFF;--steel:#2C6E7F}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.045) 1px,transparent 0);background-size:24px 24px}
+.page{max-width:780px;margin:0 auto;padding:30px 22px 80px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.brand-mark{display:flex;align-items:center;gap:11px}
+.bm{width:44px;height:44px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:22px}
+.bn{font-family:"Archivo Black";font-size:24px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:7px 16px;font-family:"Archivo Black";font-size:14px}
+/* hero */
+.hero{display:flex;gap:22px;align-items:center;margin-top:26px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:15px;letter-spacing:.02em}
+.hero-title{margin-top:10px;font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:44px;line-height:1.2;font-weight:900;letter-spacing:-.01em}
+.red{color:var(--red)}
+.yellow-hi{background:linear-gradient(180deg,transparent 55%,var(--gold) 55%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.face{flex-shrink:0;position:relative;width:132px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:132px;height:132px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-6px;right:-12px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.08;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:96px}.face img{width:96px;height:96px}.hero-title{font-size:34px}}
+/* hook */
+.hook-card{margin-top:26px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:18px;padding:24px;box-shadow:6px 6px 0 var(--red);position:relative}
+.hook-card .k{font-family:"Archivo Black";font-size:12px;color:var(--gold);letter-spacing:.14em}
+.hook-card p{margin-top:9px;font-size:20px;font-weight:800;line-height:1.5}
+.hook-card b{color:var(--gold)}
+/* section title */
+.sec-title{margin:52px 0 6px;font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:27px;font-weight:900;letter-spacing:-.01em;display:flex;align-items:baseline;gap:12px}
+.sec-title .no{font-family:"Archivo Black";font-size:17px;color:#fff;background:var(--ink);border-radius:9px;padding:3px 11px}
+.sec-sub{color:#6a6055;font-weight:600;font-size:15px;margin-bottom:8px}
+/* cards */
+.block{background:var(--panel);border:3px solid var(--ink);border-radius:18px;padding:22px;margin:26px 0;box-shadow:5px 5px 0 var(--ink);position:relative;transition:transform .18s,box-shadow .18s}
+.block:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.block.do{background:var(--mint)}
+.block.warn{background:var(--pink)}
+.block.dark{background:var(--ink);color:#fff}
+.block::before{position:absolute;top:-16px;left:22px;font-family:"Archivo Black";font-size:12px;background:var(--bg);border:3px solid var(--ink);border-radius:50px;padding:3px 13px;letter-spacing:.1em}
+.block.do::before{content:"兜底";background:var(--green);color:#fff;border-color:var(--green)}
+.block.warn::before{content:"翻车";background:var(--dred);color:#fff;border-color:var(--dred)}
+.block.dark::before{content:"面试金句";background:var(--ink);color:var(--gold)}
+/* dialog reconstruction */
+.scene{border:3px solid var(--ink);border-radius:16px;background:#fff;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;margin:22px 0}
+.scene .sh{font-family:"Archivo Black";font-size:12px;color:#fff;background:var(--dred);border-radius:6px;padding:3px 10px;display:inline-block;letter-spacing:.06em}
+.bubl{display:flex;gap:10px;margin-top:14px;align-items:flex-start}
+.bubl .r{flex-shrink:0;font-weight:900;font-size:14px;width:52px;color:var(--steel)}
+.bubl .m{background:#F6F1E7;border:2.5px solid var(--ink);border-radius:14px;padding:9px 14px;font-size:15px;font-weight:600}
+.bubl.bad .m{background:#FFECEC;color:var(--dred);font-weight:800}
+/* trace viewer */
+.trace{border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:5px 5px 0 var(--ink);margin:22px 0;background:#fff}
+.trace .th{background:var(--ink);color:#fff;font-family:"JetBrains Mono";font-size:13px;font-weight:700;padding:11px 16px;display:flex;justify-content:space-between}
+.trace .th .t{color:var(--gold)}
+.span{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:2px dashed #e3dcc9;font-size:14.5px}
+.span:last-child{border-bottom:none}
+.span .lbl{font-family:"JetBrains Mono";font-weight:700;font-size:12px;background:var(--steel);color:#fff;border-radius:6px;padding:3px 9px;flex-shrink:0;width:96px;text-align:center}
+.span .val{font-weight:700}
+.span .val small{display:block;color:#6a6055;font-weight:500;font-size:12.5px;margin-top:2px}
+.span.omit{background:#FFECEC}
+.span.omit .lbl{background:var(--dred)}
+.span.omit .val{color:var(--dred)}
+.span.out{background:#EAF6EC}
+.span.out .lbl{background:var(--green)}
+/* compliance pills */
+.pills{display:flex;flex-wrap:wrap;gap:11px;margin:20px 0}
+.pill{background:var(--ink);color:#fff;border-radius:50px;padding:9px 16px;font-weight:800;font-size:15px}
+.pill b{color:var(--gold);font-family:"JetBrains Mono";font-size:19px}
+/* vs box */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+@media(max-width:560px){.vs{grid-template-columns:1fr}}
+.vsc{border:3px solid var(--ink);border-radius:14px;padding:15px 16px;box-shadow:4px 4px 0 var(--ink);font-size:14.5px;font-weight:700}
+.vsc.b{background:#FFECEC}.vsc.g{background:#EAF6EC}
+.vsc .h{font-family:"Archivo Black";font-size:13px;margin-bottom:8px}
+.vsc.b .h{color:var(--dred)}.vsc.g .h{color:var(--green)}
+ul.clean{list-style:none;margin-top:8px}
+ul.clean li{padding-left:22px;position:relative;margin-bottom:7px;font-size:15.5px}
+ul.clean li::before{content:"→";position:absolute;left:0;color:var(--red);font-weight:900}
+.closing{margin-top:34px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:5px 5px 0 var(--ink)}
+.closing .big{font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:22px;font-weight:900;line-height:1.45}
+.cta{margin-top:20px;background:var(--ink);color:#fff;border-radius:18px;padding:20px 22px;box-shadow:5px 5px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:14px}
+.cta p{margin-top:10px;font-size:15px}
+.cta b{color:var(--gold)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.is-visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal,.block,.trace,.scene{opacity:1!important;transform:none!important;transition:none!important}.face{animation:none}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="brand-mark"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.52</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇之 · 可追溯与审计</div>
+      <h1 class="hero-title">AI 答错了<span class="red">算谁的</span>？<br>先看你<span class="yellow-hi">查不查得出</span></h1>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+
+  <div class="hook-card reveal">
+    <div class="k">REALITY CHECK</div>
+    <p>AI 答错，大多数人第一反应是去改 Prompt。<br>错。第一反应该是：<b>这次回答，你能不能完整复盘出来。</b>查不出来，你连改哪都不知道，更别说说清"这错算谁的"。</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 class="sec-title reveal"><span class="no">01</span>一个查不出来的下午</h2>
+  <div class="sec-sub">不是模型不行，是你根本没记它当时看了什么。</div>
+  <div class="scene reveal">
+    <span class="sh">翻车现场 · 复盘</span>
+    <div class="bubl"><div class="r">客户</div><div class="m">你们 AI 说这单能全额退，现在又说不能？（附截图）</div></div>
+    <div class="bubl"><div class="r">老板</div><div class="m">它为什么这么答？把当时的情况调出来。</div></div>
+    <div class="bubl bad"><div class="r">团队</div><div class="m">日志里只有用户问句和最终答案……没存这次检索召回了哪几条、命中的是哪个版本的政策文档。查了一下午，只能猜"可能旧文档没下架"。</div></div>
+  </div>
+  <p style="font-size:15.5px">只记"用户问 X、AI 答 Y"不叫审计。<strong>不记检索过程，等于把根因锁进黑箱</strong>——既复现不了，也证明不了。</p>
+
+  <!-- SECTION 2 -->
+  <h2 class="sec-title reveal"><span class="no">02</span>一条完整的回答，该记下什么</h2>
+  <div class="sec-sub">审计的最小单位不是"问答对"，是一条 trace（把这次回答从输入到输出整条链路记下来）。</div>
+  <div class="trace reveal">
+    <div class="th"><span>trace · 一次回答的完整链路</span><span class="t">可回放</span></div>
+    <div class="span"><span class="lbl">输入</span><div class="val">用户问句 + 身份<small>Prompt 版本 v3.2 · 参数 temp 0.2（版本一改，行为就变）</small></div></div>
+    <div class="span"><span class="lbl">检索</span><div class="val">召回 3 条：退款政策 v2、运费规则、会员条款<small>rerank 后取前 2 条</small></div></div>
+    <div class="span omit"><span class="lbl">omitted</span><div class="val">漏掉 1 条：退款政策 v3（最新）<small>被旧文档挤掉——根因八成藏在"漏了什么"里</small></div></div>
+    <div class="span"><span class="lbl">决策</span><div class="val">guardrail 未拦截 · 走了"直接回答"分支</div></div>
+    <div class="span out"><span class="lbl">输出</span><div class="val">"支持全额退" · 引用：退款政策 v2（旧）<small>citation 指向作废版本 → 一眼定位根因</small></div></div>
+  </div>
+  <p style="font-size:15.5px">这套东西行业叫 <strong>observability（可观测性，说人话就是"系统内部发生了什么，你从外面能不能看清"）</strong>，一次完整链路叫一条 trace，链路里每一段叫一个 span。要记的四段：输入（含 Prompt 版本）、检索（含 <strong>omitted 被漏掉的</strong>）、决策、输出（含 citation 引用）。</p>
+
+  <!-- SECTION 3 -->
+  <h2 class="sec-title reveal"><span class="no">03</span>从"查错"到"追责"：答错算谁的</h2>
+  <div class="sec-sub">同一套日志，先服务改进，再服务追责。2026 起这是合规红线。</div>
+  <div class="vs">
+    <div class="vsc b reveal"><div class="h">✗ 只记问答对</div>答错锁死在黑箱，改进靠猜；出事拿不出证据，只能背锅。</div>
+    <div class="vsc g reveal"><div class="h">✓ 记全链路 trace</div>一眼看出是没召回、召回没用、还是 Prompt 版本被动过；能举证当时输入、依据、逻辑。</div>
+  </div>
+  <p style="font-size:15.5px">合规侧，欧盟《AI 法案》第 12 条要求高风险 AI 全生命周期自动记日志、可追溯、能验证输出、防篡改，并<strong>由部署方担责——哪怕模型是外部供应商做的</strong>。做出海或服务欧洲客户的 AI，这是准入门槛。</p>
+  <div class="pills reveal">
+    <div class="pill">留存 <b>6</b> 个月起</div>
+    <div class="pill">罚款上限 <b>7</b>% 营业额</div>
+    <div class="pill">Gartner：<b>40</b>% agentic 项目将被砍</div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <h2 class="sec-title reveal"><span class="no">04</span>三个真实翻车 + 兜底</h2>
+  <div class="block warn reveal"><p><strong>翻车一 · 只记最终答案，不记检索过程</strong><br>日志里只有问答对，答错根因锁死在黑箱，改进全靠猜。</p></div>
+  <div class="block do reveal"><p>按 trace 记全链路，尤其记 <strong>omitted（漏了哪几条）</strong>——根因八成藏在这。</p></div>
+
+  <div class="block warn reveal"><p><strong>翻车二 · 日志能被改 / 没留存策略</strong><br>出事后发现日志被覆盖或早清了，追责时拿不出证据。</p></div>
+  <div class="block do reveal"><p>日志防篡改（tamper-evident，写入后不可改），按合规定留存时长（高风险至少 6 个月），关键操作留痕。</p></div>
+
+  <div class="block warn reveal"><p><strong>翻车三 · 只监控不告警、不采样评估</strong><br>接了监控没人看，模型质量漂移几周才发现。</p></div>
+  <div class="block do reveal"><p>Metrics 设阈值告警（成本/拒答率/命中率异常自动报），定期从 trace 采样跑 Eval，把线上真实 case 回灌测试集。</p></div>
+
+  <!-- 面试金句 -->
+  <div class="block dark reveal">
+    <p style="font-size:16px;line-height:1.7">被问<strong style="color:var(--gold)">"怎么给 AI 产品设计审计体系"</strong>，按 4 句答：</p>
+    <ul class="clean" style="margin-top:12px">
+      <li>先定一条回答记哪些字段：输入（含 Prompt 版本）、检索（含 omitted）、决策、输出（含 citation）；</li>
+      <li>再定留存与防篡改策略，按合规来（高风险至少 6 个月）；</li>
+      <li>加 Metrics 阈值告警 + trace 采样评估，别只记不看；</li>
+      <li>明确追责口径：部署方担责，能复盘才能改进，能举证才能免责。</li>
+    </ul>
+    <p style="margin-top:12px;color:#cbb;font-size:14px">4 句答完，面试官知道你不是被 demo 带节奏的小白。</p>
+  </div>
+
+  <div class="closing reveal">
+    <div class="big">能复盘，才能改进；能举证，才能免责。<br>AI 答错不可怕，查不出为什么错才可怕。</div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">评论区扣【审计】</span>
+    <p>我把这份 <b>《AI 输出审计日志字段清单》</b>（trace 该记的字段 + 留存/防篡改策略 + 告警阈值 + 面试话术）私信发你。</p>
+    <p style="margin-top:8px">下条讲：审计能查、能追责了，下一步是<b>怎么在出事之前就拦住</b>——AI 的护栏与内容安全。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target);}})},{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

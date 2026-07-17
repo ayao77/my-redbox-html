@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL.59 · 老板问 AI 的 ROI，PM 掏这张表</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#FEFCF5;--ink:#26241F;--red:#E63946;--dred:#9B1B27;--gold:#FFE16B;--green:#1F9257;--mint:#BFEAD0;--pink:#FFDDE0;--indigo:#5B4B8A;--panel:#fff}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(38,36,31,.05) 1.2px,transparent 0);background-size:22px 22px}
+.page{max-width:760px;margin:0 auto;padding:28px 20px 70px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.bmk{display:flex;align-items:center;gap:10px}
+.bm{width:42px;height:42px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:21px}
+.bn{font-family:"Archivo Black";font-size:23px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 15px;font-family:"Archivo Black";font-size:13px}
+.hero{display:flex;gap:20px;align-items:center;margin-top:22px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:14px}
+.hero-title{margin-top:9px;font-size:35px;line-height:1.18;font-weight:900;letter-spacing:-.01em}
+.hero-title .hl{background:linear-gradient(180deg,transparent 56%,var(--gold) 56%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.hero-sub{margin-top:10px;font-size:14.5px;color:#6a6455;font-weight:600}
+.hero-sub b{color:var(--dred)}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-8px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.1;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:92px}.face img{width:92px;height:92px}.hero-title{font-size:27px}}
+.hook{margin-top:24px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:7px 7px 0 var(--red);position:relative}
+.hook .k{position:absolute;top:-13px;left:20px;background:var(--red);color:#fff;font-family:"Archivo Black";font-size:11px;letter-spacing:.1em;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.hook p{margin-top:6px;font-size:17px;font-weight:800;line-height:1.55}
+.hook b{color:var(--gold)}
+.verdict{margin-top:16px;background:var(--gold);border:3px solid var(--ink);border-radius:14px;padding:15px 18px;box-shadow:5px 5px 0 var(--ink);font-size:15px;font-weight:800;line-height:1.55}
+.verdict .k{display:block;font-family:"Archivo Black";font-size:11px;color:var(--dred);letter-spacing:.08em;margin-bottom:5px}
+.verdict b{color:var(--dred)}
+.divider{display:flex;align-items:center;gap:14px;margin:36px 0 18px}
+.divider .ln{flex:1;height:3px;background:var(--ink);border-radius:2px}
+.divider .t{font-family:"Archivo Black";font-size:18px;border-radius:10px;padding:6px 16px;text-align:center;color:#fff}
+.divider .t.in{background:var(--green)}.divider .t.out{background:var(--dred)}.divider .t.net{background:var(--ink);color:var(--gold)}
+/* 6 形状 */
+.shapes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sp{display:flex;align-items:center;gap:11px;background:#fff;border:3px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--ink);padding:11px 13px;font-size:14px;font-weight:700}
+.sp .n{background:var(--green);color:#fff;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black";font-size:13px;flex-shrink:0;border:2px solid var(--ink)}
+.eg{background:var(--mint);border:2px dashed var(--green);border-radius:10px;padding:12px 14px;font-size:13.5px;font-weight:700;line-height:1.6;margin-bottom:8px}
+.eg .lb{font-family:"Archivo Black";font-size:11px;color:var(--green);display:block;margin-bottom:4px}
+.eg .lb::before{content:'▎ 最好用的算法：'}
+.eg b{color:var(--dred);background:var(--gold);padding:0 3px;border:1px solid var(--dred)}
+/* redline 成本 */
+.redline{background:var(--ink);color:#fff;border:3px solid var(--dred);border-radius:16px;padding:22px;box-shadow:7px 7px 0 var(--dred);margin-bottom:16px;position:relative}
+.redline .k{position:absolute;top:-13px;left:20px;background:var(--dred);color:#fff;font-family:"Archivo Black";font-size:11px;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.redline .big{margin-top:4px;font-size:18px;font-weight:900;color:var(--gold);line-height:1.4}
+.redline p{margin-top:10px;font-size:14px;font-weight:600;line-height:1.65}
+.redline b{color:#FFD24C;font-weight:900}
+.grade{display:flex;gap:10px;margin-top:12px}
+.grade .s{flex:1;border:2.5px solid #000;border-radius:10px;padding:10px 12px;font-size:12.5px;font-weight:700;line-height:1.5}
+.grade .s .lb{display:block;font-family:"Archivo Black";font-size:12px;margin-bottom:4px}
+.grade .s.bad{background:#3a3f4d;color:#d7dbe4}.grade .s.bad .lb{color:#FF9C8F}.grade .s.bad .lb::before{content:'✗ 60分'}
+.grade .s.good{background:#26463a;color:#daf0e5}.grade .s.good .lb{color:var(--mint)}.grade .s.good .lb::before{content:'✓ 90分'}
+.card{background:var(--panel);border:3px solid var(--ink);border-radius:16px;padding:19px 20px;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
+.card h3{font-size:17px;font-weight:900;margin-bottom:9px}
+.card h3 .red{color:var(--dred)}
+.card p{font-size:14px;font-weight:600;line-height:1.7}
+.card p b{color:var(--dred);font-weight:900;background:var(--gold);padding:0 3px;border:1px solid var(--dred)}
+.card .walk{margin-top:11px;background:#FBF7EA;border:2px solid var(--ink);border-radius:10px;padding:11px 13px;font-size:13.5px;font-weight:700;line-height:1.7}
+.card .walk .lb{font-family:"Archivo Black";font-size:11px;color:var(--dred);display:block;margin-bottom:4px}
+.card .walk .lb::before{content:'▎ 走一遍：'}
+.card .walk b{color:var(--dred)}
+.bignum{border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:4px 4px 0 var(--gold);padding:14px 16px;margin:16px 0;font-size:14.5px;font-weight:700;line-height:1.65}
+.bignum b{font-family:"Archivo Black";color:var(--red)}
+.summary{margin-top:30px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:6px 6px 0 var(--ink)}
+.summary .big{font-size:20px;font-weight:900;line-height:1.45;margin-bottom:14px}
+.summary .big .red{color:var(--dred)}
+.summary .line{display:flex;gap:9px;padding:5px 0;font-size:13.5px;line-height:1.5;font-weight:600}
+.summary .line .dot{color:var(--red);font-family:"Archivo Black";flex-shrink:0}
+.summary .line .key{color:var(--dred);font-weight:900}
+.summary .final{margin-top:14px;padding-top:12px;border-top:2px dashed var(--ink);font-size:14px;font-weight:900}
+.summary .final .red{color:var(--dred)}
+.cta{margin-top:18px;background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px;box-shadow:6px 6px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:13px}
+.cta .ask2{margin-top:11px;font-size:15px;font-weight:700}.cta .ask2 b{color:var(--gold)}
+.cta .bonus{margin-top:10px;font-size:13px;color:#cfc7b6;line-height:1.6}
+.hashtags{text-align:center;margin-top:18px;font-size:12.5px;color:#9a927f}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
+.reveal.on{opacity:1;transform:none}
+@media(max-width:560px){.shapes{grid-template-columns:1fr}.grade{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="bmk"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.59</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇 · 算 ROI</div>
+      <h1 class="hero-title">老板问 AI 的 ROI？<br><span class="hl">别答"能提效"，掏这张表</span></h1>
+      <div class="hero-sub">90% 的人漏了这笔占 <b>50-80%</b> 的隐藏成本</div>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">拆给<br>你看</div></div>
+  </div>
+
+  <div class="hook reveal">
+    <span class="k">先给你一个场景</span>
+    <p>AI 功能上线，老板叫你过去问：这东西到底值不值、ROI 多少？你要是只会说<b>"能提效、省时间"</b>，就等着预算被砍——老板听不懂提效，<b>老板只认账</b>。这张表帮你算清，而且有个坑 90% 的人都漏了。</p>
+  </div>
+
+  <div class="verdict reveal">
+    <span class="k">核心观念</span>
+    AI 的价值不是一个数，是 <b>6 种形状</b>。别笼统算一个"提效"，先拆清 AI 到底在哪种形状上产生了价值。这张表分两侧：<b>收益侧 + 成本侧</b>。
+  </div>
+
+  <!-- 收益侧 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t in">收益侧 · 6 种价值形状</span><span class="ln"></span></div>
+  <div class="shapes reveal">
+    <div class="sp"><span class="n">1</span>省下的工时</div>
+    <div class="sp"><span class="n">2</span>避免的成本（少外包/少雇人）</div>
+    <div class="sp"><span class="n">3</span>转移给 AI 的活（工单 deflect）</div>
+    <div class="sp"><span class="n">4</span>避免的错误（少赔钱）</div>
+    <div class="sp"><span class="n">5</span>更快出成果（两周→两天）</div>
+    <div class="sp"><span class="n">6</span>实打实的新增收入</div>
+  </div>
+  <div class="eg reveal"><span class="lb"></span>AI 让每人每周省 3 小时 × 全成本 <b>75 美元/时</b> × 50 人 × 52 周 = 一年约 <b>58.5 万美元</b>。这个数摆到老板面前，比说一百遍"能提效"都有力。</div>
+
+  <!-- 成本侧 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t out">成本侧 · 90% 漏的坑</span><span class="ln"></span></div>
+  <div class="redline reveal">
+    <span class="k">最致命</span>
+    <div class="big">别只算 API 钱，隐藏成本占 50-80%</div>
+    <p>真实 AI 成本里还藏着：向量库、编排框架、数据管道、监控工具、人力、合规审查、prompt 维护、模型重训——这些<b>占总支出 50-80%</b>。只算 API＝只算了真实成本的 2-5 成。还要减一笔<b>「返工税」：每省 10 小时，近 4 小时花在修 AI 的烂输出上</b>，别拿"省的工时"直接当净收益。</p>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>收益只算省工时、成本只算 API，报个漂亮 ROI，一追问就穿帮。</div>
+      <div class="s good"><span class="lb"></span>全成本(TCO)含隐藏 50-80% + 扣返工税，报个经得起追问的真实 ROI。</div>
+    </div>
+  </div>
+
+  <!-- 净值+回本 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t net">算净值 + 回本期</span><span class="ln"></span></div>
+  <div class="card reveal">
+    <h3>老板真正关心的<span class="red">两个数</span></h3>
+    <p>净收益 = 6 形状收益 − 全成本（含隐藏 + 返工）。回本期：效率类一般 <b>12-24 个月</b>，好项目 IRR <b>30-80%</b>。</p>
+    <div class="walk"><span class="lb"></span>年省价值 58.5 万 → 扣近四成返工税 ≈ <b>35 万</b>；减去含隐藏成本的真实全成本（假设 20 万）→ 净收益 <b>15 万</b>；投入 20 万、一年多赚回，回本期一年出头。值不值一目了然。</div>
+  </div>
+
+  <div class="card reveal">
+    <h3>进阶：<span class="red">单位结果成本</span>（最能唬住老板）</h3>
+    <p>每完成一次结果（回一个工单/生成一份报告）花多少 AI 成本（token + 重试 + GPU），除以这次创造的价值 = 单位结果成本。好处：<b>能跨模型对比、能按月盯趋势</b>。换个便宜模型划不划算，一看便知。</p>
+  </div>
+
+  <!-- 反常识 -->
+  <div class="bignum reveal">不是 AI 不划算，是没人认真算：只有 <b>20-29%</b> 的公司能自信测 ROI、<b>95%</b> 的企业 AI 项目半年内证明不了回报。拿到「每投 1 美元回报 <b>3.7 美元</b>」的，是把 AI 嵌进多个业务职能的公司，不是孤立跑 pilot 的。</div>
+
+  <!-- 总结 -->
+  <div class="summary reveal">
+    <div class="big">老板问 ROI，别答"能提效"，<span class="red">掏这张两侧的表</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">收益侧</span>　按 6 形状算，每项给单位+基线（省工时 58.5 万那样）</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">成本侧</span>　别只算 API，加隐藏成本 50-80% + 减返工税</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">交付</span>　对外给净收益 + 回本月数；进阶报单位结果成本</span></div>
+    <div class="final">这笔账工程不会算、也不该他算，<span class="red">是你产品经理的活。</span></div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">老板问之前先填</span>
+    <p class="ask2">你被老板问过 AI 功能的 ROI 吗？<b>当时你是怎么答的</b>？</p>
+    <p class="bonus">这张 ROI 表 + 6 种价值形状 + 隐藏成本和返工税清单，整理成一份模板放主页了，下次老板问之前先自己对着填一遍。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+  <div class="hashtags">#AI产品经理 #AIPM #ROI #AI降本 #产品经理 #商业思维 #AI落地 #职场 #AI实战 #数据分析 #产品经理进阶 #不可替代 #转行产品经理</div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

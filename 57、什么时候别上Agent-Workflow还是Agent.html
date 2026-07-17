@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL.57 · 什么时候别上 Agent（Workflow vs Agent）</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#FEFCF5;--ink:#26241F;--red:#E63946;--dred:#9B1B27;--gold:#FFE16B;--green:#1F9257;--mint:#BFead0;--pink:#FFDDE0;--panel:#fff}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(38,36,31,.05) 1.2px,transparent 0);background-size:22px 22px}
+.page{max-width:760px;margin:0 auto;padding:28px 20px 70px}
+/* 品牌头 */
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.bmk{display:flex;align-items:center;gap:10px}
+.bm{width:42px;height:42px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:21px}
+.bn{font-family:"Archivo Black";font-size:23px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 15px;font-family:"Archivo Black";font-size:13px}
+/* hero + 头像 */
+.hero{display:flex;gap:20px;align-items:center;margin-top:22px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:14px;letter-spacing:.02em}
+.hero-title{margin-top:9px;font-size:37px;line-height:1.18;font-weight:900;letter-spacing:-.01em}
+.hero-title .q{color:var(--red)}
+.hero-title .hl{background:linear-gradient(180deg,transparent 56%,var(--gold) 56%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.hero-sub{margin-top:10px;font-size:14.5px;color:#6a6455;font-weight:600}
+.hero-sub b{color:var(--red)}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-8px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.1;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:92px}.face img{width:92px;height:92px}.hero-title{font-size:28px}}
+/* 深色钩子 */
+.hook{margin-top:24px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:7px 7px 0 var(--red);position:relative}
+.hook .k{position:absolute;top:-13px;left:20px;background:var(--red);color:#fff;font-family:"Archivo Black";font-size:11px;letter-spacing:.1em;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.hook p{margin-top:6px;font-size:17px;font-weight:800;line-height:1.55}
+.hook b{color:var(--gold)}
+/* 对照双栏 */
+.cmp{margin-top:18px;display:flex;gap:12px}
+.cmp .c{flex:1;border:3px solid var(--ink);border-radius:14px;padding:15px;box-shadow:5px 5px 0 var(--ink)}
+.cmp .c.wf{background:var(--mint)}.cmp .c.ag{background:var(--pink)}
+.cmp .c .h{font-family:"Archivo Black";font-size:19px;display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.cmp .c.wf .h{color:var(--green)}.cmp .c.ag .h{color:var(--dred)}
+.cmp .c .ic{width:32px;height:32px;border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black";font-size:18px;border:2.5px solid var(--ink)}
+.cmp .c.wf .ic{background:var(--green)}.cmp .c.ag .ic{background:var(--dred)}
+.cmp .c p{font-size:13.5px;font-weight:700;line-height:1.55}
+/* 判据黄条 */
+.verdict{margin-top:16px;background:var(--gold);border:3px solid var(--ink);border-radius:14px;padding:15px 18px;box-shadow:5px 5px 0 var(--ink);font-size:15px;font-weight:800;line-height:1.55}
+.verdict .k{display:block;font-family:"Archivo Black";font-size:11px;color:var(--dred);letter-spacing:.08em;margin-bottom:5px}
+.verdict b{color:var(--dred)}
+.verdict .n{display:block;margin-top:7px;font-size:12.5px;color:#5a5442;font-weight:600}
+/* 为什么栽 */
+.why{margin-top:16px;background:#fff;border-left:6px solid var(--red);border-radius:0 10px 10px 0;padding:13px 16px;box-shadow:3px 3px 0 rgba(38,36,31,.15);font-size:13.5px;line-height:1.7;font-weight:600}
+.why .lb{color:var(--red);font-family:"Archivo Black";font-size:12px;display:block;margin-bottom:4px}
+.why strong{background:var(--gold);padding:0 4px;border:1px solid var(--ink);font-weight:900}
+/* 章节分隔 */
+.divider{display:flex;align-items:center;gap:14px;margin:38px 0 20px}
+.divider .ln{flex:1;height:3px;background:var(--ink);border-radius:2px}
+.divider .t{font-family:"Archivo Black";font-size:19px;background:var(--ink);color:var(--gold);border-radius:10px;padding:6px 16px}
+/* 判断题卡（4道复用同款） */
+.qcard{background:var(--panel);border:3px solid var(--ink);border-radius:16px;padding:20px 20px 18px;box-shadow:6px 6px 0 var(--ink);margin-bottom:18px}
+.qcard .top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.qcard .no{font-family:"Archivo Black";font-size:16px;color:#fff;background:var(--ink);border-radius:10px;padding:5px 13px;flex-shrink:0}
+.qcard h3{font-size:18px;font-weight:900;line-height:1.25}
+.qcard h3 .red{color:var(--dred)}
+.qcard .data{background:#FBF7EA;border:2px solid var(--ink);border-radius:10px;padding:11px 13px;font-size:13px;font-weight:600;line-height:1.65;margin-bottom:12px}
+.qcard .data b{color:var(--dred);font-weight:900;background:var(--gold);padding:0 3px;border:1px solid var(--dred)}
+.grade{display:flex;gap:10px;margin-bottom:12px}
+.grade .s{flex:1;border:2.5px solid var(--ink);border-radius:10px;padding:10px 12px;font-size:12.5px;font-weight:700;line-height:1.5}
+.grade .s .lb{display:block;font-family:"Archivo Black";font-size:12px;margin-bottom:4px}
+.grade .s.bad{background:var(--pink)}.grade .s.bad .lb{color:var(--dred)}.grade .s.bad .lb::before{content:'✗ 60分'}
+.grade .s.good{background:var(--mint)}.grade .s.good .lb{color:var(--green)}.grade .s.good .lb::before{content:'✓ 90分'}
+.say{background:var(--ink);color:var(--gold);border-radius:10px;padding:10px 14px;font-size:13.5px;font-weight:700;line-height:1.5}
+.say .lb{color:#FF8A7A;font-family:"Archivo Black";font-size:11px;display:block;margin-bottom:3px}
+.say .lb::before{content:'一句话就能用'}
+/* 绿色方案卡 */
+.fix{background:var(--panel);border:3px solid var(--green);border-radius:16px;padding:20px;box-shadow:6px 6px 0 var(--ink);margin-top:36px;margin-bottom:18px;position:relative}
+.fix .k{position:absolute;top:-13px;left:20px;background:var(--green);color:#fff;font-family:"Archivo Black";font-size:11px;letter-spacing:.06em;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.fix h3{font-size:17px;font-weight:900;margin-top:5px;margin-bottom:9px;color:var(--green);line-height:1.3}
+.fix p{font-size:13.5px;font-weight:600;line-height:1.7}
+.fix p strong{color:var(--dred);background:var(--gold);padding:0 4px;border:1px solid var(--dred);font-weight:900}
+.fix.purple{border-color:#6B5BFF}.fix.purple .k{background:#6B5BFF}.fix.purple h3{color:#6B5BFF}
+.fix.purple p strong{color:#6B5BFF;border-color:#6B5BFF}
+/* 5 种模式 */
+.plist{margin-top:16px;display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+.pitem{display:flex;align-items:flex-start;gap:11px;background:#fff;border:3px solid var(--ink);border-radius:12px;padding:11px 14px;box-shadow:3px 3px 0 var(--ink);font-size:13.5px;font-weight:600;line-height:1.5}
+.pitem .n{background:#6B5BFF;color:#fff;width:27px;height:27px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black";font-size:13px;flex-shrink:0;border:2px solid var(--ink)}
+.pitem b{color:var(--ink)}
+/* 总结 */
+.summary{margin-top:30px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:6px 6px 0 var(--ink)}
+.summary .big{font-size:20px;font-weight:900;line-height:1.45;margin-bottom:14px}
+.summary .big .red{color:var(--dred)}
+.summary .line{display:flex;gap:9px;padding:5px 0;font-size:13.5px;line-height:1.5;font-weight:600}
+.summary .line .dot{color:var(--red);font-family:"Archivo Black";flex-shrink:0}
+.summary .line .key{color:var(--dred);font-weight:900}
+.summary .final{margin-top:14px;padding-top:12px;border-top:2px dashed var(--ink);font-size:14px;font-weight:900}
+.summary .final .red{color:var(--dred)}
+/* CTA */
+.cta{margin-top:18px;background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px;box-shadow:6px 6px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:13px}
+.cta .ask{margin-top:11px;font-size:15px;font-weight:700}.cta .ask b{color:var(--gold)}
+.cta .bonus{margin-top:10px;font-size:13px;color:#cfc7b6;line-height:1.6}
+.hashtags{text-align:center;margin-top:18px;font-size:12.5px;color:#9a927f}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
+.reveal.on{opacity:1;transform:none}
+@media(max-width:560px){.cmp{flex-direction:column}.grade{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="bmk"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.57</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇 · 选型决策</div>
+      <h1 class="hero-title">什么都想上 Agent<span class="q">？</span><br><span class="hl">先过这 4 道题</span></h1>
+      <div class="hero-sub">一条工作流，可能便宜 <b>100 倍</b>、快几十倍、还稳得多</div>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">拆给<br>你看</div></div>
+  </div>
+
+  <div class="hook reveal">
+    <span class="k">2026 最贵的错</span>
+    <p>产品经理最容易犯、也最贵的错，就是<b>什么都想上 Agent</b>。你那个 Agent 干的活，很多其实一条写死的工作流 + 一次大模型调用就够了——便宜大概 <b>100 倍</b>、快几十倍、还稳得多。</p>
+  </div>
+
+  <div class="cmp reveal">
+    <div class="c wf"><div class="h"><span class="ic">✓</span>Workflow</div><p>步骤写死在代码里，你掌控每一步。可预测、可追溯、成本方差近零。</p></div>
+    <div class="c ag"><div class="h"><span class="ic">!</span>Agent</div><p>大模型自己决定下一步调什么工具。灵活，但不可预测、贵、难 debug。</p></div>
+  </div>
+
+  <div class="verdict reveal">
+    <span class="k">一句判据 · 记死它</span>
+    这事的步骤，能不能提前用代码<b>写死</b>？能写死 → 用 Workflow；写不死、步数没法预测 → 才用 Agent。
+    <span class="n">Anthropic 官方框架也是这句：从最简单的开始，Agent 是最后手段，不是默认选项。</span>
+  </div>
+
+  <div class="why reveal">
+    <span class="lb">为什么这么多人栽</span>
+    跟「demo 死亡之谷」一个病根：<strong>demo 惊艳 + Agent 框架火</strong>，团队头脑一热，把本该是工作流的东西全改成自治 Agent → 上线就是又贵、又慢、又不稳、还难 debug。
+  </div>
+
+  <div class="divider reveal"><span class="ln"></span><span class="t">4 道判断题</span><span class="ln"></span></div>
+
+  <!-- 题1 -->
+  <div class="qcard reveal">
+    <div class="top"><span class="no">题 01</span><h3>能不能<span class="red">写死</span>：流程图每个分支画得出来吗</h3></div>
+    <div class="data">画得出全部分支 → 就该是工作流，别上 Agent。Agent 留给那种你根本<b>画不出全部分支、步数不可预测</b>的开放问题。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>需求一来就想上 Agent，觉得酷。</div>
+      <div class="s good"><span class="lb"></span>先画流程图，能画死就写死——一次调用 + 几个固定步骤搞定。</div>
+    </div>
+    <div class="say"><span class="lb"></span>把流程画成流程图，每个分支都画得出来，就用工作流。</div>
+  </div>
+
+  <!-- 题2 -->
+  <div class="qcard reveal">
+    <div class="top"><span class="no">题 02</span><h3>一两次调用<span class="red">够不够</span></h3></div>
+    <div class="data">1-2 次大模型调用能完成的任务，上 Agent <b>多花 3.87 倍成本、精度提升为 0</b>。别为「自治」的名头白烧三倍多的钱。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>包个 Agent 显得高级。</div>
+      <div class="s good"><span class="lb"></span>先拿一次调用 + 几个工具试，能过验收就一次解决，绝不多此一举。</div>
+    </div>
+    <div class="say"><span class="lb"></span>先用最土的一次调用试，能过就别包 Agent。</div>
+  </div>
+
+  <!-- 题3 -->
+  <div class="qcard reveal">
+    <div class="top"><span class="no">题 03</span><h3>成本和延迟<span class="red">兜得住吗</span></h3></div>
+    <div class="data">工作流：单次约 <b>0.001-0.02 美元</b>、<b>800ms</b>；Agent：迭代 5-10 轮约 <b>0.2-2 美元</b>、<b>10-30 秒</b>。贵 10-100 倍、慢几十倍，成本还随输入波动 5-10 倍。真实事故：没设熔断，Agent 一夜循环烧掉 <b>437 美元</b>。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>不算账，直接上。</div>
+      <div class="s good"><span class="lb"></span>算清单次成本 × 用量，并给 Agent 设最大轮数 + 成本熔断。</div>
+    </div>
+    <div class="say"><span class="lb"></span>上 Agent 必须设最大轮数 + 成本熔断，不然一个死循环够你喝一壶。</div>
+  </div>
+
+  <!-- 题4 -->
+  <div class="qcard reveal">
+    <div class="top"><span class="no">题 04</span><h3>多步<span class="red">可靠性</span> + 有没有人运维</h3></div>
+    <div class="data">哪怕每步 99% 可靠，<b>10 步串起来只剩 90%</b>，链越长掉越快。Agent 还会幻觉、在失败动作上死循环、撑爆上下文、用错工具——得有人盯、有监控。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>能自治就全自治，省心。</div>
+      <div class="s good"><span class="lb"></span>能减一步就减一步；上线前先定谁盯它、崩了谁修。</div>
+    </div>
+    <div class="say"><span class="lb"></span>Agent 每多一步，就多一分翻车概率，能减步就减步。</div>
+  </div>
+
+  <!-- 重构招 -->
+  <div class="fix reveal">
+    <span class="k">重构招</span>
+    <h3>把又贵又不稳的 Agent 拉回工作流</h3>
+    <p>统计它的决策，多半 <strong>90% 落在 4-5 种固定模式</strong>上，真正要它灵活发挥的只有剩下 10%。把这 90% 写成工作流分支、用代码定死，只在剩下 10% 才调一次大模型 → <strong>API 成本降 60-80%</strong>，还把可预测性拿回来。</p>
+  </div>
+
+  <!-- 5 种模式 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t">Anthropic 5 种工作流模式</span><span class="ln"></span></div>
+  <p style="font-size:14px;color:#6a6455;font-weight:600;margin:-6px 0 4px">绝大多数你以为要上 Agent 的场景，这 5 种就覆盖了：</p>
+  <div class="plist reveal">
+    <div class="pitem"><span class="n">1</span><div><b>提示链</b>：一步接一步，前一步的输出喂给下一步。</div></div>
+    <div class="pitem"><span class="n">2</span><div><b>路由</b>：先判断类型分流，再交给对应的处理。</div></div>
+    <div class="pitem"><span class="n">3</span><div><b>并行</b>：几路同时跑，最后把结果合并。</div></div>
+    <div class="pitem"><span class="n">4</span><div><b>编排-工人</b>：一个总控把活拆开，派给几个执行。</div></div>
+    <div class="pitem"><span class="n">5</span><div><b>评估-优化</b>：生成完自己打个分，不够好再改一版。</div></div>
+  </div>
+
+  <!-- 该上 Agent -->
+  <div class="fix purple reveal">
+    <span class="k">那什么时候才该上 Agent</span>
+    <h3>三个特征同时满足，才是 Agent 的主场</h3>
+    <p><strong>开放式</strong>（写不死流程）+ <strong>步数不可预测</strong> + <strong>但你能验证进度</strong>。比如客服 Agent 带能真正操作的工具、代码 Agent 带测试、computer-use 带截图当标准答案。少一个，都先用工作流。</p>
+  </div>
+
+  <!-- 总结 -->
+  <div class="summary reveal">
+    <div class="big">2026 最值钱的能力，不是什么都敢上 Agent，<span class="red">是知道什么时候别上</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">默认从最简单开始</span>　一次调用能过就一次调用，Agent 是最后手段</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">先问能不能写死</span>　能写死就绝不上 Agent</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">敢拦 + 三笔账</span>　拿成本、延迟、可靠性说清为什么不该上</span></div>
+    <div class="final">Agent 不是越自治越高级，<span class="red">选对了才高级。</span></div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta reveal">
+    <span class="tip">对着过</span>
+    <p class="ask">你有没有那种<b>一条工作流就能搞定、却被硬上成 Agent</b> 的需求？卡在了哪道题？</p>
+    <p class="bonus">这 4 道判断题 + 把 Agent 重构回工作流的招，整理成一份「别上 Agent 判断清单」放主页了，接到 Agent 需求先对着过一遍。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+  <div class="hashtags">#AI产品经理 #AIPM #Agent #Workflow #大模型 #AI选型 #Anthropic #AI实战 #AI降本</div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>51 · AI 知识库权限：同一份文档，三种人三种答案</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F4F0E6;--ink:#241F18;--red:#E14B3B;--dred:#9B1B27;--gold:#FFD24C;--green:#1B7A4B;--mint:#B9E6CC;--pink:#FFD9DC;--panel:#FFFFFF;--steel:#2C6E7F}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,0.045) 1px,transparent 0);background-size:24px 24px}
+.page{max-width:780px;margin:0 auto;padding:30px 22px 80px}
+/* brand */
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.brand-mark{display:flex;align-items:center;gap:11px}
+.bm{width:44px;height:44px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:22px}
+.bn{font-family:"Archivo Black";font-size:24px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:7px 16px;font-family:"Archivo Black";font-size:14px}
+/* hero */
+.hero{display:flex;gap:22px;align-items:center;margin-top:26px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:15px;letter-spacing:.02em}
+.hero-title{margin-top:10px;font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:44px;line-height:1.2;font-weight:900;letter-spacing:-.01em}
+.face{flex-shrink:0;position:relative;width:132px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:132px;height:132px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-6px;right:-12px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.08;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:96px}.face img{width:96px;height:96px}.hero-title{font-size:34px}}
+.red{color:var(--red)}
+.yellow-hi{background:linear-gradient(180deg,transparent 55%,var(--gold) 55%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.red-em{color:var(--red);position:relative;display:inline-block}
+.red-em::after{content:"";position:absolute;left:-2px;right:-2px;bottom:-3px;height:6px;background:var(--red);opacity:.32;transform:skew(-2deg);z-index:-1}
+/* hook */
+.hook-card{margin-top:26px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:18px;padding:24px 24px;box-shadow:6px 6px 0 var(--red);position:relative}
+.hook-card .k{font-family:"Archivo Black";font-size:12px;color:var(--gold);letter-spacing:.14em}
+.hook-card p{margin-top:9px;font-size:20px;font-weight:800;line-height:1.5}
+.hook-card b{color:var(--gold)}
+/* section title */
+.sec-title{margin:52px 0 6px;font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:27px;font-weight:900;letter-spacing:-.01em;display:flex;align-items:baseline;gap:12px}
+.sec-title .no{font-family:"Archivo Black";font-size:17px;color:#fff;background:var(--ink);border-radius:9px;padding:3px 11px}
+.sec-sub{color:#6a6055;font-weight:600;font-size:15px;margin-bottom:8px}
+/* cards */
+.block{background:var(--panel);border:3px solid var(--ink);border-radius:18px;padding:22px 22px;margin:26px 0;box-shadow:5px 5px 0 var(--ink);position:relative;transition:transform .18s,box-shadow .18s}
+.block:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.block.do{background:var(--mint)}
+.block.warn{background:var(--pink)}
+.block.dark{background:var(--ink);color:#fff}
+.block::before{position:absolute;top:-16px;left:22px;font-family:"Archivo Black";font-size:12px;background:var(--bg);border:3px solid var(--ink);border-radius:50px;padding:3px 13px;letter-spacing:.1em}
+.block.do::before{content:"兜底";background:var(--green);color:#fff;border-color:var(--green)}
+.block.warn::before{content:"翻车";background:var(--dred);color:#fff;border-color:var(--dred)}
+.block.dark::before{content:"面试金句";background:var(--ink);color:var(--gold)}
+/* news / crash */
+.news{border:3px solid var(--ink);border-radius:16px;padding:18px 20px;margin:18px 0;background:#fff;box-shadow:5px 5px 0 var(--ink);transition:transform .18s,box-shadow .18s}
+.news:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--dred)}
+.news .tag{display:inline-block;font-family:"Archivo Black";font-size:11px;background:var(--dred);color:#fff;border-radius:6px;padding:3px 9px;letter-spacing:.08em}
+.news h4{margin-top:11px;font-size:19px;font-weight:900}
+.news p{margin-top:8px;font-size:15.5px}
+.news .lead{color:var(--dred);font-weight:800}
+.cve{font-family:"JetBrains Mono";font-weight:700;background:var(--gold);border:2px solid var(--ink);border-radius:7px;padding:1px 7px;font-size:14px}
+/* pipeline diff */
+.pipe{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+@media(max-width:560px){.pipe{grid-template-columns:1fr}}
+.lane{border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:5px 5px 0 var(--ink);background:#fff}
+.lane .lh{font-family:"Archivo Black";font-size:13px;padding:11px 15px;color:#fff;letter-spacing:.06em}
+.lane.bad .lh{background:var(--dred)}
+.lane.good .lh{background:var(--green)}
+.lane .steps{padding:15px 15px 18px}
+.stp{display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:700;padding:8px 10px;border:2px dashed #cbb;border-radius:10px;margin-bottom:9px;background:#fdfbf6}
+.stp b{font-family:"JetBrains Mono";background:var(--ink);color:#fff;border-radius:6px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.lane.bad .stp.hit{border:2px solid var(--dred);background:#ffecec;color:var(--dred)}
+.lane.good .stp.key{border:2px solid var(--green);background:#e5f6ec;color:var(--green)}
+.verdict{font-weight:900;font-size:14px;padding:9px 12px;border-radius:9px;text-align:center}
+.lane.bad .verdict{background:var(--dred);color:#fff}
+.lane.good .verdict{background:var(--green);color:#fff}
+/* tiers (density) */
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
+@media(max-width:560px){.tiers{grid-template-columns:1fr 1fr}}
+.tier{border:3px solid var(--ink);border-radius:14px;padding:13px 11px;text-align:center;box-shadow:4px 4px 0 var(--ink);background:#fff}
+.tier .en{font-family:"Archivo Black";font-size:13px}
+.tier .cn{font-weight:900;font-size:16px;margin-top:3px}
+.tier .d{font-size:12.5px;color:#6a6055;margin-top:6px;line-height:1.4}
+.tier.t1{background:var(--mint)}.tier.t2{background:#EAF6FF}.tier.t3{background:var(--gold)}.tier.t4{background:var(--pink)}
+.tier.t4 .en{color:var(--dred)}
+/* decision tree / granularity */
+.grain{border:3px solid var(--ink);border-radius:16px;background:#fff;margin:16px 0;box-shadow:5px 5px 0 var(--ink);overflow:hidden;transition:transform .18s,box-shadow .18s}
+.grain:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.grain .gh{display:flex;align-items:center;gap:12px;padding:13px 17px;background:var(--ink);color:#fff}
+.grain .gh .lvl{font-family:"Archivo Black";font-size:12px;background:var(--gold);color:var(--ink);border-radius:6px;padding:2px 8px}
+.grain .gh .nm{font-weight:900;font-size:18px}
+.grain .gh .en{font-family:"JetBrains Mono";font-size:12px;color:#b9c;margin-left:auto}
+.grain .gb{padding:14px 17px;font-size:15px}
+.grain .gb .line{display:flex;gap:8px;margin-bottom:6px}
+.grain .gb .line span{flex-shrink:0;font-weight:900;color:var(--steel);width:42px}
+.grain .key{font-family:"JetBrains Mono";background:var(--gold);border:2px solid var(--ink);border-radius:6px;padding:0 6px;font-size:13px}
+/* data pills */
+.pills{display:flex;flex-wrap:wrap;gap:11px;margin:20px 0}
+.pill{background:var(--ink);color:#fff;border-radius:50px;padding:9px 16px;font-weight:800;font-size:15px}
+.pill b{color:var(--gold);font-family:"JetBrains Mono";font-size:19px}
+/* closing */
+.closing{margin-top:34px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:5px 5px 0 var(--ink)}
+.closing .big{font-family:"Noto Sans SC","PingFang SC",sans-serif;font-size:22px;font-weight:900;line-height:1.45}
+.cta{margin-top:20px;background:var(--ink);color:#fff;border-radius:18px;padding:20px 22px;box-shadow:5px 5px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:14px}
+.cta p{margin-top:10px;font-size:15px}
+.cta b{color:var(--gold)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.is-visible{opacity:1;transform:none}
+ul.clean{list-style:none;margin-top:8px}
+ul.clean li{padding-left:22px;position:relative;margin-bottom:7px;font-size:15.5px}
+ul.clean li::before{content:"→";position:absolute;left:0;color:var(--red);font-weight:900}
+@media (prefers-reduced-motion:reduce){.reveal,.block,.news,.grain{opacity:1!important;transform:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="brand-mark"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.51</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇之 · 知识库权限</div>
+      <h1 class="hero-title">同一份文档，<span class="red">三种人</span>看到<br><span class="yellow-hi">三种答案</span></h1>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">纯干货<br>建议收藏</div></div>
+  </div>
+
+  <div class="hook-card reveal">
+    <div class="k">REALITY CHECK</div>
+    <p>知识库的漏，几乎没有一次是"某个人手滑勾错了选项"。<br>真相是：<b>权限做在"检索之后"，等于没做。</b>做反了，知识库越好用，泄密越快。</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 class="sec-title reveal"><span class="no">01</span>先看两条 2025 的真实事故</h2>
+  <div class="sec-sub">不是 demo，是已经被 CVE 收录、被顶级实验室复现的漏。</div>
+
+  <div class="news reveal">
+    <span class="tag">CASE A · 微软 M365 Copilot</span>
+    <h4>EchoLeak：<span class="cve">CVE-2025-32711</span> CVSS 9.3 零点击泄密</h4>
+    <p><span class="lead">怎么发生的：</span>Copilot 是接了企业内部数据的 RAG 助手。攻击者不需要用户点任何东西（零点击），就能让它把上下文里的敏感数据外泄。微软已静默修复、无需用户操作。</p>
+    <p><span class="lead">PM 教训：</span>出事的不是"业务逻辑忘了想某个场景"，是<strong>能被模型召回的数据范围本身太大</strong>。第一性问题是"哪些数据有资格进这次检索"，不是"生成之后怎么擦"。</p>
+  </div>
+
+  <div class="news reveal">
+    <span class="tag">CASE B · ConfusedPilot / 混淆代理</span>
+    <h4>低权限的人，诱导高权限的 AI 替他取机密</h4>
+    <p><span class="lead">怎么发生的：</span>RAG 助手"过度热心、急着帮忙"。一个权限不足的员工，通过在共享文档里埋指令，诱导权限更高的 Copilot 去取它自己看不到的机密，再转述给他。安全里这叫 <strong>confused deputy（混淆代理，说人话就是"被人当枪使的高权限执行者"）</strong>。</p>
+    <p><span class="lead">PM 教训：</span>AI 的"乐于助人"在权限设计里是<strong>负债</strong>。别指望模型替你守边界，边界必须在检索层用身份卡死，不是靠 Prompt 里写一句"请勿泄露"。</p>
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2 class="sec-title reveal"><span class="no">02</span>权限卡在哪：检索前 vs 检索后</h2>
+  <div class="sec-sub">这一条决定了你安不安全。post-filter 是业界点名的反模式。</div>
+
+  <div class="pipe">
+    <div class="lane bad reveal">
+      <div class="lh">✗ 检索之后再过滤 / 前端隐藏</div>
+      <div class="steps">
+        <div class="stp"><b>1</b>用户提问</div>
+        <div class="stp hit">相似度搜索：<strong>全库召回（含机密）</strong></div>
+        <div class="stp hit">机密已进入模型上下文</div>
+        <div class="stp">生成后再删 / 前端不显示</div>
+        <div class="verdict">已被 EchoLeak / 越权诱导击穿</div>
+      </div>
+    </div>
+    <div class="lane good reveal">
+      <div class="lh">✓ 检索之前做硬过滤（pre-filter）</div>
+      <div class="steps">
+        <div class="stp"><b>1</b>用户提问（带身份 Token）</div>
+        <div class="stp key">身份比对 ACL：切掉无权行/文档</div>
+        <div class="stp key">相似度搜索<strong>只在授权范围内</strong>跑</div>
+        <div class="stp">机密根本不进模型视野</div>
+        <div class="verdict">不该看的，压根不参与检索</div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:15.5px">这里有个术语要记：<strong>ACL（Access Control List，访问控制列表，说人话就是给每一行数据贴一张"谁能看"的清单）</strong>。检索时系统拿你的身份去比对这张清单，在<strong>相似度搜索发起之前</strong>就把对不上的切掉。前端隐藏、生成后过滤，都是把机密先召回来了再补救——晚了。</p>
+
+  <!-- SECTION 3 -->
+  <h2 class="sec-title reveal"><span class="no">03</span>入库前先分密级（最省事的保护）</h2>
+  <div class="sec-sub">最贵的一类数据，最好的保护是"根本不进这个池子"。</div>
+  <div class="tiers">
+    <div class="tier t1 reveal"><div class="en">PUBLIC</div><div class="cn">公开</div><div class="d">产品手册<br>随便进通用池</div></div>
+    <div class="tier t2 reveal"><div class="en">INTERNAL</div><div class="cn">内部</div><div class="d">流程/规范<br>登录可检索</div></div>
+    <div class="tier t3 reveal"><div class="en">CONFIDENTIAL</div><div class="cn">机密</div><div class="d">合同/薪酬<br>按角色过滤</div></div>
+    <div class="tier t4 reveal"><div class="en">RESTRICTED</div><div class="cn">限制</div><div class="d">核心机密<br>排除出通用池</div></div>
+  </div>
+  <p style="font-size:15.5px">入库前给每个 chunk（切片）打上这四档标签，最高一档直接<strong>不进通用检索池</strong>。你不需要给它设计多复杂的过滤，你只要让它"不在场"。</p>
+
+  <!-- SECTION 4 -->
+  <h2 class="sec-title reveal"><span class="no">04</span>粒度三档怎么选：不是越细越好</h2>
+  <div class="sec-sub">先看数据天然分层到哪一级，再决定上哪一档。越细越贵。</div>
+
+  <div class="grain reveal">
+    <div class="gh"><span class="lvl">档 1</span><span class="nm">库级权限</span><span class="en">Collection-level</span></div>
+    <div class="gb">
+      <div class="line"><span>类比</span><div>门禁卡只分"能不能进这栋楼"，进了楼随便走。</div></div>
+      <div class="line"><span>适合</span><div>知识同质、没有内部敏感分层，比如公开产品手册。</div></div>
+      <div class="line"><span>代价</span><div>实现最简单，几乎零额外工程。</div></div>
+    </div>
+  </div>
+  <div class="grain reveal">
+    <div class="gh"><span class="lvl">档 2</span><span class="nm">文档级权限</span><span class="en">Document-level</span></div>
+    <div class="gb">
+      <div class="line"><span>类比</span><div>门禁卡升级成"楼层卡"，能进哪几层。</div></div>
+      <div class="line"><span>适合</span><div>部门边界清晰、文档天然按归属分，比如财务库、法务库。</div></div>
+      <div class="line"><span>代价</span><div>打标签、按标签过滤，改动可控。满足大多数企业。</div></div>
+    </div>
+  </div>
+  <div class="grain reveal">
+    <div class="gh"><span class="lvl">档 3</span><span class="nm">行级 / 字段级权限</span><span class="en">Row-level</span></div>
+    <div class="gb">
+      <div class="line"><span>类比</span><div>不是发楼层卡，是发"抽屉钥匙"——同一间办公室，你能开 A 抽屉，开不了 B。</div></div>
+      <div class="line"><span>适合</span><div>一份文档里混了不同密级：合同里同时有付款条款、保密条款、签约流程。</div></div>
+      <div class="line"><span>代价</span><div>要向量库支持行级 <span class="key">ACL</span> 和位图预过滤，检索性能受影响，工程最重，提前评估。</div></div>
+    </div>
+  </div>
+  <div class="block do reveal"><p><strong>PM 心法：</strong>不是越细越安全，是越细越贵。一份合同，财务问出金额、法务问出保密条款、行政只看到签约流程——这叫行级细粒度。先看你的数据天然分层到哪一级，别一上来就上最细，过度设计会拖垮检索速度和上线时间。</p></div>
+
+  <!-- SECTION 5 -->
+  <h2 class="sec-title reveal"><span class="no">05</span>三个真实翻车 + 兜底</h2>
+
+  <div class="block warn reveal"><p><strong>翻车一 · 权限做在"检索之后"或"只在前端"</strong><br>文件夹前端不显示，或检索完再删，但敏感内容已经被召回进上下文。行政随口问"我们部门谁调薪最多"，AI 直接报出名字和比例——那个"没显示"的文件夹里的内容。</p></div>
+  <div class="block do reveal"><p>权限判断卡在检索发起那一刻，用身份 Token 在向量层做 <span style="font-family:JetBrains Mono;font-weight:700">pre-filter</span> 硬过滤，让不该看的根本不进相似度搜索的候选集。</p></div>
+
+  <div class="block warn reveal"><p><strong>翻车二 · 假设模型会替你守边界</strong><br>靠 Prompt 里写"请勿泄露机密"来防越权，结果被低权限用户诱导（confused deputy），高权限 AI 把机密取出来转述。</p></div>
+  <div class="block do reveal"><p>边界只认身份、不认话术。任何检索都带调用者身份，机密类数据默认不进通用池。</p></div>
+
+  <div class="block warn reveal"><p><strong>翻车三 · 权限是静态的，跟不上组织变化</strong><br>员工换了部门，半年后还能查到老部门的敏感文件，因为权限是建库那天设的，没人维护。</p></div>
+  <div class="block do reveal"><p>权限和组织架构系统（HR/OA）联动，调岗自动重算；定期做红队渗透测试（Red Team，故意尝试越权看能不能成功），不是上线前测一次就完事。</p></div>
+
+  <div class="pills reveal">
+    <div class="pill"><b>9.3</b> EchoLeak CVSS</div>
+    <div class="pill"><b>3</b> 档粒度</div>
+    <div class="pill"><b>4</b> 档密级</div>
+  </div>
+
+  <!-- 面试金句 -->
+  <div class="block dark reveal">
+    <p style="font-size:16px;line-height:1.7">被问<strong style="color:var(--gold)">"怎么设计企业知识库的权限"</strong>，按 4 句答：</p>
+    <ul class="clean" style="margin-top:12px">
+      <li>先分密级，把最敏感的排除出通用检索池；</li>
+      <li>看数据天然分层到哪级（库/文档/行）定粒度，别一上来上最细；</li>
+      <li>过滤必须做在检索之前的向量层，不是检索后、更不是前端隐藏；</li>
+      <li>和组织架构打通做成动态，再加红队渗透测试兜底。</li>
+    </ul>
+    <p style="margin-top:12px;color:#cbb;font-size:14px">4 句答完，面试官知道你不是被 demo 带节奏的小白。</p>
+  </div>
+
+  <div class="closing reveal">
+    <div class="big">权限做在检索之后，等于没做。<br>知识库的安全感，一半来自前端隐藏，另一半全是假的。</div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">评论区扣【权限】</span>
+    <p>我把这份 <b>《AI 知识库权限设计速查表》</b>（三档粒度 + 四档密级 + pre-filter 检查清单 + 面试话术）私信发你。</p>
+    <p style="margin-top:8px">下条讲：权限管住了"谁能看"，下一步是<b>"AI 答错了、答漏了怎么查"</b>——AI 输出的可追溯与审计。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target);}})},{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function animateNumber(el){const t=parseFloat(el.getAttribute('data-count'));const dec=parseInt(el.getAttribute('data-decimals')||'0',10);const suf=el.getAttribute('data-suffix')||'';const t0=performance.now(),dur=1300;function tick(now){const p=Math.min(1,(now-t0)/dur);const v=t*(1-Math.pow(1-p,3));el.textContent=(dec>0?v.toFixed(dec):Math.round(v))+suf;if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}
+const nio=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){animateNumber(e.target);nio.unobserve(e.target);}})},{threshold:.6});
+document.querySelectorAll('[data-count]').forEach(el=>nio.observe(el));
+</script>
+</body>
+</html>
