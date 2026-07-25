@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL.60 · 没 AI 项目经验？3 条路自己造第一个</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#FEFCF5;--ink:#26241F;--red:#E63946;--dred:#9B1B27;--gold:#FFE16B;--green:#1F9257;--mint:#BFEAD0;--pink:#FFDDE0;--plum:#6E4A78;--panel:#fff}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(38,36,31,.05) 1.2px,transparent 0);background-size:22px 22px}
+.page{max-width:760px;margin:0 auto;padding:28px 20px 70px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.bmk{display:flex;align-items:center;gap:10px}
+.bm{width:42px;height:42px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:21px}
+.bn{font-family:"Archivo Black";font-size:23px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 15px;font-family:"Archivo Black";font-size:13px}
+.hero{display:flex;gap:20px;align-items:center;margin-top:22px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:14px}
+.hero-title{margin-top:9px;font-size:35px;line-height:1.18;font-weight:900;letter-spacing:-.01em}
+.hero-title .hl{background:linear-gradient(180deg,transparent 56%,var(--gold) 56%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.hero-sub{margin-top:10px;font-size:14.5px;color:#6a6455;font-weight:600}
+.hero-sub b{color:var(--dred)}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-8px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.1;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:92px}.face img{width:92px;height:92px}.hero-title{font-size:27px}}
+.hook{margin-top:24px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:7px 7px 0 var(--red);position:relative}
+.hook .k{position:absolute;top:-13px;left:20px;background:var(--red);color:#fff;font-family:"Archivo Black";font-size:11px;letter-spacing:.1em;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.hook p{margin-top:6px;font-size:16.5px;font-weight:800;line-height:1.6}
+.hook b{color:var(--gold)}
+.verdict{margin-top:16px;background:var(--gold);border:3px solid var(--ink);border-radius:14px;padding:15px 18px;box-shadow:5px 5px 0 var(--ink);font-size:15px;font-weight:800;line-height:1.55}
+.verdict .k{display:block;font-family:"Archivo Black";font-size:11px;color:var(--dred);letter-spacing:.08em;margin-bottom:5px}
+.verdict b{color:var(--dred)}
+.divider{display:flex;align-items:center;gap:14px;margin:36px 0 18px}
+.divider .ln{flex:1;height:3px;background:var(--ink);border-radius:2px}
+.divider .t{font-family:"Archivo Black";font-size:18px;background:var(--ink);color:var(--gold);border-radius:10px;padding:6px 16px;text-align:center}
+/* 三个证据 */
+.proofs{display:flex;gap:10px;margin-bottom:14px}
+.pf{flex:1;border:3px solid var(--ink);border-radius:12px;background:#fff;box-shadow:4px 4px 0 var(--ink);padding:12px;text-align:center}
+.pf .n{font-family:"Archivo Black";font-size:14px;color:#fff;background:var(--plum);border-radius:7px;padding:3px 10px;display:inline-block;margin-bottom:6px}
+.pf .d{font-size:14px;font-weight:800}
+/* 路卡（3条复用同款） */
+.road{background:var(--panel);border:3px solid var(--ink);border-radius:16px;padding:20px;box-shadow:6px 6px 0 var(--ink);margin-bottom:18px}
+.road .top{display:flex;align-items:center;gap:12px;margin-bottom:11px;flex-wrap:wrap}
+.road .no{font-family:"Archivo Black";font-size:15px;color:#fff;border-radius:10px;padding:5px 13px;flex-shrink:0}
+.road.a .no{background:var(--green)}.road.b .no{background:var(--dred)}.road.c .no{background:var(--plum)}
+.road h3{font-size:18px;font-weight:900;line-height:1.25}
+.road h3 .red{color:var(--dred)}
+.road .data{background:#FBF7EA;border:2px solid var(--ink);border-radius:10px;padding:11px 13px;font-size:13.5px;font-weight:600;line-height:1.65;margin-bottom:11px}
+.road .data b{color:var(--dred);font-weight:900;background:var(--gold);padding:0 3px;border:1px solid var(--dred)}
+.grade{display:flex;gap:10px}
+.grade .s{flex:1;border:2.5px solid var(--ink);border-radius:10px;padding:10px 12px;font-size:12.5px;font-weight:700;line-height:1.5}
+.grade .s .lb{display:block;font-family:"Archivo Black";font-size:12px;margin-bottom:4px}
+.grade .s.bad{background:var(--pink)}.grade .s.bad .lb{color:var(--dred)}.grade .s.bad .lb::before{content:'✗ 60分'}
+.grade .s.good{background:var(--mint)}.grade .s.good .lb{color:var(--green)}.grade .s.good .lb::before{content:'✓ 90分'}
+/* 模板卡 */
+.tpl{background:var(--panel);border:3px solid var(--green);border-radius:16px;padding:20px;box-shadow:6px 6px 0 var(--ink);margin-top:34px;margin-bottom:16px;position:relative}
+.tpl .k{position:absolute;top:-13px;left:20px;background:var(--green);color:#fff;font-family:"Archivo Black";font-size:11px;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.tpl h3{font-size:16.5px;font-weight:900;color:var(--green);margin-top:5px;margin-bottom:10px}
+.tpl .step{display:flex;gap:11px;align-items:flex-start;margin-bottom:8px;font-size:13.5px;font-weight:700;line-height:1.55}
+.tpl .step .n{background:var(--green);color:#fff;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black";font-size:13px;flex-shrink:0;border:2px solid var(--ink)}
+.tpl .must{margin-top:11px;background:#FFF3CC;border:2px dashed var(--dred);border-radius:10px;padding:11px 13px;font-size:13.5px;font-weight:700;line-height:1.6}
+.tpl .must .lb{font-family:"Archivo Black";font-size:11px;color:var(--dred);display:block;margin-bottom:4px}
+.tpl .must .lb::before{content:'▎ 必须加这一段（和普通 PM 的分水岭）：'}
+.pit{display:flex;gap:12px;margin-bottom:14px}
+.pt{flex:1;border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:4px 4px 0 var(--ink);padding:14px}
+.pt .h{font-family:"Archivo Black";font-size:14px;color:var(--dred);margin-bottom:5px}
+.pt .d{font-size:13px;font-weight:700;line-height:1.55}
+.pt .d b{color:var(--dred)}
+.summary{margin-top:30px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:6px 6px 0 var(--ink)}
+.summary .big{font-size:20px;font-weight:900;line-height:1.45;margin-bottom:14px}
+.summary .big .red{color:var(--dred)}
+.summary .line{display:flex;gap:9px;padding:5px 0;font-size:13.5px;line-height:1.5;font-weight:600}
+.summary .line .dot{color:var(--red);font-family:"Archivo Black";flex-shrink:0}
+.summary .line .key{color:var(--dred);font-weight:900}
+.summary .final{margin-top:14px;padding-top:12px;border-top:2px dashed var(--ink);font-size:14px;font-weight:900}
+.summary .final .red{color:var(--dred)}
+.cta{margin-top:18px;background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px;box-shadow:6px 6px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:13px}
+.cta .ask2{margin-top:11px;font-size:15px;font-weight:700}.cta .ask2 b{color:var(--gold)}
+.cta .bonus{margin-top:10px;font-size:13px;color:#cfc7b6;line-height:1.6}
+.hashtags{text-align:center;margin-top:18px;font-size:12.5px;color:#9a927f}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
+.reveal.on{opacity:1;transform:none}
+@media(max-width:560px){.proofs{flex-direction:column}.grade{flex-direction:column}.pit{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="bmk"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.60</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇 · 转行求职</div>
+      <h1 class="hero-title">没 AI 项目经验？<br><span class="hl">3 条路自己造第一个</span></h1>
+      <div class="hero-sub">2026 招聘方<b>先看作品集</b>，再看简历</div>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">拆给<br>你看</div></div>
+  </div>
+
+  <div class="hook reveal">
+    <span class="k">先说那个死循环</span>
+    <p>投简历，人家问有没有做过 AI 项目 → 没有 → 公司不给你 AI 项目 → 永远没经验 → 拿不到 offer → 更没机会。<b>但 2026 规则变了</b>：做 AI 的公司越来越<b>先看作品集、再看简历</b>，尤其你简历一看就是转行的。作品集是把"我没经验"换成面试机会<b>最便宜的方式</b>。</p>
+  </div>
+
+  <div class="verdict reveal">
+    <span class="k">今天的核心</span>
+    别再等公司给你 AI 项目了——<b>你自己就能造一个</b>。下面三条路，都不需要公司点头。
+  </div>
+
+  <!-- 认知层 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t">动手前：招聘方到底在看什么</span><span class="ln"></span></div>
+  <div class="proofs reveal">
+    <div class="pf"><span class="n">证据 1</span><div class="d">你想得清楚吗</div></div>
+    <div class="pf"><span class="n">证据 2</span><div class="d">你能真做出东西吗</div></div>
+    <div class="pf"><span class="n">证据 3</span><div class="d">你能有纪律地<br>衡量质量吗</div></div>
+  </div>
+  <div class="road reveal" style="box-shadow:6px 6px 0 var(--plum);border-color:var(--plum)">
+    <div class="data" style="margin-bottom:11px">还有一个定位要记死：<b>AI PM 是被雇来「管系统行为」的，不是画功能界面的</b>。所以你的项目必须体现：你怎么控制它、它出错时你怎么办。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>以为作品集就是"我做了个 XX"。</div>
+      <div class="s good"><span class="lb"></span>知道人家看的是：失败怎么处理、质量怎么衡量。</div>
+    </div>
+  </div>
+
+  <!-- 3 条路 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t">3 条路 · 都不用公司点头</span><span class="ln"></span></div>
+
+  <div class="road a reveal">
+    <div class="top"><span class="no">路 1</span><h3>拆解一个真 AI 产品（<span class="red">零门槛·最快出活</span>）</h3></div>
+    <div class="data">挑一个你天天在用的 AI 产品，从 <b>UX / 效果评估 / 用户信任 / 护城河</b> 四个角度批判，录成 10 分钟视频、或写成结构清楚的拆解，公开发出去。它证明的是「证据 1：你想得清楚」，且<b>不需要任何公司资源</b>——这周就能开始。</div>
+  </div>
+
+  <div class="road b reveal">
+    <div class="top"><span class="no">路 2</span><h3>自己做一个<span class="red">能点的</span>小产品（最能打）</h3></div>
+    <div class="data">不会写代码也行，用 AI 工具把想法变成可演示 MVP。铁律：<b>「我做了这个」远弱于「你点这里试试」</b>。所谓能跑＝一个真能打开的 URL、能吃真实输入、返回有意义输出、<b>在最明显的边缘 case 上不崩</b>。简历放一个可点链接，胜过十句形容词。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>随手做个没痛点的聊天机器人，写"我做了个 AI 聊天机器人"——等于零信息。</div>
+      <div class="s good"><span class="lb"></span>解决一个具体小痛点 + 放可点链接 + 写清它在哪会出错、你怎么兜。</div>
+    </div>
+  </div>
+
+  <div class="road c reveal">
+    <div class="top"><span class="no">路 3</span><h3>借一个<span class="red">真实场景</span>（最像生产信号）</h3></div>
+    <div class="data">两个方向：① 在现在的公司内部找个小流程用 AI 优化，哪怕只给自己团队几个人用；② 去 GitHub 拉一个开源 AI 项目，跑通并改造。好处是有<b>真实数据、真实用户</b>，说服力远强于纯想象的项目。</div>
+  </div>
+
+  <!-- 怎么写才算数 -->
+  <div class="tpl reveal">
+    <span class="k">项目怎么写才算数</span>
+    <h3>每个项目按三段写 + 带数字</h3>
+    <div class="step"><span class="n">1</span><div><b>问题</b>：你解决的是什么具体问题</div></div>
+    <div class="step"><span class="n">2</span><div><b>方案</b>：你怎么做的</div></div>
+    <div class="step"><span class="n">3</span><div><b>影响</b>：带来什么结果——用了多少数据、准确率/耗时从多少到多少、多少人在用</div></div>
+    <div class="must"><span class="lb"></span>写清「这个 AI 会在什么情况下出错、我怎么评估它好不好、出错了怎么兜底」。这一段就是你和普通 PM 最大的区别，也是招聘方最想看到的信号。</div>
+    <div class="data" style="margin-top:11px;background:#FBF7EA">格式上要<b>能扫读</b>，别写 2000 字长文——招聘方根本不会读完。现在很多公司用 AI 解析简历，它<b>特别吃数字</b>，形容词抓不到重点。</div>
+  </div>
+
+  <!-- 坑与节奏 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t">两个坑 + 一个节奏</span><span class="ln"></span></div>
+  <div class="pit reveal">
+    <div class="pt"><div class="h">坑 1 · 别贪多</div><div class="d">铁律：<b>两个强项目 &gt; 七个平庸的</b>。一个拆解型（证明想得清）+ 一个能点的（证明做得出），就够开面试。</div></div>
+    <div class="pt"><div class="h">坑 2 · 别做花瓶</div><div class="d">没有清晰痛点的项目等于零。招聘方看完不知道你解决了什么，就是白做。</div></div>
+  </div>
+  <div class="verdict reveal">
+    <span class="k">节奏 + 一个现实提醒</span>
+    每周投入 <b>10-15 小时</b>，<b>30 天</b>足够产出 2 个能打的项目。另外：转行时<b>中小公司比大厂更容易接受跨行</b>，大厂还有学历门槛——先用作品集撬中小公司的面试，进去做出真实业绩再往上走。
+  </div>
+
+  <!-- 总结 -->
+  <div class="summary reveal">
+    <div class="big">破局点不在公司手里，<span class="red">在你手里</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">先懂</span>　招聘方要三个证据：想得清、做得出、量得准</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">三条路</span>　拆解 / 自己做能点的 / 借真实场景，都不用公司点头</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">怎么写</span>　问题→方案→影响 + 数字 + 一段"哪会错·怎么评估·怎么兜"</span></div>
+    <div class="final">2026 招聘方先看作品集，<span class="red">而作品集是你自己就能造的。</span></div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">这周就能开始</span>
+    <p class="ask2">你现在卡在哪一步？<b>是不知道做什么项目，还是做了不知道怎么写</b>？</p>
+    <p class="bonus">这 3 条路 + 项目该怎么写的模板，整理成一份清单放主页了，想动手的去主页对着做。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+  <div class="hashtags">#AI产品经理 #AIPM #转行产品经理 #转行AI #作品集 #简历 #求职 #职场 #产品经理 #AI实战 #项目经验 #面试 #零基础</div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL.62 · AI 产品怎么定价：按席位、按用量、还是按结果</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#FEFCF5;--ink:#26241F;--red:#E63946;--dred:#9B1B27;--gold:#FFE16B;--green:#12805A;--mint:#BFEAD0;--pink:#FFDDE0;--teal:#2F8E9E;--panel:#fff}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(38,36,31,.05) 1.2px,transparent 0);background-size:22px 22px}
+.page{max-width:760px;margin:0 auto;padding:28px 20px 70px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.bmk{display:flex;align-items:center;gap:10px}
+.bm{width:42px;height:42px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:21px}
+.bn{font-family:"Archivo Black";font-size:23px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 15px;font-family:"Archivo Black";font-size:13px}
+.hero{display:flex;gap:20px;align-items:center;margin-top:22px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:14px}
+.hero-title{margin-top:9px;font-size:35px;line-height:1.18;font-weight:900;letter-spacing:-.01em}
+.hero-title .hl{background:linear-gradient(180deg,transparent 56%,var(--gold) 56%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.hero-sub{margin-top:10px;font-size:14.5px;color:#6a6455;font-weight:600}
+.hero-sub b{color:var(--dred)}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-8px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.1;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:92px}.face img{width:92px;height:92px}.hero-title{font-size:27px}}
+.hook{margin-top:24px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:7px 7px 0 var(--red);position:relative}
+.hook .k{position:absolute;top:-13px;left:20px;background:var(--red);color:#fff;font-family:"Archivo Black";font-size:11px;letter-spacing:.1em;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.hook p{margin-top:6px;font-size:16.5px;font-weight:800;line-height:1.6}
+.hook b{color:var(--gold)}
+.verdict{margin-top:16px;background:var(--gold);border:3px solid var(--ink);border-radius:14px;padding:15px 18px;box-shadow:5px 5px 0 var(--ink);font-size:15px;font-weight:800;line-height:1.55}
+.verdict .k{display:block;font-family:"Archivo Black";font-size:11px;color:var(--dred);letter-spacing:.08em;margin-bottom:5px}
+.verdict b{color:var(--dred)}
+.stackbar{margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.sb{border:3px solid var(--ink);border-radius:12px;background:#fff;box-shadow:4px 4px 0 var(--ink);padding:11px 8px;text-align:center;font-size:13px;font-weight:800}
+.sb .n{font-family:"Archivo Black";font-size:12px;color:#fff;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:5px}
+.sb.a .n{background:var(--gold);color:var(--ink)}.sb.b .n{background:var(--green)}.sb.c .n{background:var(--dred)}.sb.d .n{background:var(--teal)}
+.divider{display:flex;align-items:center;gap:14px;margin:36px 0 18px}
+.divider .ln{flex:1;height:3px;background:var(--ink);border-radius:2px}
+.divider .t{font-family:"Archivo Black";font-size:18px;background:var(--ink);color:var(--gold);border-radius:10px;padding:6px 16px;text-align:center}
+.lvcard{background:var(--panel);border:3px solid var(--ink);border-radius:16px;padding:20px;box-shadow:6px 6px 0 var(--ink);margin-bottom:18px}
+.lvcard .top{display:flex;align-items:center;gap:12px;margin-bottom:11px;flex-wrap:wrap}
+.lvcard .no{font-family:"Archivo Black";font-size:15px;color:#fff;border-radius:10px;padding:5px 13px;flex-shrink:0}
+.lvcard.a .no{background:var(--gold);color:var(--ink)}.lvcard.b .no{background:var(--green)}.lvcard.c .no{background:var(--dred)}.lvcard.d .no{background:var(--teal)}
+.lvcard h3{font-size:18px;font-weight:900;line-height:1.25}
+.lvcard h3 .red{color:var(--dred)}
+.lvcard .data{background:#F3FAF6;border:2px solid var(--ink);border-radius:10px;padding:11px 13px;font-size:13.5px;font-weight:600;line-height:1.65;margin-bottom:11px}
+.lvcard .data b{color:var(--dred);font-weight:900;background:var(--gold);padding:0 3px;border:1px solid var(--dred)}
+/* 比喻卡 */
+.meta-q{background:var(--ink);color:#fff;border-radius:12px;padding:13px 16px;font-size:14.5px;font-weight:900;line-height:1.55;margin-bottom:11px}
+.meta-q .lb{font-family:"Archivo Black";font-size:11px;color:var(--gold);display:block;margin-bottom:5px}
+.meta-q .lb::before{content:'▎ 一个比喻讲透'}
+.meta-q b{color:var(--gold)}
+/* 数据迁移条 */
+.shift{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:11px}
+.sh{border:3px solid var(--ink);border-radius:12px;background:#fff;box-shadow:3px 3px 0 var(--ink);padding:11px 8px;text-align:center}
+.sh .n{font-family:"Archivo Black";font-size:19px;line-height:1.1}
+.sh.d .n{color:var(--dred)}.sh.u .n{color:var(--green)}.sh.f .n{color:var(--teal)}
+.sh .l{font-size:12px;font-weight:700;color:#6a6455;margin-top:4px;line-height:1.35}
+/* 毛利对比 */
+.margin{display:flex;gap:10px;margin-bottom:11px}
+.mg{flex:1;border:3px solid var(--ink);border-radius:12px;padding:12px;box-shadow:4px 4px 0 var(--ink);text-align:center}
+.mg .h{font-family:"Archivo Black";font-size:12px;margin-bottom:5px}
+.mg .v{font-family:"Archivo Black";font-size:26px;line-height:1}
+.mg .s{font-size:12px;font-weight:700;color:#5c5a50;margin-top:5px;line-height:1.4}
+.mg.old{background:var(--mint)}.mg.old .h,.mg.old .v{color:var(--green)}
+.mg.new{background:var(--pink)}.mg.new .h,.mg.new .v{color:var(--dred)}
+/* 三模式表 */
+.modes{display:flex;flex-direction:column;gap:9px;margin-bottom:11px}
+.md{border:2.5px solid var(--ink);border-radius:11px;padding:11px 13px;font-size:13px;font-weight:700;line-height:1.55;box-shadow:3px 3px 0 var(--ink)}
+.md .h{font-family:"Archivo Black";font-size:13px;display:block;margin-bottom:4px}
+.md .tag{font-size:11.5px;font-weight:900;border-radius:6px;padding:1px 7px;margin-left:6px;border:1.5px solid var(--ink)}
+.md.s{background:#FFF4E0}.md.s .h{color:#B07A12}
+.md.u{background:#E9F3FB}.md.u .h{color:var(--teal)}
+.md.o{background:#EFF9F3}.md.o .h{color:var(--green)}
+.md .warn{color:var(--dred);font-weight:900}
+.grade{display:flex;gap:10px}
+.grade .s2{flex:1;border:2.5px solid var(--ink);border-radius:10px;padding:10px 12px;font-size:12.5px;font-weight:700;line-height:1.5}
+.grade .s2 .lb{display:block;font-family:"Archivo Black";font-size:12px;margin-bottom:4px}
+.grade .s2.bad{background:var(--pink)}.grade .s2.bad .lb{color:var(--dred)}.grade .s2.bad .lb::before{content:'✗ 60分'}
+.grade .s2.good{background:var(--mint)}.grade .s2.good .lb{color:var(--green)}.grade .s2.good .lb::before{content:'✓ 90分'}
+/* Copilot 阶梯 */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:11px}
+.tr{border:3px solid var(--ink);border-radius:12px;background:#fff;box-shadow:3px 3px 0 var(--ink);padding:11px 8px;text-align:center}
+.tr .p{font-family:"Archivo Black";font-size:12px;color:#fff;background:var(--ink);border-radius:6px;padding:2px 9px;display:inline-block;margin-bottom:6px}
+.tr .n{font-family:"Archivo Black";font-size:20px;color:var(--green);line-height:1}
+.tr .l{font-size:12px;font-weight:700;color:#6a6455;margin-top:4px;line-height:1.35}
+.four{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px}
+.fr{display:flex;gap:9px;align-items:flex-start;background:#fff;border:2.5px solid var(--ink);border-radius:11px;padding:10px 12px;font-size:13px;font-weight:700;box-shadow:3px 3px 0 var(--ink)}
+.fr .n{background:var(--green);color:#fff;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black";font-size:12px;flex-shrink:0}
+/* 杠杆 */
+.lever{margin-bottom:11px;display:flex;flex-direction:column;gap:9px}
+.lv2{display:flex;gap:12px;align-items:center;background:var(--mint);border:3px solid var(--ink);border-radius:12px;padding:11px 14px;box-shadow:3px 3px 0 var(--ink);font-size:13.5px;font-weight:700}
+.lv2 .h{font-family:"Archivo Black";font-size:14px;color:var(--green);flex-shrink:0;min-width:76px}
+.say{background:var(--ink);color:#fff;border-radius:12px;padding:14px 16px;font-size:13.5px;font-weight:700;line-height:1.65}
+.say .lb{font-family:"Archivo Black";font-size:11px;color:var(--gold);display:block;margin-bottom:5px}
+.say b{color:var(--gold)}
+/* 两条件 */
+.cond{display:flex;gap:10px;margin-bottom:11px}
+.cd{flex:1;border:2.5px solid var(--ink);border-radius:11px;padding:11px 13px;font-size:13px;font-weight:700;line-height:1.55;background:#fff;box-shadow:3px 3px 0 var(--ink)}
+.cd .h{font-family:"Archivo Black";font-size:12.5px;color:var(--green);display:block;margin-bottom:4px}
+.summary{margin-top:30px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:6px 6px 0 var(--ink)}
+.summary .big{font-size:20px;font-weight:900;line-height:1.45;margin-bottom:14px}
+.summary .big .red{color:var(--dred)}
+.summary .line{display:flex;gap:9px;padding:5px 0;font-size:13.5px;line-height:1.5;font-weight:600}
+.summary .line .dot{color:var(--red);font-family:"Archivo Black";flex-shrink:0}
+.summary .line .key{color:var(--dred);font-weight:900}
+.summary .final{margin-top:14px;padding-top:12px;border-top:2px dashed var(--ink);font-size:14px;font-weight:900}
+.summary .final .red{color:var(--dred)}
+.cta{margin-top:18px;background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px;box-shadow:6px 6px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:13px}
+.cta .ask2{margin-top:11px;font-size:15px;font-weight:700}.cta .ask2 b{color:var(--gold)}
+.cta .bonus{margin-top:10px;font-size:13px;color:#cfc7b6;line-height:1.6}
+.hashtags{text-align:center;margin-top:18px;font-size:12.5px;color:#9a927f}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
+.reveal.on{opacity:1;transform:none}
+@media(max-width:560px){.stackbar{grid-template-columns:1fr 1fr}.shift{grid-template-columns:1fr}.tiers{grid-template-columns:1fr}.four{grid-template-columns:1fr}.margin{flex-direction:column}.cond{flex-direction:column}.grade{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="bmk"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.62</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇 · 商业化定价</div>
+      <h1 class="hero-title">九成七的老板要退掉席位制<br><span class="hl">AI 产品该怎么定价</span></h1>
+      <div class="hero-sub">按席位、按用量、还是按结果？<b>根子不在潮流，在毛利</b></div>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">拆给<br>你看</div></div>
+  </div>
+
+  <div class="hook reveal">
+    <span class="k">一个会改变判断的数字</span>
+    <p>2026 年 4 月，一份针对 <b>300 位 SaaS 公司 CEO</b> 的调研：<b>97% 计划在两年之内退掉按席位收费</b>。这不是趋势预测，是正在发生的集体迁移。而且现在很多采购场景里，你只按席位卖，会被<b>直接踢出候选名单</b>。</p>
+  </div>
+
+  <div class="verdict reveal">
+    <span class="k">先立住主论点（理解了后面全通）</span>
+    AI 定价不是换个价签，是<b>换一套结构</b>。因为 AI 的成本随用量线性上涨，而席位制的收入不涨——<b>用得越多，你亏得越多</b>。这一期讲的是「怎么收钱」，跟第 59 期算「值不值得做」互补。
+  </div>
+  <div class="stackbar reveal">
+    <div class="sb a"><span class="n">① 崩</span>席位制为什么在崩</div>
+    <div class="sb b"><span class="n">② 根</span>根子在毛利 COGS</div>
+    <div class="sb c"><span class="n">③ 选</span>三种模式怎么选</div>
+    <div class="sb d"><span class="n">④ 抄</span>Copilot 四件套</div>
+  </div>
+
+  <div class="divider reveal"><div class="ln"></div><div class="t">第 1 块 · 席位制为什么在崩</div><div class="ln"></div></div>
+
+  <div class="lvcard a reveal">
+    <div class="top"><span class="no">① 崩</span><h3>AI agent <span class="red">不登录、不占许可证</span></h3></div>
+    <div class="data">agent 能自主跑完一整套流程。<b>人做一个任务的时间里，它可能已经做了几千个</b>。所以你还按「多少个人在用」来收费，逻辑就崩了。</div>
+    <div class="meta-q"><span class="lb"></span>你按席位卖一个 AI agent，就等于<b>给一支自动驾驶车队按停车位收费</b>。车都不用停了，你还在数车位。</div>
+    <div class="shift">
+      <div class="sh d"><div class="n">21% → 15%</div><div class="l">按席位收费的公司占比（12 个月内）</div></div>
+      <div class="sh u"><div class="n">27% → 41%</div><div class="l">混合定价占比：B2B 软件里最大的一次迁移</div></div>
+      <div class="sh f"><div class="n">48%</div><div class="l">机构对 2026 年混合定价的预测</div></div>
+    </div>
+    <div class="data">Bessemer 管这个叫 <b>「AI 定价大转向」</b>。但如果你只知道「大家都在改」，那你只是跟风——下面才是根子。</div>
+  </div>
+
+  <div class="divider reveal"><div class="ln"></div><div class="t">第 2 块 · 根子在毛利</div><div class="ln"></div></div>
+
+  <div class="lvcard b reveal">
+    <div class="top"><span class="no">② 根</span><h3>AI 打破经典 SaaS 剧本，<span class="red">只打破在 COGS 这一处</span></h3></div>
+    <div class="data">传统软件的美妙之处：多卖一份，边际成本几乎是零。可 AI 不行，<b>每一次查询都在真金白银地烧推理算力</b>。</div>
+    <div class="margin">
+      <div class="mg old"><div class="h">传统 SaaS 毛利</div><div class="v">80-90%</div><div class="s">复制一份几乎零成本</div></div>
+      <div class="mg new"><div class="h">AI 产品毛利</div><div class="v">50-60%</div><div class="s">Bessemer 2026 年 2 月定价手册</div></div>
+    </div>
+    <div class="data">更直观的量级：<b>每 100 万美元 AI 产品收入，大约产生 23 万美元推理成本</b>。</div>
+    <div class="meta-q"><span class="lb"></span>把两件事放一起：收入固定、成本随用量涨 = <b>客户越活跃、越爱用，你亏得越多</b>。这个模式本身就是反的。定价结构必须改，目的只有一个：<b>把可变成本合理地传导出去</b>。</div>
+  </div>
+
+  <div class="divider reveal"><div class="ln"></div><div class="t">第 3 块 · 三种模式怎么选</div><div class="ln"></div></div>
+
+  <div class="lvcard c reveal">
+    <div class="top"><span class="no">③ 选</span><h3>三种基本模式，<span class="red">各自的好与坏</span></h3></div>
+    <div class="modes">
+      <div class="md s"><span class="h">按席位 SEAT<span class="tag" style="background:#FFE16B">可预测</span></span>好：可预测、好卖、客户容易理解、财务好做预算。<br><span class="warn">坏：AI 时代成本失控。</span>而且客户也觉得不公平——有人天天用、有人一个月点两次，凭什么一个价。</div>
+      <div class="md u"><span class="h">按用量 USAGE<span class="tag" style="background:#BFEAD0">成本能传导</span></span>好：成本直接传导给客户，不会因为客户用得多而亏钱。<br><span class="warn">坏（很多人低估）：客户预算不可预测，更要命的是它会「抑制使用」</span>——每点一次都在花钱，用户就会犹豫、就会少用，而你其实希望他多用、形成依赖。</div>
+      <div class="md o"><span class="h">按结果 OUTCOME<span class="tag" style="background:#FFDDE0">对齐最强</span></span>只在 AI 交付具体业务结果时收费：解决一个客服会话、带来一个合格线索、关闭一个工单。<br><span class="warn">硬前提：「结果」必须能被清晰定义和归因。</span>说不清是不是 AI 带来的，就会扯皮、甚至反伤信任。定义不清的场景，先别碰。</div>
+    </div>
+    <div class="grade">
+      <div class="s2 bad"><span class="lb"></span>看到风向，就跟风把定价改成纯按量。</div>
+      <div class="s2 good"><span class="lb"></span>按三个维度选：① 成本可变性有多强 ② 客户对预算可预测性的要求有多高 ③「结果」能不能被清晰归因。三个维度一摆，选哪个就清楚了。</div>
+    </div>
+  </div>
+
+  <div class="divider reveal"><div class="ln"></div><div class="t">第 4 块 · 跑赢的答案是混合</div><div class="ln"></div></div>
+
+  <div class="lvcard b reveal">
+    <div class="top"><span class="no">④ 混</span><h3>不是纯按量，也不是纯结果，<span class="red">是混合</span></h3></div>
+    <div class="shift">
+      <div class="sh u"><div class="n">43%</div><div class="l">在用混合定价，且是增长最快的模式（宽口径 60%+，2021 年不到 30%）</div></div>
+      <div class="sh d"><div class="n">+38% / +38%</div><div class="l">用混合定价的公司：收入增长更高、净收入留存更高</div></div>
+      <div class="sh f"><div class="n">126%</div><div class="l">credit 积分制在头部 500 家软件公司的同比增速</div></div>
+    </div>
+    <div class="meta-q"><span class="lb"></span>结构其实很简单：<b>一个可预测的基础订阅 + 一个随用量或结果浮动的组件</b>。前者给客户安全感、给你稳定现金流；后者把可变成本传导出去，同时给你留住增长的上行空间。</div>
+  </div>
+
+  <div class="divider reveal"><div class="ln"></div><div class="t">第 5 块 · 抄作业：Copilot 四件套</div><div class="ln"></div></div>
+
+  <div class="lvcard a reveal">
+    <div class="top"><span class="no">⑤ 抄</span><h3>GitHub Copilot 2026 年 6 月定价，<span class="red">目前设计得最漂亮的之一</span></h3></div>
+    <div class="tiers">
+      <div class="tr"><span class="p">PRO</span><div class="n">$10 / 月</div><div class="l">含 10 美元 AI 额度</div></div>
+      <div class="tr"><span class="p">BUSINESS</span><div class="n">$19 / 人</div><div class="l">含 19 美元额度</div></div>
+      <div class="tr"><span class="p">ENTERPRISE</span><div class="n">$39 / 人</div><div class="l">含 39 美元额度</div></div>
+    </div>
+    <div class="data">超出额度的部分，<b>按公开的 token 接口费率计费</b>。而最妙的一点：那些常规的、成本很低的代码补全，<b>完全不计量、不扣额度</b>。</div>
+    <div class="four">
+      <div class="fr"><span class="n">1</span><span>一个<b>基础费</b></span></div>
+      <div class="fr"><span class="n">2</span><span>一个和基础费<b>等额的包含额度</b></span></div>
+      <div class="fr"><span class="n">3</span><span>超额之后的<b>计量费率</b></span></div>
+      <div class="fr"><span class="n">4</span><span>对<b>低成本动作的豁免</b></span></div>
+    </div>
+    <div class="say"><span class="lb">▎ 这个结构好在哪（3 点）</span>① <b>买家看得懂</b>：我付十块，里面就有十块可用，超了才另算，销售会上一句话讲得清。② <b>COGS 敞口被传导出去</b>，重度用户不会让你亏。③ <b>低成本动作豁免特别聪明</b>：它拆掉了用户「不敢用」的心理门槛，让他放心高频使用、形成依赖。<br><br>同期做类似结构的还有 Salesforce 的 <b>Agentforce</b>、Intercom 的 <b>Fin</b>、ServiceNow 的 <b>Now Assist</b>，本质都是把销货成本的敞口，从自己的资产负债表上挪走。</div>
+  </div>
+
+  <div class="divider reveal"><div class="ln"></div><div class="t">第 6 块 · 两个守毛利杠杆</div><div class="ln"></div></div>
+
+  <div class="lvcard d reveal">
+    <div class="top"><span class="no">⑥ 守</span><h3>听起来像技术细节，<span class="red">其实是损益表上的杠杆</span></h3></div>
+    <div class="lever">
+      <div class="lv2"><span class="h">模型路由</span><span>同一家模型厂商内部，价差能<b>超过 5 倍</b>（Claude Haiku 4.5 约 1 / 5 美元每百万 token，Opus 4.8 约 5 / 25）。把常规简单的活路由到便宜的小模型，只把真正困难的任务留给前沿模型——这一个动作比任何其他优化都更能压推理账单。</span></div>
+      <div class="lv2"><span class="h">提示缓存</span><span>Anthropic 和 OpenAI 都对缓存过的输入 token 给<b>约 90% 的折扣</b>。如果你的产品有稳定的系统提示词、有反复出现的上下文，<b>一个大概一周的工程改造，就可能把单次查询的有效成本降低一个数量级</b>。</span></div>
+    </div>
+    <div class="say"><span class="lb">▎ 一句话</span>那些把提示缓存和模型路由当成 <b>P&amp;L 杠杆</b>、而不是当成技术细节的公司，才是真正守住毛利的公司。而这两件事，是<b>产品经理该去 push 的</b>。</div>
+  </div>
+
+  <div class="divider reveal"><div class="ln"></div><div class="t">第 7 块 · 定价指标怎么选</div><div class="ln"></div></div>
+
+  <div class="lvcard c reveal">
+    <div class="top"><span class="no">⑦ 量</span><h3>计价单位必须<span class="red">同时满足两个条件</span></h3></div>
+    <div class="cond">
+      <div class="cd"><span class="h">① 技术上准确</span>这个指标要能<b>映射你的真实成本</b>。否则你只挑客户爱听的指标，毛利迟早被吃掉。</div>
+      <div class="cd"><span class="h">② 客户直觉能懂</span>你得能在<b>销售会议上一句话讲明白</b>。客户听不懂的计价方式，谈判必然失败，他会觉得你在藏东西。</div>
+    </div>
+    <div class="data">对大模型类产品，<b>token 处理量</b>通常是不错的选择，因为它直接映射成本。但要考虑客户听不听得懂 token 这个词——不懂就包装成<b>「积分」或「次数」</b>。</div>
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">收成 <span class="red">5 条规律</span></div>
+    <div class="line"><span class="dot">01</span><span><span class="key">本质：</span>AI 定价不是换个价签，是把<span class="key">可变成本传导出去</span>；席位制在 AI 时代是结构性亏损模式。</span></div>
+    <div class="line"><span class="dot">02</span><span><span class="key">答案：</span>主流是<span class="key">混合</span>，不是纯按量也不是纯结果。基础订阅给可预测性，浮动组件传导成本。</span></div>
+    <div class="line"><span class="dot">03</span><span><span class="key">抄结构：</span>Copilot 四件套 = 基础费 + 等额包含额度 + 超额计量 + 低成本动作豁免。</span></div>
+    <div class="line"><span class="dot">04</span><span><span class="key">守毛利：</span>把<span class="key">模型路由</span>（差 5 倍）和<span class="key">提示缓存</span>（约 9 折）当损益表杠杆去 push，比砍任何功能都救毛利。</span></div>
+    <div class="line"><span class="dot">05</span><span><span class="key">计价单位：</span>技术上准确 + 客户直觉能懂，<span class="key">两条缺一不可</span>。</span></div>
+    <div class="final">定价这件事，<span class="red">工程替你做不了</span>——这是产品经理最值钱、也最不可替代的一块能力。</div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">对着抄</span>
+    <div class="ask2">这套定价框架、三种模式对照、Copilot 四件套结构，我整理成一份<b>一页纸清单</b>放主页了，正在做商业化的可以直接对着抄。</div>
+    <div class="bonus">评论区聊聊：你们家的 AI 功能现在怎么收费？有没有遇到过「用得越多亏得越多」的情况？<br>关注 NOVA｜每天一个 AI PM 知识点。</div>
+  </div>
+
+  <div class="hashtags">#AI产品经理 #AIPM #定价策略 #商业化 #SaaS #毛利 #产品经理进阶</div>
+</div>
+<script>
+var els=document.querySelectorAll('.reveal');
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.08});
+els.forEach(function(e){io.observe(e)});
+</script>
+</body></html>

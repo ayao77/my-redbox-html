@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL.61 · AI 产品指标体系怎么搭</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Archivo+Black&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#FEFCF5;--ink:#26241F;--red:#E63946;--dred:#9B1B27;--gold:#FFE16B;--green:#1F9257;--mint:#BFEAD0;--pink:#FFDDE0;--blue:#2E6FB0;--teal:#2F8E9E;--panel:#fff}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;background-image:radial-gradient(circle at 1px 1px,rgba(38,36,31,.05) 1.2px,transparent 0);background-size:22px 22px}
+.page{max-width:760px;margin:0 auto;padding:28px 20px 70px}
+.brand-bar{display:flex;align-items:center;justify-content:space-between}
+.bmk{display:flex;align-items:center;gap:10px}
+.bm{width:42px;height:42px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:"Archivo Black";font-size:21px}
+.bn{font-family:"Archivo Black";font-size:23px}
+.vol{background:var(--ink);color:var(--gold);border-radius:50px;padding:6px 15px;font-family:"Archivo Black";font-size:13px}
+.hero{display:flex;gap:20px;align-items:center;margin-top:22px}
+.hero-l{flex:1;min-width:0}
+.hero-meta{font-weight:800;color:var(--dred);font-size:14px}
+.hero-title{margin-top:9px;font-size:35px;line-height:1.18;font-weight:900;letter-spacing:-.01em}
+.hero-title .hl{background:linear-gradient(180deg,transparent 56%,var(--gold) 56%,var(--gold) 92%,transparent 92%);padding:0 4px}
+.hero-sub{margin-top:10px;font-size:14.5px;color:#6a6455;font-weight:600}
+.hero-sub b{color:var(--dred)}
+.face{flex-shrink:0;position:relative;width:128px;animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.face img{width:128px;height:128px;border-radius:50%;border:5px solid var(--ink);object-fit:cover;box-shadow:6px 6px 0 var(--gold);background:#fff;display:block}
+.face .bub{position:absolute;bottom:-8px;right:-10px;background:var(--dred);color:#fff;font-weight:900;font-size:13px;line-height:1.1;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:5px 10px}
+@media(max-width:560px){.face{width:92px}.face img{width:92px;height:92px}.hero-title{font-size:27px}}
+.hook{margin-top:24px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:7px 7px 0 var(--red);position:relative}
+.hook .k{position:absolute;top:-13px;left:20px;background:var(--red);color:#fff;font-family:"Archivo Black";font-size:11px;letter-spacing:.1em;border:3px solid var(--ink);border-radius:20px;padding:3px 12px}
+.hook p{margin-top:6px;font-size:16.5px;font-weight:800;line-height:1.6}
+.hook b{color:var(--gold)}
+.verdict{margin-top:16px;background:var(--gold);border:3px solid var(--ink);border-radius:14px;padding:15px 18px;box-shadow:5px 5px 0 var(--ink);font-size:15px;font-weight:800;line-height:1.55}
+.verdict .k{display:block;font-family:"Archivo Black";font-size:11px;color:var(--dred);letter-spacing:.08em;margin-bottom:5px}
+.verdict b{color:var(--dred)}
+.stackbar{margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.sb{border:3px solid var(--ink);border-radius:12px;background:#fff;box-shadow:4px 4px 0 var(--ink);padding:11px 8px;text-align:center;font-size:13px;font-weight:800}
+.sb .n{font-family:"Archivo Black";font-size:12px;color:#fff;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:5px}
+.sb.a .n{background:var(--gold);color:var(--ink)}.sb.b .n{background:var(--blue)}.sb.c .n{background:var(--dred)}.sb.d .n{background:var(--teal)}
+.divider{display:flex;align-items:center;gap:14px;margin:36px 0 18px}
+.divider .ln{flex:1;height:3px;background:var(--ink);border-radius:2px}
+.divider .t{font-family:"Archivo Black";font-size:18px;background:var(--ink);color:var(--gold);border-radius:10px;padding:6px 16px;text-align:center}
+.lvcard{background:var(--panel);border:3px solid var(--ink);border-radius:16px;padding:20px;box-shadow:6px 6px 0 var(--ink);margin-bottom:18px}
+.lvcard .top{display:flex;align-items:center;gap:12px;margin-bottom:11px;flex-wrap:wrap}
+.lvcard .no{font-family:"Archivo Black";font-size:15px;color:#fff;border-radius:10px;padding:5px 13px;flex-shrink:0}
+.lvcard.a .no{background:var(--gold);color:var(--ink)}.lvcard.b .no{background:var(--blue)}.lvcard.c .no{background:var(--dred)}.lvcard.d .no{background:var(--teal)}
+.lvcard h3{font-size:18px;font-weight:900;line-height:1.25}
+.lvcard h3 .red{color:var(--dred)}
+.lvcard .data{background:#FBF7EA;border:2px solid var(--ink);border-radius:10px;padding:11px 13px;font-size:13.5px;font-weight:600;line-height:1.65;margin-bottom:11px}
+.lvcard .data b{color:var(--dred);font-weight:900;background:var(--gold);padding:0 3px;border:1px solid var(--dred)}
+.eq{background:var(--ink);color:var(--gold);border-radius:10px;padding:11px 14px;font-size:14.5px;font-weight:900;text-align:center;margin-bottom:11px;line-height:1.5}
+.grade{display:flex;gap:10px}
+.grade .s{flex:1;border:2.5px solid var(--ink);border-radius:10px;padding:10px 12px;font-size:12.5px;font-weight:700;line-height:1.5}
+.grade .s .lb{display:block;font-family:"Archivo Black";font-size:12px;margin-bottom:4px}
+.grade .s.bad{background:var(--pink)}.grade .s.bad .lb{color:var(--dred)}.grade .s.bad .lb::before{content:'✗ 60分'}
+.grade .s.good{background:var(--mint)}.grade .s.good .lb{color:var(--green)}.grade .s.good .lb::before{content:'✓ 90分'}
+/* 8 护栏 */
+.rails{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}
+.rl{border:3px solid var(--ink);border-radius:11px;background:#fff;box-shadow:3px 3px 0 var(--ink);padding:10px 6px;text-align:center;font-size:13px;font-weight:800}
+.modes{display:flex;gap:9px;margin-bottom:11px}
+.md{flex:1;border:2.5px solid var(--ink);border-radius:10px;padding:10px 11px;font-size:12.5px;font-weight:700;line-height:1.5}
+.md .h{font-family:"Archivo Black";font-size:12px;display:block;margin-bottom:4px}
+.md.i{background:#FFE0E0}.md.i .h{color:var(--dred)}
+.md.n{background:#E4F0FA}.md.n .h{color:var(--blue)}
+.md.s{background:#E6F5F0}.md.s .h{color:var(--teal)}
+/* 失效清单 */
+.fails{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.fl{display:flex;gap:9px;align-items:flex-start;background:#fff;border:2.5px solid var(--ink);border-radius:11px;padding:10px 12px;font-size:13px;font-weight:700;box-shadow:3px 3px 0 var(--ink)}
+.fl .n{background:var(--dred);color:#fff;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:"Archivo Black";font-size:12px;flex-shrink:0}
+.real{margin-bottom:12px;display:flex;flex-direction:column;gap:9px}
+.rt{display:flex;gap:12px;align-items:center;background:var(--mint);border:3px solid var(--ink);border-radius:12px;padding:11px 14px;box-shadow:3px 3px 0 var(--ink);font-size:13.5px;font-weight:700}
+.rt .h{font-family:"Archivo Black";font-size:14px;color:var(--green);flex-shrink:0;min-width:88px}
+.defend{background:var(--ink);color:#fff;border-radius:12px;padding:14px 16px;font-size:13.5px;font-weight:700;line-height:1.65}
+.defend .lb{font-family:"Archivo Black";font-size:11px;color:var(--gold);display:block;margin-bottom:5px}
+.defend .lb::before{content:'▎ 防作弊四招'}
+.defend b{color:var(--gold)}
+.summary{margin-top:30px;background:var(--gold);border:3px solid var(--ink);border-radius:18px;padding:22px;box-shadow:6px 6px 0 var(--ink)}
+.summary .big{font-size:20px;font-weight:900;line-height:1.45;margin-bottom:14px}
+.summary .big .red{color:var(--dred)}
+.summary .line{display:flex;gap:9px;padding:5px 0;font-size:13.5px;line-height:1.5;font-weight:600}
+.summary .line .dot{color:var(--red);font-family:"Archivo Black";flex-shrink:0}
+.summary .line .key{color:var(--dred);font-weight:900}
+.summary .final{margin-top:14px;padding-top:12px;border-top:2px dashed var(--ink);font-size:14px;font-weight:900}
+.summary .final .red{color:var(--dred)}
+.cta{margin-top:18px;background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px;box-shadow:6px 6px 0 var(--red)}
+.cta .tip{background:var(--gold);color:var(--ink);display:inline-block;font-weight:900;border-radius:8px;padding:3px 10px;font-size:13px}
+.cta .ask2{margin-top:11px;font-size:15px;font-weight:700}.cta .ask2 b{color:var(--gold)}
+.cta .bonus{margin-top:10px;font-size:13px;color:#cfc7b6;line-height:1.6}
+.hashtags{text-align:center;margin-top:18px;font-size:12.5px;color:#9a927f}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
+.reveal.on{opacity:1;transform:none}
+@media(max-width:560px){.stackbar{grid-template-columns:1fr 1fr}.rails{grid-template-columns:1fr 1fr}.modes{flex-direction:column}.fails{grid-template-columns:1fr}.grade{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-bar">
+    <div class="bmk"><div class="bm">N</div><div class="bn">NOVA</div></div>
+    <div class="vol">AI 实战 · VOL.61</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-meta">AI 产品经理实战篇 · 指标体系</div>
+      <h1 class="hero-title">只报准确率就露怯了<br><span class="hl">AI 指标体系怎么搭</span></h1>
+      <div class="hero-sub">九成团队盯准确率和延迟，<b>真正预测成败的 3 个指标没人测</b></div>
+    </div>
+    <div class="face"><img src="nova_avatar.png" alt="Nova"><div class="bub">拆给<br>你看</div></div>
+  </div>
+
+  <div class="hook reveal">
+    <span class="k">会当场露怯的场景</span>
+    <p>老板问"我们这 AI 做得到底好不好"，你张口就是<b>"准确率九成二"</b>——你就暴露了：把<b>系统性能</b>当成了<b>产品价值</b>。这俩根本不是一回事。</p>
+  </div>
+
+  <div class="verdict reveal">
+    <span class="k">定位转变（理解了后面全通）</span>
+    2026 你的活不是"做一个报告 AI 表现的看板"，是做一个 <b>eval 形状的指标</b>——它要回答：这个 AI 到底有没有在交付<b>业务愿意为它付钱的价值</b>。看板给人看，这个指标用来做判断。
+  </div>
+  <div class="stackbar reveal">
+    <div class="sb a"><span class="n">① </span>北极星指标</div>
+    <div class="sb b"><span class="n">② </span>输入/支撑指标</div>
+    <div class="sb c"><span class="n">③ </span>护栏指标</div>
+    <div class="sb d"><span class="n">④ </span>A/B 计划</div>
+  </div>
+
+  <!-- 第1层 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t">第 1 层 · 北极星怎么选</span><span class="ln"></span></div>
+  <div class="lvcard a reveal">
+    <div class="top"><span class="no">北极星</span><h3>选"用户<span class="red">真的把事办成了</span>"</h3></div>
+    <div class="data">好指标五特征：<b>有代表性 / 能听懂 / 有预测性 / 够敏感 / 配套护栏</b>。「能听懂」最常被低估——一个指标你没法一句话讲给老板，就没法对齐团队。<br><br>AI 最致命的坑叫<b>虚荣采用率</b>：拿"日调用量涨了多少""多少人用过"当北极星。这数好看也好涨，但<b>用户点了 ≠ 用户拿到价值</b>。</div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>拿"调用量又涨了"去汇报成绩。</div>
+      <div class="s good"><span class="lb"></span>选一个代表"用户真办成了"的指标（如任务完成率）。</div>
+    </div>
+  </div>
+
+  <!-- 第2层 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t">第 2 层 · 指标树怎么拆</span><span class="ln"></span></div>
+  <div class="lvcard b reveal">
+    <div class="top"><span class="no">指标树</span><h3>北极星太高，团队<span class="red">没法直接干</span></h3></div>
+    <div class="eq">北极星 ＝ 输入 A × 输入 B × 输入 C</div>
+    <div class="data">例：<b>任务完成率 ← 检索命中率 × 生成可用率 × 用户接受率</b>。这样一拆，每个输入都能对应到一个团队、一件能优化的事：检索不行调检索，生成不行调生成。<br><br>一句话：<b>北极星是给老板看的，输入指标才是给团队干活用的。</b>只有北极星没有指标树，团队只会焦虑、不知道动哪儿。</div>
+  </div>
+
+  <!-- 第3层 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t">第 3 层 · 护栏指标（AI 特有）</span><span class="ln"></span></div>
+  <div class="lvcard c reveal">
+    <div class="top"><span class="no">护栏</span><h3>跑在<span class="red">生产流量</span>上的实时安全线</h3></div>
+    <div class="data">定义：在<b>一条真实请求</b>上算出的数，量化它离越过安全/准确/合规边界还有多近。注意——不是上线前测一遍就完事。</div>
+    <div class="rails">
+      <div class="rl">PII 隐私</div><div class="rl">越狱</div><div class="rl">毒性</div><div class="rl">偏见</div>
+      <div class="rl">忠实度</div><div class="rl">延迟</div><div class="rl">拒答率</div><div class="rl">漂移</div>
+    </div>
+    <div class="modes">
+      <div class="md i"><span class="h">inline 阻断</span>跑在请求路径里，可直接掐断响应。用于<b>绝不能出</b>的：PII、越狱。</div>
+      <div class="md n"><span class="h">nearline 监控</span>每条都算但不阻断，只发遥测。用于<b>要盯又怕误杀</b>的：毒性、偏见。</div>
+      <div class="md s"><span class="h">async 抽样</span>抽一部分流量喂看板。用于<b>看趋势</b>的：漂移、拒答率。</div>
+    </div>
+    <div class="grade">
+      <div class="s bad"><span class="lb"></span>只在上线前测一遍就上线。</div>
+      <div class="s good"><span class="lb"></span>护栏跑在真实生产流量上，并按风险给不同执行模式。</div>
+    </div>
+  </div>
+
+  <!-- 第4层 -->
+  <div class="divider reveal"><span class="ln"></span><span class="t">第 4 层 · 防指标被玩坏（最见功力）</span><span class="ln"></span></div>
+  <div class="lvcard d reveal">
+    <div class="top"><span class="no">Goodhart</span><h3>当度量变成目标，<span class="red">它就不再是好度量</span></h3></div>
+    <div class="data">这条在 AI 这儿直接变成生存危机：人玩指标有上限，<b>AI 没有</b>——它能以超人速度和精度钻空子，叫 <b>reward hacking</b>。表现：评测集分数越来越高、真实体验没变好；甚至出现<b>讨好评估者却坑用户</b>的 AI。</div>
+    <div class="fails">
+      <div class="fl"><span class="n">1</span>benchmark 作弊（把题库背了）</div>
+      <div class="fl"><span class="n">2</span>代理指标漂移（跟真实目标脱钩）</div>
+      <div class="fl"><span class="n">3</span>未验证的评判者（AI 评 AI，裁判没验过）</div>
+      <div class="fl"><span class="n">4</span>多步成功率复合（每步还行，串起来崩）</div>
+      <div class="fl"><span class="n">5</span>虚荣采用率</div>
+      <div class="fl"><span class="n">6</span>缺治理（没人定期回看指标还准不准）</div>
+    </div>
+    <div class="data">病根一句话：<b>把系统性能（准确率/精确率/延迟）当成了产品性能（任务成功/用户价值/留存）的代理</b>。前者工程天然会盯，后者才是你 PM 该负责的。</div>
+  </div>
+
+  <div class="divider reveal"><span class="ln"></span><span class="t">补测：3 个没人测的真指标</span><span class="ln"></span></div>
+  <div class="real reveal">
+    <div class="rt"><span class="h">任务完成率</span><div>用户来办的那件事，最后办成了没有。</div></div>
+    <div class="rt"><span class="h">编辑率</span><div>用户对 AI 输出改了多少（改字比例／是否重生成／是否弃用）。<b>改得越多＝越不好用，比一百份满意度问卷都真实。</b></div></div>
+    <div class="rt"><span class="h">会话深度</span><div>愿意聊几轮、愿不愿深入——说明他真在用它解决问题，而不是试一下就走。</div></div>
+  </div>
+  <div class="defend reveal">
+    <span class="lb"></span>
+    ① 用<b>多个不同族</b>的指标，别把宝押一个数上；② 保留一套<b>没进过训练/调优的 holdout</b> 做诚实体检；③ 定期<b>人工抽样复核</b>真实输出；④ 一旦发现团队在「应试」，<b>诚实承认失效、换名重建新 holdout</b>。
+  </div>
+
+  <!-- 落地 -->
+  <div class="verdict reveal">
+    <span class="k">今天就能落地的一张表</span>
+    <b>1 个北极星</b>（代表用户拿到价值）+ <b>3-5 个输入指标</b>（团队可分头认领）+ <b>按风险分级的护栏</b>（哪些 inline／nearline／async）+ <b>1 个 A/B 计划</b>，再加一条：<b>每季度复核一次</b>，防止指标悄悄漂移失效。
+  </div>
+
+  <div class="summary reveal">
+    <div class="big">专业的 AI PM 和只会报准确率的，<span class="red">差这三条</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">不混淆</span>　系统性能 ≠ 产品价值；准确率高不代表用户成事了</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">成体系</span>　北极星给老板看、输入指标给团队干、护栏跑生产</span></div>
+    <div class="line"><span class="dot">▸</span><span><span class="key">防被玩</span>　指标一旦变目标，AI 会用超乎想象的速度钻穿它</span></div>
+    <div class="final">别再拿一个准确率去回答"做得好不好"了。</div>
+  </div>
+
+  <div class="cta reveal">
+    <span class="tip">照着抄</span>
+    <p class="ask2">你们现在盯的核心指标是什么？<b>有没有踩过指标被玩坏的坑</b>？</p>
+    <p class="bonus">这套体系 + 8 个护栏指标 + 3 个没人测的真指标，整理成一份清单放主页了，正在搭指标的可以对着抄。关注 NOVA，每天一个 AI PM 知识点。</p>
+  </div>
+  <div class="hashtags">#AI产品经理 #AIPM #指标体系 #北极星指标 #数据分析 #产品经理 #AI实战 #Eval #护栏 #产品经理进阶 #大厂 #增长</div>
+
+</div>
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
